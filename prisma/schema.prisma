@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(cuid())
+  name         String
+  email        String        @unique
+  password     String
+  phone        String?
+  role         String        @default("customer")
+  createdAt    DateTime      @default(now())
+  subscriptions Subscription[]
+  invoices     Invoice[]
+}
+
+model Plan {
+  id            String         @id @default(cuid())
+  name          String
+  description   String
+  price         Float
+  interval      String
+  active        Boolean        @default(true)
+  features      String[]
+  createdAt     DateTime       @default(now())
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id                 String    @id @default(cuid())
+  userId             String
+  planId             String
+  status             String    @default("pending")
+  startDate          DateTime?
+  endDate            DateTime?
+  servixSlug         String?   @unique
+  servixRestaurantId String?
+  redsysOrderId      String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  user               User      @relation(fields: [userId], references: [id])
+  plan               Plan      @relation(fields: [planId], references: [id])
+  invoices           Invoice[]
+}
+
+model Invoice {
+  id             String       @id @default(cuid())
+  userId         String
+  subscriptionId String
+  amount         Float
+  status         String       @default("pending")
+  redsysOrderId  String?      @unique
+  paidAt         DateTime?
+  createdAt      DateTime     @default(now())
+  user           User         @relation(fields: [userId], references: [id])
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+}
+
+model NewsletterSubscriber {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model RedsysConfig {
+  id           String @id @default(cuid())
+  merchantCode String
+  secretKey    String
+  terminal     String
+  currency     String @default("978")
+  environment  String @default("test")
+}
