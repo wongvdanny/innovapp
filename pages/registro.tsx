@@ -18,6 +18,10 @@ export default function Registro() {
   const [loading, setLoading] = useState(false)
   const [error, setError]   = useState('')
 
+  const goToCheckout = () => {
+    router.push('/checkout?plan=' + plan)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true); setError('')
@@ -86,7 +90,7 @@ export default function Registro() {
                   </div>
                 ))}
               </div>
-              <button onClick={() => setStep(2)} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={() => goToCheckout()} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
                 Continuar →
               </button>
               <p style={{ textAlign: 'center', marginTop: 16, fontSize: 13, color: '#88a8b0' }}>

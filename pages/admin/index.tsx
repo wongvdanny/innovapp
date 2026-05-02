@@ -2,15 +2,103 @@ import Head from 'next/head'
 import { GetServerSideProps } from 'next'
 import { getSession } from 'next-auth/react'
 import { prisma } from '../../lib/prisma'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 const ADMIN_EMAIL = 'wongvdanny@gmail.com'
 
 export default function Admin({ stats, subscriptions, plans, redsysConfig }: any) {
-  const [tab, setTab] = useState<'subs'|'plans'|'redsys'|'newsletter'>('subs')
-  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [tab, setTab] = useState<'subs'|'restaurants'|'plans'|'redsys'|'newsletter'>('subs')
   const [subList, setSubList] = useState(subscriptions)
+  const [actionId, setActionId] = useState<string | null>(null)
+  const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
+
+  const showMsg = (ok: boolean, text: string) => {
+    setMsg({ ok, text })
+    setTimeout(() => setMsg(null), 4000)
+  }
+
+  const cancelSub = async (s: any) => {
+    if (!confirm(`¿Anular la suscripción de ${s.user.name}? Se marcará como cancelada.`)) return
+    setActionId(s.id)
+    const res = await fetch('/api/admin/cancel-subscription', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subscriptionId: s.id }),
+    })
+    if (res.ok) {
+      setSubList((l: any[]) => l.map((x: any) => x.id === s.id ? { ...x, status: 'cancelled' } : x))
+      showMsg(true, 'Suscripción anulada correctamente')
+    } else {
+      showMsg(false, 'Error al anular la suscripción')
+    }
+    setActionId(null)
+  }
+
+  const activateSub = async (s: any) => {
+    if (!confirm(`¿Activar manualmente la suscripción de ${s.user.name}?`)) return
+    setActionId(s.id)
+    const res = await fetch('/api/admin/activate-subscription', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subscriptionId: s.id }),
+    })
+    if (res.ok) {
+      const data = await res.json()
+      setSubList((l: any[]) => l.map((x: any) => x.id === s.id ? { ...x, status: 'active', servixSlug: data.slug ?? x.servixSlug } : x))
+      showMsg(true, 'Suscripción activada y restaurante creado')
+    } else {
+      const err = await res.json().catch(() => ({}))
+      showMsg(false, err.error || 'Error al activar')
+    }
+    setActionId(null)
+  }
+
+  const deleteRestaurant = async (s: any) => {
+    if (!confirm(`¿Eliminar TODOS los datos del restaurante de ${s.user.name}? Esta acción es irreversible.`)) return
+    setActionId(s.id)
+    const res = await fetch('/api/admin/delete-restaurant', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subscriptionId: s.id }),
+    })
+    if (res.ok) {
+      setSubList((l: any[]) => l.map((x: any) => x.id === s.id ? { ...x, servixRestaurantId: null, servixSlug: null } : x))
+      showMsg(true, 'Restaurante eliminado correctamente')
+    } else {
+      showMsg(false, 'Error al eliminar el restaurante')
+    }
+    setActionId(null)
+  }
+
+  const deleteSub = async (s: any) => {
+    if (!confirm(`¿Eliminar completamente el registro de ${s.user.name}? Se borrará la suscripción de la BD.`)) return
+    setActionId(s.id)
+    const res = await fetch('/api/admin/delete-subscription', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ subscriptionId: s.id }),
+    })
+    if (res.ok) {
+      setSubList((l: any[]) => l.filter((x: any) => x.id !== s.id))
+      showMsg(true, 'Registro eliminado')
+    } else {
+      showMsg(false, 'Error al eliminar')
+    }
+    setActionId(null)
+  }
+
+  const STATUS_META: Record<string, { label: string; bg: string; color: string }> = {
+    active:    { label: 'Activa',    bg: '#f0fdf4', color: '#166534' },
+    pending:   { label: 'Pendiente', bg: '#fffbeb', color: '#92400e' },
+    cancelled: { label: 'Cancelada', bg: '#fff1f2', color: '#991b1b' },
+    expired:   { label: 'Expirada',  bg: '#fff1f2', color: '#991b1b' },
+  }
+
+  const btnBase: React.CSSProperties = {
+    padding: '5px 11px', borderRadius: 8, fontSize: 12, fontWeight: 700,
+    cursor: 'pointer', whiteSpace: 'nowrap', border: '1px solid',
+  }
 
   return (
     <>
@@ -27,13 +115,20 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
           <Link href="/dashboard" style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', fontWeight: 500 }}>← Mi cuenta</Link>
         </div>
 
+        {/* Mensaje global */}
+        {msg && (
+          <div style={{ margin: '16px 48px 0', maxWidth: 1200, background: msg.ok ? '#f0fdf4' : '#fff1f2', border: `1px solid ${msg.ok ? '#86efac' : '#fca5a5'}`, borderRadius: 12, padding: '12px 18px', fontSize: 14, fontWeight: 600, color: msg.ok ? '#166534' : '#991b1b' }}>
+            {msg.ok ? '✅' : '⚠️'} {msg.text}
+          </div>
+        )}
+
         {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, padding: '32px 48px 0', maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, padding: '24px 48px 0', maxWidth: 1200, margin: '0 auto' }}>
           {[
-            ['💳', 'Suscripciones activas', stats.active, '#f0fdf4', '#166534'],
-            ['⏳', 'Pendientes de pago',   stats.pending, '#fffbeb', '#92400e'],
-            ['❌', 'Canceladas',            stats.cancelled, '#fff1f2', '#991b1b'],
-            ['💰', 'MRR estimado',          `${stats.mrr}€`, '#eff6ff', '#1e40af'],
+            ['💳', 'Activas',          stats.active,    '#f0fdf4', '#166534'],
+            ['⏳', 'Pendientes pago',  stats.pending,   '#fffbeb', '#92400e'],
+            ['❌', 'Canceladas',       stats.cancelled, '#fff1f2', '#991b1b'],
+            ['💰', 'MRR estimado',     `${stats.mrr}€`, '#eff6ff', '#1e40af'],
           ].map(([icon, label, value, bg, color]) => (
             <div key={String(label)} style={{ background: 'white', borderRadius: 16, padding: '20px 24px', border: '1px solid #eef1f4', boxShadow: '0 2px 8px rgba(0,0,0,.04)' }}>
               <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
@@ -46,7 +141,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
         {/* Tabs */}
         <div style={{ padding: '24px 48px 0', maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ display: 'flex', gap: 4, background: 'white', border: '1px solid #eef1f4', borderRadius: 14, padding: 4, width: 'fit-content' }}>
-            {[['subs','👥 Suscriptores'],['plans','📦 Planes'],['redsys','💳 Redsys'],['newsletter','📧 Newsletter']].map(([key, label]) => (
+            {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['plans','📦 Planes'],['redsys','💳 Redsys'],['newsletter','📧 Newsletter']].map(([key, label]) => (
               <button key={key} onClick={() => setTab(key as any)}
                 style={{ padding: '8px 20px', borderRadius: 10, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                   background: tab === key ? 'linear-gradient(135deg,#2ab3aa,#1a6478)' : 'transparent',
@@ -63,8 +158,8 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
           {tab === 'subs' && (
             <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', overflow: 'hidden' }}>
               <div style={{ padding: '20px 24px', borderBottom: '1px solid #eef1f4', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533' }}>Todos los suscriptores</h3>
-                <span style={{ fontSize: 13, color: '#88a8b0' }}>{subscriptions.length} total</span>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533', margin: 0 }}>Todos los suscriptores</h3>
+                <span style={{ fontSize: 13, color: '#88a8b0' }}>{subList.length} registros</span>
               </div>
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
@@ -77,48 +172,91 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
                   </thead>
                   <tbody>
                     {subList.map((s: any) => {
-                      const statusColor: Record<string,string> = { active:'#166534', pending:'#92400e', cancelled:'#991b1b', expired:'#991b1b' }
-                      const statusBg: Record<string,string> = { active:'#f0fdf4', pending:'#fffbeb', cancelled:'#fff1f2', expired:'#fff1f2' }
-                      const statusLabel: Record<string,string> = { active:'Activa', pending:'Pendiente', cancelled:'Cancelada', expired:'Expirada' }
+                      const sm = STATUS_META[s.status] ?? { label: s.status, bg: '#f8fafb', color: '#88a8b0' }
+                      const isLoading = actionId === s.id
                       return (
                         <tr key={s.id} style={{ borderBottom: '1px solid #f0f4f6' }}>
                           <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 600, color: '#1a2533' }}>{s.user.name}</td>
                           <td style={{ padding: '14px 16px', fontSize: 13, color: '#88a8b0' }}>{s.user.email}</td>
-                          <td style={{ padding: '14px 16px', fontSize: 13, fontWeight: 600 }}>{s.plan.name} · {s.plan.price}€</td>
+                          <td style={{ padding: '14px 16px', fontSize: 13, fontWeight: 600, color: '#1a2533' }}>{s.plan.name} · {s.plan.price}€</td>
                           <td style={{ padding: '14px 16px' }}>
-                            <span style={{ background: statusBg[s.status], color: statusColor[s.status], borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>
-                              {statusLabel[s.status] || s.status}
+                            <span style={{ background: sm.bg, color: sm.color, borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>
+                              {sm.label}
                             </span>
                           </td>
-                          <td style={{ padding: '14px 16px', fontSize: 12, color: '#88a8b0' }} suppressHydrationWarning>{s.startDate ? new Date(s.startDate).toLocaleDateString('es-ES', { timeZone: 'Europe/Madrid' }) : '—'}</td>
-                          <td style={{ padding: '14px 16px', fontSize: 12, color: '#88a8b0' }} suppressHydrationWarning>{s.endDate ? new Date(s.endDate).toLocaleDateString('es-ES', { timeZone: 'Europe/Madrid' }) : '—'}</td>
-                          <td style={{ padding: '14px 16px', fontSize: 12, color: '#1a6478', fontWeight: 600 }}>{s.servixSlug || '—'}</td>
+                          <td style={{ padding: '14px 16px', fontSize: 12, color: '#88a8b0' }} suppressHydrationWarning>
+                            {s.startDate ? new Date(s.startDate).toLocaleDateString('es-ES') : '—'}
+                          </td>
+                          <td style={{ padding: '14px 16px', fontSize: 12, color: '#88a8b0' }} suppressHydrationWarning>
+                            {s.endDate ? new Date(s.endDate).toLocaleDateString('es-ES') : '—'}
+                          </td>
+                          <td style={{ padding: '14px 16px', fontSize: 12, color: '#1a6478', fontWeight: 600 }}>
+                            {s.servixSlug
+                              ? <a href={`https://servix.innovapp.es`} target="_blank" style={{ color: '#1a6478', textDecoration: 'none' }}>🌐 {s.servixSlug}</a>
+                              : <span style={{ color: '#dde3e8' }}>—</span>
+                            }
+                          </td>
                           <td style={{ padding: '14px 16px' }}>
-                            {s.servixRestaurantId && (s.status === 'cancelled' || s.status === 'expired') && (
-                              <button
-                                onClick={async () => {
-                                  if (!confirm(`¿Eliminar restaurante de ${s.user.name}? Esta acción es irreversible.`)) return
-                                  setDeletingId(s.id)
-                                  const res = await fetch('/api/admin/delete-restaurant', {
-                                    method: 'DELETE',
-                                    headers: { 'Content-Type': 'application/json' },
-                                    body: JSON.stringify({ subscriptionId: s.id })
-                                  })
-                                  if (res.ok) setSubList((l: any[]) => l.map((x: any) => x.id === s.id ? { ...x, servixRestaurantId: null, servixSlug: null, status: 'cancelled' } : x))
-                                  setDeletingId(null)
-                                }}
-                                disabled={deletingId === s.id}
-                                style={{ padding: '6px 14px', borderRadius: 8, border: '1px solid #fca5a5', background: '#fff1f2', color: '#991b1b', fontSize: 12, fontWeight: 700, cursor: 'pointer', whiteSpace: 'nowrap' }}>
-                                {deletingId === s.id ? '⏳' : '🗑️ Eliminar'}
-                              </button>
-                            )}
+                            <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                              {isLoading ? (
+                                <span style={{ fontSize: 13, color: '#88a8b0' }}>⏳ Procesando…</span>
+                              ) : (
+                                <>
+                                  {/* Pendiente → Anular o Activar manualmente */}
+                                  {s.status === 'pending' && (
+                                    <>
+                                      <button onClick={() => activateSub(s)}
+                                        style={{ ...btnBase, background: '#f0fdf4', color: '#166534', borderColor: '#86efac' }}>
+                                        ✅ Activar
+                                      </button>
+                                      <button onClick={() => cancelSub(s)}
+                                        style={{ ...btnBase, background: '#fffbeb', color: '#92400e', borderColor: '#fcd34d' }}>
+                                        🚫 Anular
+                                      </button>
+                                    </>
+                                  )}
+
+                                  {/* Activa → Cancelar */}
+                                  {s.status === 'active' && (
+                                    <button onClick={() => cancelSub(s)}
+                                      style={{ ...btnBase, background: '#fff1f2', color: '#991b1b', borderColor: '#fca5a5' }}>
+                                      ⏸ Cancelar
+                                    </button>
+                                  )}
+
+                                  {/* Cancelada/Expirada → Reactivar */}
+                                  {(s.status === 'cancelled' || s.status === 'expired') && (
+                                    <button onClick={() => activateSub(s)}
+                                      style={{ ...btnBase, background: '#f0fdf4', color: '#166534', borderColor: '#86efac' }}>
+                                      ▶ Reactivar
+                                    </button>
+                                  )}
+
+                                  {/* Si tiene restaurante en Servix → Eliminar restaurante */}
+                                  {s.servixRestaurantId && (
+                                    <button onClick={() => deleteRestaurant(s)}
+                                      style={{ ...btnBase, background: '#fff1f2', color: '#991b1b', borderColor: '#fca5a5' }}>
+                                      🗑️ Restaurante
+                                    </button>
+                                  )}
+
+                                  {/* Siempre → Eliminar registro */}
+                                  {(s.status === 'cancelled' || s.status === 'expired' || s.status === 'pending') && !s.servixRestaurantId && (
+                                    <button onClick={() => deleteSub(s)}
+                                      style={{ ...btnBase, background: '#f8fafb', color: '#88a8b0', borderColor: '#dde3e8' }}>
+                                      🗑️ Borrar
+                                    </button>
+                                  )}
+                                </>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       )
                     })}
                   </tbody>
                 </table>
-                {subscriptions.length === 0 && (
+                {subList.length === 0 && (
                   <div style={{ textAlign: 'center', padding: 48, color: '#88a8b0' }}>
                     <div style={{ fontSize: 40, marginBottom: 8 }}>👥</div>
                     <p>Aún no hay suscriptores</p>
@@ -128,15 +266,10 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
             </div>
           )}
 
-          {/* PLANES */}
-          {tab === 'plans' && <PlansTab plans={plans} />}
-
-          {/* REDSYS */}
-          {tab === 'redsys' && <RedsysTab config={redsysConfig} />}
-
-          {/* NEWSLETTER */}
+          {tab === 'restaurants' && <RestaurantsTab />}
+          {tab === 'plans'      && <PlansTab plans={plans} />}
+          {tab === 'redsys'     && <RedsysTab config={redsysConfig} />}
           {tab === 'newsletter' && <NewsletterTab />}
-
         </div>
       </div>
     </>
@@ -151,17 +284,16 @@ function PlansTab({ plans }: { plans: any[] }) {
   const [list, setList] = useState(plans)
 
   const openCreate = () => { setEditing(null); setForm({ name:'', description:'', price:0, interval:'monthly', features:'' }); setModal(true) }
-  const openEdit = (p: any) => { setEditing(p); setForm({ name:p.name, description:p.description, price:p.price, interval:p.interval, features:p.features.join('\n') }); setModal(true) }
+  const openEdit   = (p: any) => { setEditing(p); setForm({ name:p.name, description:p.description, price:p.price, interval:p.interval, features:p.features.join('\n') }); setModal(true) }
 
   const save = async () => {
     setSaving(true)
     const body = { ...form, features: form.features.split('\n').filter(Boolean) }
-    const url = editing ? `/api/admin/plans/${editing.id}` : '/api/admin/plans'
-    const method = editing ? 'PUT' : 'POST'
-    const res = await fetch(url, { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    const url  = editing ? `/api/admin/plans/${editing.id}` : '/api/admin/plans'
+    const res  = await fetch(url, { method: editing ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
     const saved = await res.json()
     if (editing) setList(l => l.map(p => p.id === saved.id ? saved : p))
-    else setList(l => [saved, ...l])
+    else         setList(l => [saved, ...l])
     setSaving(false); setModal(false)
   }
 
@@ -189,12 +321,12 @@ function PlansTab({ plans }: { plans: any[] }) {
               <span style={{ background: p.active ? '#f0fdf4' : '#f8fafb', color: p.active ? '#166534' : '#88a8b0', borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 700 }}>{p.active ? 'Activo' : 'Pausado'}</span>
             </div>
             <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 14 }}>{p.description}</p>
-            <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20 }}>
+            <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20 }}>
               {p.features.map((f: string) => <li key={f} style={{ fontSize: 12, color: '#4a6572', display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ color: '#2ab3aa', fontWeight: 700 }}>✓</span>{f}</li>)}
             </ul>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => openEdit(p)} style={{ flex: 1, padding: '8px', borderRadius: 8, border: '1px solid #eef1f4', background: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: '#1a2533' }}>✏️ Editar</button>
-              <button onClick={() => toggleActive(p)} style={{ flex: 1, padding: '8px', borderRadius: 8, border: '1px solid #eef1f4', background: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: p.active ? '#991b1b' : '#166534' }}>
+              <button onClick={() => openEdit(p)}     style={{ flex: 1, padding: 8, borderRadius: 8, border: '1px solid #eef1f4', background: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: '#1a2533' }}>✏️ Editar</button>
+              <button onClick={() => toggleActive(p)} style={{ flex: 1, padding: 8, borderRadius: 8, border: '1px solid #eef1f4', background: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: p.active ? '#991b1b' : '#166534' }}>
                 {p.active ? '⏸ Pausar' : '▶ Activar'}
               </button>
             </div>
@@ -207,7 +339,7 @@ function PlansTab({ plans }: { plans: any[] }) {
           <div style={{ background: 'white', borderRadius: 20, padding: 36, maxWidth: 480, width: '100%' }}>
             <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, color: '#1a2533' }}>{editing ? 'Editar plan' : 'Nuevo plan'}</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-              {[['Nombre', 'name', 'text', 'Ej: Mensual'],['Descripción', 'description', 'text', 'Ej: Sin permanencia'],['Precio (€)', 'price', 'number', '99']].map(([label, key, type, ph]) => (
+              {[['Nombre','name','text','Ej: Mensual'],['Descripción','description','text','Sin permanencia'],['Precio (€)','price','number','99']].map(([label, key, type, ph]) => (
                 <div key={key}>
                   <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>{label}</label>
                   <input style={inp} type={type} value={(form as any)[key]} onChange={e => setForm(f => ({ ...f, [key]: type === 'number' ? parseFloat(e.target.value) : e.target.value }))} placeholder={ph} />
@@ -222,7 +354,7 @@ function PlansTab({ plans }: { plans: any[] }) {
               </div>
               <div>
                 <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Características (una por línea)</label>
-                <textarea style={{ ...inp, minHeight: 100, resize: 'vertical' }} value={form.features} onChange={e => setForm(f => ({ ...f, features: e.target.value }))} placeholder="Mesas ilimitadas&#10;Carta QR&#10;Soporte email" />
+                <textarea style={{ ...inp, minHeight: 100, resize: 'vertical' }} value={form.features} onChange={e => setForm(f => ({ ...f, features: e.target.value }))} placeholder={'Mesas ilimitadas\nCarta QR\nSoporte email'} />
               </div>
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
@@ -239,13 +371,7 @@ function PlansTab({ plans }: { plans: any[] }) {
 }
 
 function RedsysTab({ config }: { config: any }) {
-  const [form, setForm] = useState({
-    merchantCode: config?.merchantCode || '',
-    secretKey:    config?.secretKey    || '',
-    terminal:     config?.terminal     || '001',
-    currency:     config?.currency     || '978',
-    environment:  config?.environment  || 'test',
-  })
+  const [form, setForm] = useState({ merchantCode: config?.merchantCode||'', secretKey: config?.secretKey||'', terminal: config?.terminal||'001', currency: config?.currency||'978', environment: config?.environment||'test' })
   const [saving, setSaving] = useState(false)
   const [saved, setSaved]   = useState(false)
 
@@ -269,20 +395,20 @@ function RedsysTab({ config }: { config: any }) {
             <option value="production">🚀 Producción (real)</option>
           </select>
         </div>
-        {[['Merchant Code (FUC)', 'merchantCode', '999008881'],['Secret Key', 'secretKey', 'sq7HjrUOBfKmC576ILgskD5srU870gJ7'],['Terminal', 'terminal', '001'],['Moneda (978 = EUR)', 'currency', '978']].map(([label, key, ph]) => (
+        {[['Merchant Code (FUC)','merchantCode','999008881'],['Secret Key','secretKey','sq7HjrUOBfKmC576ILgskD5srU870gJ7'],['Terminal','terminal','001'],['Moneda (978 = EUR)','currency','978']].map(([label,key,ph]) => (
           <div key={key}>
             <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>{label}</label>
             <input style={inp} value={(form as any)[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={ph} type={key === 'secretKey' ? 'password' : 'text'} />
           </div>
         ))}
-        {saved && <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#166534', fontWeight: 600 }}>✅ Configuración guardada</div>}
+        {saved && <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#166534', fontWeight: 600 }}>✅ Guardado correctamente</div>}
         <button onClick={save} disabled={saving} style={{ padding: 14, background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
           {saving ? '⏳ Guardando...' : '💾 Guardar configuración'}
         </button>
       </div>
       {form.environment === 'test' && (
         <div style={{ marginTop: 20, background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 12, padding: '14px 16px' }}>
-          <p style={{ fontSize: 12, color: '#92400e', fontWeight: 600 }}>⚠️ Modo TEST activo — Los pagos no son reales. Cambia a Producción cuando estés listo.</p>
+          <p style={{ margin: 0, fontSize: 12, color: '#92400e', fontWeight: 600 }}>⚠️ Modo TEST activo — los pagos no son reales.</p>
         </div>
       )}
     </div>
@@ -297,13 +423,10 @@ function NewsletterTab() {
   const [sending, setSending] = useState(false)
   const [sent, setSent] = useState(false)
 
-  const load = async () => {
-    const r = await fetch('/api/admin/newsletter')
-    const d = await r.json()
-    setSubs(d); setLoaded(true)
+  if (!loaded) {
+    fetch('/api/admin/newsletter').then(r => r.json()).then(d => { setSubs(d); setLoaded(true) })
+    return <div style={{ color: '#88a8b0', padding: 40 }}>Cargando...</div>
   }
-
-  if (!loaded) { load(); return <div style={{ color: '#88a8b0', padding: 40 }}>Cargando...</div> }
 
   const sendNewsletter = async () => {
     if (!subject || !body || !confirm(`¿Enviar a ${subs.filter(s=>s.active).length} suscriptores?`)) return
@@ -319,7 +442,7 @@ function NewsletterTab() {
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
       <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 28 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533' }}>Suscriptores</h3>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533' }}>Suscriptores newsletter</h3>
           <span style={{ background: '#f0f9f8', color: '#1a6478', borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{subs.filter(s=>s.active).length} activos</span>
         </div>
         <div style={{ maxHeight: 400, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
@@ -345,7 +468,7 @@ function NewsletterTab() {
           </div>
           {sent && <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#166534', fontWeight: 600 }}>✅ Newsletter enviada</div>}
           <button onClick={sendNewsletter} disabled={sending || !subject || !body}
-            style={{ padding: 14, background: sending || !subject || !body ? '#ccc' : 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+            style={{ padding: 14, background: sending||!subject||!body ? '#ccc' : 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
             {sending ? '⏳ Enviando...' : `📧 Enviar a ${subs.filter(s=>s.active).length} suscriptores`}
           </button>
         </div>
@@ -354,24 +477,167 @@ function NewsletterTab() {
   )
 }
 
+
+function RestaurantsTab() {
+  const [data, setData]       = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [period, setPeriod]   = useState('30d')
+  const [customFrom, setCustomFrom] = useState('')
+  const [customTo,   setCustomTo]   = useState('')
+
+  const load = async (from?: string, to?: string) => {
+    setLoading(true)
+    const params = new URLSearchParams()
+    if (from) params.set('from', from)
+    if (to)   params.set('to',   to)
+    const r = await fetch('/api/admin/restaurants?' + params.toString())
+    const d = await r.json()
+    setData(Array.isArray(d) ? d : [])
+    setLoading(false)
+  }
+
+  const applyPeriod = (p: string) => {
+    setPeriod(p)
+    const now  = new Date()
+    const from = new Date()
+    if (p === '30d')  from.setDate(now.getDate() - 30)
+    if (p === '6m')   from.setMonth(now.getMonth() - 6)
+    if (p === '1y')   from.setFullYear(now.getFullYear() - 1)
+    if (p !== 'custom') load(from.toISOString(), now.toISOString())
+  }
+
+  useEffect(() => { load() }, [])
+
+  const totalSales  = data.reduce((a, r) => a + r.totalSales, 0)
+  const totalOrders = data.reduce((a, r) => a + r.totalOrders, 0)
+
+  const inp = { padding: '8px 12px', borderRadius: 8, border: '1.5px solid #eef1f4', fontSize: 13, outline: 'none', fontFamily: 'Plus Jakarta Sans,sans-serif' }
+  const periodBtns = [['30d','30 días'],['6m','6 meses'],['1y','1 año'],['custom','Personalizado']]
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+      {/* Filtros periodo */}
+      <div style={{ background: 'white', borderRadius: 16, border: '1px solid #eef1f4', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#1a2533' }}>Periodo:</span>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {periodBtns.map(([key, label]) => (
+            <button key={key} onClick={() => applyPeriod(key)}
+              style={{ padding: '6px 16px', borderRadius: 8, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                background: period === key ? 'linear-gradient(135deg,#2ab3aa,#1a6478)' : '#f0f2f5',
+                color: period === key ? 'white' : '#4a6572' }}>
+              {label}
+            </button>
+          ))}
+        </div>
+        {period === 'custom' && (
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <input type="date" value={customFrom} onChange={e => setCustomFrom(e.target.value)} style={inp} />
+            <span style={{ color: '#88a8b0', fontSize: 13 }}>→</span>
+            <input type="date" value={customTo} onChange={e => setCustomTo(e.target.value)} style={inp} />
+            <button onClick={() => load(new Date(customFrom).toISOString(), new Date(customTo).toISOString())}
+              disabled={!customFrom || !customTo}
+              style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+              Aplicar
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* KPIs globales */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+        {[
+          ['🏪', 'Restaurantes activos', data.length],
+          ['🧾', 'Comandas en periodo',  totalOrders],
+          ['💶', 'Ventas en periodo',    totalSales.toFixed(2) + ' €'],
+        ].map(([icon, label, value]) => (
+          <div key={String(label)} style={{ background: 'white', borderRadius: 16, padding: '20px 24px', border: '1px solid #eef1f4', boxShadow: '0 2px 8px rgba(0,0,0,.04)' }}>
+            <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: '#1a2533', lineHeight: 1 }}>{value}</div>
+            <div style={{ fontSize: 13, color: '#88a8b0', marginTop: 4 }}>{label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Tabla restaurantes */}
+      <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', overflow: 'hidden' }}>
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid #eef1f4', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533', margin: 0 }}>Detalle por restaurante</h3>
+          {loading && <span style={{ fontSize: 13, color: '#88a8b0' }}>⏳ Cargando...</span>}
+        </div>
+        {loading ? (
+          <div style={{ padding: 48, textAlign: 'center', color: '#88a8b0' }}>Cargando datos...</div>
+        ) : data.length === 0 ? (
+          <div style={{ padding: 48, textAlign: 'center', color: '#88a8b0' }}>
+            <div style={{ fontSize: 40, marginBottom: 8 }}>🏪</div>
+            <p>No hay restaurantes activos</p>
+          </div>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ background: '#f8fafb' }}>
+                  {['Restaurante','Propietario','Plan','Vence','Mesas','Empleados','Comandas','Ventas'].map(h => (
+                    <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: '#88a8b0', textTransform: 'uppercase', letterSpacing: 1 }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {data.sort((a, b) => b.totalSales - a.totalSales).map((r: any) => (
+                  <tr key={r.id} style={{ borderBottom: '1px solid #f0f4f6' }}>
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1a2533' }}>{r.name}</div>
+                      <div style={{ fontSize: 11, color: '#88a8b0', marginTop: 2 }}>/{r.slug}</div>
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2533' }}>{r.owner}</div>
+                      <div style={{ fontSize: 11, color: '#88a8b0' }}>{r.email}</div>
+                    </td>
+                    <td style={{ padding: '14px 16px', fontSize: 13, fontWeight: 600, color: '#1a6478' }}>{r.plan}</td>
+                    <td style={{ padding: '14px 16px', fontSize: 12, color: '#88a8b0' }} suppressHydrationWarning>
+                      {r.endDate ? new Date(r.endDate).toLocaleDateString('es-ES') : '—'}
+                    </td>
+                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#1a3d4f', textAlign: 'center' }}>{r.tables}</td>
+                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#1a3d4f', textAlign: 'center' }}>{r.employees}</td>
+                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#1a3d4f', textAlign: 'center' }}>{r.totalOrders}</td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ fontSize: 15, fontWeight: 800, color: r.totalSales > 0 ? '#166534' : '#88a8b0' }}>
+                        {r.totalSales.toFixed(2)} €
+                      </div>
+                      {r.totalOrders > 0 && (
+                        <div style={{ fontSize: 11, color: '#88a8b0', marginTop: 2 }}>
+                          {(r.totalSales / r.totalOrders).toFixed(2)} € / comanda
+                        </div>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx)
-  if (!session?.user?.email || (session.user as any).role !== 'admin') {
+  if (!session?.user?.email || session.user.email !== ADMIN_EMAIL) {
     return { redirect: { destination: '/dashboard', permanent: false } }
   }
 
-  const [subscriptions, plans, redsysConfig, newsletter] = await Promise.all([
+  const [subscriptions, plans, redsysConfig] = await Promise.all([
     prisma.subscription.findMany({ include: { user: true, plan: true }, orderBy: { createdAt: 'desc' } }),
     prisma.plan.findMany({ orderBy: { createdAt: 'asc' } }),
     prisma.redsysConfig.findFirst(),
-    prisma.newsletterSubscriber.count({ where: { active: true } }),
   ])
 
   const active    = subscriptions.filter(s => s.status === 'active').length
   const pending   = subscriptions.filter(s => s.status === 'pending').length
-  const cancelled = subscriptions.filter(s => s.status === 'cancelled').length
+  const cancelled = subscriptions.filter(s => s.status === 'cancelled' || s.status === 'expired').length
   const mrr = subscriptions.filter(s => s.status === 'active').reduce((acc, s) => {
-    const price = (s.plan as any).price
+    const price    = (s.plan as any).price
     const interval = (s.plan as any).interval
     return acc + (interval === 'yearly' ? price / 12 : price)
   }, 0)
@@ -380,8 +646,8 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     props: {
       stats: { active, pending, cancelled, mrr: Math.round(mrr) },
       subscriptions: JSON.parse(JSON.stringify(subscriptions)),
-      plans: JSON.parse(JSON.stringify(plans)),
-      redsysConfig: redsysConfig ? JSON.parse(JSON.stringify(redsysConfig)) : null,
+      plans:         JSON.parse(JSON.stringify(plans)),
+      redsysConfig:  redsysConfig ? JSON.parse(JSON.stringify(redsysConfig)) : null,
     }
   }
 }
