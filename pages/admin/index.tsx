@@ -8,7 +8,7 @@ import Link from 'next/link'
 const ADMIN_EMAIL = 'wongvdanny@gmail.com'
 
 export default function Admin({ stats, subscriptions, plans, redsysConfig }: any) {
-  const [tab, setTab] = useState<'subs'|'restaurants'|'plans'|'redsys'|'newsletter'>('subs')
+  const [tab, setTab] = useState<'subs'|'restaurants'|'plans'|'redsys'|'newsletter'|'config'>('subs')
   const [subList, setSubList] = useState(subscriptions)
   const [actionId, setActionId] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
@@ -141,7 +141,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
         {/* Tabs */}
         <div style={{ padding: '24px 48px 0', maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ display: 'flex', gap: 4, background: 'white', border: '1px solid #eef1f4', borderRadius: 14, padding: 4, width: 'fit-content' }}>
-            {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['plans','📦 Planes'],['redsys','💳 Redsys'],['newsletter','📧 Newsletter']].map(([key, label]) => (
+            {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['plans','📦 Planes'],['redsys','💳 Redsys'],['newsletter','📧 Newsletter'],['config','⚙️ Configuración']].map(([key, label]) => (
               <button key={key} onClick={() => setTab(key as any)}
                 style={{ padding: '8px 20px', borderRadius: 10, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                   background: tab === key ? 'linear-gradient(135deg,#2ab3aa,#1a6478)' : 'transparent',
@@ -267,6 +267,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
           )}
 
           {tab === 'restaurants' && <RestaurantsTab />}
+          {tab === 'config'     && <ConfigTab />}
           {tab === 'plans'      && <PlansTab plans={plans} />}
           {tab === 'redsys'     && <RedsysTab config={redsysConfig} />}
           {tab === 'newsletter' && <NewsletterTab />}
@@ -620,6 +621,122 @@ function RestaurantsTab() {
     </div>
   )
 }
+
+
+function ConfigTab() {
+  const [logoPreview,    setLogoPreview]    = useState<string>('/logo.webp')
+  const [faviconPreview, setFaviconPreview] = useState<string>('/favicon.ico')
+  const [uploadingLogo,  setUploadingLogo]  = useState(false)
+  const [uploadingFav,   setUploadingFav]   = useState(false)
+  const [msg,            setMsg]            = useState<{ ok: boolean; text: string } | null>(null)
+
+  const showMsg = (ok: boolean, text: string) => {
+    setMsg({ ok, text }); setTimeout(() => setMsg(null), 4000)
+  }
+
+  const upload = async (file: File, type: 'logo' | 'favicon') => {
+    if (type === 'logo')    setUploadingLogo(true)
+    if (type === 'favicon') setUploadingFav(true)
+    const fd = new FormData()
+    fd.append('file', file)
+    fd.append('type', type)
+    const res = await fetch('/api/admin/upload/logo', { method: 'POST', body: fd })
+    const data = await res.json()
+    if (res.ok) {
+      if (type === 'logo')    setLogoPreview('/logo.webp?t=' + Date.now())
+      if (type === 'favicon') setFaviconPreview('/favicon.ico?t=' + Date.now())
+      showMsg(true, type === 'logo' ? 'Logo actualizado correctamente' : 'Favicon actualizado correctamente')
+    } else {
+      showMsg(false, data.error || 'Error al subir')
+    }
+    if (type === 'logo')    setUploadingLogo(false)
+    if (type === 'favicon') setUploadingFav(false)
+  }
+
+  const handleFile = (e: React.ChangeEvent<HTMLInputElement>, type: 'logo' | 'favicon') => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (file.size > 2 * 1024 * 1024) { showMsg(false, 'El archivo no puede superar 2MB'); return }
+    upload(file, type)
+    e.target.value = ''
+  }
+
+  const card: React.CSSProperties = { background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 32 }
+  const uploadArea: React.CSSProperties = { border: '2px dashed #d0eeec', borderRadius: 16, padding: '32px 24px', textAlign: 'center', cursor: 'pointer', background: '#f0f9f8', transition: 'all .2s' }
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+      <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533', margin: 0 }}>Configuración del sitio</h3>
+
+      {msg && (
+        <div style={{ background: msg.ok ? '#f0fdf4' : '#fff1f2', border: `1px solid ${msg.ok ? '#86efac' : '#fca5a5'}`, borderRadius: 12, padding: '12px 18px', fontSize: 14, fontWeight: 600, color: msg.ok ? '#166534' : '#991b1b' }}>
+          {msg.ok ? '✅' : '⚠️'} {msg.text}
+        </div>
+      )}
+
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
+
+        {/* Logo */}
+        <div style={card}>
+          <h4 style={{ fontSize: 16, fontWeight: 700, color: '#1a2533', marginBottom: 6 }}>Logo del sitio</h4>
+          <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 20 }}>Aparece en la navegación y emails. Recomendado: .webp o .png con fondo transparente.</p>
+
+          {/* Preview */}
+          <div style={{ background: '#1a2533', borderRadius: 12, padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, minHeight: 80 }}>
+            <img src={logoPreview} alt="Logo actual" style={{ maxHeight: 40, maxWidth: '100%', objectFit: 'contain' }} onError={() => setLogoPreview('/logo.webp')} />
+          </div>
+
+          <label style={uploadArea}>
+            <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => handleFile(e, 'logo')} />
+            {uploadingLogo ? (
+              <div style={{ color: '#2ab3aa', fontWeight: 600 }}>⏳ Subiendo...</div>
+            ) : (
+              <>
+                <div style={{ fontSize: 32, marginBottom: 8 }}>🖼️</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#1a6478', marginBottom: 4 }}>Haz clic para subir nuevo logo</div>
+                <div style={{ fontSize: 12, color: '#88a8b0' }}>PNG, WEBP, SVG · Máx 2MB</div>
+              </>
+            )}
+          </label>
+        </div>
+
+        {/* Favicon */}
+        <div style={card}>
+          <h4 style={{ fontSize: 16, fontWeight: 700, color: '#1a2533', marginBottom: 6 }}>Favicon</h4>
+          <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 20 }}>Icono que aparece en la pestaña del navegador. Recomendado: .ico o .png de 32×32px.</p>
+
+          {/* Preview */}
+          <div style={{ background: '#f8fafb', borderRadius: 12, padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, minHeight: 80, border: '1px solid #eef1f4' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <img src={faviconPreview} alt="Favicon actual" style={{ width: 32, height: 32, objectFit: 'contain' }} onError={() => setFaviconPreview('/favicon.ico')} />
+              <span style={{ fontSize: 13, color: '#88a8b0' }}>innovapp.es</span>
+            </div>
+          </div>
+
+          <label style={uploadArea}>
+            <input type="file" accept="image/*,.ico" style={{ display: 'none' }} onChange={e => handleFile(e, 'favicon')} />
+            {uploadingFav ? (
+              <div style={{ color: '#2ab3aa', fontWeight: 600 }}>⏳ Subiendo...</div>
+            ) : (
+              <>
+                <div style={{ fontSize: 32, marginBottom: 8 }}>🌐</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#1a6478', marginBottom: 4 }}>Haz clic para subir nuevo favicon</div>
+                <div style={{ fontSize: 12, color: '#88a8b0' }}>ICO, PNG · 32×32px · Máx 2MB</div>
+              </>
+            )}
+          </label>
+        </div>
+      </div>
+
+      <div style={{ background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 12, padding: '14px 18px' }}>
+        <p style={{ margin: 0, fontSize: 13, color: '#92400e', fontWeight: 500 }}>
+          ⚠️ Los cambios de logo y favicon pueden tardar unos segundos en reflejarse debido a la caché del navegador. Si no ves el cambio, recarga con <strong>Ctrl+F5</strong>.
+        </p>
+      </div>
+    </div>
+  )
+}
+
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx)
