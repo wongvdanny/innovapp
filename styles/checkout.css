@@ -1,0 +1,94 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+.co-root {
+  min-height: 100vh;
+  background: #f8fafb;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  display: flex;
+  flex-direction: column;
+}
+
+.co-header {
+  background: white;
+  border-bottom: 1px solid #eef1f4;
+  padding: 14px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.co-logo { height: 26px; flex-shrink: 0; display: block; }
+.co-steps { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.co-step-row { display: flex; align-items: center; gap: 6px; }
+.co-step-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 700; flex-shrink: 0;
+}
+.co-step-label { font-size: 13px; font-weight: 600; }
+.co-step-line { width: 32px; height: 2px; border-radius: 2px; margin-left: 4px; flex-shrink: 0; }
+.co-back { font-size: 13px; color: #88a8b0; text-decoration: none; white-space: nowrap; flex-shrink: 0; }
+
+.co-main {
+  flex: 1;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  grid-template-rows: auto;
+  gap: 32px;
+  padding: 40px;
+  max-width: 1100px;
+  margin: 0 auto;
+  width: 100%;
+  align-items: start;
+}
+
+.co-card {
+  background: white;
+  border-radius: 20px;
+  border: 1px solid #eef1f4;
+  padding: 36px 40px;
+}
+
+.co-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.co-sidebar { display: flex; flex-direction: column; gap: 16px; }
+
+.co-footer {
+  border-top: 1px solid #eef1f4;
+  padding: 20px 40px;
+  background: white;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+.co-footer a { font-size: 12px; color: #88a8b0; text-decoration: none; }
+
+@media (max-width: 860px) {
+  .co-header { padding: 12px 24px; }
+  .co-main { grid-template-columns: 1fr; padding: 24px 20px; gap: 20px; }
+  .co-sidebar { order: -1; }
+  .co-card { padding: 28px 24px; }
+  .co-footer { padding: 16px 24px; }
+}
+
+@media (max-width: 540px) {
+  .co-header { padding: 10px 16px; gap: 8px; }
+  .co-step-label { display: none; }
+  .co-step-line { width: 16px; margin-left: 2px; }
+  .co-step-dot { width: 26px; height: 26px; }
+  .co-back { font-size: 11px; }
+  .co-logo { height: 20px; }
+  .co-main { padding: 14px 14px 24px; gap: 14px; }
+  .co-card { padding: 20px 16px; border-radius: 16px; }
+  .co-row { grid-template-columns: 1fr; }
+  .co-footer { gap: 12px; padding: 14px 16px; }
+  .co-footer a { font-size: 11px; }
+}

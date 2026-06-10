@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
-import { authOptions } from '../auth/[...nextauth]'
+import { authOptions } from '../../../lib/authOptions'
 import { prisma } from '../../../lib/prisma'
-import { PrismaClient } from '@prisma/client'
+import { PrismaClient } from '/var/www/servix/node_modules/.prisma/client'
 
 const servixPrisma = new PrismaClient({ datasources: { db: { url: process.env.SERVIX_DB_URL } } })
 

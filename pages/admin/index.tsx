@@ -112,7 +112,28 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
             <div style={{ width: 1, height: 24, background: 'rgba(255,255,255,.15)' }} />
             <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,.6)', letterSpacing: 1, textTransform: 'uppercase' }}>Panel Admin</span>
           </div>
-          <Link href="/dashboard" style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', fontWeight: 500 }}>← Mi cuenta</Link>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <a
+              href="https://db.servix.innovapp.es"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex', alignItems: 'center', gap: 7,
+                background: 'rgba(42,179,170,.18)',
+                border: '1px solid rgba(42,179,170,.4)',
+                color: '#7ee8e4',
+                fontSize: 13, fontWeight: 600,
+                padding: '7px 14px',
+                borderRadius: 8,
+                textDecoration: 'none',
+              }}
+              onMouseOver={e => (e.currentTarget.style.background = 'rgba(42,179,170,.32)')}
+              onMouseOut={e => (e.currentTarget.style.background = 'rgba(42,179,170,.18)')}
+            >
+              🗄️ Gestor BD Servix
+            </a>
+            <Link href="/dashboard" style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', fontWeight: 500 }}>← Mi cuenta</Link>
+          </div>
         </div>
 
         {/* Mensaje global */}

@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { prisma } from '../../../../lib/prisma'
+import { authOptions } from '../../../../lib/authOptions'
 import { Resend } from 'resend'
 
 const ADMIN_EMAIL = 'wongvdanny@gmail.com'

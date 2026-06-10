@@ -57,10 +57,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const baseUrl = process.env.NEXTAUTH_URL || 'https://innovapp.es'
     const form = createRedirectForm({
       DS_MERCHANT_MERCHANTCODE:       config.merchantCode,
-      DS_MERCHANT_TERMINAL:           config.terminal,
+      DS_MERCHANT_TERMINAL:           String(config.terminal).padStart(3,'0'),
       DS_MERCHANT_TRANSACTIONTYPE:    '0',
       DS_MERCHANT_AMOUNT:             String(Math.round(plan.price * 100)),
-      DS_MERCHANT_CURRENCY:           config.currency || '978',
+      DS_MERCHANT_CURRENCY:           (config.currency || '978') as any,
       DS_MERCHANT_ORDER:              redsysOrderId,
       DS_MERCHANT_MERCHANTURL:        `${baseUrl}/api/redsys/notify`,
       DS_MERCHANT_URLOK:              `${baseUrl}/bienvenida?sub=${sub.id}`,

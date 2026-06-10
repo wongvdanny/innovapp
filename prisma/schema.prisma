@@ -8,15 +8,15 @@ datasource db {
 }
 
 model User {
-  id           String        @id @default(cuid())
-  name         String
-  email        String        @unique
-  password     String
-  phone        String?
-  role         String        @default("customer")
-  createdAt    DateTime      @default(now())
+  id            String         @id @default(cuid())
+  name          String
+  email         String         @unique
+  password      String
+  phone         String?
+  createdAt     DateTime       @default(now())
+  role          String         @default("customer")
+  invoices      Invoice[]
   subscriptions Subscription[]
-  invoices     Invoice[]
 }
 
 model Plan {
@@ -40,13 +40,14 @@ model Subscription {
   endDate            DateTime?
   servixSlug         String?   @unique
   servixRestaurantId String?
-  billingData        String?   // JSON con datos de facturación
   redsysOrderId      String?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
-  user               User      @relation(fields: [userId], references: [id])
-  plan               Plan      @relation(fields: [planId], references: [id])
+  billingData        String?
+  type               String    @default("PRO_MONTHLY")
   invoices           Invoice[]
+  plan               Plan      @relation(fields: [planId], references: [id])
+  user               User      @relation(fields: [userId], references: [id])
 }
 
 model Invoice {
@@ -58,8 +59,8 @@ model Invoice {
   redsysOrderId  String?      @unique
   paidAt         DateTime?
   createdAt      DateTime     @default(now())
-  user           User         @relation(fields: [userId], references: [id])
   subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  user           User         @relation(fields: [userId], references: [id])
 }
 
 model NewsletterSubscriber {
