@@ -97,7 +97,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Enviar email completo
     try {
-      await sendWelcomeEmail(user.email, user.name, (plan as any).name, (plan as any).price, (plan as any).interval, slug, billing)
+      await sendWelcomeEmail(user.email, user.name, (plan as any).name, (plan as any).price, (plan as any).interval, slug, billing, product?.slug || 'servix')
     } catch (e: any) {
       console.error('Error email:', e.message)
     }
