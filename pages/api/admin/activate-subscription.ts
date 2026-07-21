@@ -1,24 +1,21 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../../lib/authOptions'
+import { isAdmin } from '../../../lib/isAdmin'
 import { prisma } from '../../../lib/prisma'
-import { PrismaClient } from '/var/www/servix/node_modules/.prisma/client'
-
-const servixPrisma = new PrismaClient({ datasources: { db: { url: process.env.SERVIX_DB_URL } } })
-
-function generateSlug(name: string) {
-  return name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'').slice(0,40) + '-' + Date.now().toString(36)
-}
+import { createServixTenant } from '../../../lib/provisioning/servix'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
   const session = await getServerSession(req, res, authOptions)
-  if (session?.user?.email !== 'wongvdanny@gmail.com') return res.status(403).json({ error: 'No autorizado' })
+  if (!isAdmin(session)) return res.status(403).json({ error: 'No autorizado' })
   const { subscriptionId } = req.body
   if (!subscriptionId) return res.status(400).json({ error: 'Falta subscriptionId' })
 
-  const sub = await prisma.subscription.findUnique({ where: { id: subscriptionId }, include: { user: true, plan: true } })
+  const sub = await prisma.subscription.findUnique({
+    where: { id: subscriptionId },
+    include: { user: true, plan: true, provisioning: true },
+  })
   if (!sub) return res.status(404).json({ error: 'No encontrada' })
 
   const startDate = new Date()
@@ -28,27 +25,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   await prisma.subscription.update({ where: { id: subscriptionId }, data: { status: 'active', startDate, endDate } })
 
-  let slug = (sub as any).servixSlug
+  let slug = sub.servixSlug
 
-  if (!(sub as any).servixRestaurantId) {
+  if (!sub.provisioning && !sub.servixRestaurantId) {
     try {
-      let servixUser = await servixPrisma.user.findUnique({ where: { email: sub.user.email } })
-      if (!servixUser) {
-        servixUser = await servixPrisma.user.create({
-          data: { id: 'usr-' + Date.now(), name: sub.user.name, email: sub.user.email, password: sub.user.password }
-        })
+      let productId = sub.productId
+      if (!productId) {
+        const servixProduct = await prisma.product.findUnique({ where: { slug: 'servix' } })
+        productId = servixProduct?.id ?? null
       }
-      slug = generateSlug(sub.user.name + ' restaurante')
-      const restaurant = await servixPrisma.restaurant.create({
-        data: { name: 'Restaurante de ' + sub.user.name, slug, ownerId: servixUser.id }
+
+      const { restaurantId, slug: newSlug } = await createServixTenant({
+        name: sub.user.name,
+        email: sub.user.email,
+        passwordHash: sub.user.password,
       })
-      const pin = String(Math.floor(1000 + Math.random() * 9000))
-      await servixPrisma.employee.create({
-        data: { name: sub.user.name, email: sub.user.email, role: 'admin', pin, restaurantId: restaurant.id }
-      })
+      slug = newSlug
+
       await prisma.subscription.update({
         where: { id: subscriptionId },
-        data: { servixRestaurantId: restaurant.id, servixSlug: slug } as any
+        data: {
+          servixRestaurantId: restaurantId,
+          servixSlug: newSlug,
+          ...(productId ? { productId } : {}),
+          provisioning: {
+            create: { externalId: restaurantId, slug: newSlug, status: 'active' },
+          },
+        },
       })
     } catch (e: any) {
       console.error('Error creando restaurante:', e.message)

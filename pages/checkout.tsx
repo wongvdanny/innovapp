@@ -1,26 +1,61 @@
 import Head from 'next/head'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 
-const PLANS: Record<string, { name: string; price: number; interval: string; features: string[] }> = {
-  plan_monthly: { name: 'Plan Mensual', price: 99,  interval: 'mes',  features: ['Mesas y zonas ilimitadas','Carta QR','Pantalla de cocina','Pagos con Redsys','Informes y estadísticas','Soporte por email'] },
-  plan_yearly:  { name: 'Plan Anual',   price: 990, interval: 'año',  features: ['Todo lo del plan mensual','2 meses gratis','Soporte prioritario','Onboarding personalizado'] },
-}
-
 const STEPS = ['Datos','Facturación','Confirmar']
+
+const LABELS_BY_PRODUCT: Record<string, { entity: string; entityLabel: string; entityPlaceholder: string; features: string[] }> = {
+  servix: {
+    entity: 'restaurante',
+    entityLabel: 'Nombre del restaurante',
+    entityPlaceholder: 'Bar El Rincón, Restaurante Casa María...',
+    features: ['Mesas y zonas ilimitadas','Carta QR','Pantalla de cocina','Pagos con Redsys','Informes y estadísticas','Soporte por email'],
+  },
+  gymstack: {
+    entity: 'gimnasio',
+    entityLabel: 'Nombre del gimnasio',
+    entityPlaceholder: 'GymStack Centro, Box Fitness...',
+    features: ['Gestión de socios','Reservas de clases','Control de accesos','Rutinas y seguimiento','Informes y estadísticas','Soporte por email'],
+  },
+}
+const DEFAULT_LABELS = {
+  entity: 'negocio',
+  entityLabel: 'Nombre del negocio',
+  entityPlaceholder: 'Nombre de tu negocio',
+  features: ['Acceso completo a la plataforma','Soporte por email'],
+}
 
 export default function Checkout() {
   const router = useRouter()
-  const planId = (router.query.plan as string) || 'plan_monthly'
-  const plan   = PLANS[planId] ?? PLANS.plan_monthly
+  const planId = router.query.plan as string | undefined
+
+  const [planLoading, setPlanLoading] = useState(true)
+  const [planError, setPlanError]     = useState('')
+  const [plan, setPlan]       = useState<{ id: string; name: string; price: number; interval: string } | null>(null)
+  const [product, setProduct] = useState<{ slug: string; name: string } | null>(null)
+
+  useEffect(() => {
+    if (!router.isReady) return
+    if (!planId) { setPlanError('No se ha especificado ningún plan.'); setPlanLoading(false); return }
+    fetch(`/api/plans/by-id/${planId}`)
+      .then(async r => {
+        const data = await r.json()
+        if (!r.ok) throw new Error(data.error || 'Plan no encontrado')
+        setPlan(data.plan); setProduct(data.product)
+      })
+      .catch(e => setPlanError(e.message))
+      .finally(() => setPlanLoading(false))
+  }, [router.isReady, planId])
+
+  const labels = (product && LABELS_BY_PRODUCT[product.slug]) || DEFAULT_LABELS
 
   const [step, setStep]       = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState('')
 
   const [form, setForm] = useState({
-    name: '', restaurantName: '', email: '', password: '', phone: '',
+    name: '', entityName: '', email: '', password: '', phone: '',
     company: '', nif: '',
     address: '', city: '', zip: '', country: 'España',
     acceptPrivacy: false, acceptTerms: false,
@@ -38,7 +73,7 @@ export default function Checkout() {
 
   const validateStep0 = () => {
     if (!form.name.trim())  return 'Introduce tu nombre completo'
-    if (!form.restaurantName.trim()) return 'Introduce el nombre del restaurante'
+    if (!form.entityName.trim()) return `Introduce el nombre del ${labels.entity}`
     if (!form.email.trim() || !form.email.includes('@')) return 'Email no válido'
     if (form.password.length < 6) return 'La contraseña debe tener al menos 6 caracteres'
     return ''
@@ -73,7 +108,7 @@ export default function Checkout() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          name: form.name, restaurantName: form.restaurantName,
+          name: form.name, entityName: form.entityName,
           email: form.email, password: form.password, phone: form.phone,
           planId,
           billing: { company: form.company, nif: form.nif, address: form.address, city: form.city, zip: form.zip, country: form.country },
@@ -90,10 +125,25 @@ export default function Checkout() {
     } catch (e: any) { setError(e.message); setLoading(false) }
   }
 
+  if (planLoading) {
+    return <div style={{ padding: 60, textAlign: 'center', fontFamily: 'sans-serif', color: '#88a8b0' }}>Cargando plan...</div>
+  }
+  if (planError || !plan) {
+    return (
+      <div style={{ padding: 60, textAlign: 'center', fontFamily: 'sans-serif' }}>
+        <p style={{ color: '#991b1b', fontWeight: 600, marginBottom: 16 }}>⚠️ {planError || 'Plan no encontrado'}</p>
+        <Link href="/" style={{ color: '#2ab3aa' }}>← Volver al inicio</Link>
+      </div>
+    )
+  }
+
+  const productName = product?.name || 'innovapp'
+  const intervalLabel = plan.interval === 'monthly' ? 'mes' : plan.interval === 'yearly' ? 'año' : plan.interval
+
   return (
     <>
       <Head>
-        <title>Checkout — Servix</title>
+        <title>Checkout — {productName}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
@@ -134,25 +184,25 @@ export default function Checkout() {
             {step === 0 && (
               <>
                 <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1a2533', marginBottom: 6 }}>Tus datos de acceso</h2>
-                <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Con estos datos accederás a Servix y a tu cuenta.</p>
+                <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Con estos datos accederás a {productName} y a tu cuenta.</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <div>
                     <label style={lbl}>Nombre completo *</label>
                     <input style={inp} placeholder="María García López" value={form.name} onChange={e => set('name', e.target.value)} />
                   </div>
                   <div>
-                    <label style={lbl}>Nombre del restaurante *</label>
-                    <input style={inp} placeholder="Bar El Rincón, Restaurante Casa María..." value={form.restaurantName} onChange={e => set('restaurantName', e.target.value)} />
+                    <label style={lbl}>{labels.entityLabel} *</label>
+                    <input style={inp} placeholder={labels.entityPlaceholder} value={form.entityName} onChange={e => set('entityName', e.target.value)} />
                     <p style={{ fontSize: 12, color: '#88a8b0', marginTop: 6 }}>Este será el nombre que verán tus clientes y empleados.</p>
                   </div>
                   <div>
                     <label style={lbl}>Email *</label>
-                    <input style={inp} type="email" placeholder="maria@restaurante.com" value={form.email} onChange={e => set('email', e.target.value)} />
+                    <input style={inp} type="email" placeholder="maria@ejemplo.com" value={form.email} onChange={e => set('email', e.target.value)} />
                   </div>
                   <div>
                     <label style={lbl}>Contraseña *</label>
                     <input style={inp} type="password" placeholder="Mínimo 6 caracteres" value={form.password} onChange={e => set('password', e.target.value)} />
-                    <p style={{ fontSize: 12, color: '#88a8b0', marginTop: 6 }}>Esta será también la contraseña de tu cuenta en Servix.</p>
+                    <p style={{ fontSize: 12, color: '#88a8b0', marginTop: 6 }}>Esta será también la contraseña de tu cuenta.</p>
                   </div>
                   <div>
                     <label style={lbl}>Teléfono (opcional)</label>
@@ -171,7 +221,7 @@ export default function Checkout() {
                   <div className="co-row">
                     <div>
                       <label style={lbl}>Empresa (opcional)</label>
-                      <input style={inp} placeholder="Mi Restaurante S.L." value={form.company} onChange={e => set('company', e.target.value)} />
+                      <input style={inp} placeholder="Mi Empresa S.L." value={form.company} onChange={e => set('company', e.target.value)} />
                     </div>
                     <div>
                       <label style={lbl}>NIF / CIF (opcional)</label>
@@ -211,7 +261,7 @@ export default function Checkout() {
                 <div style={{ background: '#f8fafb', borderRadius: 14, padding: 20, marginBottom: 20, border: '1px solid #eef1f4' }}>
                   <div style={{ fontSize: 12, fontWeight: 700, color: '#88a8b0', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>Tus datos</div>
                   {[
-                    ['Nombre', form.name], ['Restaurante', form.restaurantName],
+                    ['Nombre', form.name], [labels.entityLabel, form.entityName],
                     ['Email', form.email], ['Teléfono', form.phone || '—'],
                     ['Dirección', `${form.address}, ${form.zip} ${form.city}, ${form.country}`],
                     ...(form.company ? [['Empresa', form.company]] : []),
@@ -285,17 +335,13 @@ export default function Checkout() {
           <div className="co-sidebar">
             <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 28 }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#88a8b0', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16 }}>Resumen del pedido</div>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#2ab3aa', marginBottom: 2 }}>{productName}</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: '#1a2533', marginBottom: 4 }}>{plan.name}</div>
               <div style={{ fontSize: 32, fontWeight: 800, color: '#1a6478', marginBottom: 4 }}>
-                {plan.price}€ <span style={{ fontSize: 14, fontWeight: 500, color: '#88a8b0' }}>/ {plan.interval}</span>
+                {plan.price}€ <span style={{ fontSize: 14, fontWeight: 500, color: '#88a8b0' }}>/ {intervalLabel}</span>
               </div>
-              {planId === 'plan_yearly' && (
-                <div style={{ fontSize: 12, color: '#d97706', fontWeight: 600, background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 8, padding: '5px 10px', marginBottom: 16, display: 'inline-block' }}>
-                  ⭐ Ahorras 198€ vs mensual
-                </div>
-              )}
               <div style={{ borderTop: '1px solid #eef1f4', paddingTop: 16, marginTop: 16 }}>
-                {plan.features.map(f => (
+                {labels.features.map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0', fontSize: 13, color: '#4a6572' }}>
                     <span style={{ color: '#2ab3aa', fontWeight: 700, flexShrink: 0 }}>✓</span> {f}
                   </div>
@@ -308,7 +354,7 @@ export default function Checkout() {
             </div>
 
             <div style={{ background: '#f0f9f8', borderRadius: 16, border: '1px solid #d0eeec', padding: 20 }}>
-              {[['🔒','Pago seguro con Redsys'],['↩','Cancela cuando quieras'],['📧','Soporte por email incluido'],['⚡','Acceso inmediato tras el pago']].map(([icon, text]) => (
+              {[['🔒','Pago seguro con Redsys'],['↩','Cancela cuando quieras'],['📧','Soporte por email incluido'],['⚡','Acceso inmediato tras el pago']].map(([icon, text])=> (
                 <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 13, color: '#1a6478', fontWeight: 500 }}>
                   <span>{icon}</span><span>{text}</span>
                 </div>
@@ -316,7 +362,7 @@ export default function Checkout() {
             </div>
 
             <div style={{ fontSize: 12, color: '#88a8b0', textAlign: 'center', lineHeight: 1.6 }}>
-              Al finalizar recibirás un email con todos los datos de acceso a tu restaurante.
+              Al finalizar recibirás un email con todos los datos de acceso.
             </div>
           </div>
         </div>
