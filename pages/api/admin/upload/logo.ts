@@ -1,18 +1,18 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../../../lib/authOptions'
+import { isAdmin } from '../../../../lib/isAdmin'
 import formidable from 'formidable'
 import fs from 'fs'
 import path from 'path'
 
 export const config = { api: { bodyParser: false } }
 
-const ADMIN_EMAIL = 'wongvdanny@gmail.com'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
   const session = await getServerSession(req, res, authOptions)
-  if (session?.user?.email !== ADMIN_EMAIL) return res.status(403).json({ error: 'No autorizado' })
+  if (!isAdmin(session)) return res.status(403).json({ error: 'No autorizado' })
 
   const form = formidable({ maxFileSize: 2 * 1024 * 1024 })
   form.parse(req, async (err, fields, files) => {

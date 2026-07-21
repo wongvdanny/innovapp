@@ -1,11 +1,11 @@
 import Head from 'next/head'
 import { GetServerSideProps } from 'next'
 import { getSession } from 'next-auth/react'
+import { isAdmin } from '../../lib/isAdmin'
 import { prisma } from '../../lib/prisma'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
-const ADMIN_EMAIL = 'wongvdanny@gmail.com'
 
 export default function Admin({ stats, subscriptions, plans, redsysConfig }: any) {
   const [tab, setTab] = useState<'subs'|'restaurants'|'plans'|'redsys'|'newsletter'|'config'>('subs')
@@ -212,8 +212,8 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
                             {s.endDate ? new Date(s.endDate).toLocaleDateString('es-ES') : '—'}
                           </td>
                           <td style={{ padding: '14px 16px', fontSize: 12, color: '#1a6478', fontWeight: 600 }}>
-                            {s.servixSlug
-                              ? <a href={`https://servix.innovapp.es`} target="_blank" style={{ color: '#1a6478', textDecoration: 'none' }}>🌐 {s.servixSlug}</a>
+                            {(s.provisioning?.slug || s.servixSlug)
+                              ? <a href={`https://servix.innovapp.es`} target="_blank" style={{ color: '#1a6478', textDecoration: 'none' }}>🌐 {s.provisioning?.slug || s.servixSlug}</a>
                               : <span style={{ color: '#dde3e8' }}>—</span>
                             }
                           </td>
@@ -254,7 +254,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
                                   )}
 
                                   {/* Si tiene restaurante en Servix → Eliminar restaurante */}
-                                  {s.servixRestaurantId && (
+                                  {(s.provisioning?.externalId || s.servixRestaurantId) && (
                                     <button onClick={() => deleteRestaurant(s)}
                                       style={{ ...btnBase, background: '#fff1f2', color: '#991b1b', borderColor: '#fca5a5' }}>
                                       🗑️ Restaurante
@@ -262,7 +262,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
                                   )}
 
                                   {/* Siempre → Eliminar registro */}
-                                  {(s.status === 'cancelled' || s.status === 'expired' || s.status === 'pending') && !s.servixRestaurantId && (
+                                  {(s.status === 'cancelled' || s.status === 'expired' || s.status === 'pending') && !(s.provisioning?.externalId || s.servixRestaurantId) && (
                                     <button onClick={() => deleteSub(s)}
                                       style={{ ...btnBase, background: '#f8fafb', color: '#88a8b0', borderColor: '#dde3e8' }}>
                                       🗑️ Borrar
@@ -393,13 +393,16 @@ function PlansTab({ plans }: { plans: any[] }) {
 }
 
 function RedsysTab({ config }: { config: any }) {
-  const [form, setForm] = useState({ merchantCode: config?.merchantCode||'', secretKey: config?.secretKey||'', terminal: config?.terminal||'001', currency: config?.currency||'978', environment: config?.environment||'test' })
+  const [form, setForm] = useState({ merchantCode: config?.merchantCode||'', secretKey: '', terminal: config?.terminal||'001', currency: config?.currency||'978', environment: config?.environment||'test' })
+  const hasSecretKey = !!config?.hasSecretKey
   const [saving, setSaving] = useState(false)
   const [saved, setSaved]   = useState(false)
 
   const save = async () => {
     setSaving(true)
-    await fetch('/api/admin/redsys', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
+    const { secretKey, ...rest } = form
+    const body = secretKey.trim() ? form : rest
+    await fetch('/api/admin/redsys', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
     setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 3000)
   }
 
@@ -417,12 +420,24 @@ function RedsysTab({ config }: { config: any }) {
             <option value="production">🚀 Producción (real)</option>
           </select>
         </div>
-        {[['Merchant Code (FUC)','merchantCode','999008881'],['Secret Key','secretKey','sq7HjrUOBfKmC576ILgskD5srU870gJ7'],['Terminal','terminal','001'],['Moneda (978 = EUR)','currency','978']].map(([label,key,ph]) => (
+        {[['Merchant Code (FUC)','merchantCode','999008881'],['Terminal','terminal','001'],['Moneda (978 = EUR)','currency','978']].map(([label,key,ph]) => (
           <div key={key}>
             <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>{label}</label>
-            <input style={inp} value={(form as any)[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={ph} type={key === 'secretKey' ? 'password' : 'text'} />
+            <input style={inp} value={(form as any)[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={ph} />
           </div>
         ))}
+        <div>
+          <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>
+            Secret Key {hasSecretKey && <span style={{ color: '#166534', fontWeight: 700 }}>· configurada ✓</span>}
+          </label>
+          <input
+            style={inp}
+            type="password"
+            value={form.secretKey}
+            onChange={e => setForm(f => ({ ...f, secretKey: e.target.value }))}
+            placeholder={hasSecretKey ? 'Dejar en blanco para no cambiarla' : 'sq7HjrUOBfKmC576ILgskD5srU870gJ7'}
+          />
+        </div>
         {saved && <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#166534', fontWeight: 600 }}>✅ Guardado correctamente</div>}
         <button onClick={save} disabled={saving} style={{ padding: 14, background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
           {saving ? '⏳ Guardando...' : '💾 Guardar configuración'}
@@ -761,12 +776,12 @@ function ConfigTab() {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const session = await getSession(ctx)
-  if (!session?.user?.email || session.user.email !== ADMIN_EMAIL) {
+  if (!isAdmin(session)) {
     return { redirect: { destination: '/dashboard', permanent: false } }
   }
 
   const [subscriptions, plans, redsysConfig] = await Promise.all([
-    prisma.subscription.findMany({ include: { user: true, plan: true }, orderBy: { createdAt: 'desc' } }),
+    prisma.subscription.findMany({ include: { user: true, plan: true, provisioning: true }, orderBy: { createdAt: 'desc' } }),
     prisma.plan.findMany({ orderBy: { createdAt: 'asc' } }),
     prisma.redsysConfig.findFirst(),
   ])
@@ -785,7 +800,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       stats: { active, pending, cancelled, mrr: Math.round(mrr) },
       subscriptions: JSON.parse(JSON.stringify(subscriptions)),
       plans:         JSON.parse(JSON.stringify(plans)),
-      redsysConfig:  redsysConfig ? JSON.parse(JSON.stringify(redsysConfig)) : null,
+      redsysConfig: (() => {
+        if (!redsysConfig) return null
+        const rc: any = JSON.parse(JSON.stringify(redsysConfig))
+        delete rc.secretKey
+        return { ...rc, hasSecretKey: !!redsysConfig.secretKey }
+      })(),
     }
   }
 }

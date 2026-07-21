@@ -3,7 +3,6 @@ import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../../lib/authOptions'
 import { prisma } from '../../../lib/prisma'
 
-const ADMIN_EMAIL = 'wongvdanny@gmail.com'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   const session = await getServerSession(req, res, authOptions)

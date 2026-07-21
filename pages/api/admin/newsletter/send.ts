@@ -4,7 +4,6 @@ import { prisma } from '../../../../lib/prisma'
 import { authOptions } from '../../../../lib/authOptions'
 import { Resend } from 'resend'
 
-const ADMIN_EMAIL = 'wongvdanny@gmail.com'
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {

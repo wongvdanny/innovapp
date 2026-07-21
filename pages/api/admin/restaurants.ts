@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { authOptions } from '../../../lib/authOptions'
+import { isAdmin } from '../../../lib/isAdmin'
 import { prisma } from '../../../lib/prisma'
 import { Pool } from 'pg'
 
@@ -9,7 +10,7 @@ const servixPool = new Pool({ connectionString: process.env.SERVIX_DB_URL })
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') return res.status(405).end()
   const session = await getServerSession(req, res, authOptions)
-  if (session?.user?.email !== 'wongvdanny@gmail.com') return res.status(403).json({ error: 'No autorizado' })
+  if (!isAdmin(session)) return res.status(403).json({ error: 'No autorizado' })
 
   const { from, to } = req.query
   const dateFrom = from ? new Date(String(from)) : new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)
