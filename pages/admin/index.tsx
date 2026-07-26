@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 
 export default function Admin({ stats, subscriptions, plans, redsysConfig }: any) {
-  const [tab, setTab] = useState<'subs'|'restaurants'|'plans'|'redsys'|'newsletter'|'config'>('subs')
+  const [tab, setTab] = useState<'subs'|'restaurants'|'gyms'|'plans'|'redsys'|'newsletter'|'config'>('subs')
   const [subList, setSubList] = useState(subscriptions)
   const [actionId, setActionId] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
@@ -95,6 +95,12 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
     expired:   { label: 'Expirada',  bg: '#fff1f2', color: '#991b1b' },
   }
 
+  const PRODUCT_META: Record<string, { label: string; color: string; bg: string; url: string }> = {
+    servix:   { label: 'Servix',   color: '#2ab3aa', bg: '#f0f9f8', url: 'https://servix.innovapp.es' },
+    gymstack: { label: 'GymStack', color: '#a855f7', bg: '#f5f3ff', url: 'https://gymstack.innovapp.es' },
+  }
+  const getProductSlug = (s: any) => s.plan?.Product?.slug || (s.servixRestaurantId ? 'servix' : 'servix')
+
   const btnBase: React.CSSProperties = {
     padding: '5px 11px', borderRadius: 8, fontSize: 12, fontWeight: 700,
     cursor: 'pointer', whiteSpace: 'nowrap', border: '1px solid',
@@ -138,13 +144,13 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
 
         {/* Mensaje global */}
         {msg && (
-          <div style={{ margin: '16px 48px 0', maxWidth: 1200, background: msg.ok ? '#f0fdf4' : '#fff1f2', border: `1px solid ${msg.ok ? '#86efac' : '#fca5a5'}`, borderRadius: 12, padding: '12px 18px', fontSize: 14, fontWeight: 600, color: msg.ok ? '#166534' : '#991b1b' }}>
+          <div style={{ margin: '16px 48px 0', maxWidth: 1400, background: msg.ok ? '#f0fdf4' : '#fff1f2', border: `1px solid ${msg.ok ? '#86efac' : '#fca5a5'}`, borderRadius: 12, padding: '12px 18px', fontSize: 14, fontWeight: 600, color: msg.ok ? '#166534' : '#991b1b' }}>
             {msg.ok ? '✅' : '⚠️'} {msg.text}
           </div>
         )}
 
         {/* Stats */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, padding: '24px 48px 0', maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, padding: '24px 48px 0', maxWidth: 1400, margin: '0 auto' }}>
           {[
             ['💳', 'Activas',          stats.active,    '#f0fdf4', '#166534'],
             ['⏳', 'Pendientes pago',  stats.pending,   '#fffbeb', '#92400e'],
@@ -160,9 +166,9 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
         </div>
 
         {/* Tabs */}
-        <div style={{ padding: '24px 48px 0', maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ padding: '24px 48px 0', maxWidth: 1400, margin: '0 auto' }}>
           <div style={{ display: 'flex', gap: 4, background: 'white', border: '1px solid #eef1f4', borderRadius: 14, padding: 4, width: 'fit-content' }}>
-            {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['plans','📦 Planes'],['redsys','💳 Redsys'],['newsletter','📧 Newsletter'],['config','⚙️ Configuración']].map(([key, label]) => (
+            {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['gyms','💪 Gimnasios'],['plans','📦 Planes'],['redsys','💳 Redsys'],['newsletter','📧 Newsletter'],['config','⚙️ Configuración']].map(([key, label]) => (
               <button key={key} onClick={() => setTab(key as any)}
                 style={{ padding: '8px 20px', borderRadius: 10, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                   background: tab === key ? 'linear-gradient(135deg,#2ab3aa,#1a6478)' : 'transparent',
@@ -173,7 +179,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
           </div>
         </div>
 
-        <div style={{ padding: '24px 48px 48px', maxWidth: 1200, margin: '0 auto' }}>
+        <div style={{ padding: '24px 48px 48px', maxWidth: 1400, margin: '0 auto' }}>
 
           {/* SUSCRIPTORES */}
           {tab === 'subs' && (
@@ -186,7 +192,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
                 <table style={{ width: '100%', borderCollapse: 'collapse' }}>
                   <thead>
                     <tr style={{ background: '#f8fafb' }}>
-                      {['Cliente','Email','Plan','Estado','Inicio','Vence','Restaurante','Acciones'].map(h => (
+                      {['Cliente','Email','Producto','Plan','Estado','Inicio','Vence','Tenant','Acciones'].map(h => (
                         <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: '#88a8b0', textTransform: 'uppercase', letterSpacing: 1 }}>{h}</th>
                       ))}
                     </tr>
@@ -199,6 +205,11 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
                         <tr key={s.id} style={{ borderBottom: '1px solid #f0f4f6' }}>
                           <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 600, color: '#1a2533' }}>{s.user.name}</td>
                           <td style={{ padding: '14px 16px', fontSize: 13, color: '#88a8b0' }}>{s.user.email}</td>
+                          <td style={{ padding: '14px 16px' }}>
+                            {(() => { const pm = PRODUCT_META[getProductSlug(s)]; return (
+                              <span style={{ background: pm.bg, color: pm.color, borderRadius: 8, padding: '3px 10px', fontSize: 12, fontWeight: 700 }}>{pm.label}</span>
+                            )})()}
+                          </td>
                           <td style={{ padding: '14px 16px', fontSize: 13, fontWeight: 600, color: '#1a2533' }}>{s.plan.name} · {s.plan.price}€</td>
                           <td style={{ padding: '14px 16px' }}>
                             <span style={{ background: sm.bg, color: sm.color, borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>
@@ -213,7 +224,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
                           </td>
                           <td style={{ padding: '14px 16px', fontSize: 12, color: '#1a6478', fontWeight: 600 }}>
                             {(s.provisioning?.slug || s.servixSlug)
-                              ? <a href={`https://servix.innovapp.es`} target="_blank" style={{ color: '#1a6478', textDecoration: 'none' }}>🌐 {s.provisioning?.slug || s.servixSlug}</a>
+                              ? <a href={PRODUCT_META[getProductSlug(s)].url} target="_blank" style={{ color: '#1a6478', textDecoration: 'none' }}>🌐 {s.provisioning?.slug || s.servixSlug}</a>
                               : <span style={{ color: '#dde3e8' }}>—</span>
                             }
                           </td>
@@ -253,11 +264,11 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
                                     </button>
                                   )}
 
-                                  {/* Si tiene restaurante en Servix → Eliminar restaurante */}
+                                  {/* Si tiene tenant aprovisionado (Servix o GymStack) → Eliminar datos */}
                                   {(s.provisioning?.externalId || s.servixRestaurantId) && (
                                     <button onClick={() => deleteRestaurant(s)}
                                       style={{ ...btnBase, background: '#fff1f2', color: '#991b1b', borderColor: '#fca5a5' }}>
-                                      🗑️ Restaurante
+                                      🗑️ Eliminar datos
                                     </button>
                                   )}
 
@@ -288,6 +299,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
           )}
 
           {tab === 'restaurants' && <RestaurantsTab />}
+          {tab === 'gyms'        && <GymsTab />}
           {tab === 'config'     && <ConfigTab />}
           {tab === 'plans'      && <PlansTab plans={plans} />}
           {tab === 'redsys'     && <RedsysTab config={redsysConfig} />}
@@ -646,6 +658,145 @@ function RestaurantsTab() {
                           {(r.totalSales / r.totalOrders).toFixed(2)} € / comanda
                         </div>
                       )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+    </div>
+  )
+}
+
+
+function GymsTab() {
+  const [data, setData]       = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [period, setPeriod]   = useState('30d')
+  const [customFrom, setCustomFrom] = useState('')
+  const [customTo,   setCustomTo]   = useState('')
+
+  const load = async (from?: string, to?: string) => {
+    setLoading(true)
+    const params = new URLSearchParams()
+    if (from) params.set('from', from)
+    if (to)   params.set('to',   to)
+    const r = await fetch('/api/admin/gyms?' + params.toString())
+    const d = await r.json()
+    setData(Array.isArray(d) ? d : [])
+    setLoading(false)
+  }
+
+  const applyPeriod = (p: string) => {
+    setPeriod(p)
+    const now  = new Date()
+    const from = new Date()
+    if (p === '30d')  from.setDate(now.getDate() - 30)
+    if (p === '6m')   from.setMonth(now.getMonth() - 6)
+    if (p === '1y')   from.setFullYear(now.getFullYear() - 1)
+    if (p !== 'custom') load(from.toISOString(), now.toISOString())
+  }
+
+  useEffect(() => { load() }, [])
+
+  const totalSales    = data.reduce((a, r) => a + r.totalSales, 0)
+  const totalBookings = data.reduce((a, r) => a + r.totalBookings, 0)
+
+  const inp = { padding: '8px 12px', borderRadius: 8, border: '1.5px solid #eef1f4', fontSize: 13, outline: 'none', fontFamily: 'Plus Jakarta Sans,sans-serif' }
+  const periodBtns = [['30d','30 días'],['6m','6 meses'],['1y','1 año'],['custom','Personalizado']]
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+      {/* Filtros periodo */}
+      <div style={{ background: 'white', borderRadius: 16, border: '1px solid #eef1f4', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#1a2533' }}>Periodo:</span>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {periodBtns.map(([key, label]) => (
+            <button key={key} onClick={() => applyPeriod(key)}
+              style={{ padding: '6px 16px', borderRadius: 8, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                background: period === key ? 'linear-gradient(135deg,#a855f7,#7c3aed)' : '#f0f2f5',
+                color: period === key ? 'white' : '#4a6572' }}>
+              {label}
+            </button>
+          ))}
+        </div>
+        {period === 'custom' && (
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <input type="date" value={customFrom} onChange={e => setCustomFrom(e.target.value)} style={inp} />
+            <span style={{ color: '#88a8b0', fontSize: 13 }}>→</span>
+            <input type="date" value={customTo} onChange={e => setCustomTo(e.target.value)} style={inp} />
+            <button onClick={() => load(new Date(customFrom).toISOString(), new Date(customTo).toISOString())}
+              disabled={!customFrom || !customTo}
+              style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: 'linear-gradient(135deg,#a855f7,#7c3aed)', color: 'white', fontSize: 13, fontWeight:700, cursor: 'pointer' }}>
+              Aplicar
+            </button>
+          </div>
+        )}
+      </div>
+
+      {/* KPIs globales */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+        {[
+          ['💪', 'Gimnasios activos',   data.length],
+          ['📅', 'Reservas en periodo', totalBookings],
+          ['💶', 'Ventas en periodo',   totalSales.toFixed(2) + ' €'],
+        ].map(([icon, label, value]) => (
+          <div key={String(label)} style={{ background: 'white', borderRadius: 16, padding: '20px 24px', border: '1px solid #eef1f4', boxShadow: '0 2px 8px rgba(0,0,0,.04)' }}>
+            <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: '#1a2533', lineHeight: 1 }}>{value}</div>
+            <div style={{ fontSize: 13, color: '#88a8b0', marginTop: 4 }}>{label}</div>
+          </div>
+        ))}
+      </div>
+
+      {/* Tabla gimnasios */}
+      <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', overflow: 'hidden' }}>
+        <div style={{ padding: '20px 24px', borderBottom: '1px solid #eef1f4', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533', margin: 0 }}>Detalle por gimnasio</h3>
+          {loading && <span style={{ fontSize: 13, color: '#88a8b0' }}>⏳ Cargando...</span>}
+        </div>
+        {loading ? (
+          <div style={{ padding: 48, textAlign: 'center', color: '#88a8b0' }}>Cargando datos...</div>
+        ) : data.length === 0 ? (
+          <div style={{ padding: 48, textAlign: 'center', color: '#88a8b0' }}>
+            <div style={{ fontSize: 40, marginBottom: 8 }}>💪</div>
+            <p>No hay gimnasios activos</p>
+          </div>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+              <thead>
+                <tr style={{ background: '#f8fafb' }}>
+                  {['Gimnasio','Propietario','Plan','Vence','Socios activos','Personal','Reservas','Ventas'].map(h => (
+                    <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: '#88a8b0', textTransform: 'uppercase', letterSpacing: 1 }}>{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {data.sort((a, b) => b.totalSales - a.totalSales).map((r: any) => (
+                  <tr key={r.id} style={{ borderBottom: '1px solid #f0f4f6' }}>
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1a2533' }}>{r.name}</div>
+                      <div style={{ fontSize: 11, color: '#88a8b0', marginTop: 2 }}>/{r.slug}</div>
+                    </td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2533' }}>{r.owner}</div>
+                      <div style={{ fontSize: 11, color: '#88a8b0' }}>{r.email}</div>
+                    </td>
+                    <td style={{ padding: '14px 16px', fontSize: 13, fontWeight: 600, color: '#a855f7' }}>{r.plan}</td>
+                    <td style={{ padding: '14px 16px', fontSize: 12, color: '#88a8b0' }} suppressHydrationWarning>
+                      {r.endDate ? new Date(r.endDate).toLocaleDateString('es-ES') : '—'}
+                    </td>
+                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#3d1a4f', textAlign: 'center' }}>{r.activeMembers}</td>
+                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#3d1a4f', textAlign: 'center' }}>{r.staff}</td>
+                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#3d1a4f', textAlign: 'center' }}>{r.totalBookings}</td>
+                    <td style={{ padding: '14px 16px' }}>
+                      <div style={{ fontSize: 15, fontWeight: 800, color: r.totalSales > 0 ? '#166534' : '#88a8b0' }}>
+                        {r.totalSales.toFixed(2)} €
+                      </div>
                     </td>
                   </tr>
                 ))}
