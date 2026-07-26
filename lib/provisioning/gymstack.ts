@@ -66,6 +66,29 @@ export async function createGymstackTenant(input: CreateGymstackTenantInput): Pr
 }
 
 /**
+ * Desactiva un gimnasio sin borrar datos (para cancelaciones desde el propio
+ * cliente). Suspende también la contraseña del admin, igual que se hace con
+ * Servix, para bloquear el acceso sin destruir nada.
+ */
+export async function deactivateGymstackTenant(gymId: string): Promise<void> {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    await client.query('UPDATE gyms SET active = false, "updatedAt" = now() WHERE id = $1', [gymId])
+    await client.query(
+      `UPDATE users SET password = 'SUSPENDED_' || extract(epoch from now()), "updatedAt" = now() WHERE "gymId" = $1 AND role = 'ADMIN'`,
+      [gymId]
+    )
+    await client.query('COMMIT')
+  } catch (e) {
+    await client.query('ROLLBACK')
+    throw e
+  } finally {
+    client.release()
+  }
+}
+
+/**
  * Borra en cascada todos los datos de un gimnasio en GymStack.
  * Orden calculado a partir de las FKs del schema (las que no tienen
  * onDelete: Cascade explícito hay que borrarlas a mano antes del padre).

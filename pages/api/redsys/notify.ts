@@ -30,6 +30,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
     if (!invoice) return res.status(200).send('OK')
 
+    // Idempotencia: Redsys puede reenviar la misma notificación varias veces.
+    // Si esta factura ya quedó marcada como pagada, no volvemos a aprovisionar
+    // ni a reenviar el email de bienvenida.
+    if (invoice.status === 'paid') {
+      console.log('Notificación repetida para invoice ya pagada, ignorando:', invoice.id)
+      return res.status(200).send('OK')
+    }
+
     const { subscription } = invoice
     const { user, plan } = subscription
     const product = (plan as any).Product as { slug: string } | null
