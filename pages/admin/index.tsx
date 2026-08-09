@@ -7,8 +7,8 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
 
-export default function Admin({ stats, subscriptions, plans, redsysConfig }: any) {
-  const [tab, setTab] = useState<'subs'|'restaurants'|'gyms'|'plans'|'redsys'|'newsletter'|'config'>('subs')
+export default function Admin({ stats, subscriptions, plans, redsysConfig, stripeConfig }: any) {
+  const [tab, setTab] = useState<'subs'|'restaurants'|'gyms'|'plans'|'redsys'|'stripe'|'newsletter'|'config'>('subs')
   const [subList, setSubList] = useState(subscriptions)
   const [actionId, setActionId] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
@@ -168,7 +168,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
         {/* Tabs */}
         <div style={{ padding: '24px 48px 0', maxWidth: 1400, margin: '0 auto' }}>
           <div style={{ display: 'flex', gap: 4, background: 'white', border: '1px solid #eef1f4', borderRadius: 14, padding: 4, width: 'fit-content' }}>
-            {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['gyms','💪 Gimnasios'],['plans','📦 Planes'],['redsys','💳 Redsys'],['newsletter','📧 Newsletter'],['config','⚙️ Configuración']].map(([key, label]) => (
+            {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['gyms','💪 Gimnasios'],['plans','📦 Planes'],['redsys','💳 Redsys'],['stripe','💜 Stripe'],['newsletter','📧 Newsletter'],['config','⚙️ Configuración']].map(([key, label]) => (
               <button key={key} onClick={() => setTab(key as any)}
                 style={{ padding: '8px 20px', borderRadius: 10, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                   background: tab === key ? 'linear-gradient(135deg,#2ab3aa,#1a6478)' : 'transparent',
@@ -311,6 +311,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
           {tab === 'config'     && <ConfigTab />}
           {tab === 'plans'      && <PlansTab plans={plans} />}
           {tab === 'redsys'     && <RedsysTab config={redsysConfig} />}
+          {tab === 'stripe'     && <StripeTab config={stripeConfig} />}
           {tab === 'newsletter' && <NewsletterTab />}
         </div>
       </div>
@@ -466,6 +467,104 @@ function RedsysTab({ config }: { config: any }) {
       {form.environment === 'test' && (
         <div style={{ marginTop: 20, background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 12, padding: '14px 16px' }}>
           <p style={{ margin: 0, fontSize: 12, color: '#92400e', fontWeight: 600 }}>⚠️ Modo TEST activo — los pagos no son reales.</p>
+        </div>
+      )}
+    </div>
+  )
+}
+
+function StripeTab({ config }: { config: any }) {
+  const [form, setForm] = useState({
+    publishableKey: config?.publishableKey || '',
+    secretKey: '',
+    webhookSecret: '',
+    environment: config?.environment || 'test',
+    enabled: config?.enabled ?? false,
+  })
+  const hasSecretKey = !!config?.hasSecretKey
+  const hasWebhookSecret = !!config?.webhookSecret
+  const [saving, setSaving] = useState(false)
+  const [saved, setSaved]   = useState(false)
+
+  const save = async () => {
+    setSaving(true)
+    const { secretKey, webhookSecret, ...rest } = form
+    const body: any = { ...rest }
+    if (secretKey.trim()) body.secretKey = secretKey
+    if (webhookSecret.trim()) body.webhookSecret = webhookSecret
+    await fetch('/api/admin/stripe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+    setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 3000)
+  }
+
+  const inp = { width:'100%', padding:'11px 14px', borderRadius:10, border:'1.5px solid #eef1f4', fontSize:14, outline:'none', fontFamily:'Plus Jakarta Sans,sans-serif', boxSizing:'border-box' as const }
+
+  return (
+    <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 36, maxWidth: 560 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533' }}>Configuración Stripe</h3>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: form.enabled ? '#166534' : '#88a8b0' }}>{form.enabled ? 'Activo' : 'Inactivo'}</span>
+          <div onClick={() => setForm(f => ({ ...f, enabled: !f.enabled }))} style={{
+            width: 40, height: 22, borderRadius: 20, cursor: 'pointer', position: 'relative',
+            background: form.enabled ? '#2ab3aa' : '#dde3e8', transition: 'background .15s',
+          }}>
+            <div style={{
+              width: 18, height: 18, borderRadius: '50%', background: 'white', position: 'absolute', top: 2,
+              left: form.enabled ? 20 : 2, transition: 'left .15s', boxShadow: '0 1px 3px rgba(0,0,0,.2)',
+            }} />
+          </div>
+        </label>
+      </div>
+      <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 28 }}>Credenciales para procesar pagos de suscripciones vía Stripe.</p>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+        <div>
+          <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Entorno</label>
+          <select style={inp} value={form.environment} onChange={e => setForm(f => ({ ...f, environment: e.target.value }))}>
+            <option value="test">🧪 Test (sandbox)</option>
+            <option value="production">🚀 Producción (real)</option>
+          </select>
+        </div>
+        <div>
+          <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Publishable Key</label>
+          <input style={inp} value={form.publishableKey} onChange={e => setForm(f => ({ ...f, publishableKey: e.target.value }))} placeholder="pk_test_..." />
+        </div>
+        <div>
+          <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>
+            Secret Key {hasSecretKey && <span style={{ color: '#166534', fontWeight: 700 }}>· configurada ✓</span>}
+          </label>
+          <input
+            style={inp}
+            type="password"
+            value={form.secretKey}
+            onChange={e => setForm(f => ({ ...f, secretKey: e.target.value }))}
+            placeholder={hasSecretKey ? 'Dejar en blanco para no cambiarla' : 'sk_test_...'}
+          />
+        </div>
+        <div>
+          <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>
+            Webhook Signing Secret {hasWebhookSecret && <span style={{ color: '#166534', fontWeight: 700 }}>· configurado ✓</span>}
+          </label>
+          <input
+            style={inp}
+            type="password"
+            value={form.webhookSecret}
+            onChange={e => setForm(f => ({ ...f, webhookSecret: e.target.value }))}
+            placeholder={hasWebhookSecret ? 'Dejar en blanco para no cambiarlo' : 'whsec_...'}
+          />
+        </div>
+        {saved && <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#166534', fontWeight: 600 }}>✅ Guardado correctamente</div>}
+        <button onClick={save} disabled={saving} style={{ padding: 14, background: 'linear-gradient(135deg,#635bff,#4b45c6)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+          {saving ? '⏳ Guardando...' : '💾 Guardar configuración'}
+        </button>
+      </div>
+      {form.environment === 'test' && (
+        <div style={{ marginTop: 20, background: '#fffbeb', border: '1px solid #fcd34d', borderRadius: 12, padding: '14px 16px' }}>
+          <p style={{ margin: 0, fontSize: 12, color: '#92400e', fontWeight: 600 }}>⚠️ Modo TEST activo — los pagos no son reales.</p>
+        </div>
+      )}
+      {!form.publishableKey && !hasSecretKey && (
+        <div style={{ marginTop: 12, background: '#fff1f2', border: '1px solid #fca5a5', borderRadius: 12, padding: '14px 16px' }}>
+          <p style={{ margin: 0, fontSize: 12, color: '#991b1b', fontWeight: 600 }}>⚠️ Sin credenciales configuradas — aunque actives el toggle, el checkout no ofrecerá Stripe hasta que rellenes Publishable Key y Secret Key.</p>
         </div>
       )}
     </div>
@@ -939,10 +1038,11 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     return { redirect: { destination: '/dashboard', permanent: false } }
   }
 
-  const [subscriptions, plans, redsysConfig] = await Promise.all([
+  const [subscriptions, plans, redsysConfig, stripeConfig] = await Promise.all([
     prisma.subscription.findMany({ include: { user: true, plan: { include: { Product: true } as any }, provisioning: true }, orderBy: { createdAt: 'desc' } }),
     prisma.plan.findMany({ orderBy: { createdAt: 'asc' } }),
     prisma.redsysConfig.findFirst(),
+    prisma.stripeConfig.findFirst(),
   ])
 
   const active    = subscriptions.filter(s => s.status === 'active').length
@@ -964,6 +1064,12 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
         const rc: any = JSON.parse(JSON.stringify(redsysConfig))
         delete rc.secretKey
         return { ...rc, hasSecretKey: !!redsysConfig.secretKey }
+      })(),
+      stripeConfig: (() => {
+        if (!stripeConfig) return null
+        const sc: any = JSON.parse(JSON.stringify(stripeConfig))
+        delete sc.secretKey
+        return { ...sc, hasSecretKey: !!stripeConfig.secretKey }
       })(),
     }
   }
