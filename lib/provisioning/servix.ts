@@ -73,18 +73,24 @@ export async function createServixTenant(input: ServixTenantInput): Promise<Serv
 
 /**
  * Borra en cascada todos los datos de un restaurante en Servix.
- * Mantiene el mismo orden que la versión anterior (basada en Prisma)
- * para respetar las mismas dependencias de claves foráneas.
- * Nota: si el restaurante tiene CashSession asociadas, el borrado de
- * Employee puede fallar por restricción de FK (comportamiento heredado,
- * no introducido por este cambio).
+ * Orden derivado del schema.prisma real de Servix (/var/www/servix/apps/web/prisma/schema.prisma)
+ * para respetar todas las FK con onDelete: Restrict (la mayoría de tablas del proyecto),
+ * borrando siempre las tablas "hija" antes que la tabla de la que dependen.
  */
 export async function deleteServixTenant(restaurantId: string): Promise<void> {
   const client = await pool.connect()
   try {
     await client.query('BEGIN')
 
-    await client.query('DELETE FROM "Employee" WHERE "restaurantId" = $1', [restaurantId])
+    // Payment/OrderItem dependen de Order (con onDelete: Cascade en BD, pero
+    // se borran explícitamente para no depender del timing del cascade)
+    await client.query(`
+      DELETE FROM "Payment" WHERE "orderId" IN (
+        SELECT o.id FROM "Order" o
+        JOIN "Table" t ON t.id = o."tableId"
+        WHERE t."restaurantId" = $1
+      )
+    `, [restaurantId])
 
     await client.query(`
       DELETE FROM "OrderItem" WHERE "orderId" IN (
@@ -94,11 +100,17 @@ export async function deleteServixTenant(restaurantId: string): Promise<void> {
       )
     `, [restaurantId])
 
+    // Invoice referencia Order (Restrict) -> debe borrarse ANTES que Order
+    await client.query('DELETE FROM "Invoice" WHERE "restaurantId" = $1', [restaurantId])
+
     await client.query(`
       DELETE FROM "Order" WHERE "tableId" IN (
         SELECT id FROM "Table" WHERE "restaurantId" = $1
       )
     `, [restaurantId])
+
+    // Reservation referencia Table (Restrict) -> debe borrarse ANTES que Table
+    await client.query('DELETE FROM "Reservation" WHERE "restaurantId" = $1', [restaurantId])
 
     await client.query(`
       DELETE FROM "Table" WHERE "zoneId" IN (
@@ -108,7 +120,31 @@ export async function deleteServixTenant(restaurantId: string): Promise<void> {
 
     await client.query('DELETE FROM "Zone" WHERE "restaurantId" = $1', [restaurantId])
 
+    // MenuItem/MenuSchedule dependen de Menu -> antes que Menu
+    await client.query(`
+      DELETE FROM "MenuItem" WHERE "menuId" IN (
+        SELECT id FROM "Menu" WHERE "restaurantId" = $1
+      )
+    `, [restaurantId])
+    await client.query(`
+      DELETE FROM "MenuSchedule" WHERE "menuId" IN (
+        SELECT id FROM "Menu" WHERE "restaurantId" = $1
+      )
+    `, [restaurantId])
+    await client.query('DELETE FROM "Menu" WHERE "restaurantId" = $1', [restaurantId])
+
+    // Product referencia Category (Restrict) -> antes que Category
     await client.query('DELETE FROM "Product" WHERE "restaurantId" = $1', [restaurantId])
+    await client.query('DELETE FROM "Category" WHERE "restaurantId" = $1', [restaurantId])
+
+    // CashSession referencia Employee (NoAction) -> antes que Employee
+    await client.query('DELETE FROM "CashSession" WHERE "restaurantId" = $1', [restaurantId])
+
+    // Employee: debe ir DESPUÉS de Order (que lo referencia) y de CashSession
+    await client.query('DELETE FROM "Employee" WHERE "restaurantId" = $1', [restaurantId])
+
+    await client.query('DELETE FROM "Schedule" WHERE "restaurantId" = $1', [restaurantId])
+    await client.query('DELETE FROM "IvaType" WHERE "restaurantId" = $1', [restaurantId])
 
     await client.query('DELETE FROM "Restaurant" WHERE id = $1', [restaurantId])
 
