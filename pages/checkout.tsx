@@ -50,6 +50,20 @@ export default function Checkout() {
 
   const labels = (product && LABELS_BY_PRODUCT[product.slug]) || DEFAULT_LABELS
 
+  const [providers, setProviders] = useState<{ redsys: boolean; stripe: boolean }>({ redsys: true, stripe: false })
+  const [payProvider, setPayProvider] = useState<'redsys' | 'stripe' | ''>('')
+
+  useEffect(() => {
+    fetch('/api/payment-providers')
+      .then(r => r.json())
+      .then(d => {
+        setProviders(d)
+        if (d.redsys && !d.stripe) setPayProvider('redsys')
+        else if (d.stripe && !d.redsys) setPayProvider('stripe')
+      })
+      .catch(() => {})
+  }, [])
+
   const [step, setStep]       = useState(0)
   const [loading, setLoading] = useState(false)
   const [error, setError]     = useState('')
@@ -87,6 +101,7 @@ export default function Checkout() {
   const validateStep2 = () => {
     if (!form.acceptPrivacy) return 'Debes aceptar la política de privacidad'
     if (!form.acceptTerms)   return 'Debes aceptar los términos de uso'
+    if (providers.redsys && providers.stripe && !payProvider) return 'Selecciona un método de pago'
     return ''
   }
 
@@ -110,12 +125,18 @@ export default function Checkout() {
         body: JSON.stringify({
           name: form.name, entityName: form.entityName,
           email: form.email, password: form.password, phone: form.phone,
-          planId,
+          planId, provider: payProvider || undefined,
           billing: { company: form.company, nif: form.nif, address: form.address, city: form.city, zip: form.zip, country: form.country },
         }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Error al procesar')
+
+      if (data.provider === 'stripe') {
+        window.location.href = data.url
+        return
+      }
+
       const frm = document.createElement('form')
       frm.method = 'POST'; frm.action = data.url
       Object.entries(data.body as Record<string,string>).forEach(([k,v]) => {
@@ -273,6 +294,24 @@ export default function Checkout() {
                     </div>
                   ))}
                 </div>
+
+                {providers.redsys && providers.stripe && (
+                  <div style={{ marginBottom: 20 }}>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', marginBottom: 10 }}>Método de pago</div>
+                    <div style={{ display: 'flex', gap: 10 }}>
+                      {[['redsys','💳 Tarjeta (Redsys)'],['stripe','💜 Tarjeta (Stripe)']].map(([key,label]) => (
+                        <button key={key} type="button" onClick={() => setPayProvider(key as any)} style={{
+                          flex: 1, padding: '12px 14px', borderRadius: 12, cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                          border: `2px solid ${payProvider === key ? '#2ab3aa' : '#eef1f4'}`,
+                          background: payProvider === key ? '#f0f9f8' : 'white',
+                          color: payProvider === key ? '#1a6478' : '#4a6572',
+                        }}>
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                )}
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 8 }}>
                   {[

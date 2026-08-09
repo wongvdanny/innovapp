@@ -35,6 +35,20 @@ export default function Registro() {
   const [loading, setLoading] = useState(false)
   const [error, setError]   = useState('')
 
+  const [providers, setProviders] = useState<{ redsys: boolean; stripe: boolean }>({ redsys: true, stripe: false })
+  const [payProvider, setPayProvider] = useState<'redsys' | 'stripe' | ''>('')
+
+  useEffect(() => {
+    fetch('/api/payment-providers')
+      .then(r => r.json())
+      .then(d => {
+        setProviders(d)
+        if (d.redsys && !d.stripe) setPayProvider('redsys')
+        else if (d.stripe && !d.redsys) setPayProvider('stripe')
+      })
+      .catch(() => {})
+  }, [])
+
   useEffect(() => {
     if (!router.isReady) return
     fetch(`/api/plans/${productSlug}`)
@@ -89,6 +103,7 @@ export default function Registro() {
     if (!isFree) {
       const err = validateBilling()
       if (err) { setError(err); return }
+      if (providers.redsys && providers.stripe && !payProvider) { setError('Selecciona un método de pago'); return }
     }
     setLoading(true); setError('')
     try {
@@ -107,10 +122,16 @@ export default function Registro() {
       const res = await fetch('/api/subscriptions/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, planId: plan, billing }),
+        body: JSON.stringify({ ...form, planId: plan, billing, provider: payProvider || undefined }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Error')
+
+      if (data.provider === 'stripe') {
+        window.location.href = data.url
+        return
+      }
+
       const frm = document.createElement('form')
       frm.method = 'POST'; frm.action = data.url
       Object.entries(data.body as Record<string,string>).forEach(([k,v]) => {
@@ -290,6 +311,24 @@ export default function Registro() {
                 </div>
               </div>
 
+              {providers.redsys && providers.stripe && (
+                <div style={{ marginBottom: 16 }}>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', marginBottom: 10 }}>Método de pago</div>
+                  <div style={{ display: 'flex', gap: 10 }}>
+                    {[['redsys','💳 Tarjeta (Redsys)'],['stripe','💜 Tarjeta (Stripe)']].map(([key,label]) => (
+                      <button key={key} type="button" onClick={() => setPayProvider(key as any)} style={{
+                        flex: 1, padding: '12px 14px', borderRadius: 12, cursor: 'pointer', fontSize: 13, fontWeight: 700,
+                        border: `2px solid ${payProvider === key ? '#2ab3aa' : '#eef1f4'}`,
+                        background: payProvider === key ? '#f0f9f8' : 'white',
+                        color: payProvider === key ? '#1a6478' : '#4a6572',
+                      }}>
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer', marginBottom: 16 }}>
                 <input type="checkbox" checked={privacyChecked} onChange={e => setPrivacyChecked(e.target.checked)}
                   style={{ marginTop: 2, accentColor: '#2ab3aa', width: 16, height: 16, cursor: 'pointer', flexShrink: 0 }} />
@@ -306,7 +345,7 @@ export default function Registro() {
                 {loading ? '⏳ Redirigiendo al pago...' : '💳 Ir al pago →'}
               </button>
               <p style={{ fontSize: 12, color: '#88a8b0', textAlign: 'center', marginTop: 14 }}>
-                Pago seguro con Redsys · SSL cifrado
+                Pago 100% seguro · SSL cifrado
               </p>
               <button type="button" onClick={() => setStep(2)} style={{ width: '100%', marginTop: 8, padding: '10px', background: 'none', border: 'none', color: '#88a8b0', fontSize: 13, cursor: 'pointer' }}>← Volver</button>
             </form>
