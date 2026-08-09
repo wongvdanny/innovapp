@@ -38,12 +38,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const gym = gymRes.rows[0]
       if (!gym) return null
 
-      const salesRes = await gymstackPool.query(`
+      const paymentsRes = await gymstackPool.query(`
         SELECT
-          COUNT(*)::int AS total_sales_count,
-          COALESCE(SUM(total), 0)::float AS total_sales
-        FROM sales
-        WHERE "gymId" = $1 AND "createdAt" >= $2 AND "createdAt" <= $3
+          COUNT(*)::int AS total_payments_count,
+          COALESCE(SUM(amount), 0)::float AS total_payments
+        FROM payments p
+        JOIN members m ON m.id = p."memberId"
+        WHERE m."gymId" = $1 AND p.status = 'PAID' AND p."paidAt" >= $2 AND p."paidAt" <= $3
       `, [gymId, dateFrom, dateTo])
 
       const bookingsRes = await gymstackPool.query(`
@@ -71,7 +72,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         plan: sub.plan.name,
         planPrice: sub.plan.price,
         endDate: sub.endDate,
-        totalSales: Math.round(salesRes.rows[0].total_sales * 100) / 100,
+        totalSales: Math.round(paymentsRes.rows[0].total_payments * 100) / 100,
         totalBookings: bookingsRes.rows[0].cnt,
         activeMembers: membersRes.rows[0].cnt,
         staff: staffRes.rows[0].cnt,

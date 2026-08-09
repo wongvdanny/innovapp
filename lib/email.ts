@@ -81,7 +81,7 @@ export async function sendWelcomeEmail(
       <table style="width:100%;border-collapse:collapse">
         ${billing.company ? `<tr><td style="padding:6px 0;font-size:13px;color:#88a8b0;width:140px">Empresa</td><td style="font-size:14px;font-weight:600;color:#1a2533">${billing.company}</td></tr>` : ''}
         ${billing.nif ? `<tr style="border-top:1px solid #eef1f4"><td style="padding:6px 0;font-size:13px;color:#88a8b0">NIF/CIF</td><td style="font-size:14px;font-weight:600;color:#1a2533">${billing.nif}</td></tr>` : ''}
-        <tr style="border-top:1px solid #eef1f4"><td style="padding:6px 0;font-size:13px;color:#88a8b0">Dirección</td><td style="font-size:14px;color:#1a2533">${billing.address}, ${billing.zip} ${billing.city}, ${billing.country}</td></tr>
+        ${billing.address ? `<tr style="border-top:1px solid #eef1f4"><td style="padding:6px 0;font-size:13px;color:#88a8b0">Dirección</td><td style="font-size:14px;color:#1a2533">${billing.address}, ${billing.zip || ''} ${billing.city || ''}, ${billing.country || ''}</td></tr>` : ''}
       </table>
     </div>` : ''
 

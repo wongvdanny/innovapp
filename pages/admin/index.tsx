@@ -63,7 +63,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
       body: JSON.stringify({ subscriptionId: s.id }),
     })
     if (res.ok) {
-      setSubList((l: any[]) => l.map((x: any) => x.id === s.id ? { ...x, servixRestaurantId: null, servixSlug: null } : x))
+      setSubList((l: any[]) => l.map((x: any) => x.id === s.id ? { ...x, servixRestaurantId: null, servixSlug: null, provisioning: null } : x))
       showMsg(true, 'Restaurante eliminado correctamente')
     } else {
       showMsg(false, 'Error al eliminar el restaurante')
@@ -99,7 +99,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
     servix:   { label: 'Servix',   color: '#2ab3aa', bg: '#f0f9f8', url: 'https://servix.innovapp.es' },
     gymstack: { label: 'GymStack', color: '#a855f7', bg: '#f5f3ff', url: 'https://gymstack.innovapp.es' },
   }
-  const getProductSlug = (s: any) => s.plan?.Product?.slug || (s.servixRestaurantId ? 'servix' : 'servix')
+  const getProductSlug = (s: any) => s.plan?.Product?.slug || 'servix'
 
   const btnBase: React.CSSProperties = {
     padding: '5px 11px', borderRadius: 8, fontSize: 12, fontWeight: 700,
@@ -248,12 +248,20 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig }: any
                                     </>
                                   )}
 
-                                  {/* Activa → Cancelar */}
+                                  {/* Activa → Cancelar (+ Provisionar si falta el tenant) */}
                                   {s.status === 'active' && (
-                                    <button onClick={() => cancelSub(s)}
-                                      style={{ ...btnBase, background: '#fff1f2', color: '#991b1b', borderColor: '#fca5a5' }}>
-                                      ⏸ Cancelar
-                                    </button>
+                                    <>
+                                      {!(s.provisioning?.externalId || s.servixRestaurantId) && (
+                                        <button onClick={() => activateSub(s)}
+                                          style={{ ...btnBase, background: '#fffbeb', color: '#92400e', borderColor: '#fcd34d' }}>
+                                          🔧 Provisionar
+                                        </button>
+                                      )}
+                                      <button onClick={() => cancelSub(s)}
+                                        style={{ ...btnBase, background: '#fff1f2', color: '#991b1b', borderColor: '#fca5a5' }}>
+                                        ⏸ Cancelar
+                                      </button>
+                                    </>
                                   )}
 
                                   {/* Cancelada/Expirada → Reactivar */}
@@ -742,7 +750,7 @@ function GymsTab() {
         {[
           ['💪', 'Gimnasios activos',   data.length],
           ['📅', 'Reservas en periodo', totalBookings],
-          ['💶', 'Ventas en periodo',   totalSales.toFixed(2) + ' €'],
+          ['💶', 'Cuotas cobradas',     totalSales.toFixed(2) + ' €'],
         ].map(([icon, label, value]) => (
           <div key={String(label)} style={{ background: 'white', borderRadius: 16, padding: '20px 24px', border: '1px solid #eef1f4', boxShadow: '0 2px 8px rgba(0,0,0,.04)' }}>
             <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
@@ -770,7 +778,7 @@ function GymsTab() {
             <table style={{ width: '100%', borderCollapse: 'collapse' }}>
               <thead>
                 <tr style={{ background: '#f8fafb' }}>
-                  {['Gimnasio','Propietario','Plan','Vence','Socios activos','Personal','Reservas','Ventas'].map(h => (
+                  {['Gimnasio','Propietario','Plan','Vence','Socios activos','Personal','Reservas','Cuotas cobradas'].map(h => (
                     <th key={h} style={{ padding: '12px 16px', textAlign: 'left', fontSize: 11, fontWeight: 700, color: '#88a8b0', textTransform: 'uppercase', letterSpacing: 1 }}>{h}</th>
                   ))}
                 </tr>
@@ -932,7 +940,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   }
 
   const [subscriptions, plans, redsysConfig] = await Promise.all([
-    prisma.subscription.findMany({ include: { user: true, plan: true, provisioning: true }, orderBy: { createdAt: 'desc' } }),
+    prisma.subscription.findMany({ include: { user: true, plan: { include: { Product: true } as any }, provisioning: true }, orderBy: { createdAt: 'desc' } }),
     prisma.plan.findMany({ orderBy: { createdAt: 'asc' } }),
     prisma.redsysConfig.findFirst(),
   ])

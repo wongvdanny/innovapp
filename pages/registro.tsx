@@ -30,6 +30,7 @@ export default function Registro() {
   const [step, setStep]     = useState(1)
   const [plan, setPlan]     = useState<string>('')
   const [form, setForm]     = useState({ name: '', entityName: '', email: '', password: '', phone: '' })
+  const [billing, setBilling] = useState({ company: '', nif: '', address: '', city: '', zip: '', country: 'España' })
   const [privacyChecked, setPrivacyChecked] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError]   = useState('')
@@ -52,14 +53,42 @@ export default function Registro() {
   const labels = PRODUCT_LABELS[productSlug] || DEFAULT_LABELS
   const selectedPlan = plans.find(p => p.id === plan)
   const isFree = selectedPlan?.interval === 'free'
+  const totalSteps = isFree ? 2 : 3
 
-  const goToCheckout = () => { setStep(2) }
+  const validateAccount = () => {
+    if (!form.name.trim()) return 'Introduce tu nombre completo'
+    if (!form.entityName.trim()) return `Introduce el ${labels.entityLabel.toLowerCase()}`
+    if (!form.email.trim() || !form.email.includes('@')) return 'Email no válido'
+    if (form.password.length < 8) return 'La contraseña debe tener al menos 8 caracteres'
+    return ''
+  }
+  const validateBilling = () => {
+    if (!billing.address.trim()) return 'Introduce tu dirección'
+    if (!billing.city.trim())    return 'Introduce tu ciudad'
+    if (!billing.zip.trim())     return 'Introduce el código postal'
+    return ''
+  }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const goNext = () => {
+    setError('')
+    if (step === 2) {
+      const err = validateAccount()
+      if (err) { setError(err); return }
+      if (isFree) { void doSubmit(); return }
+      setStep(3)
+      return
+    }
+    setStep(s => s + 1)
+  }
+
+  const doSubmit = async () => {
     if (!privacyChecked) {
       setError('Debes aceptar la política de privacidad para continuar.')
       return
+    }
+    if (!isFree) {
+      const err = validateBilling()
+      if (err) { setError(err); return }
     }
     setLoading(true); setError('')
     try {
@@ -78,7 +107,7 @@ export default function Registro() {
       const res = await fetch('/api/subscriptions/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...form, planId: plan }),
+        body: JSON.stringify({ ...form, planId: plan, billing }),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Error')
@@ -94,7 +123,10 @@ export default function Registro() {
     }
   }
 
+  const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); void doSubmit() }
+
   const inputStyle = { width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid #eef1f4', fontSize: 14, outline: 'none', fontFamily: 'Plus Jakarta Sans,sans-serif', transition: 'border-color .2s', boxSizing: 'border-box' as const }
+  const lblStyle = { fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 } as const
 
   if (plansLoading) {
     return <div style={{ padding: 60, textAlign: 'center', fontFamily: 'sans-serif', color: '#88a8b0' }}>Cargando planes...</div>
@@ -122,8 +154,8 @@ export default function Registro() {
           </Link>
 
           <div style={{ display: 'flex', gap: 8, marginBottom: 32 }}>
-            {[1,2].map(s => (
-              <div key={s} style={{ flex: 1, height: 4, borderRadius: 4, background: s <= step ? 'linear-gradient(90deg,#2ab3aa,#1a6478)' : '#eef1f4', transition: 'background .3s' }} />
+            {Array.from({ length: totalSteps }).map((_, i) => (
+              <div key={i} style={{ flex: 1, height: 4, borderRadius: 4, background: (i + 1) <= step ? 'linear-gradient(90deg,#2ab3aa,#1a6478)' : '#eef1f4', transition: 'background .3s' }} />
             ))}
           </div>
 
@@ -153,7 +185,7 @@ export default function Registro() {
                   )
                 })}
               </div>
-              <button onClick={() => goToCheckout()} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={() => setStep(2)} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
                 Continuar →
               </button>
               <p style={{ textAlign: 'center', marginTop: 16, fontSize: 13, color: '#88a8b0' }}>
@@ -163,7 +195,7 @@ export default function Registro() {
           )}
 
           {step === 2 && (
-            <form onSubmit={handleSubmit}>
+            <div>
               <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1a2533' }}>Crea tu cuenta</h2>
               <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>
                 Plan <strong style={{ color: '#1a6478' }}>{selectedPlan?.name}</strong>
@@ -171,29 +203,90 @@ export default function Registro() {
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
                 <div>
-                  <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Tu nombre</label>
+                  <label style={lblStyle}>Tu nombre</label>
                   <input style={inputStyle} value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} placeholder="Ej: Juan Pérez" required
                     onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>{labels.entityLabel}</label>
+                  <label style={lblStyle}>{labels.entityLabel}</label>
                   <input style={inputStyle} value={form.entityName} onChange={e=>setForm(f=>({...f,entityName:e.target.value}))} placeholder={labels.entityPlaceholder} required
                     onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Email</label>
+                  <label style={lblStyle}>Email</label>
                   <input style={inputStyle} type="email" value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} placeholder="tu@email.com" required
                     onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Teléfono (opcional)</label>
+                  <label style={lblStyle}>Teléfono (opcional)</label>
                   <input style={inputStyle} type="tel" value={form.phone} onChange={e=>setForm(f=>({...f,phone:e.target.value}))} placeholder="+34 600 000 000"
                     onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                 </div>
                 <div>
-                  <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Contraseña</label>
+                  <label style={lblStyle}>Contraseña</label>
                   <input style={inputStyle} type="password" value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} placeholder="Mínimo 8 caracteres" required minLength={8}
                     onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                </div>
+              </div>
+
+              {isFree && (
+                <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer', marginBottom: 16 }}>
+                  <input type="checkbox" checked={privacyChecked} onChange={e => setPrivacyChecked(e.target.checked)}
+                    style={{ marginTop: 2, accentColor: '#2ab3aa', width: 16, height: 16, cursor: 'pointer', flexShrink: 0 }} />
+                  <span style={{ fontSize: 12, color: '#5a7a87', lineHeight: 1.5 }}>
+                    He leído y acepto la{' '}
+                    <a href="/privacidad" target="_blank" style={{ color: '#2ab3aa', fontWeight: 600, textDecoration: 'underline' }}>política de privacidad</a>
+                    {' '}y el tratamiento de mis datos personales conforme al RGPD.
+                  </span>
+                </label>
+              )}
+
+              {error && <div style={{ background: '#fff1f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#991b1b', fontWeight:600, marginBottom: 16 }}>⚠️ {error}</div>}
+
+              <button type="button" onClick={goNext} disabled={loading} style={{ width: '100%', padding: 14, background: loading ? '#ccc' : 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
+                {loading ? '⏳ Procesando...' : isFree ? '🚀 Crear cuenta gratis →' : 'Continuar →'}
+              </button>
+              <button type="button" onClick={() => setStep(1)} style={{ width: '100%', marginTop: 8, padding: '10px', background: 'none', border: 'none', color: '#88a8b0', fontSize: 13, cursor: 'pointer' }}>← Volver</button>
+            </div>
+          )}
+
+          {step === 3 && !isFree && (
+            <form onSubmit={handleSubmit}>
+              <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1a2533' }}>Dirección de facturación</h2>
+              <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Estos datos aparecerán en tus facturas. Si eres empresa, rellena también los campos de empresa.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={lblStyle}>Empresa (opcional)</label>
+                    <input style={inputStyle} value={billing.company} onChange={e=>setBilling(b=>({...b,company:e.target.value}))} placeholder="Mi Empresa S.L." />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={lblStyle}>NIF / CIF (opcional)</label>
+                    <input style={inputStyle} value={billing.nif} onChange={e=>setBilling(b=>({...b,nif:e.target.value}))} placeholder="B12345678" />
+                  </div>
+                </div>
+                <div>
+                  <label style={lblStyle}>Dirección</label>
+                  <input style={inputStyle} value={billing.address} onChange={e=>setBilling(b=>({...b,address:e.target.value}))} placeholder="Calle Mayor 1, 2º A" required
+                    onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                </div>
+                <div style={{ display: 'flex', gap: 12 }}>
+                  <div style={{ flex: 1 }}>
+                    <label style={lblStyle}>Ciudad</label>
+                    <input style={inputStyle} value={billing.city} onChange={e=>setBilling(b=>({...b,city:e.target.value}))} placeholder="Madrid" required
+                      onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                  </div>
+                  <div style={{ flex: 1 }}>
+                    <label style={lblStyle}>Código postal</label>
+                    <input style={inputStyle} value={billing.zip} onChange={e=>setBilling(b=>({...b,zip:e.target.value}))} placeholder="28001" required
+                      onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                  </div>
+                </div>
+                <div>
+                  <label style={lblStyle}>País</label>
+                  <select style={inputStyle} value={billing.country} onChange={e=>setBilling(b=>({...b,country:e.target.value}))}>
+                    {['España','México','Argentina','Colombia','Chile','Perú','Uruguay'].map(c => <option key={c}>{c}</option>)}
+                  </select>
                 </div>
               </div>
 
@@ -210,12 +303,12 @@ export default function Registro() {
               {error && <div style={{ background: '#fff1f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#991b1b', fontWeight:600, marginBottom: 16 }}>⚠️ {error}</div>}
 
               <button type="submit" disabled={loading} style={{ width: '100%', padding: 14, background: loading ? '#ccc' : 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
-                {loading ? '⏳ Procesando...' : isFree ? '🚀 Crear cuenta gratis →' : '💳 Ir al pago →'}
+                {loading ? '⏳ Redirigiendo al pago...' : '💳 Ir al pago →'}
               </button>
               <p style={{ fontSize: 12, color: '#88a8b0', textAlign: 'center', marginTop: 14 }}>
-                {isFree ? 'Sin tarjeta · Acceso inmediato' : 'Pago seguro con Redsys · SSL cifrado'}
+                Pago seguro con Redsys · SSL cifrado
               </p>
-              <button type="button" onClick={() => setStep(1)} style={{ width: '100%', marginTop: 8, padding: '10px', background: 'none', border: 'none', color: '#88a8b0', fontSize: 13, cursor: 'pointer' }}>← Volver</button>
+              <button type="button" onClick={() => setStep(2)} style={{ width: '100%', marginTop: 8, padding: '10px', background: 'none', border: 'none', color: '#88a8b0', fontSize: 13, cursor: 'pointer' }}>← Volver</button>
             </form>
           )}
         </div>
