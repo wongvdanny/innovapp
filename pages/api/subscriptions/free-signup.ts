@@ -32,15 +32,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         data: { name, email, password: hash, phone: phone || null }
       })
     } else {
-      const activeSub = await prisma.subscription.findFirst({
-        where: { userId: user.id, status: 'active' }
+      const existingSub = await prisma.subscription.findFirst({
+        where: { userId: user.id, productId: plan.productId, status: { in: ['active', 'pending'] } }
       })
-      if (activeSub) {
-        return res.status(400).json({ error: 'Ya existe una cuenta activa con este email. Inicia sesión.' })
+      if (existingSub) {
+        const productLabel = productSlug === 'gymstack' ? 'GymStack' : productSlug === 'servix' ? 'Servix' : 'este producto'
+        const msg = existingSub.status === 'active'
+          ? `Ya tienes una cuenta activa de ${productLabel} con este email. Inicia sesión.`
+          : `Ya tienes un registro pendiente de ${productLabel} con este email. Contacta con soporte si crees que es un error.`
+        return res.status(400).json({ error: msg })
       }
     }
     await prisma.subscription.updateMany({
-      where: { userId: user.id, status: 'pending' },
+      where: { userId: user.id, status: 'pending', productId: { not: plan.productId } },
       data: { status: 'cancelled' }
     })
     const startDate = new Date()
