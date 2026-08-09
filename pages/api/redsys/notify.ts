@@ -1,9 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../lib/prisma'
 import { createRedsysAPI, SANDBOX_URLS, PRODUCTION_URLS } from 'redsys-easy'
-import { createServixTenant } from '../../../lib/provisioning/servix'
-import { createGymstackTenant } from '../../../lib/provisioning/gymstack'
-import { sendWelcomeEmail } from '../../../lib/email'
+import { fulfillInvoice } from '../../../lib/fulfillment'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
@@ -24,92 +22,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!(responseCode >= 0 && responseCode <= 99)) return res.status(200).send('OK')
 
     const redsysOrderId = result.Ds_Order as string
-    const invoice = await prisma.invoice.findUnique({
-      where: { redsysOrderId },
-      include: { subscription: { include: { plan: { include: { Product: true } as any }, user: true } } }
-    })
+    const invoice = await prisma.invoice.findUnique({ where: { redsysOrderId } })
     if (!invoice) return res.status(200).send('OK')
 
-    // Idempotencia: Redsys puede reenviar la misma notificación varias veces.
-    // Si esta factura ya quedó marcada como pagada, no volvemos a aprovisionar
-    // ni a reenviar el email de bienvenida.
-    if (invoice.status === 'paid') {
-      console.log('Notificación repetida para invoice ya pagada, ignorando:', invoice.id)
-      return res.status(200).send('OK')
-    }
-
-    const { subscription } = invoice
-    const { user, plan } = subscription
-    const product = (plan as any).Product as { slug: string } | null
-    const billing = (subscription as any).billingData ? JSON.parse((subscription as any).billingData) : null
-
-    const startDate = new Date()
-    const endDate   = new Date()
-    if ((plan as any).interval === 'monthly') endDate.setMonth(endDate.getMonth() + 1)
-    else endDate.setFullYear(endDate.getFullYear() + 1)
-
-    let restaurantId: string | null = null
-    let gymId: string | null = null
-    let slug = ''
-
-    if (!product || product.slug === 'servix') {
-      try {
-        const restaurantName = billing?.entityName || billing?.restaurantName || billing?.company || `Restaurante de ${user.name}`
-        const created = await createServixTenant({
-          name: user.name,
-          restaurantName,
-          email: user.email,
-          passwordHash: user.password,
-        })
-        restaurantId = created.restaurantId
-        slug = created.slug
-        console.log('Restaurante creado:', restaurantId, slug)
-      } catch (e: any) {
-        console.error('Error Servix:', e.message)
-      }
-    } else if (product.slug === 'gymstack') {
-      try {
-        const gymName = billing?.entityName || billing?.gymName || billing?.company || `Gimnasio de ${user.name}`
-        const created = await createGymstackTenant({
-          name: user.name,
-          gymName,
-          email: user.email,
-          passwordHash: user.password,
-          innovappSubscriptionId: subscription.id,
-        })
-        gymId = created.gymId
-        slug = created.slug
-        console.log('Gimnasio creado:', gymId, slug)
-      } catch (e: any) {
-        console.error('Error GymStack:', e.message)
-      }
-    }
-
-    const externalId = restaurantId || gymId
-
-    // Activar suscripción
-    await prisma.subscription.update({
-      where: { id: subscription.id },
-      data: {
-        status: 'active', startDate, endDate,
-        ...(restaurantId ? {
-          servixRestaurantId: restaurantId,
-          servixSlug: slug,
-        } as any : {}),
-        ...(externalId ? {
-          provisioning: { create: { externalId, slug, status: 'active' } },
-        } as any : {}),
-      }
-    })
-    await prisma.invoice.update({ where: { id: invoice.id }, data: { status: 'paid' } })
-
-    // Enviar email completo
-    try {
-      await sendWelcomeEmail(user.email, user.name, (plan as any).name, (plan as any).price, (plan as any).interval, slug, billing, product?.slug || 'servix')
-    } catch (e: any) {
-      console.error('Error email:', e.message)
-    }
-
+    await fulfillInvoice(invoice.id)
     return res.status(200).send('OK')
   } catch (e: any) {
     console.error('Notify error:', e.message)
