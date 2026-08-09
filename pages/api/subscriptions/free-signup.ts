@@ -2,29 +2,29 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../lib/prisma'
 import bcrypt from 'bcryptjs'
 import { createServixTenant } from '../../../lib/provisioning/servix'
+import { createGymstackTenant } from '../../../lib/provisioning/gymstack'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
   try {
-    const { name, restaurantName, email, password, phone, planId } = req.body
-    if (!name || !restaurantName || !email || !password) {
+    const { name, restaurantName, entityName, email, password, phone, planId } = req.body
+    const finalEntityName = entityName || restaurantName
+    if (!name || !finalEntityName || !email || !password) {
       return res.status(400).json({ error: 'Faltan datos obligatorios' })
     }
     if (password.length < 8) {
       return res.status(400).json({ error: 'La contraseña debe tener al menos 8 caracteres' })
     }
-
     const plan = await prisma.plan.findUnique({
       where: { id: planId || 'plan_free' },
       include: { Product: true } as any,
     })
     if (!plan) return res.status(400).json({ error: 'Plan no encontrado' })
-
     const product = (plan as any).Product as { slug: string } | null
-    if (!product || product.slug !== 'servix') {
+    const productSlug = product?.slug
+    if (productSlug !== 'servix' && productSlug !== 'gymstack') {
       return res.status(400).json({ error: 'El alta gratuita automática todavía no está disponible para este producto. Contacta con soporte.' })
     }
-
     let user = await prisma.user.findUnique({ where: { email } })
     if (!user) {
       const hash = await bcrypt.hash(password, 10)
@@ -39,14 +39,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return res.status(400).json({ error: 'Ya existe una cuenta activa con este email. Inicia sesión.' })
       }
     }
-
     await prisma.subscription.updateMany({
       where: { userId: user.id, status: 'pending' },
       data: { status: 'cancelled' }
     })
-
     const startDate = new Date()
-
     const sub = await prisma.subscription.create({
       data: {
         userId: user.id,
@@ -55,35 +52,49 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         status: 'active',
         type: 'FREE',
         startDate,
-        billingData: JSON.stringify({ restaurantName }) as any,
+        billingData: JSON.stringify({ entityName: finalEntityName }) as any,
       } as any
     })
 
     let restaurantId: string | null = null
+    let gymId: string | null = null
     let slug = ''
+
     try {
-      const result = await createServixTenant({
-        name: user.name,
-        restaurantName,
-        email: user.email,
-        passwordHash: user.password,
-      })
-      restaurantId = result.restaurantId
-      slug = result.slug
+      if (productSlug === 'gymstack') {
+        const result = await createGymstackTenant({
+          name: user.name,
+          gymName: finalEntityName,
+          email: user.email,
+          passwordHash: user.password,
+          innovappSubscriptionId: sub.id,
+        })
+        gymId = result.gymId
+        slug = result.slug
+      } else {
+        const result = await createServixTenant({
+          name: user.name,
+          restaurantName: finalEntityName,
+          email: user.email,
+          passwordHash: user.password,
+        })
+        restaurantId = result.restaurantId
+        slug = result.slug
+      }
     } catch (e: any) {
-      console.error('Error provisionando restaurante FREE:', e.message)
+      console.error(`Error provisionando tenant FREE (${productSlug}):`, e.message)
     }
 
-    if (!restaurantId) {
-      return res.status(500).json({ error: 'No se pudo crear tu restaurante. Contacta con soporte.' })
+    const externalId = restaurantId || gymId
+    if (!externalId) {
+      return res.status(500).json({ error: 'No se pudo crear tu cuenta. Contacta con soporte.' })
     }
 
     await prisma.subscription.update({
       where: { id: sub.id },
       data: {
-        servixRestaurantId: restaurantId,
-        servixSlug: slug,
-        provisioning: { create: { externalId: restaurantId, slug, status: 'active' } },
+        ...(restaurantId ? { servixRestaurantId: restaurantId, servixSlug: slug } as any : {}),
+        provisioning: { create: { externalId, slug, status: 'active' } },
       } as any
     })
 
