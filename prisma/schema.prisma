@@ -64,6 +64,8 @@ model Invoice {
   redsysOrderId  String?      @unique
   paidAt         DateTime?
   createdAt      DateTime     @default(now())
+  provider       String       @default("redsys")
+  providerRef    String?
   subscription   Subscription @relation(fields: [subscriptionId], references: [id])
   user           User         @relation(fields: [userId], references: [id])
 }
@@ -76,12 +78,13 @@ model NewsletterSubscriber {
 }
 
 model RedsysConfig {
-  id           String @id @default(cuid())
+  id           String  @id @default(cuid())
   merchantCode String
   secretKey    String
   terminal     String
-  currency     String @default("978")
-  environment  String @default("test")
+  currency     String  @default("978")
+  environment  String  @default("test")
+  enabled      Boolean @default(true)
 }
 
 model Product {
@@ -105,4 +108,13 @@ model Provisioning {
   createdAt      DateTime     @default(now()) @db.Timestamp(6)
   updatedAt      DateTime     @default(now()) @db.Timestamp(6)
   subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model StripeConfig {
+  id             String  @id @default(dbgenerated("(gen_random_uuid())::text"))
+  publishableKey String  @default("")
+  secretKey      String  @default("")
+  webhookSecret  String  @default("")
+  environment    String  @default("test")
+  enabled        Boolean @default(false)
 }
