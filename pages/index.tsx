@@ -7,9 +7,6 @@ export default function Home() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
   const [subscribing, setSubscribing] = useState(false)
-  const [privacyChecked, setPrivacyChecked] = useState(false)
-  const [privacyError, setPrivacyError] = useState(false)
-
   const handleNewsletter = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!email) return
@@ -20,16 +17,11 @@ export default function Home() {
     } finally { setSubscribing(false) }
   }
 
-  const handleFreeSignup = () => {
-    if (!privacyChecked) { setPrivacyError(true); return }
-    window.location.href = '/registro?plan=free'
-  }
-
   return (
     <>
       <Head>
         <title>innovapp — Desarrollo de Aplicaciones Web y Software a Medida</title>
-        <meta name="description" content="innovapp es una empresa española de desarrollo de aplicaciones web y software SaaS. Creamos soluciones digitales a medida para empresas y negocios. Nuestro producto Servix digitaliza restaurantes con TPV, carta QR y gestión completa." />
+        <meta name="description" content="innovapp es una empresa española de desarrollo de aplicaciones web y software SaaS. Creamos soluciones digitales a medida para empresas y negocios. Nuestros productos, Servix (TPV para restaurantes) y GymStack (gestión de gimnasios), digitalizan negocios de principio a fin." />
         <meta name="keywords" content="desarrollo aplicaciones web, software a medida, empresa tecnología España, SaaS hostelería, TPV restaurante, innovapp, aplicaciones móviles, digitalización empresas" />
         <meta property="og:title" content="innovapp — Desarrollo de Aplicaciones Web y Software a Medida" />
         <meta property="og:description" content="Empresa española de tecnología web. Desarrollamos aplicaciones SaaS, software a medida y soluciones digitales para negocios modernos." />
@@ -141,103 +133,43 @@ export default function Home() {
                 ))}
               </div>
               <div style={{ display: 'flex', gap: 10 }}>
-                <a href="#precios" style={{ flex: 1, padding: '11px', background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', borderRadius: 10, fontSize: 13, fontWeight: 700, textDecoration: 'none', textAlign: 'center', boxShadow: '0 4px 14px rgba(42,179,170,.3)' }}>Ver planes →</a>
+                <a href="/servix#precios" style={{ flex: 1, padding: '11px', background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', borderRadius: 10, fontSize: 13, fontWeight: 700, textDecoration: 'none', textAlign: 'center', boxShadow: '0 4px 14px rgba(42,179,170,.3)' }}>Ver planes →</a>
                 <a href="/servix" style={{ flex: 1, padding: '11px', background: '#f8fafb', border: '1px solid #eef1f4', color: '#1a3d4f', borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: 'none', textAlign: 'center' }}>Más info</a>
               </div>
             </div>
-            <div style={{ background: 'white', border: '2px dashed #e0e8ec', borderRadius: 24, padding: '36px 32px', textAlign: 'left', opacity: 0.7 }}>
-              <div style={{ display: 'inline-block', background: '#f0f4f6', borderRadius: 8, padding: '3px 12px', fontSize: 11, fontWeight: 700, color: '#88a8b0', marginBottom: 20 }}>🔒 Próximamente</div>
-              <div style={{ width: 52, height: 52, borderRadius: 14, background: '#f0f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26, marginBottom: 16 }}>🏪</div>
-              <div style={{ fontSize: 20, fontWeight: 800, color: '#88a8b0', marginBottom: 8 }}>Nuevo producto</div>
-              <p style={{ fontSize: 14, color: '#aabcc4', lineHeight: 1.75, marginBottom: 24 }}>Estamos desarrollando nuevas soluciones para otros sectores. Suscríbete a nuestra newsletter para ser el primero en enterarte.</p>
-              <a href="#contacto" style={{ display: 'inline-block', padding: '11px 20px', background: '#f0f4f6', color: '#88a8b0', borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: 'none' }}>Avisarme →</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section style={{ padding: '100px 24px', background: 'white' }} id="precios">
-        <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ display: 'inline-block', background: 'rgba(42,179,170,.1)', border: '1px solid rgba(42,179,170,.2)', borderRadius: 100, padding: '5px 16px', fontSize: 11, fontWeight: 700, color: '#2ab3aa', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 16 }}>Planes Servix</div>
-          <h2 style={{ fontSize: 'clamp(26px,3.5vw,46px)', fontWeight: 800, letterSpacing: -1.5, marginBottom: 16, color: '#0d1f2d' }}>Empieza gratis,<br />crece cuando quieras</h2>
-          <p style={{ fontSize: 16, color: '#5a7a87', maxWidth: 500, margin: '0 auto 56px', lineHeight: 1.75 }}>Sin tarjeta de crédito. Sin permanencia. Activa tu restaurante hoy mismo y pasa a Pro solo cuando lo necesites.</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 20, maxWidth: 1000, margin: '0 auto' }}>
-
-            <div style={{ background: '#f8fafb', border: '2px solid #eef1f4', borderRadius: 24, padding: '36px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#88a8b0', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Gratis</div>
-              <div style={{ fontSize: 52, fontWeight: 800, color: '#1a2533', lineHeight: 1 }}>0<span style={{ fontSize: 22, fontWeight: 500, color: '#88a8b0' }}>€</span></div>
-              <div style={{ fontSize: 13, color: '#88a8b0', marginBottom: 8 }}>para siempre · sin tarjeta</div>
-              <div style={{ display: 'inline-block', background: 'rgba(42,179,170,.1)', borderRadius: 8, padding: '3px 10px', fontSize: 11, fontWeight: 700, color: '#2ab3aa', marginBottom: 24, alignSelf: 'flex-start' }}>✦ Ideal para empezar</div>
-              <hr style={{ border: 'none', borderTop: '1px solid #eef1f4', marginBottom: 20 }} />
-              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28, flex: 1 }}>
-                {[['✓','Hasta 5 mesas'],['✓','1 empleado / camarero'],['✓','Carta digital QR'],['✓','Pedidos y comandas'],['✓','Historial 7 días'],['✗','Mesas ilimitadas'],['✗','Empleados ilimitados'],['✗','Historial completo'],['✗','Informes y analytics'],['✗','Soporte prioritario']].map(([check, f]) => (
-                  <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: check === '✓' ? '#1a3d4f' : '#bcc8cc' }}>
-                    <div style={{ width: 18, height: 18, borderRadius: 5, background: check === '✓' ? 'rgba(42,179,170,.12)' : '#f0f4f6', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: check === '✓' ? '#2ab3aa' : '#bcc8cc', fontWeight: 700, flexShrink: 0 }}>{check}</div>
+            <div style={{ background: 'white', border: '2px solid #f1eef4', borderRadius: 24, padding: '36px 32px', textAlign: 'left', boxShadow: '0 8px 40px rgba(61,26,79,.07)', transition: 'transform .2s,box-shadow .2s', cursor: 'pointer' }}
+              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 60px rgba(61,26,79,.12)' }}
+              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 40px rgba(61,26,79,.07)' }}>
+              <div style={{ display: 'inline-block', background: '#f5f0ff', border: '1px solid rgba(168,85,247,.2)', borderRadius: 8, padding: '3px 12px', fontSize: 11, fontWeight: 700, color: '#a855f7', marginBottom: 20 }}>✦ Disponible</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
+                <div style={{ width: 52, height: 52, borderRadius: 14, background: 'linear-gradient(135deg,#a855f7,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26 }}>💪</div>
+                <div>
+                  <div style={{ fontSize: 26, fontWeight: 800, color: '#3d1a4f', lineHeight: 1 }}>gym<span style={{ color: '#a855f7' }}>stack</span></div>
+                  <div style={{ fontSize: 12, color: '#a88ab0', marginTop: 2 }}>Gestión para gimnasios</div>
+                </div>
+              </div>
+              <p style={{ fontSize: 14, color: '#7a5a87', lineHeight: 1.75, marginBottom: 24 }}>Sistema completo de gestión para gimnasios y centros deportivos. Socios, reservas de clases, control de accesos y seguimiento de rutinas, todo en un solo panel.</p>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 28 }}>
+                {['Gestión de socios','Reservas de clases','Control de accesos','Rutinas y seguimiento','Informes y analytics'].map(f => (
+                  <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#3d1a4f' }}>
+                    <div style={{ width: 18, height: 18, borderRadius: 5, background: 'rgba(168,85,247,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: '#a855f7', fontWeight: 700, flexShrink: 0 }}>✓</div>
                     {f}
-                  </li>
+                  </div>
                 ))}
-              </ul>
-              <div>
-                <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer', marginBottom: 12 }}>
-                  <input type="checkbox" checked={privacyChecked} onChange={e => { setPrivacyChecked(e.target.checked); if (e.target.checked) setPrivacyError(false) }}
-                    style={{ marginTop: 2, accentColor: '#2ab3aa', width: 15, height: 15, cursor: 'pointer', flexShrink: 0 }} />
-                  <span style={{ fontSize: 12, color: privacyError ? '#e53e3e' : '#88a8b0', lineHeight: 1.5 }}>
-                    He leído y acepto la{' '}
-                    <a href="/privacidad" target="_blank" style={{ color: '#2ab3aa', textDecoration: 'underline' }}>política de privacidad</a>
-                    {' '}y el tratamiento de mis datos.
-                  </span>
-                </label>
-                {privacyError && <p style={{ fontSize: 11, color: '#e53e3e', marginBottom: 8, marginTop: -4 }}>Debes aceptar la política de privacidad para continuar.</p>}
-                <button onClick={handleFreeSignup}
-                  style={{ display: 'block', width: '100%', padding: '13px', background: privacyChecked ? 'linear-gradient(135deg,#2ab3aa,#1a6478)' : '#e0e8ec', color: privacyChecked ? 'white' : '#88a8b0', borderRadius: 12, fontSize: 14, fontWeight: 700, textAlign: 'center', border: 'none', cursor: 'pointer', boxSizing: 'border-box', transition: 'all .2s' }}>
-                  Crear cuenta gratis →
-                </button>
+              </div>
+              <div style={{ display: 'flex', gap: 10 }}>
+                <a href="/gymstack#precios" style={{ flex: 1, padding: '11px', background: 'linear-gradient(135deg,#a855f7,#7c3aed)', color: 'white', borderRadius: 10, fontSize: 13, fontWeight: 700, textDecoration: 'none', textAlign: 'center', boxShadow: '0 4px 14px rgba(168,85,247,.3)' }}>Ver planes →</a>
+                <a href="/gymstack" style={{ flex: 1, padding: '11px', background: '#f8fafb', border: '1px solid #eef1f4', color: '#1a3d4f', borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: 'none', textAlign: 'center' }}>Más info</a>
               </div>
             </div>
-
-            <div style={{ background: 'white', border: '2px solid #eef1f4', borderRadius: 24, padding: '36px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ fontSize: 12, fontWeight: 700, color: '#88a8b0', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Pro Mensual</div>
-              <div style={{ fontSize: 52, fontWeight: 800, color: '#1a2533', lineHeight: 1 }}>99<span style={{ fontSize: 22, fontWeight: 500, color: '#88a8b0' }}>€</span></div>
-              <div style={{ fontSize: 13, color: '#88a8b0', marginBottom: 8 }}>por mes · sin permanencia</div>
-              <div style={{ height: 26, marginBottom: 24 }} />
-              <hr style={{ border: 'none', borderTop: '1px solid #eef1f4', marginBottom: 20 }} />
-              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28, flex: 1 }}>
-                {['Mesas y zonas ilimitadas','Empleados ilimitados','Historial completo','Carta digital QR','Pantalla de cocina','Pagos con tarjeta Redsys','Reservas online','Informes y KPIs completos','Tickets y facturas','Soporte por email'].map(f => (
-                  <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#1a3d4f' }}>
-                    <div style={{ width: 18, height: 18, borderRadius: 5, background: 'rgba(42,179,170,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: '#2ab3aa', fontWeight: 700, flexShrink: 0 }}>✓</div>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <a href="/registro?plan=plan_monthly" style={{ display: 'block', width: '100%', padding: '13px', background: '#1a2533', color: 'white', borderRadius: 12, fontSize: 14, fontWeight: 700, textAlign: 'center', textDecoration: 'none', boxSizing: 'border-box' }}>Contratar mensual →</a>
-            </div>
-
-            <div style={{ background: 'linear-gradient(145deg,#1a3d4f,#0d1f2d)', border: '2px solid rgba(42,179,170,.25)', borderRadius: 24, padding: '36px 28px', textAlign: 'left', boxShadow: '0 30px 80px rgba(26,61,79,.25)', display: 'flex', flexDirection: 'column' }}>
-              <div style={{ display: 'inline-block', background: '#f59e0b', color: 'white', borderRadius: 8, padding: '3px 12px', fontSize: 11, fontWeight: 800, marginBottom: 8 }}>⭐ Más popular · Ahorra 2 meses</div>
-              <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,.5)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Pro Anual</div>
-              <div style={{ fontSize: 52, fontWeight: 800, color: 'white', lineHeight: 1 }}>990<span style={{ fontSize: 22, fontWeight: 500, color: 'rgba(255,255,255,.4)' }}>€</span></div>
-              <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginBottom: 4 }}>por año · 82,50€/mes</div>
-              <div style={{ fontSize: 12, color: '#f59e0b', fontWeight: 600, marginBottom: 24 }}>💰 Ahorras 198€ al año</div>
-              <hr style={{ border: 'none', borderTop: '1px solid rgba(255,255,255,.1)', marginBottom: 20 }} />
-              <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 10, marginBottom: 28, flex: 1 }}>
-                {['Todo lo del plan mensual','Soporte prioritario 24/7','Onboarding personalizado','Formación del equipo','Actualizaciones prioritarias','Personalización de marca'].map(f => (
-                  <li key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'rgba(255,255,255,.85)' }}>
-                    <div style={{ width: 18, height: 18, borderRadius: 5, background: 'rgba(42,179,170,.2)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: '#4ecdc4', fontWeight: 700, flexShrink: 0 }}>✓</div>
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <a href="/registro?plan=plan_yearly" style={{ display: 'block', width: '100%', padding: '13px', background: 'linear-gradient(135deg,#4ecdc4,#2ab3aa)', color: 'white', borderRadius: 12, fontSize: 14, fontWeight: 700, textAlign: 'center', textDecoration: 'none', boxSizing: 'border-box', boxShadow: '0 6px 20px rgba(78,205,196,.3)' }}>Contratar anual →</a>
-            </div>
           </div>
-          <p style={{ fontSize: 13, color: '#88a8b0', marginTop: 24 }}>✓ Sin comisiones por venta · ✓ Sin hardware obligatorio · ✓ Cancela cuando quieras</p>
         </div>
       </section>
 
       <section style={{ padding: '80px 24px', background: 'linear-gradient(135deg,#f0f9f8,#e8f4f3)' }}>
         <div style={{ maxWidth: 860, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontSize: 'clamp(22px,3vw,38px)', fontWeight: 800, letterSpacing: -1, marginBottom: 16, color: '#0d1f2d' }}>¿Por qué ofrecemos un plan gratuito?</h2>
-          <p style={{ fontSize: 16, color: '#5a7a87', lineHeight: 1.85, maxWidth: 640, margin: '0 auto 40px' }}>Porque creemos que la tecnología no debería ser una barrera de entrada. Queremos que cualquier restaurante, grande o pequeño, pueda digitalizarse sin riesgo. Cuando compruebes el valor real de Servix, el paso a Pro es natural.</p>
+          <p style={{ fontSize: 16, color: '#5a7a87', lineHeight: 1.85, maxWidth: 640, margin: '0 auto 40px' }}>Porque creemos que la tecnología no debería ser una barrera de entrada. Queremos que cualquier negocio, grande o pequeño, pueda digitalizarse sin riesgo. Cuando compruebes el valor real de nuestros productos, el paso a Pro es natural.</p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 16 }}>
             {[['🚀','Sin riesgo','Prueba todas las funciones básicas sin poner la tarjeta. Cero compromiso.'],['📈','Crece a tu ritmo','Cuando tu restaurante crezca y necesites más mesas o empleados, el upgrade es instantáneo.'],['🔓','Sin trampas','El plan gratis no caduca. No te forzamos a pagar con presión artificial.']].map(([icon, title, desc]) => (
               <div key={String(title)} style={{ background: 'white', borderRadius: 20, padding: '28px 24px', border: '1px solid rgba(42,179,170,.12)', boxShadow: '0 4px 20px rgba(26,61,79,.05)' }}>
