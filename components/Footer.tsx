@@ -8,12 +8,13 @@ export default function Footer() {
           <div>
             <img src="/logo.webp" alt="innovapp" style={{ height: 36, filter: 'brightness(0) invert(1) opacity(.6)', marginBottom: 14 }} />
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,.35)', lineHeight: 1.75, maxWidth: 240 }}>
-              Desarrollamos software para el sector de la restauración y hostelería.
+              Desarrollamos software SaaS para hostelería y gestión deportiva: Servix y GymStack.
             </p>
           </div>
           {[
             { title: 'Empresa', links: [['#empresa','Quiénes somos'],['mailto:hola@innovapp.es','Contacto']] },
-            { title: 'Servix',  links: [['#funciones','Funciones'],['#precios','Precios'],['https://servix.innovapp.es','Acceder']] },
+            { title: 'Servix',  links: [['/servix','Ver producto'],['/servix#precios','Precios'],['https://servix.innovapp.es','Acceder']] },
+            { title: 'GymStack', links: [['/gymstack','Ver producto'],['/gymstack#precios','Precios'],['https://gymstack.innovapp.es','Acceder']] },
             { title: 'Legal',   links: [['/privacidad','Privacidad'],['/aviso-legal','Aviso Legal'],['/cookies','Cookies'],['/uso','Términos de Uso']] },
           ].map(col => (
             <div key={col.title}>
@@ -28,13 +29,13 @@ export default function Footer() {
         </div>
         <div style={{ borderTop: '1px solid rgba(255,255,255,.05)', paddingTop: 24, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,.25)', margin: 0 }}>© 2025 <span style={{ color: '#2ab3aa' }}>innovapp</span> · Todos los derechos reservados</p>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,.25)', margin: 0 }}>Hecho con ❤️ para la hostelería española</p>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,.25)', margin: 0 }}>Hecho con ❤️ en España</p>
         </div>
       </div>
       <style>{`
         .footer-grid {
           display: grid;
-          grid-template-columns: 2fr 1fr 1fr 1fr;
+          grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
           gap: 40px;
         }
         @media(max-width: 768px) {

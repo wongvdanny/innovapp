@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postbuild": "next-sitemap"
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.11.2",
@@ -16,6 +17,7 @@
     "formidable": "^3.5.4",
     "next": "14.2.35",
     "next-auth": "^4.24.14",
+    "next-sitemap": "^4.2.3",
     "nodemailer": "^7.0.13",
     "pg": "^8.20.0",
     "prisma": "^5.22.0",

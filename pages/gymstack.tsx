@@ -22,11 +22,43 @@ export default function GymstackPage({ plans }: { plans: PlanData[] }) {
   return (
     <>
       <Head>
-        <title>GymStack — Gestión para Gimnasios | innovapp</title>
-        <meta name="description" content="GymStack digitaliza tu gimnasio: socios, reservas de clases, control de accesos e informes. Empieza gratis." />
-        <meta property="og:title" content="GymStack — Gestión para Gimnasios" />
+        <title>GymStack — Software de Gestión para Gimnasios y Centros Deportivos | innovapp</title>
+        <meta name="description" content="GymStack digitaliza tu gimnasio: gestión de socios, reservas de clases, control de accesos y seguimiento de rutinas. Empieza gratis, sin tarjeta." />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="GymStack — Software de Gestión para Gimnasios" />
+        <meta property="og:description" content="Sistema completo de gestión para gimnasios y centros deportivos: socios, reservas de clases, accesos y rutinas, todo en un solo panel." />
         <meta property="og:url" content="https://innovapp.es/gymstack" />
+        <meta property="og:image" content="https://innovapp.es/logo.webp" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="GymStack — Gestión para Gimnasios" />
+        <meta name="twitter:description" content="Socios, reservas, accesos y rutinas, todo en un solo panel. Empieza gratis." />
         <link rel="canonical" href="https://innovapp.es/gymstack" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              "name": "GymStack",
+              "applicationCategory": "BusinessApplication",
+              "operatingSystem": "Web",
+              "description": "Software de gestión para gimnasios y centros deportivos: socios, reservas de clases, control de accesos y seguimiento de rutinas.",
+              "url": "https://innovapp.es/gymstack",
+              "offers": {
+                "@type": "AggregateOffer",
+                "priceCurrency": "EUR",
+                "lowPrice": "0",
+                "highPrice": "490",
+                "offerCount": "3",
+              },
+              "provider": {
+                "@type": "Organization",
+                "name": "innovapp",
+                "url": "https://innovapp.es",
+              },
+            }),
+          }}
+        />
       </Head>
 
       <Nav />

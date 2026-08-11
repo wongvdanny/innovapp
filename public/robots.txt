@@ -3,5 +3,8 @@ Allow: /
 Disallow: /admin
 Disallow: /api
 Disallow: /dashboard
+Disallow: /checkout
+Disallow: /registro
 
 Sitemap: https://innovapp.es/sitemap.xml
+

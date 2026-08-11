@@ -37,8 +37,31 @@ export default function Home() {
           "@type": "Organization",
           "name": "innovapp",
           "url": "https://innovapp.es",
-          "description": "Empresa de desarrollo de aplicaciones web y software SaaS",
-          "address": { "@type": "PostalAddress", "addressCountry": "ES" }
+          "logo": "https://innovapp.es/logo.webp",
+          "description": "Empresa española de desarrollo de aplicaciones web y software SaaS",
+          "address": { "@type": "PostalAddress", "addressCountry": "ES" },
+          "makesOffer": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "SoftwareApplication",
+                "name": "Servix",
+                "url": "https://innovapp.es/servix",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "Web"
+              }
+            },
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "SoftwareApplication",
+                "name": "GymStack",
+                "url": "https://innovapp.es/gymstack",
+                "applicationCategory": "BusinessApplication",
+                "operatingSystem": "Web"
+              }
+            }
+          ]
         })}} />
       </Head>
 
