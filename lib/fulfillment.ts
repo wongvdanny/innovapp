@@ -83,6 +83,11 @@ export async function fulfillInvoice(invoiceId: string) {
       newsUserId = created.userId
       slug = 'news'
       console.log('Usuario News aprovisionado (suscripción):', newsUserId)
+      fetch('https://news.innovapp.es/api/internal/generate-for-user', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-internal-secret': process.env.NEWS_INTERNAL_API_SECRET || '' },
+        body: JSON.stringify({ userId: newsUserId }),
+      }).catch((e) => console.error('Error disparando generación de digest News:', e.message))
     } catch (e: any) {
       console.error('Error News:', e.message)
     }

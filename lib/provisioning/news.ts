@@ -33,8 +33,8 @@ export async function createNewsTenant(input: NewsTenantInput): Promise<NewsTena
     if (existing.rows.length > 0) {
       userId = existing.rows[0].id
       await client.query(
-        `UPDATE "User" SET country = $1, province = $2, city = $3, topics = $4, plan = $5, "updatedAt" = now() WHERE id = $6`,
-        [input.country, province, city, topics, plan, userId]
+        `UPDATE "User" SET country = $1, province = $2, city = $3, topics = $4, plan = $5, password = $6, "updatedAt" = now() WHERE id = $7`,
+        [input.country, province, city, topics, plan, input.passwordHash, userId]
       )
     } else {
       userId = randomUUID()
