@@ -8,7 +8,7 @@ import Link from 'next/link'
 
 
 export default function Admin({ stats, subscriptions, plans, redsysConfig, stripeConfig }: any) {
-  const [tab, setTab] = useState<'subs'|'restaurants'|'gyms'|'plans'|'redsys'|'stripe'|'newsletter'|'config'>('subs')
+  const [tab, setTab] = useState<'subs'|'restaurants'|'gyms'|'news'|'plans'|'redsys'|'stripe'|'newsletter'|'config'>('subs')
   const [subList, setSubList] = useState(subscriptions)
   const [actionId, setActionId] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
@@ -169,7 +169,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
         {/* Tabs */}
         <div style={{ padding: '24px 48px 0', maxWidth: 1400, margin: '0 auto' }}>
           <div style={{ display: 'flex', gap: 4, background: 'white', border: '1px solid #eef1f4', borderRadius: 14, padding: 4, width: 'fit-content' }}>
-            {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['gyms','💪 Gimnasios'],['plans','📦 Planes'],['redsys','💳 Redsys'],['stripe','💜 Stripe'],['newsletter','📧 Newsletter'],['config','⚙️ Configuración']].map(([key, label]) => (
+            {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['gyms','💪 Gimnasios'],['news','🎙️ News'],['plans','📦 Planes'],['redsys','💳 Redsys'],['stripe','💜 Stripe'],['newsletter','📧 Newsletter'],['config','⚙️ Configuración']].map(([key, label]) => (
               <button key={key} onClick={() => setTab(key as any)}
                 style={{ padding: '8px 20px', borderRadius: 10, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                   background: tab === key ? 'linear-gradient(135deg,#2ab3aa,#1a6478)' : 'transparent',
@@ -309,6 +309,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
 
           {tab === 'restaurants' && <RestaurantsTab />}
           {tab === 'gyms'        && <GymsTab />}
+          {tab === 'news'        && <NewsTab />}
           {tab === 'config'     && <ConfigTab />}
           {tab === 'plans'      && <PlansTab plans={plans} />}
           {tab === 'redsys'     && <RedsysTab config={redsysConfig} />}
@@ -1074,4 +1075,142 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
       })(),
     }
   }
+}
+
+
+function NewsTab() {
+  const [data, setData]       = useState<any[]>([])
+  const [costs, setCosts]     = useState<any>(null)
+  const [loading, setLoading] = useState(true)
+  const [period, setPeriod]   = useState('30d')
+  const [customFrom, setCustomFrom] = useState('')
+  const [customTo,   setCustomTo]   = useState('')
+
+  const load = async (from?: string, to?: string) => {
+    setLoading(true)
+    const params = new URLSearchParams()
+    if (from) params.set('from', from)
+    if (to)   params.set('to',   to)
+    const r = await fetch('/api/admin/news?' + params.toString())
+    const d = await r.json()
+    setData(Array.isArray(d) ? d : [])
+    const rc = await fetch('/api/admin/news-costs?' + params.toString())
+    const dc = await rc.json()
+    setCosts(dc)
+    setLoading(false)
+  }
+
+  const applyPeriod = (p: string) => {
+    setPeriod(p)
+    const now  = new Date()
+    const from = new Date()
+    if (p === '30d')  from.setDate(now.getDate() - 30)
+    if (p === '6m')   from.setMonth(now.getMonth() - 6)
+    if (p === '1y')   from.setFullYear(now.getFullYear() - 1)
+    if (p !== 'custom') load(from.toISOString(), now.toISOString())
+  }
+
+  useEffect(() => { load() }, [])
+
+  const totalDigests = data.reduce((a, r) => a + r.digestsGenerated, 0)
+  const totalRevenue = data.reduce((a, r) => a + r.planPrice, 0)
+
+  const inp = { padding: '8px 12px', borderRadius: 8, border: '1.5px solid #eef1f4', fontSize: 13, outline: 'none', fontFamily: 'Plus Jakarta Sans,sans-serif' }
+  const periodBtns = [['30d','30 días'],['6m','6 meses'],['1y','1 año'],['custom','Personalizado']]
+
+  return (
+    <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+      <div style={{ background: 'white', borderRadius: 16, border: '1px solid #eef1f4', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#1a2533' }}>Periodo:</span>
+        <div style={{ display: 'flex', gap: 6 }}>
+          {periodBtns.map(([key, label]) => (
+            <button key={key} onClick={() => applyPeriod(key)}
+              style={{ padding: '6px 16px', borderRadius: 8, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
+                background: period === key ? 'linear-gradient(135deg,#3d2b6f,#e6672a)' : '#f0f2f5',
+                color: period === key ? 'white' : '#4a6572' }}>
+              {label}
+            </button>
+          ))}
+        </div>
+        {period === 'custom' && (
+          <div style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <input type="date" value={customFrom} onChange={e => setCustomFrom(e.target.value)} style={inp} />
+            <span style={{ color: '#88a8b0', fontSize: 13 }}>→</span>
+            <input type="date" value={customTo} onChange={e => setCustomTo(e.target.value)} style={inp} />
+            <button onClick={() => load(new Date(customFrom).toISOString(), new Date(customTo).toISOString())}
+              disabled={!customFrom || !customTo}
+              style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: 'linear-gradient(135deg,#3d2b6f,#e6672a)', color: 'white', fontSize: 13, fontWeight:700, cursor: 'pointer' }}>
+              Aplicar
+            </button>
+          </div>
+        )}
+      </div>
+
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+        {[
+          ['🎙️', 'Suscriptores activos', data.length],
+          ['🎧', 'Audios generados',      totalDigests],
+          ['💶', 'Ingresos (MRR)',        totalRevenue.toFixed(2) + ' €'],
+        ].map(([icon, label, value]) => (
+          <div key={String(label)} style={{ background: 'white', borderRadius: 16, padding: '20px 24px', border: '1px solid #eef1f4', boxShadow: '0 2px 8px rgba(0,0,0,.04)' }}>
+            <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: '#1a2533', lineHeight: 1 }}>{value}</div>
+            <div style={{ fontSize: 13, color: '#88a8b0', marginTop: 4 }}>{label}</div>
+          </div>
+        ))}
+      </div>
+
+      {costs && (
+        <div style={{ background: 'white', borderRadius: 16, border: '1px solid #eef1f4', padding: '20px 24px' }}>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#1a2533', marginBottom: 4 }}>💸 Consumo y coste estimado de APIs</div>
+          <div style={{ fontSize: 12, color: '#88a8b0', marginBottom: 16 }}>
+            Claude Haiku 4.5: 1/5 dolar por millon de tokens E/S. Google TTS Neural2: 16 dolares por millon de caracteres, 1M gratis al mes. NewsData.io: gratis hasta 200 llamadas/dia.
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 16 }}>
+
+            {[['Generaciones', costs.runs], ['Llamadas NewsData', costs.newsdataCalls], ['Tokens Claude E/S', costs.claudeInputTokens + ' / ' + costs.claudeOutputTokens], ['Caracteres TTS', costs.ttsCharacters.toLocaleString('es-ES')], ['Coste total est.', '$' + costs.totalCostUsd.toFixed(4)]].map(([label, value]) => (
+              <div key={String(label)}>
+                <div style={{ fontSize: 18, fontWeight: 800, color: '#1a2533' }}>{value}</div>
+                <div style={{ fontSize: 12, color: '#88a8b0' }}>{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <div style={{ background: 'white', borderRadius: 16, border: '1px solid #eef1f4', overflow: 'hidden' }}>
+        <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+          <thead>
+            <tr style={{ background: '#f8fafb', textAlign: 'left' }}>
+              {['Nombre', 'Email', 'País', 'Provincia/Ciudad', 'Temas', 'Plan', 'Audios', 'Última generación'].map(h => (
+                <th key={h} style={{ padding: '12px 16px', fontWeight: 700, color: '#4a6572', whiteSpace: 'nowrap' }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+
+            {loading ? (
+              <tr><td colSpan={8} style={{ padding: 24, textAlign: 'center', color: '#88a8b0' }}>Cargando...</td></tr>
+            ) : data.length === 0 ? (
+              <tr><td colSpan={8} style={{ padding: 24, textAlign: 'center', color: '#88a8b0' }}>Sin suscriptores en este periodo</td></tr>
+            ) : (
+              data.map(row => (
+                <tr key={row.id} style={{ borderTop: '1px solid #eef1f4' }}>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, color: '#1a2533' }}>{row.name}</td>
+                  <td style={{ padding: '12px 16px', color: '#4a6572' }}>{row.email}</td>
+                  <td style={{ padding: '12px 16px', color: '#4a6572' }}>{row.country}</td>
+                  <td style={{ padding: '12px 16px', color: '#4a6572' }}>{[row.city, row.province].filter(Boolean).join(', ') || '—'}</td>
+                  <td style={{ padding: '12px 16px', color: '#4a6572' }}>{(row.topics || []).join(', ') || '—'}</td>
+                  <td style={{ padding: '12px 16px', color: '#4a6572' }}>{row.plan} · {row.planPrice}€</td>
+                  <td style={{ padding: '12px 16px', color: '#4a6572' }}>{row.digestsGenerated}</td>
+                  <td style={{ padding: '12px 16px', color: '#4a6572' }}>{row.lastDigestDate ? new Date(row.lastDigestDate).toLocaleDateString('es-ES') : '—'}</td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  )
 }
