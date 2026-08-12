@@ -1,6 +1,7 @@
 import { prisma } from './prisma'
 import { createServixTenant } from './provisioning/servix'
 import { createGymstackTenant } from './provisioning/gymstack'
+import { createNewsTenant } from './provisioning/news'
 import { sendWelcomeEmail } from './email'
 
 // Aprovisiona y activa una suscripción a partir de una factura ya cobrada.
@@ -31,7 +32,9 @@ export async function fulfillInvoice(invoiceId: string) {
 
   let restaurantId: string | null = null
   let gymId: string | null = null
+  let newsUserId: string | null = null
   let slug = ''
+  let emailName = user.name
 
   if (!product || product.slug === 'servix') {
     try {
@@ -64,9 +67,28 @@ export async function fulfillInvoice(invoiceId: string) {
     } catch (e: any) {
       console.error('Error GymStack:', e.message)
     }
+  } else if (product.slug === 'news') {
+    try {
+      emailName = billing?.name || user.name
+      const created = await createNewsTenant({
+        name: emailName,
+        email: user.email,
+        passwordHash: user.password,
+        country: billing?.country || 'ES',
+        province: billing?.province,
+        city: billing?.city,
+        topics: billing?.topics || [],
+        plan: 'SUBSCRIBER',
+      })
+      newsUserId = created.userId
+      slug = 'news'
+      console.log('Usuario News aprovisionado (suscripción):', newsUserId)
+    } catch (e: any) {
+      console.error('Error News:', e.message)
+    }
   }
 
-  const externalId = restaurantId || gymId
+  const externalId = restaurantId || gymId || newsUserId
 
   await prisma.subscription.update({
     where: { id: subscription.id },
@@ -84,7 +106,7 @@ export async function fulfillInvoice(invoiceId: string) {
   await prisma.invoice.update({ where: { id: invoice.id }, data: { status: 'paid', paidAt: new Date() } })
 
   try {
-    await sendWelcomeEmail(user.email, user.name, (plan as any).name, (plan as any).price, (plan as any).interval, slug, billing, product?.slug || 'servix')
+    await sendWelcomeEmail(user.email, emailName, (plan as any).name, (plan as any).price, (plan as any).interval, slug, billing, product?.slug || 'servix')
   } catch (e: any) {
     console.error('Error email:', e.message)
   }

@@ -57,6 +57,18 @@ const CONFIG_BY_PRODUCT: Record<string, ProductEmailConfig> = {
         </div>`,
     steps: ['Entra con tu email y contraseña','Configura tus horarios y clases','Da de alta a tus primeros socios','¡Empieza a gestionar tu gimnasio!'],
   },
+  news: {
+    displayName: 'News',
+    entity: 'panel',
+    entityPossessive: 'tu resumen de noticias',
+    loginUrl: 'https://news.innovapp.es/login',
+    headerGradient: 'linear-gradient(135deg,#1a1a2e 0%,#3d2b6f 60%,#e6672a 100%)',
+    accentGradient: 'linear-gradient(135deg,#3d2b6f,#e6672a)',
+    subjectWelcome: '🎉 ¡Bienvenido a News! Tu resumen de noticias está listo',
+    headerTitle: '¡Tu resumen de noticias está listo!',
+    extraBlockHtml: () => '',
+    steps: ['Entra con tu email y contraseña','Escucha tu primer resumen en audio','Revisa el historial de días anteriores','Ajusta tus temas de interés desde Cuenta'],
+  },
 }
 const DEFAULT_CONFIG: ProductEmailConfig = {
   ...CONFIG_BY_PRODUCT.servix,

@@ -98,6 +98,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
   const PRODUCT_META: Record<string, { label: string; color: string; bg: string; url: string }> = {
     servix:   { label: 'Servix',   color: '#2ab3aa', bg: '#f0f9f8', url: 'https://servix.innovapp.es' },
     gymstack: { label: 'GymStack', color: '#a855f7', bg: '#f5f3ff', url: 'https://gymstack.innovapp.es' },
+    news:     { label: 'News',     color: '#e6672a', bg: '#fdeee6', url: 'https://news.innovapp.es' },
   }
   const getProductSlug = (s: any) => s.plan?.Product?.slug || 'servix'
 

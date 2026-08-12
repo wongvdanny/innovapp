@@ -18,6 +18,13 @@ const CONFIG_BY_PRODUCT: Record<string, { message: string; panelUrl: string; pan
     loginUrl: 'https://gymstack.innovapp.es/login',
     entity: 'gimnasio',
   },
+  news: {
+    message: 'Tu suscripción a News está activa. Ya puedes escuchar tu resumen de noticias personalizado.',
+    panelUrl: 'news.innovapp.es',
+    panelLabel: 'Tu panel de gestión',
+    loginUrl: 'https://news.innovapp.es/login',
+    entity: 'resumen de noticias',
+  },
 }
 const DEFAULT_CONFIG = {
   message: 'Tu suscripción está activa. Te hemos enviado un email con los accesos.',
