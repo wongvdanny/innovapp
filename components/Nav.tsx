@@ -26,6 +26,9 @@ export default function Nav() {
           <a href="/gymstack" style={{ fontSize: 15, fontWeight: 600, color: '#a855f7', transition: 'color .2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = '#7c3aed')}
             onMouseLeave={e => (e.currentTarget.style.color = '#a855f7')}>GymStack</a>
+          <a href="/agentes-ia" style={{ fontSize: 15, fontWeight: 600, color: '#e8a33d', transition: 'color .2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#c98826')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#e8a33d')}>Agentes IA</a>
         </div>
         <div style={{ display: 'flex', gap: 10 }} className="nav-desktop">
           <Link href="/login" style={{ padding: '9px 18px', borderRadius: 10, border: '1px solid #eef1f4', fontSize: 14, fontWeight: 600, color: '#1a3d4f', background: '#f8fafb', textDecoration: 'none' }}>Entrar</Link>
@@ -42,6 +45,7 @@ export default function Nav() {
           ))}
           <a href="/servix" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#2ab3aa', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Servix</a>
           <a href="/gymstack" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#a855f7', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>GymStack</a>
+          <a href="/agentes-ia" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#e8a33d', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Agentes IA</a>
           <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
             <Link href="/login" onClick={() => setOpen(false)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1px solid #eef1f4', fontSize: 14, fontWeight: 600, color: '#1a3d4f', background: '#f8fafb', textDecoration: 'none', textAlign: 'center' }}>Entrar</Link>
             <Link href="/registro?plan=free" onClick={() => setOpen(false)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', fontSize: 14, fontWeight: 700, color: 'white', background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', textDecoration: 'none', textAlign: 'center' }}>Empezar gratis →</Link>
