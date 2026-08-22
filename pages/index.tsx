@@ -2,6 +2,10 @@ import Head from 'next/head'
 import { useState } from 'react'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
+import ChatDemo from '../components/ChatDemo'
+import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
+
+const MENSAJE_AGENTES_WHATSAPP = encodeURIComponent('Hola! Quiero información sobre Agentes IA para mi negocio.')
 
 export default function Home() {
   const [email, setEmail] = useState('')
@@ -67,6 +71,43 @@ export default function Home() {
 
       <Nav />
 
+      <section style={{ background: '#12141a', padding: '150px 24px 90px', position: 'relative', overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: -180, right: -180, width: 520, height: 520, borderRadius: '50%', background: 'radial-gradient(circle,rgba(232,163,61,.12) 0%,transparent 70%)', pointerEvents: 'none' }} />
+        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 56, flexWrap: 'wrap', position: 'relative' }}>
+          <div style={{ flex: '1 1 380px', minWidth: 300 }}>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(232,163,61,.12)', border: '1px solid rgba(232,163,61,.25)', borderRadius: 100, padding: '6px 18px', marginBottom: 24 }}>
+              <span style={{ color: '#e8a33d', fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>✦ Nuestro producto estrella</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
+              <img src="/agentes-ia-logo.svg" alt="Agentes IA" width={36} height={36} />
+              <div style={{ fontSize: 20, fontWeight: 700, color: '#ece9e2' }}>Agentes <span style={{ color: '#e8a33d' }}>IA</span></div>
+            </div>
+            <h1 style={{ fontSize: 'clamp(30px,5vw,54px)', fontWeight: 500, letterSpacing: -1, color: '#ece9e2', maxWidth: 580, margin: '0 0 20px', lineHeight: 1.15 }}>
+              Un agente de IA que atiende tu WhatsApp <span style={{ fontStyle: 'italic', color: '#e8a33d' }}>día y noche</span>
+            </h1>
+            <p style={{ fontSize: 17, color: '#97a0ac', maxWidth: 480, margin: '0 0 32px', lineHeight: 1.7 }}>
+              Para peluquerías, clínicas, inmobiliarias, gimnasios, talleres, veterinarias y cualquier negocio local: responde dudas, gestiona citas sin dobles reservas, vende por catálogo online y atiende 24 horas — sin que tú tengas que estar detrás del móvil.
+            </p>
+            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+              <a
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${MENSAJE_AGENTES_WHATSAPP}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
+              >
+                Habla con nuestro agente →
+              </a>
+              <a href="/agentes-ia" style={{ padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}>
+                Ver cómo funciona
+              </a>
+            </div>
+          </div>
+          <div style={{ flex: '1 1 320px', display: 'flex', justifyContent: 'center' }}>
+            <ChatDemo />
+          </div>
+        </div>
+      </section>
+
       <section style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#0d1f2d 0%,#1a3d4f 55%,#0f4a5c 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '130px 24px 80px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -200, right: -200, width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle,rgba(42,179,170,.15) 0%,transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ position: 'absolute', bottom: -100, left: -100, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle,rgba(78,205,196,.08) 0%,transparent 70%)', pointerEvents: 'none' }} />
@@ -129,61 +170,24 @@ export default function Home() {
         </div>
       </section>
 
-      <section style={{ padding: '100px 24px', background: '#f8fafb' }} id="productos">
-        <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ display: 'inline-block', background: 'rgba(42,179,170,.1)', border: '1px solid rgba(42,179,170,.2)', borderRadius: 100, padding: '5px 16px', fontSize: 11, fontWeight: 700, color: '#2ab3aa', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 16 }}>Nuestros productos</div>
-          <h2 style={{ fontSize: 'clamp(26px,3.5vw,46px)', fontWeight: 800, letterSpacing: -1.5, marginBottom: 16, color: '#0d1f2d' }}>Software listo para usar,<br />desde hoy</h2>
-          <p style={{ fontSize: 16, color: '#5a7a87', maxWidth: 500, margin: '0 auto 56px', lineHeight: 1.75 }}>Productos SaaS propios que resuelven problemas reales. Empieza gratis y escala cuando lo necesites.</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 24, maxWidth: 900, margin: '0 auto' }}>
-            <div style={{ background: 'white', border: '2px solid #e8f4f3', borderRadius: 24, padding: '36px 32px', textAlign: 'left', boxShadow: '0 8px 40px rgba(26,61,79,.07)', transition: 'transform .2s,box-shadow .2s', cursor: 'pointer' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 60px rgba(26,61,79,.12)' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 40px rgba(26,61,79,.07)' }}>
-              <div style={{ display: 'inline-block', background: '#e8f9f8', border: '1px solid rgba(42,179,170,.2)', borderRadius: 8, padding: '3px 12px', fontSize: 11, fontWeight: 700, color: '#2ab3aa', marginBottom: 20 }}>✦ Disponible</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-                <div style={{ width: 52, height: 52, borderRadius: 14, background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26 }}>🍴</div>
-                <div>
-                  <div style={{ fontSize: 26, fontWeight: 800, color: '#1a3d4f', lineHeight: 1 }}>serv<span style={{ color: '#2ab3aa' }}>ix</span></div>
-                  <div style={{ fontSize: 12, color: '#88a8b0', marginTop: 2 }}>TPV para restaurantes</div>
-                </div>
+      <section style={{ padding: '56px 24px' }} id="productos">
+        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ display: 'inline-block', background: '#f8fafb', border: '1px solid #eef1f4', borderRadius: 100, padding: '4px 14px', fontSize: 10, fontWeight: 700, color: '#88a4ac', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>También ofrecemos</div>
+          <h2 style={{ fontSize: 'clamp(20px,2.5vw,28px)', fontWeight: 700, letterSpacing: -0.5, marginBottom: 28, color: '#3d5460' }}>Otras soluciones SaaS de innovapp</h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 14 }}>
+            <div style={{ background: 'white', border: '1px solid #eef1f4', borderRadius: 16, padding: '18px 20px', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 19, flexShrink: 0 }}>🍴</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: '#1a3d4f', lineHeight: 1.2 }}>serv<span style={{ color: '#2ab3aa' }}>ix</span> <span style={{ fontSize: 12, fontWeight: 500, color: '#88a8b0' }}>· TPV para restaurantes</span></div>
               </div>
-              <p style={{ fontSize: 14, color: '#5a7a87', lineHeight: 1.75, marginBottom: 24 }}>Sistema completo de gestión para restaurantes, bares y cafeterías. Mesas, cocina, carta QR, reservas, informes y pagos con tarjeta, todo en un solo panel.</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 28 }}>
-                {['Mesas y zonas en tiempo real','Carta digital QR','Pantalla de cocina','Pagos con Redsys','Informes y analytics'].map(f => (
-                  <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#1a3d4f' }}>
-                    <div style={{ width: 18, height: 18, borderRadius: 5, background: 'rgba(42,179,170,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: '#2ab3aa', fontWeight: 700, flexShrink: 0 }}>✓</div>
-                    {f}
-                  </div>
-                ))}
-              </div>
-              <div style={{ display: 'flex', gap: 10 }}>
-                <a href="/servix#precios" style={{ flex: 1, padding: '11px', background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', borderRadius: 10, fontSize: 13, fontWeight: 700, textDecoration: 'none', textAlign: 'center', boxShadow: '0 4px 14px rgba(42,179,170,.3)' }}>Ver planes →</a>
-                <a href="/servix" style={{ flex: 1, padding: '11px', background: '#f8fafb', border: '1px solid #eef1f4', color: '#1a3d4f', borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: 'none', textAlign: 'center' }}>Más info</a>
-              </div>
+              <a href="/servix" style={{ flexShrink: 0, fontSize: 12, fontWeight: 700, color: '#2ab3aa', textDecoration: 'none' }}>Ver →</a>
             </div>
-            <div style={{ background: 'white', border: '2px solid #f1eef4', borderRadius: 24, padding: '36px 32px', textAlign: 'left', boxShadow: '0 8px 40px rgba(61,26,79,.07)', transition: 'transform .2s,box-shadow .2s', cursor: 'pointer' }}
-              onMouseEnter={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(-4px)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 20px 60px rgba(61,26,79,.12)' }}
-              onMouseLeave={e => { (e.currentTarget as HTMLDivElement).style.transform = 'translateY(0)'; (e.currentTarget as HTMLDivElement).style.boxShadow = '0 8px 40px rgba(61,26,79,.07)' }}>
-              <div style={{ display: 'inline-block', background: '#f5f0ff', border: '1px solid rgba(168,85,247,.2)', borderRadius: 8, padding: '3px 12px', fontSize: 11, fontWeight: 700, color: '#a855f7', marginBottom: 20 }}>✦ Disponible</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 16 }}>
-                <div style={{ width: 52, height: 52, borderRadius: 14, background: 'linear-gradient(135deg,#a855f7,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 26 }}>💪</div>
-                <div>
-                  <div style={{ fontSize: 26, fontWeight: 800, color: '#3d1a4f', lineHeight: 1 }}>gym<span style={{ color: '#a855f7' }}>stack</span></div>
-                  <div style={{ fontSize: 12, color: '#a88ab0', marginTop: 2 }}>Gestión para gimnasios</div>
-                </div>
+            <div style={{ background: 'white', border: '1px solid #eef1f4', borderRadius: 16, padding: '18px 20px', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 14 }}>
+              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg,#a855f7,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 19, flexShrink: 0 }}>💪</div>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: 15, fontWeight: 800, color: '#3d1a4f', lineHeight: 1.2 }}>gym<span style={{ color: '#a855f7' }}>stack</span> <span style={{ fontSize: 12, fontWeight: 500, color: '#a88ab0' }}>· Gestión para gimnasios</span></div>
               </div>
-              <p style={{ fontSize: 14, color: '#7a5a87', lineHeight: 1.75, marginBottom: 24 }}>Sistema completo de gestión para gimnasios y centros deportivos. Socios, reservas de clases, control de accesos y seguimiento de rutinas, todo en un solo panel.</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 7, marginBottom: 28 }}>
-                {['Gestión de socios','Reservas de clases','Control de accesos','Rutinas y seguimiento','Informes y analytics'].map(f => (
-                  <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#3d1a4f' }}>
-                    <div style={{ width: 18, height: 18, borderRadius: 5, background: 'rgba(168,85,247,.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 9, color: '#a855f7', fontWeight: 700, flexShrink: 0 }}>✓</div>
-                    {f}
-                  </div>
-                ))}
-              </div>
-              <div style={{ display: 'flex', gap: 10 }}>
-                <a href="/gymstack#precios" style={{ flex: 1, padding: '11px', background: 'linear-gradient(135deg,#a855f7,#7c3aed)', color: 'white', borderRadius: 10, fontSize: 13, fontWeight: 700, textDecoration: 'none', textAlign: 'center', boxShadow: '0 4px 14px rgba(168,85,247,.3)' }}>Ver planes →</a>
-                <a href="/gymstack" style={{ flex: 1, padding: '11px', background: '#f8fafb', border: '1px solid #eef1f4', color: '#1a3d4f', borderRadius: 10, fontSize: 13, fontWeight: 600, textDecoration: 'none', textAlign: 'center' }}>Más info</a>
-              </div>
+              <a href="/gymstack" style={{ flexShrink: 0, fontSize: 12, fontWeight: 700, color: '#a855f7', textDecoration: 'none' }}>Ver →</a>
             </div>
           </div>
         </div>

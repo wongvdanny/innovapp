@@ -1,41 +1,8 @@
 import Head from 'next/head'
-import { useState, useEffect } from 'react'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
-
-const CONVERSACION = [
-  { rol: 'cliente', texto: 'Hola! Tenéis hueco para un tinte esta semana?' },
-  { rol: 'agente', texto: '¡Hola! 👋 Sí, tenemos hueco el jueves a las 17:00 o el viernes a las 11:00. ¿Cuál te viene mejor?' },
-  { rol: 'cliente', texto: 'El jueves a las 17 perfecto' },
-  { rol: 'agente', texto: 'Genial, te reservo tinte el jueves 17:00 ✅ ¿Me confirmas tu nombre?' },
-]
-
-function ChatDemo() {
-  const [visibles, setVisibles] = useState(0)
-
-  useEffect(() => {
-    if (visibles >= CONVERSACION.length) return
-    const t = setTimeout(() => setVisibles(v => v + 1), visibles === 0 ? 600 : 1300)
-    return () => clearTimeout(t)
-  }, [visibles])
-
-  return (
-    <div style={{ background: '#1c1f27', border: '1px solid #2e333f', borderRadius: 18, padding: 20, width: '100%', maxWidth: 360, display: 'flex', flexDirection: 'column', gap: 10, minHeight: 300 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, paddingBottom: 10, borderBottom: '1px solid #2e333f', marginBottom: 4 }}>
-        <img src="/agentes-ia-logo.svg" alt="" width={22} height={22} />
-        <div>
-          <div style={{ fontSize: 14, color: '#ece9e2', fontWeight: 600 }}>Peluquería Demo</div>
-          <div style={{ fontSize: 11, color: '#6fcf87' }}>en línea</div>
-        </div>
-      </div>
-      {CONVERSACION.slice(0, visibles).map((m, i) => (
-        <div key={i} style={{ alignSelf: m.rol === 'cliente' ? 'flex-start' : 'flex-end', maxWidth: '82%', background: m.rol === 'cliente' ? '#242832' : '#3a2f14', color: '#ece9e2', padding: '9px 13px', borderRadius: 10, fontSize: 13, lineHeight: 1.4 }}>
-          {m.texto}
-        </div>
-      ))}
-    </div>
-  )
-}
+import ChatDemo from '../components/ChatDemo'
+import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
 
 export default function AgentesIaPage() {
   const mensajeWhatsapp = encodeURIComponent('Hola! Quiero información sobre Agentes Innovapp para mi negocio.')
@@ -83,7 +50,7 @@ export default function AgentesIaPage() {
               Un agente de IA que conoce tus servicios, tus precios y tu forma de hablar — responde dudas, reserva citas y avisa a tu equipo cuando hace falta una persona.
             </p>
             <a
-              href={`https://wa.me/34644801943?text=${mensajeWhatsapp}`}
+              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeWhatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
               style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
@@ -113,15 +80,74 @@ export default function AgentesIaPage() {
         </div>
       </section>
 
+      <section style={{ padding: '90px 24px', background: '#faf8f4' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 50 }}>
+            <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#1a140d' }}>
+              ¿Para qué negocios funciona?
+            </h2>
+            <p style={{ fontSize: 16, color: '#8a7a5a', maxWidth: 520, margin: '0 auto' }}>
+              Si tu negocio vive de WhatsApp y de las citas o los pedidos, esto es para ti.
+            </p>
+          </div>
+          <div style={{ maxWidth: 900, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 20 }}>
+            {[
+              ['💇', 'Peluquerías y salones de belleza', 'Reserva citas comprobando la disponibilidad real al momento — nunca se solapan dos clientes a la misma hora.'],
+              ['💆', 'Clínicas y centros de estética', 'El mismo sistema de citas, y si además vendes productos relacionados, el agente también los vende por WhatsApp.'],
+              ['🔧', 'Talleres y negocios con cita previa', 'Cualquier negocio que trabaje con cita previa puede automatizar la reserva sin perder el trato cercano.'],
+              ['🛍️', 'Tiendas con catálogo online', 'El agente consulta productos, precios, stock y variantes reales, y completa el pedido sin salir de WhatsApp. Compatible con PrestaShop y WooCommerce.'],
+              ['💬', 'Cualquier negocio con WhatsApp muy activo', 'Si te repiten las mismas preguntas todo el día, el agente se encarga y tu equipo se centra en lo que de verdad necesita a una persona.'],
+            ].map(([icon, title, desc]) => (
+              <div key={String(title)} style={{ background: 'white', border: '1px solid #f1ece0', borderRadius: 18, padding: 26 }}>
+                <div style={{ width: 46, height: 46, borderRadius: 12, background: '#faf1de', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, marginBottom: 14 }}>{icon}</div>
+                <div style={{ fontSize: 15, fontWeight: 700, color: '#1a140d', marginBottom: 8 }}>{title}</div>
+                <div style={{ fontSize: 13, color: '#8a7a5a', lineHeight: 1.65 }}>{desc}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section style={{ padding: '90px 24px', background: 'white' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 50 }}>
+            <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#1a140d' }}>
+              Ventajas reales, no promesas
+            </h2>
+            <p style={{ fontSize: 16, color: '#8a7a5a', maxWidth: 560, margin: '0 auto' }}>
+              Todo lo de aquí abajo ya funciona hoy — no es una hoja de ruta.
+            </p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 24 }}>
+            {[
+              ['🌙', 'Disponible 24 horas', 'Atiende a cualquier hora, findes y festivos incluidos. El cliente no nota que habla con una IA — hasta que hace falta que hable una persona.'],
+              ['📆', 'Cero dobles reservas', 'Antes de prometer un horario, comprueba la disponibilidad real de tu agenda. Nunca ofrece un hueco que no existe ni pisa una cita ya confirmada.'],
+              ['🛒', 'Compra completa sin salir de WhatsApp', 'El cliente elige el producto, la talla o el color, y paga sin cambiar de app. El agente consulta tu catálogo real — nunca inventa productos ni precios.'],
+              ['🔗', 'Sin contraseñas ni registros', 'El enlace de pago lleva directo a pagar, sin que el cliente tenga que crearse ni recordar ninguna contraseña.'],
+              ['🔌', 'Conectado a tu tienda de siempre', 'Funciona con PrestaShop y WooCommerce, los dos motores de tienda más usados. No duplica catálogo ni stock: consulta tu tienda en tiempo real.'],
+              ['🙋', 'Sabe cuándo pasar a una persona', 'Reclamos, dudas delicadas o preguntas fuera de lo que conoce: avisa a tu equipo en vez de improvisar una respuesta.'],
+            ].map(([icon, title, desc]) => (
+              <div key={String(title)} style={{ display: 'flex', gap: 16 }}>
+                <div style={{ flexShrink: 0, width: 46, height: 46, borderRadius: 12, background: '#faf1de', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22 }}>{icon}</div>
+                <div>
+                  <div style={{ fontSize: 15, fontWeight: 700, color: '#1a140d', marginBottom: 6 }}>{title}</div>
+                  <div style={{ fontSize: 13, color: '#8a7a5a', lineHeight: 1.65 }}>{desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section style={{ padding: '90px 24px', background: '#faf8f4', textAlign: 'center' }}>
         <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#1a140d' }}>
           ¿Vendes por WhatsApp? Podemos ir más lejos
         </h2>
         <p style={{ fontSize: 16, color: '#8a7a5a', maxWidth: 520, margin: '0 auto 40px' }}>
-          Si tienes tienda online, el agente también puede buscar clientes, guardar direcciones y generar el enlace de pago con el carrito ya listo.
+          Si tienes tienda online en PrestaShop o WooCommerce, el agente también puede buscar tus clientes, identificar la variante exacta que quieren y generar el enlace de pago listo para pagar.
         </p>
         <a
-          href={`https://wa.me/34644801943?text=${mensajeWhatsapp}`}
+          href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeWhatsapp}`}
           target="_blank"
           rel="noopener noreferrer"
           style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#12141a', color: '#e8a33d', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}

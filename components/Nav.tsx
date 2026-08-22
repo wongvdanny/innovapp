@@ -13,7 +13,7 @@ export default function Nav() {
   return (
     <>
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 40px', background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(26,61,79,0.07)', boxShadow: scrolled ? '0 4px 32px rgba(13,31,45,0.1)' : 'none', transition: 'box-shadow .3s' }}>
-        <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 36, width: 'auto' }} /></Link>
+        <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 60, width: 'auto' }} /></Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: 28 }} className="nav-desktop">
           {links.map(([href, label]) => (
             <a key={href} href={href} style={{ fontSize: 15, fontWeight: 600, color: '#4a6572', transition: 'color .2s' }}
@@ -39,7 +39,7 @@ export default function Nav() {
         </button>
       </nav>
       {open && (
-        <div className="nav-mobile" style={{ position: 'fixed', top: 68, left: 0, right: 0, zIndex: 99, background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 4, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
+        <div className="nav-mobile" style={{ position: 'fixed', top: 82, left: 0, right: 0, zIndex: 99, background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 4, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
           {links.map(([href, label]) => (
             <a key={href} href={href} onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1a3d4f', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>{label}</a>
           ))}
