@@ -24,11 +24,11 @@ export default function Home() {
   return (
     <>
       <Head>
-        <title>innovapp — Desarrollo de Aplicaciones Web y Software a Medida</title>
-        <meta name="description" content="innovapp es una empresa española de desarrollo de aplicaciones web y software SaaS. Creamos soluciones digitales a medida para empresas y negocios. Nuestros productos, Servix (TPV para restaurantes) y GymStack (gestión de gimnasios), digitalizan negocios de principio a fin." />
-        <meta name="keywords" content="desarrollo aplicaciones web, software a medida, empresa tecnología España, SaaS hostelería, TPV restaurante, innovapp, aplicaciones móviles, digitalización empresas" />
-        <meta property="og:title" content="innovapp — Desarrollo de Aplicaciones Web y Software a Medida" />
-        <meta property="og:description" content="Empresa española de tecnología web. Desarrollamos aplicaciones SaaS, software a medida y soluciones digitales para negocios modernos." />
+        <title>innovapp — Agentes de IA por WhatsApp para tu negocio</title>
+        <meta name="description" content="Innovapp desarrolla Agentes de IA que atienden tu WhatsApp 24 horas: responden dudas, gestionan citas sin dobles reservas y venden por catálogo, sin que tengas que estar pendiente del móvil. También ofrecemos Servix (TPV para restaurantes) y GymStack (gestión de gimnasios)." />
+        <meta name="keywords" content="agentes de IA, agente de WhatsApp con IA, automatización de citas, atención al cliente por WhatsApp, desarrollo aplicaciones web, software a medida, empresa tecnología España, SaaS hostelería, TPV restaurante, innovapp, aplicaciones móviles, digitalización empresas" />
+        <meta property="og:title" content="innovapp — Agentes de IA por WhatsApp para tu negocio" />
+        <meta property="og:description" content="Agentes de IA que atienden tu WhatsApp 24 horas: responden dudas, gestionan citas y venden por catálogo. Innovapp también desarrolla Servix y GymStack." />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://innovapp.es" />
         <meta property="og:image" content="https://innovapp.es/logo.webp" />
@@ -45,6 +45,16 @@ export default function Home() {
           "description": "Empresa española de desarrollo de aplicaciones web y software SaaS",
           "address": { "@type": "PostalAddress", "addressCountry": "ES" },
           "makesOffer": [
+            {
+              "@type": "Offer",
+              "itemOffered": {
+                "@type": "Service",
+                "name": "Agentes IA",
+                "url": "https://innovapp.es/agentes-ia",
+                "serviceType": "Agente de IA por WhatsApp para negocios locales",
+                "areaServed": "ES"
+              }
+            },
             {
               "@type": "Offer",
               "itemOffered": {
