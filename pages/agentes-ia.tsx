@@ -1,11 +1,13 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
-import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
+import { WHATSAPP_NUMBER, WHATSAPP_DEMO_ECOMMERCE_NUMBER } from '../components/WhatsAppBubble'
 
 export default function AgentesIaPage() {
   const mensajeWhatsapp = encodeURIComponent('Hola! Quiero información sobre Agentes Innovapp para mi negocio.')
+  const mensajeDemoEcommerce = encodeURIComponent('Hola! Me gustaría ver una demo de cómo funciona el agente de IA con una tienda online (e-commerce).')
 
   return (
     <>
@@ -49,14 +51,24 @@ export default function AgentesIaPage() {
             <p style={{ fontSize: 17, color: '#97a0ac', maxWidth: 460, margin: '0 0 36px', lineHeight: 1.7 }}>
               Un agente de IA que conoce tus servicios, tus precios y tu forma de hablar — responde dudas, reserva citas y avisa a tu equipo cuando hace falta una persona.
             </p>
-            <a
-              href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeWhatsapp}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
-            >
-              Contáctanos para tu cotización →
-            </a>
+            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
+              <a
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeWhatsapp}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
+              >
+                Contáctanos para tu cotización →
+              </a>
+              <a
+                href={`https://wa.me/${WHATSAPP_DEMO_ECOMMERCE_NUMBER}?text=${mensajeDemoEcommerce}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}
+              >
+                Ver demo con tu tienda online
+              </a>
+            </div>
           </div>
           <div style={{ flex: '1 1 320px', display: 'flex', justifyContent: 'center' }}>
             <ChatDemo />
@@ -146,14 +158,30 @@ export default function AgentesIaPage() {
         <p style={{ fontSize: 16, color: '#8a7a5a', maxWidth: 520, margin: '0 auto 40px' }}>
           Si tienes tienda online en PrestaShop o WooCommerce, el agente también puede buscar tus clientes, identificar la variante exacta que quieren y generar el enlace de pago listo para pagar.
         </p>
-        <a
-          href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeWhatsapp}`}
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#12141a', color: '#e8a33d', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
-        >
-          Contáctanos para tu cotización →
-        </a>
+        <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeWhatsapp}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#12141a', color: '#e8a33d', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
+          >
+            Contáctanos para tu cotización →
+          </a>
+          <a
+            href={`https://wa.me/${WHATSAPP_DEMO_ECOMMERCE_NUMBER}?text=${mensajeDemoEcommerce}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'transparent', border: '1.5px solid #12141a', color: '#12141a', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}
+          >
+            Ver demo con tu tienda online
+          </a>
+        </div>
+        <p style={{ fontSize: 13, color: '#8a7a5a', marginTop: 20 }}>
+          ¿Tienes una tienda PrestaShop?{' '}
+          <Link href="/agentes-ia-prestashop" style={{ color: '#c98826', fontWeight: 700, textDecoration: 'underline' }}>
+            Mira cómo funciona la integración específica →
+          </Link>
+        </p>
       </section>
 
       <Footer />

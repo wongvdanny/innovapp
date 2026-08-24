@@ -3,9 +3,10 @@ import { useState } from 'react'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
-import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
+import { WHATSAPP_NUMBER, WHATSAPP_DEMO_ECOMMERCE_NUMBER } from '../components/WhatsAppBubble'
 
 const MENSAJE_AGENTES_WHATSAPP = encodeURIComponent('Hola! Quiero información sobre Agentes IA para mi negocio.')
+const MENSAJE_DEMO_ECOMMERCE = encodeURIComponent('Hola! Me gustaría ver una demo de cómo funciona el agente de IA con una tienda online (e-commerce).')
 
 export default function Home() {
   const [email, setEmail] = useState('')
@@ -109,6 +110,14 @@ export default function Home() {
               </a>
               <a href="/agentes-ia" style={{ padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}>
                 Ver cómo funciona
+              </a>
+              <a
+                href={`https://wa.me/${WHATSAPP_DEMO_ECOMMERCE_NUMBER}?text=${MENSAJE_DEMO_ECOMMERCE}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}
+              >
+                Ver demo con tu tienda online
               </a>
             </div>
           </div>
