@@ -176,12 +176,24 @@ export default function AgentesIaPage() {
             Ver demo con tu tienda online
           </a>
         </div>
-        <p style={{ fontSize: 13, color: '#8a7a5a', marginTop: 20 }}>
-          ¿Tienes una tienda PrestaShop?{' '}
-          <Link href="/agentes-ia-prestashop" style={{ color: '#c98826', fontWeight: 700, textDecoration: 'underline' }}>
-            Mira cómo funciona la integración específica →
-          </Link>
-        </p>
+      </section>
+
+      <section style={{ padding: '90px 24px', background: 'white' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
+          <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 40, color: '#1a140d' }}>
+            ¿Qué motor usa tu tienda online?
+          </h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 20 }}>
+            <Link href="/agentes-ia-prestashop" style={{ background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: 32, textDecoration: 'none', display: 'block' }}>
+              <div style={{ fontSize: 32, marginBottom: 14 }}>🛍️</div>
+              <div style={{ fontSize: 17, fontWeight: 700, color: '#1a140d' }}>Integración con PrestaShop →</div>
+            </Link>
+            <Link href="/agentes-ia-woocommerce" style={{ background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: 32, textDecoration: 'none', display: 'block' }}>
+              <div style={{ fontSize: 32, marginBottom: 14 }}>🛒</div>
+              <div style={{ fontSize: 17, fontWeight: 700, color: '#1a140d' }}>Integración con WooCommerce →</div>
+            </Link>
+          </div>
+        </div>
       </section>
 
       <Footer />

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 
 export const WHATSAPP_NUMBER = "34641399645";
-export const WHATSAPP_DEMO_ECOMMERCE_NUMBER = "15556731170";
+export const WHATSAPP_DEMO_ECOMMERCE_NUMBER = "34643452065";
 const MENSAJE_GENERICO = "Hola, quiero más información sobre Innovapp";
 
 // Mensaje prellenado según la ruta del visitante -- centralizado aquí para que añadir
