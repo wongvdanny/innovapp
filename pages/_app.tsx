@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { Gabarito } from 'next/font/google'
 import '../styles/globals.css'
 import WhatsAppBubble from '../components/WhatsAppBubble'
+import { CONTACT_EMAIL } from '../lib/constants'
 
 const ORGANIZATION_JSONLD = {
   '@context': 'https://schema.org',
@@ -14,7 +15,7 @@ const ORGANIZATION_JSONLD = {
   image: 'https://innovapp.es/brand/og-image.png',
   description:
     'Empresa española de desarrollo de aplicaciones web y software SaaS: agentes de IA por WhatsApp, Servix (TPV para restaurantes) y GymStack (gestión de gimnasios).',
-  email: 'hola@innovapp.es',
+  email: CONTACT_EMAIL,
   address: { '@type': 'PostalAddress', addressCountry: 'ES' },
 }
 

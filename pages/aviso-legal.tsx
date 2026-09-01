@@ -1,6 +1,7 @@
 import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
+import { CONTACT_EMAIL } from '../lib/constants'
 
 export default function AvisoLegal() {
   return (
@@ -20,7 +21,7 @@ export default function AvisoLegal() {
           <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: mayo 2025</p>
           <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: '40px 48px', lineHeight: 1.8, color: '#4a6572', fontSize: 15 }}>
             {[
-              ['Titular del sitio web', 'innovapp es el titular y responsable de este sitio web, con domicilio en España. Email de contacto: hola@innovapp.es'],
+              ['Titular del sitio web', `innovapp es el titular y responsable de este sitio web, con domicilio en España. Email de contacto: ${CONTACT_EMAIL}`],
               ['Objeto', 'El presente Aviso Legal regula el uso del sitio web innovapp.es y del servicio Servix, de titularidad de innovapp.'],
               ['Propiedad intelectual', 'Todos los contenidos de este sitio web (textos, imágenes, logotipos, código fuente) son propiedad de innovapp o de sus licenciantes y están protegidos por la legislación española e internacional sobre propiedad intelectual. Queda prohibida su reproducción total o parcial sin autorización expresa.'],
               ['Limitación de responsabilidad', 'innovapp no se responsabiliza de los daños o perjuicios que puedan derivarse del uso del servicio, interrupciones técnicas, errores en los datos o accesos no autorizados por causas ajenas a su control.'],

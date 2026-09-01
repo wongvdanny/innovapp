@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Logo from './Logo'
+import { CONTACT_EMAIL } from '../lib/constants'
 
 export default function Footer() {
   return (
@@ -13,7 +14,7 @@ export default function Footer() {
             </p>
           </div>
           {[
-            { title: 'Empresa', links: [['#empresa','Quiénes somos'],['mailto:hola@innovapp.es','Contacto']] },
+            { title: 'Empresa', links: [['#empresa','Quiénes somos'],[`mailto:${CONTACT_EMAIL}`,'Contacto']] },
             { title: 'Servix',  links: [['/servix','Ver producto'],['/servix#precios','Precios'],['https://servix.innovapp.es','Acceder']] },
             { title: 'GymStack', links: [['/gymstack','Ver producto'],['/gymstack#precios','Precios'],['https://gymstack.innovapp.es','Acceder']] },
             { title: 'Agentes IA', links: [['/agentes-ia','Ver producto'],['/agentes-ia-prestashop','Para PrestaShop'],['/agentes-ia-woocommerce','Para WooCommerce']] },

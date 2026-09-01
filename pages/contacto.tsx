@@ -4,8 +4,8 @@ import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
+import { CONTACT_EMAIL } from '../lib/constants'
 
-const CONTACT_EMAIL = 'hola@innovapp.es'
 const PRODUCTS = ['Servix', 'GymStack', 'Agentes IA', 'Otro']
 
 type Status = 'idle' | 'sending' | 'success' | 'error'

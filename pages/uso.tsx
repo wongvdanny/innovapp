@@ -1,6 +1,7 @@
 import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
+import { CONTACT_EMAIL } from '../lib/constants'
 
 export default function Uso() {
   return (
@@ -28,7 +29,7 @@ export default function Uso() {
               ['6. Disponibilidad', 'Nos comprometemos a ofrecer una disponibilidad del servicio del 99% mensual. Podemos interrumpir el servicio temporalmente por mantenimiento, avisando con antelación siempre que sea posible.'],
               ['7. Datos del restaurante', 'Tus datos (menú, comandas, clientes) son tuyos. No los vendemos ni compartimos con terceros. Al cancelar la suscripción, tienes 30 días para exportarlos antes de su eliminación.'],
               ['8. Modificaciones', 'Nos reservamos el derecho de modificar estos términos notificándolo con al menos 30 días de antelación por email.'],
-              ['9. Contacto', 'Para cualquier consulta: hola@innovapp.es'],
+              ['9. Contacto', `Para cualquier consulta: ${CONTACT_EMAIL}`],
             ].map(([title, text]) => (
               <div key={title as string} style={{ marginBottom: 28 }}>
                 <h2 style={{ fontSize: 17, fontWeight: 700, color: '#1e1e1e', marginBottom: 10 }}>{title}</h2>

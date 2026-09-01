@@ -1,4 +1,5 @@
 import { Resend } from 'resend'
+import { CONTACT_EMAIL } from './constants'
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM ?? 'innovapp <onboarding@resend.dev>'
 
@@ -176,7 +177,7 @@ export async function sendWelcomeEmail(
       <div style="background:#1a2533;padding:24px 40px;text-align:center">
         <p style="color:rgba(255,255,255,0.4);font-size:12px;margin:0 0 8px">© 2025 innovapp · Todos los derechos reservados</p>
         <div style="display:flex;justify-content:center;gap:16px">
-          ${[['Privacidad','https://innovapp.es/privacidad'],['Aviso Legal','https://innovapp.es/aviso-legal'],['Soporte','mailto:hola@innovapp.es']].map(([l,h]) => `<a href="${h}" style="color:rgba(255,255,255,0.3);font-size:12px;text-decoration:none">${l}</a>`).join('')}
+          ${[['Privacidad','https://innovapp.es/privacidad'],['Aviso Legal','https://innovapp.es/aviso-legal'],['Soporte',`mailto:${CONTACT_EMAIL}`]].map(([l,h]) => `<a href="${h}" style="color:rgba(255,255,255,0.3);font-size:12px;text-decoration:none">${l}</a>`).join('')}
         </div>
       </div>
     </div>`
@@ -225,7 +226,7 @@ export async function sendContactEmail(data: ContactPayload) {
 
   const { error } = await resend.emails.send({
     from: FROM,
-    to: 'contacto@innovapp.es',
+    to: CONTACT_EMAIL,
     replyTo: data.email,
     subject: `Nuevo contacto desde innovapp.es — ${tag}`,
     html: `
