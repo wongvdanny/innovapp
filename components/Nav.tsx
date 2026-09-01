@@ -10,7 +10,7 @@ export default function Nav() {
     window.addEventListener('scroll', h)
     return () => window.removeEventListener('scroll', h)
   }, [])
-  const links = [['#empresa','Empresa'],['#productos','Productos'],['#precios','Precios'],['#contacto','Contacto']]
+  const links = [['#empresa','Empresa'],['#productos','Productos'],['#precios','Precios']]
   return (
     <>
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 40px', background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(30,30,30,0.07)', boxShadow: scrolled ? '0 4px 32px rgba(30,30,30,0.1)' : 'none', transition: 'box-shadow .3s' }}>
@@ -21,6 +21,9 @@ export default function Nav() {
               onMouseEnter={e => (e.currentTarget.style.color = '#1e1e1e')}
               onMouseLeave={e => (e.currentTarget.style.color = '#4a6572')}>{label}</a>
           ))}
+          <Link href="/contacto" style={{ fontSize: 15, fontWeight: 600, color: '#4a6572', transition: 'color .2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#1e1e1e')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#4a6572')}>Contacto</Link>
           <a href="/servix" style={{ fontSize: 15, fontWeight: 600, color: '#ee7528', transition: 'color .2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = '#c85f1b')}
             onMouseLeave={e => (e.currentTarget.style.color = '#ee7528')}>Servix</a>
@@ -44,6 +47,7 @@ export default function Nav() {
           {links.map(([href, label]) => (
             <a key={href} href={href} onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1e1e1e', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>{label}</a>
           ))}
+          <Link href="/contacto" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1e1e1e', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Contacto</Link>
           <a href="/servix" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#ee7528', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Servix</a>
           <a href="/gymstack" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#a855f7', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>GymStack</a>
           <a href="/agentes-ia" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#e8a33d', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Agentes IA</a>
