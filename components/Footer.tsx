@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export default function Footer() {
   return (
-    <footer style={{ background: '#07111a', padding: '48px 24px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
+    <footer style={{ background: '#161616', padding: '48px 24px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div className="footer-grid" style={{ marginBottom: 40 }}>
           <div>
@@ -22,14 +22,14 @@ export default function Footer() {
               <h5 style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.45)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 14 }}>{col.title}</h5>
               {col.links.map(([href, label]) => (
                 <a key={href} href={href} style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,.35)', marginBottom: 10, textDecoration: 'none', transition: 'color .2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#2ab3aa')}
+                  onMouseEnter={e => (e.currentTarget.style.color = '#ee7528')}
                   onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,.35)')}>{label}</a>
               ))}
             </div>
           ))}
         </div>
         <div style={{ borderTop: '1px solid rgba(255,255,255,.05)', paddingTop: 24, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,.25)', margin: 0 }}>© 2025 <span style={{ color: '#2ab3aa' }}>innovapp</span> · Todos los derechos reservados</p>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,.25)', margin: 0 }}>© 2025 <span style={{ color: '#ee7528' }}>innovapp</span> · Todos los derechos reservados</p>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,.25)', margin: 0 }}>Hecho con ❤️ en España</p>
         </div>
       </div>

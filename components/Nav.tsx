@@ -12,17 +12,17 @@ export default function Nav() {
   const links = [['#empresa','Empresa'],['#productos','Productos'],['#precios','Precios'],['#contacto','Contacto']]
   return (
     <>
-      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 40px', background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(26,61,79,0.07)', boxShadow: scrolled ? '0 4px 32px rgba(13,31,45,0.1)' : 'none', transition: 'box-shadow .3s' }}>
+      <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 40px', background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(30,30,30,0.07)', boxShadow: scrolled ? '0 4px 32px rgba(30,30,30,0.1)' : 'none', transition: 'box-shadow .3s' }}>
         <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 60, width: 'auto' }} /></Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: 28 }} className="nav-desktop">
           {links.map(([href, label]) => (
             <a key={href} href={href} style={{ fontSize: 15, fontWeight: 600, color: '#4a6572', transition: 'color .2s' }}
-              onMouseEnter={e => (e.currentTarget.style.color = '#1a3d4f')}
+              onMouseEnter={e => (e.currentTarget.style.color = '#1e1e1e')}
               onMouseLeave={e => (e.currentTarget.style.color = '#4a6572')}>{label}</a>
           ))}
-          <a href="/servix" style={{ fontSize: 15, fontWeight: 600, color: '#2ab3aa', transition: 'color .2s' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#1a8a84')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#2ab3aa')}>Servix</a>
+          <a href="/servix" style={{ fontSize: 15, fontWeight: 600, color: '#ee7528', transition: 'color .2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#c85f1b')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#ee7528')}>Servix</a>
           <a href="/gymstack" style={{ fontSize: 15, fontWeight: 600, color: '#a855f7', transition: 'color .2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = '#7c3aed')}
             onMouseLeave={e => (e.currentTarget.style.color = '#a855f7')}>GymStack</a>
@@ -31,8 +31,8 @@ export default function Nav() {
             onMouseLeave={e => (e.currentTarget.style.color = '#e8a33d')}>Agentes IA</a>
         </div>
         <div style={{ display: 'flex', gap: 10 }} className="nav-desktop">
-          <Link href="/login" style={{ padding: '9px 18px', borderRadius: 10, border: '1px solid #eef1f4', fontSize: 14, fontWeight: 600, color: '#1a3d4f', background: '#f8fafb', textDecoration: 'none' }}>Entrar</Link>
-          <Link href="/registro?plan=free" style={{ padding: '9px 18px', borderRadius: 10, border: 'none', fontSize: 14, fontWeight: 700, color: 'white', background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', textDecoration: 'none', boxShadow: '0 4px 14px rgba(42,179,170,.3)' }}>Empezar gratis →</Link>
+          <Link href="/login" style={{ padding: '9px 18px', borderRadius: 10, border: '1px solid #eef1f4', fontSize: 14, fontWeight: 600, color: '#1e1e1e', background: '#f8fafb', textDecoration: 'none' }}>Entrar</Link>
+          <Link href="/registro?plan=free" style={{ padding: '9px 18px', borderRadius: 10, border: 'none', fontSize: 14, fontWeight: 700, color: 'white', background: 'linear-gradient(135deg,#ee7528,#c85f1b)', textDecoration: 'none', boxShadow: '0 4px 14px rgba(238,117,40,.3)' }}>Empezar gratis →</Link>
         </div>
         <button onClick={() => setOpen(!open)} className="nav-mobile" style={{ background: 'none', border: '1px solid #eef1f4', borderRadius: 8, padding: '8px 10px', cursor:'pointer', fontSize: 18 }}>
           {open ? '✕' : '☰'}
@@ -41,14 +41,14 @@ export default function Nav() {
       {open && (
         <div className="nav-mobile" style={{ position: 'fixed', top: 82, left: 0, right: 0, zIndex: 99, background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 4, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
           {links.map(([href, label]) => (
-            <a key={href} href={href} onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1a3d4f', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>{label}</a>
+            <a key={href} href={href} onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1e1e1e', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>{label}</a>
           ))}
-          <a href="/servix" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#2ab3aa', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Servix</a>
+          <a href="/servix" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#ee7528', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Servix</a>
           <a href="/gymstack" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#a855f7', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>GymStack</a>
           <a href="/agentes-ia" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#e8a33d', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Agentes IA</a>
           <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
-            <Link href="/login" onClick={() => setOpen(false)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1px solid #eef1f4', fontSize: 14, fontWeight: 600, color: '#1a3d4f', background: '#f8fafb', textDecoration: 'none', textAlign: 'center' }}>Entrar</Link>
-            <Link href="/registro?plan=free" onClick={() => setOpen(false)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', fontSize: 14, fontWeight: 700, color: 'white', background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', textDecoration: 'none', textAlign: 'center' }}>Empezar gratis →</Link>
+            <Link href="/login" onClick={() => setOpen(false)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1px solid #eef1f4', fontSize: 14, fontWeight: 600, color: '#1e1e1e', background: '#f8fafb', textDecoration: 'none', textAlign: 'center' }}>Entrar</Link>
+            <Link href="/registro?plan=free" onClick={() => setOpen(false)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', fontSize: 14, fontWeight: 700, color: 'white', background: 'linear-gradient(135deg,#ee7528,#c85f1b)', textDecoration: 'none', textAlign: 'center' }}>Empezar gratis →</Link>
           </div>
         </div>
       )}

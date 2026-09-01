@@ -23,7 +23,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           .features-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; }
           .pricing-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
           .section { padding: 80px 24px; }
-          .label { display: inline-block; background: rgba(42,179,170,.1); border: 1px solid rgba(42,179,170,.2); border-radius: 100px; padding: 5px 16px; font-size: 11px; font-weight: 700; color: #2ab3aa; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
+          .label { display: inline-block; background: rgba(238,117,40,.1); border: 1px solid rgba(238,117,40,.2); border-radius: 100px; padding: 5px 16px; font-size: 11px; font-weight: 700; color: #ee7528; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 16px; }
           @media (max-width: 900px) {
             .about-grid { grid-template-columns: 1fr; gap: 40px; }
             .servix-grid { grid-template-columns: 1fr; gap: 32px; }
