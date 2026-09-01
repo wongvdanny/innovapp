@@ -201,6 +201,51 @@ export async function sendCancellationEmail(to: string, name: string, productSlu
   })
 }
 
+export interface ContactPayload {
+  name: string
+  email: string
+  phone?: string
+  product?: string
+  message: string
+}
+
+const escapeHtml = (s: string) =>
+  String(s ?? '').replace(/[&<>"]/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c] as string
+  ))
+
+/** Envía a contacto@innovapp.es el mensaje del formulario de /contacto.
+ *  reply_to = email del usuario, para poder responder directamente. */
+export async function sendContactEmail(data: ContactPayload) {
+  const tag = data.product?.trim() ? data.product.trim() : 'General'
+  const row = (label: string, value?: string) =>
+    value?.trim()
+      ? `<tr><td style="padding:6px 0;font-size:13px;color:#88a8b0;width:150px;vertical-align:top">${label}</td><td style="font-size:14px;color:#1e1e1e;white-space:pre-wrap">${escapeHtml(value)}</td></tr>`
+      : ''
+
+  const { error } = await resend.emails.send({
+    from: FROM,
+    to: 'contacto@innovapp.es',
+    replyTo: data.email,
+    subject: `Nuevo contacto desde innovapp.es — ${tag}`,
+    html: `
+    <div style="font-family:system-ui,sans-serif;max-width:600px;margin:0 auto;padding:32px">
+      <h2 style="font-size:18px;color:#1e1e1e;margin:0 0 4px">Nuevo mensaje desde el formulario de contacto</h2>
+      <p style="font-size:13px;color:#88a8b0;margin:0 0 20px">innovapp.es/contacto — producto de interés: <strong>${escapeHtml(tag)}</strong></p>
+      <table style="width:100%;border-collapse:collapse">
+        ${row('Nombre', data.name)}
+        ${row('Email', data.email)}
+        ${row('Teléfono', data.phone)}
+        ${row('Producto', data.product)}
+        ${row('Mensaje', data.message)}
+      </table>
+    </div>`,
+  })
+
+  // El SDK de Resend no lanza en errores de API: hay que mirar el campo `error`.
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
+}
+
 export async function sendNewsletterConfirmation(to: string) {
   await resend.emails.send({
     from: FROM, to,
