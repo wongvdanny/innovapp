@@ -10,6 +10,7 @@ module.exports = {
     '/dashboard/*',
     '/checkout',
     '/registro',
+    '/registro-news',
     '/login',
     '/bienvenida',
   ],
