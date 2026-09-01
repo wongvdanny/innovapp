@@ -96,7 +96,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
   }
 
   const PRODUCT_META: Record<string, { label: string; color: string; bg: string; url: string }> = {
-    servix:   { label: 'Servix',   color: '#2ab3aa', bg: '#f0f9f8', url: 'https://servix.innovapp.es' },
+    servix:   { label: 'Servix',   color: '#ee7528', bg: '#fdf0e8', url: 'https://servix.innovapp.es' },
     gymstack: { label: 'GymStack', color: '#a855f7', bg: '#f5f3ff', url: 'https://gymstack.innovapp.es' },
     news:     { label: 'News',     color: '#e6672a', bg: '#fdeee6', url: 'https://news.innovapp.es' },
   }
@@ -113,7 +113,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
       <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
 
         {/* Header */}
-        <div style={{ background: 'linear-gradient(135deg,#1a2533,#1a3d4f)', padding: '16px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+        <div style={{ background: 'linear-gradient(135deg,#1e1e1e,#1e1e1e)', padding: '16px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <img src="/logo.webp" alt="innovapp" style={{ height: 26, filter: 'brightness(0) invert(1) opacity(.8)' }} />
             <div style={{ width: 1, height: 24, background: 'rgba(255,255,255,.15)' }} />
@@ -126,16 +126,16 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
               rel="noopener noreferrer"
               style={{
                 display: 'flex', alignItems: 'center', gap: 7,
-                background: 'rgba(42,179,170,.18)',
-                border: '1px solid rgba(42,179,170,.4)',
+                background: 'rgba(238,117,40,.18)',
+                border: '1px solid rgba(238,117,40,.4)',
                 color: '#7ee8e4',
                 fontSize: 13, fontWeight: 600,
                 padding: '7px 14px',
                 borderRadius: 8,
                 textDecoration: 'none',
               }}
-              onMouseOver={e => (e.currentTarget.style.background = 'rgba(42,179,170,.32)')}
-              onMouseOut={e => (e.currentTarget.style.background = 'rgba(42,179,170,.18)')}
+              onMouseOver={e => (e.currentTarget.style.background = 'rgba(238,117,40,.32)')}
+              onMouseOut={e => (e.currentTarget.style.background = 'rgba(238,117,40,.18)')}
             >
               🗄️ Gestor BD Servix
             </a>
@@ -160,7 +160,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
           ].map(([icon, label, value, bg, color]) => (
             <div key={String(label)} style={{ background: 'white', borderRadius: 16, padding: '20px 24px', border: '1px solid #eef1f4', boxShadow: '0 2px 8px rgba(0,0,0,.04)' }}>
               <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
-              <div style={{ fontSize: 28, fontWeight: 800, color: '#1a2533', lineHeight: 1 }}>{value}</div>
+              <div style={{ fontSize: 28, fontWeight: 800, color: '#1e1e1e', lineHeight: 1 }}>{value}</div>
               <div style={{ fontSize: 13, color: '#88a8b0', marginTop: 4 }}>{label}</div>
             </div>
           ))}
@@ -172,7 +172,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
             {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['gyms','💪 Gimnasios'],['news','🎙️ News'],['plans','📦 Planes'],['redsys','💳 Redsys'],['stripe','💜 Stripe'],['newsletter','📧 Newsletter'],['config','⚙️ Configuración']].map(([key, label]) => (
               <button key={key} onClick={() => setTab(key as any)}
                 style={{ padding: '8px 20px', borderRadius: 10, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                  background: tab === key ? 'linear-gradient(135deg,#2ab3aa,#1a6478)' : 'transparent',
+                  background: tab === key ? 'linear-gradient(135deg,#ee7528,#c85f1b)' : 'transparent',
                   color: tab === key ? 'white' : '#4a6572' }}>
                 {label}
               </button>
@@ -186,7 +186,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
           {tab === 'subs' && (
             <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', overflow: 'hidden' }}>
               <div style={{ padding: '20px 24px', borderBottom: '1px solid #eef1f4', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533', margin: 0 }}>Todos los suscriptores</h3>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e', margin: 0 }}>Todos los suscriptores</h3>
                 <span style={{ fontSize: 13, color: '#88a8b0' }}>{subList.length} registros</span>
               </div>
               <div style={{ overflowX: 'auto' }}>
@@ -204,14 +204,14 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
                       const isLoading = actionId === s.id
                       return (
                         <tr key={s.id} style={{ borderBottom: '1px solid #f0f4f6' }}>
-                          <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 600, color: '#1a2533' }}>{s.user.name}</td>
+                          <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 600, color: '#1e1e1e' }}>{s.user.name}</td>
                           <td style={{ padding: '14px 16px', fontSize: 13, color: '#88a8b0' }}>{s.user.email}</td>
                           <td style={{ padding: '14px 16px' }}>
                             {(() => { const pm = PRODUCT_META[getProductSlug(s)]; return (
                               <span style={{ background: pm.bg, color: pm.color, borderRadius: 8, padding: '3px 10px', fontSize: 12, fontWeight: 700 }}>{pm.label}</span>
                             )})()}
                           </td>
-                          <td style={{ padding: '14px 16px', fontSize: 13, fontWeight: 600, color: '#1a2533' }}>{s.plan.name} · {s.plan.price}€</td>
+                          <td style={{ padding: '14px 16px', fontSize: 13, fontWeight: 600, color: '#1e1e1e' }}>{s.plan.name} · {s.plan.price}€</td>
                           <td style={{ padding: '14px 16px' }}>
                             <span style={{ background: sm.bg, color: sm.color, borderRadius: 20, padding: '3px 12px', fontSize: 12, fontWeight: 700 }}>
                               {sm.label}
@@ -223,9 +223,9 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
                           <td style={{ padding: '14px 16px', fontSize: 12, color: '#88a8b0' }} suppressHydrationWarning>
                             {s.endDate ? new Date(s.endDate).toLocaleDateString('es-ES') : '—'}
                           </td>
-                          <td style={{ padding: '14px 16px', fontSize: 12, color: '#1a6478', fontWeight: 600 }}>
+                          <td style={{ padding: '14px 16px', fontSize: 12, color: '#c85f1b', fontWeight: 600 }}>
                             {(s.provisioning?.slug || s.servixSlug)
-                              ? <a href={PRODUCT_META[getProductSlug(s)].url} target="_blank" style={{ color: '#1a6478', textDecoration: 'none' }}>🌐 {s.provisioning?.slug || s.servixSlug}</a>
+                              ? <a href={PRODUCT_META[getProductSlug(s)].url} target="_blank" style={{ color: '#c85f1b', textDecoration: 'none' }}>🌐 {s.provisioning?.slug || s.servixSlug}</a>
                               : <span style={{ color: '#dde3e8' }}>—</span>
                             }
                           </td>
@@ -352,25 +352,25 @@ function PlansTab({ plans }: { plans: any[] }) {
   return (
     <div>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533' }}>Gestión de planes</h3>
-        <button onClick={openCreate} style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>+ Nuevo plan</button>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e' }}>Gestión de planes</h3>
+        <button onClick={openCreate} style={{ padding: '10px 20px', background: 'linear-gradient(135deg,#ee7528,#c85f1b)', color: 'white', border: 'none', borderRadius: 10, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>+ Nuevo plan</button>
       </div>
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill,minmax(300px,1fr))', gap: 16 }}>
         {list.map(p => (
           <div key={p.id} style={{ background: 'white', borderRadius: 16, border: '1px solid #eef1f4', padding: 24, opacity: p.active ? 1 : 0.6 }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 14 }}>
               <div>
-                <div style={{ fontSize: 18, fontWeight: 800, color: '#1a2533' }}>{p.name}</div>
-                <div style={{ fontSize: 24, fontWeight: 800, color: '#1a6478' }}>{p.price}€<span style={{ fontSize: 13, fontWeight: 500, color: '#88a8b0' }}>/{p.interval === 'monthly' ? 'mes' : 'año'}</span></div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: '#1e1e1e' }}>{p.name}</div>
+                <div style={{ fontSize: 24, fontWeight: 800, color: '#c85f1b' }}>{p.price}€<span style={{ fontSize: 13, fontWeight: 500, color: '#88a8b0' }}>/{p.interval === 'monthly' ? 'mes' : 'año'}</span></div>
               </div>
               <span style={{ background: p.active ? '#f0fdf4' : '#f8fafb', color: p.active ? '#166534' : '#88a8b0', borderRadius: 20, padding: '3px 12px', fontSize: 11, fontWeight: 700 }}>{p.active ? 'Activo' : 'Pausado'}</span>
             </div>
             <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 14 }}>{p.description}</p>
             <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 20 }}>
-              {p.features.map((f: string) => <li key={f} style={{ fontSize: 12, color: '#4a6572', display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ color: '#2ab3aa', fontWeight: 700 }}>✓</span>{f}</li>)}
+              {p.features.map((f: string) => <li key={f} style={{ fontSize: 12, color: '#4a6572', display: 'flex', alignItems: 'center', gap: 6 }}><span style={{ color: '#ee7528', fontWeight: 700 }}>✓</span>{f}</li>)}
             </ul>
             <div style={{ display: 'flex', gap: 8 }}>
-              <button onClick={() => openEdit(p)}     style={{ flex: 1, padding: 8, borderRadius: 8, border: '1px solid #eef1f4', background: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: '#1a2533' }}>✏️ Editar</button>
+              <button onClick={() => openEdit(p)}     style={{ flex: 1, padding: 8, borderRadius: 8, border: '1px solid #eef1f4', background: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: '#1e1e1e' }}>✏️ Editar</button>
               <button onClick={() => toggleActive(p)} style={{ flex: 1, padding: 8, borderRadius: 8, border: '1px solid #eef1f4', background: 'white', fontSize: 13, fontWeight: 600, cursor: 'pointer', color: p.active ? '#991b1b' : '#166534' }}>
                 {p.active ? '⏸ Pausar' : '▶ Activar'}
               </button>
@@ -382,29 +382,29 @@ function PlansTab({ plans }: { plans: any[] }) {
       {modal && (
         <div style={{ position: 'fixed', inset: 0, background: 'rgba(0,0,0,.5)', zIndex: 200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
           <div style={{ background: 'white', borderRadius: 20, padding: 36, maxWidth: 480, width: '100%' }}>
-            <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, color: '#1a2533' }}>{editing ? 'Editar plan' : 'Nuevo plan'}</h3>
+            <h3 style={{ fontSize: 20, fontWeight: 800, marginBottom: 24, color: '#1e1e1e' }}>{editing ? 'Editar plan' : 'Nuevo plan'}</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               {[['Nombre','name','text','Ej: Mensual'],['Descripción','description','text','Sin permanencia'],['Precio (€)','price','number','99']].map(([label, key, type, ph]) => (
                 <div key={key}>
-                  <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>{label}</label>
+                  <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>{label}</label>
                   <input style={inp} type={type} value={(form as any)[key]} onChange={e => setForm(f => ({ ...f, [key]: type === 'number' ? parseFloat(e.target.value) : e.target.value }))} placeholder={ph} />
                 </div>
               ))}
               <div>
-                <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Intervalo</label>
+                <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>Intervalo</label>
                 <select style={inp} value={form.interval} onChange={e => setForm(f => ({ ...f, interval: e.target.value }))}>
                   <option value="monthly">Mensual</option>
                   <option value="yearly">Anual</option>
                 </select>
               </div>
               <div>
-                <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Características (una por línea)</label>
+                <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>Características (una por línea)</label>
                 <textarea style={{ ...inp, minHeight: 100, resize: 'vertical' }} value={form.features} onChange={e => setForm(f => ({ ...f, features: e.target.value }))} placeholder={'Mesas ilimitadas\nCarta QR\nSoporte email'} />
               </div>
             </div>
             <div style={{ display: 'flex', gap: 10, marginTop: 24 }}>
               <button onClick={() => setModal(false)} style={{ flex: 1, padding: 12, borderRadius: 10, border: '1px solid #eef1f4', background: 'white', fontSize: 14, fontWeight: 600, cursor: 'pointer', color: '#4a6572' }}>Cancelar</button>
-              <button onClick={save} disabled={saving} style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={save} disabled={saving} style={{ flex: 2, padding: 12, borderRadius: 10, border: 'none', background: 'linear-gradient(135deg,#ee7528,#c85f1b)', color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
                 {saving ? 'Guardando...' : 'Guardar plan'}
               </button>
             </div>
@@ -433,11 +433,11 @@ function RedsysTab({ config }: { config: any }) {
 
   return (
     <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 36, maxWidth: 560 }}>
-      <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533', marginBottom: 6 }}>Configuración Redsys</h3>
+      <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e', marginBottom: 6 }}>Configuración Redsys</h3>
       <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 28 }}>Credenciales para procesar pagos de suscripciones.</p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div>
-          <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Entorno</label>
+          <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>Entorno</label>
           <select style={inp} value={form.environment} onChange={e => setForm(f => ({ ...f, environment: e.target.value }))}>
             <option value="test">🧪 Test (sandbox)</option>
             <option value="production">🚀 Producción (real)</option>
@@ -445,12 +445,12 @@ function RedsysTab({ config }: { config: any }) {
         </div>
         {[['Merchant Code (FUC)','merchantCode','999008881'],['Terminal','terminal','001'],['Moneda (978 = EUR)','currency','978']].map(([label,key,ph]) => (
           <div key={key}>
-            <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>{label}</label>
+            <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>{label}</label>
             <input style={inp} value={(form as any)[key]} onChange={e => setForm(f => ({ ...f, [key]: e.target.value }))} placeholder={ph} />
           </div>
         ))}
         <div>
-          <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>
+          <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>
             Secret Key {hasSecretKey && <span style={{ color: '#166534', fontWeight: 700 }}>· configurada ✓</span>}
           </label>
           <input
@@ -462,7 +462,7 @@ function RedsysTab({ config }: { config: any }) {
           />
         </div>
         {saved && <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#166534', fontWeight: 600 }}>✅ Guardado correctamente</div>}
-        <button onClick={save} disabled={saving} style={{ padding: 14, background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+        <button onClick={save} disabled={saving} style={{ padding: 14, background: 'linear-gradient(135deg,#ee7528,#c85f1b)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
           {saving ? '⏳ Guardando...' : '💾 Guardar configuración'}
         </button>
       </div>
@@ -503,12 +503,12 @@ function StripeTab({ config }: { config: any }) {
   return (
     <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 36, maxWidth: 560 }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 6 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533' }}>Configuración Stripe</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e' }}>Configuración Stripe</h3>
         <label style={{ display: 'flex', alignItems: 'center', gap: 8, cursor: 'pointer' }}>
           <span style={{ fontSize: 13, fontWeight: 600, color: form.enabled ? '#166534' : '#88a8b0' }}>{form.enabled ? 'Activo' : 'Inactivo'}</span>
           <div onClick={() => setForm(f => ({ ...f, enabled: !f.enabled }))} style={{
             width: 40, height: 22, borderRadius: 20, cursor: 'pointer', position: 'relative',
-            background: form.enabled ? '#2ab3aa' : '#dde3e8', transition: 'background .15s',
+            background: form.enabled ? '#ee7528' : '#dde3e8', transition: 'background .15s',
           }}>
             <div style={{
               width: 18, height: 18, borderRadius: '50%', background: 'white', position: 'absolute', top: 2,
@@ -520,18 +520,18 @@ function StripeTab({ config }: { config: any }) {
       <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 28 }}>Credenciales para procesar pagos de suscripciones vía Stripe.</p>
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div>
-          <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Entorno</label>
+          <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>Entorno</label>
           <select style={inp} value={form.environment} onChange={e => setForm(f => ({ ...f, environment: e.target.value }))}>
             <option value="test">🧪 Test (sandbox)</option>
             <option value="production">🚀 Producción (real)</option>
           </select>
         </div>
         <div>
-          <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Publishable Key</label>
+          <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>Publishable Key</label>
           <input style={inp} value={form.publishableKey} onChange={e => setForm(f => ({ ...f, publishableKey: e.target.value }))} placeholder="pk_test_..." />
         </div>
         <div>
-          <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>
+          <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>
             Secret Key {hasSecretKey && <span style={{ color: '#166534', fontWeight: 700 }}>· configurada ✓</span>}
           </label>
           <input
@@ -543,7 +543,7 @@ function StripeTab({ config }: { config: any }) {
           />
         </div>
         <div>
-          <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>
+          <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>
             Webhook Signing Secret {hasWebhookSecret && <span style={{ color: '#166534', fontWeight: 700 }}>· configurado ✓</span>}
           </label>
           <input
@@ -600,13 +600,13 @@ function NewsletterTab() {
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
       <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 28 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533' }}>Suscriptores newsletter</h3>
-          <span style={{ background: '#f0f9f8', color: '#1a6478', borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{subs.filter(s=>s.active).length} activos</span>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e' }}>Suscriptores newsletter</h3>
+          <span style={{ background: '#fdf0e8', color: '#c85f1b', borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{subs.filter(s=>s.active).length} activos</span>
         </div>
         <div style={{ maxHeight: 400, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8 }}>
           {subs.map(s => (
             <div key={s.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '10px 12px', background: '#f8fafb', borderRadius: 10 }}>
-              <span style={{ fontSize: 13, color: '#1a2533' }}>{s.email}</span>
+              <span style={{ fontSize: 13, color: '#1e1e1e' }}>{s.email}</span>
               <span style={{ fontSize: 11, fontWeight: 700, color: s.active ? '#166534' : '#88a8b0' }}>{s.active ? '● Activo' : '○ Baja'}</span>
             </div>
           ))}
@@ -614,19 +614,19 @@ function NewsletterTab() {
         </div>
       </div>
       <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 28 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533', marginBottom: 20 }}>Enviar newsletter</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e', marginBottom: 20 }}>Enviar newsletter</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
           <div>
-            <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Asunto</label>
+            <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>Asunto</label>
             <input style={inp} value={subject} onChange={e=>setSubject(e.target.value)} placeholder="Novedades de Servix..." />
           </div>
           <div>
-            <label style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }}>Mensaje (HTML permitido)</label>
+            <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>Mensaje (HTML permitido)</label>
             <textarea style={{ ...inp, minHeight: 160, resize: 'vertical' }} value={body} onChange={e=>setBody(e.target.value)} placeholder="<p>Hola,</p><p>Queremos contarte que...</p>" />
           </div>
           {sent && <div style={{ background: '#f0fdf4', border: '1px solid #86efac', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#166534', fontWeight: 600 }}>✅ Newsletter enviada</div>}
           <button onClick={sendNewsletter} disabled={sending || !subject || !body}
-            style={{ padding: 14, background: sending||!subject||!body ? '#ccc' : 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
+            style={{ padding: 14, background: sending||!subject||!body ? '#ccc' : 'linear-gradient(135deg,#ee7528,#c85f1b)', color: 'white', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
             {sending ? '⏳ Enviando...' : `📧 Enviar a ${subs.filter(s=>s.active).length} suscriptores`}
           </button>
         </div>
@@ -677,12 +677,12 @@ function RestaurantsTab() {
 
       {/* Filtros periodo */}
       <div style={{ background: 'white', borderRadius: 16, border: '1px solid #eef1f4', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#1a2533' }}>Periodo:</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#1e1e1e' }}>Periodo:</span>
         <div style={{ display: 'flex', gap: 6 }}>
           {periodBtns.map(([key, label]) => (
             <button key={key} onClick={() => applyPeriod(key)}
               style={{ padding: '6px 16px', borderRadius: 8, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
-                background: period === key ? 'linear-gradient(135deg,#2ab3aa,#1a6478)' : '#f0f2f5',
+                background: period === key ? 'linear-gradient(135deg,#ee7528,#c85f1b)' : '#f0f2f5',
                 color: period === key ? 'white' : '#4a6572' }}>
               {label}
             </button>
@@ -695,7 +695,7 @@ function RestaurantsTab() {
             <input type="date" value={customTo} onChange={e => setCustomTo(e.target.value)} style={inp} />
             <button onClick={() => load(new Date(customFrom).toISOString(), new Date(customTo).toISOString())}
               disabled={!customFrom || !customTo}
-              style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
+              style={{ padding: '8px 16px', borderRadius: 8, border: 'none', background: 'linear-gradient(135deg,#ee7528,#c85f1b)', color: 'white', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>
               Aplicar
             </button>
           </div>
@@ -711,7 +711,7 @@ function RestaurantsTab() {
         ].map(([icon, label, value]) => (
           <div key={String(label)} style={{ background: 'white', borderRadius: 16, padding: '20px 24px', border: '1px solid #eef1f4', boxShadow: '0 2px 8px rgba(0,0,0,.04)' }}>
             <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#1a2533', lineHeight: 1 }}>{value}</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: '#1e1e1e', lineHeight: 1 }}>{value}</div>
             <div style={{ fontSize: 13, color: '#88a8b0', marginTop: 4 }}>{label}</div>
           </div>
         ))}
@@ -720,7 +720,7 @@ function RestaurantsTab() {
       {/* Tabla restaurantes */}
       <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', overflow: 'hidden' }}>
         <div style={{ padding: '20px 24px', borderBottom: '1px solid #eef1f4', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533', margin: 0 }}>Detalle por restaurante</h3>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e', margin: 0 }}>Detalle por restaurante</h3>
           {loading && <span style={{ fontSize: 13, color: '#88a8b0' }}>⏳ Cargando...</span>}
         </div>
         {loading ? (
@@ -744,20 +744,20 @@ function RestaurantsTab() {
                 {data.sort((a, b) => b.totalSales - a.totalSales).map((r: any) => (
                   <tr key={r.id} style={{ borderBottom: '1px solid #f0f4f6' }}>
                     <td style={{ padding: '14px 16px' }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1a2533' }}>{r.name}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1e1e1e' }}>{r.name}</div>
                       <div style={{ fontSize: 11, color: '#88a8b0', marginTop: 2 }}>/{r.slug}</div>
                     </td>
                     <td style={{ padding: '14px 16px' }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2533' }}>{r.owner}</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e' }}>{r.owner}</div>
                       <div style={{ fontSize: 11, color: '#88a8b0' }}>{r.email}</div>
                     </td>
-                    <td style={{ padding: '14px 16px', fontSize: 13, fontWeight: 600, color: '#1a6478' }}>{r.plan}</td>
+                    <td style={{ padding: '14px 16px', fontSize: 13, fontWeight: 600, color: '#c85f1b' }}>{r.plan}</td>
                     <td style={{ padding: '14px 16px', fontSize: 12, color: '#88a8b0' }} suppressHydrationWarning>
                       {r.endDate ? new Date(r.endDate).toLocaleDateString('es-ES') : '—'}
                     </td>
-                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#1a3d4f', textAlign: 'center' }}>{r.tables}</td>
-                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#1a3d4f', textAlign: 'center' }}>{r.employees}</td>
-                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#1a3d4f', textAlign: 'center' }}>{r.totalOrders}</td>
+                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#1e1e1e', textAlign: 'center' }}>{r.tables}</td>
+                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#1e1e1e', textAlign: 'center' }}>{r.employees}</td>
+                    <td style={{ padding: '14px 16px', fontSize: 14, fontWeight: 700, color: '#1e1e1e', textAlign: 'center' }}>{r.totalOrders}</td>
                     <td style={{ padding: '14px 16px' }}>
                       <div style={{ fontSize: 15, fontWeight: 800, color: r.totalSales > 0 ? '#166534' : '#88a8b0' }}>
                         {r.totalSales.toFixed(2)} €
@@ -821,7 +821,7 @@ function GymsTab() {
 
       {/* Filtros periodo */}
       <div style={{ background: 'white', borderRadius: 16, border: '1px solid #eef1f4', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#1a2533' }}>Periodo:</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#1e1e1e' }}>Periodo:</span>
         <div style={{ display: 'flex', gap: 6 }}>
           {periodBtns.map(([key, label]) => (
             <button key={key} onClick={() => applyPeriod(key)}
@@ -855,7 +855,7 @@ function GymsTab() {
         ].map(([icon, label, value]) => (
           <div key={String(label)} style={{ background: 'white', borderRadius: 16, padding: '20px 24px', border: '1px solid #eef1f4', boxShadow: '0 2px 8px rgba(0,0,0,.04)' }}>
             <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#1a2533', lineHeight: 1 }}>{value}</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: '#1e1e1e', lineHeight: 1 }}>{value}</div>
             <div style={{ fontSize: 13, color: '#88a8b0', marginTop: 4 }}>{label}</div>
           </div>
         ))}
@@ -864,7 +864,7 @@ function GymsTab() {
       {/* Tabla gimnasios */}
       <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', overflow: 'hidden' }}>
         <div style={{ padding: '20px 24px', borderBottom: '1px solid #eef1f4', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533', margin: 0 }}>Detalle por gimnasio</h3>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e', margin: 0 }}>Detalle por gimnasio</h3>
           {loading && <span style={{ fontSize: 13, color: '#88a8b0' }}>⏳ Cargando...</span>}
         </div>
         {loading ? (
@@ -888,11 +888,11 @@ function GymsTab() {
                 {data.sort((a, b) => b.totalSales - a.totalSales).map((r: any) => (
                   <tr key={r.id} style={{ borderBottom: '1px solid #f0f4f6' }}>
                     <td style={{ padding: '14px 16px' }}>
-                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1a2533' }}>{r.name}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: '#1e1e1e' }}>{r.name}</div>
                       <div style={{ fontSize: 11, color: '#88a8b0', marginTop: 2 }}>/{r.slug}</div>
                     </td>
                     <td style={{ padding: '14px 16px' }}>
-                      <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2533' }}>{r.owner}</div>
+                      <div style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e' }}>{r.owner}</div>
                       <div style={{ fontSize: 11, color: '#88a8b0' }}>{r.email}</div>
                     </td>
                     <td style={{ padding: '14px 16px', fontSize: 13, fontWeight: 600, color: '#a855f7' }}>{r.plan}</td>
@@ -958,11 +958,11 @@ function ConfigTab() {
   }
 
   const card: React.CSSProperties = { background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 32 }
-  const uploadArea: React.CSSProperties = { border: '2px dashed #d0eeec', borderRadius: 16, padding: '32px 24px', textAlign: 'center', cursor: 'pointer', background: '#f0f9f8', transition: 'all .2s' }
+  const uploadArea: React.CSSProperties = { border: '2px dashed #f9dcc7', borderRadius: 16, padding: '32px 24px', textAlign: 'center', cursor: 'pointer', background: '#fdf0e8', transition: 'all .2s' }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
-      <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a2533', margin: 0 }}>Configuración del sitio</h3>
+      <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e', margin: 0 }}>Configuración del sitio</h3>
 
       {msg && (
         <div style={{ background: msg.ok ? '#f0fdf4' : '#fff1f2', border: `1px solid ${msg.ok ? '#86efac' : '#fca5a5'}`, borderRadius: 12, padding: '12px 18px', fontSize: 14, fontWeight: 600, color: msg.ok ? '#166534' : '#991b1b' }}>
@@ -974,22 +974,22 @@ function ConfigTab() {
 
         {/* Logo */}
         <div style={card}>
-          <h4 style={{ fontSize: 16, fontWeight: 700, color: '#1a2533', marginBottom: 6 }}>Logo del sitio</h4>
+          <h4 style={{ fontSize: 16, fontWeight: 700, color: '#1e1e1e', marginBottom: 6 }}>Logo del sitio</h4>
           <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 20 }}>Aparece en la navegación y emails. Recomendado: .webp o .png con fondo transparente.</p>
 
           {/* Preview */}
-          <div style={{ background: '#1a2533', borderRadius: 12, padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, minHeight: 80 }}>
+          <div style={{ background: '#1e1e1e', borderRadius: 12, padding: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 20, minHeight: 80 }}>
             <img src={logoPreview} alt="Logo actual" style={{ maxHeight: 40, maxWidth: '100%', objectFit: 'contain' }} onError={() => setLogoPreview('/logo.webp')} />
           </div>
 
           <label style={uploadArea}>
             <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => handleFile(e, 'logo')} />
             {uploadingLogo ? (
-              <div style={{ color: '#2ab3aa', fontWeight: 600 }}>⏳ Subiendo...</div>
+              <div style={{ color: '#ee7528', fontWeight: 600 }}>⏳ Subiendo...</div>
             ) : (
               <>
                 <div style={{ fontSize: 32, marginBottom: 8 }}>🖼️</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: '#1a6478', marginBottom: 4 }}>Haz clic para subir nuevo logo</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#c85f1b', marginBottom: 4 }}>Haz clic para subir nuevo logo</div>
                 <div style={{ fontSize: 12, color: '#88a8b0' }}>PNG, WEBP, SVG · Máx 2MB</div>
               </>
             )}
@@ -998,7 +998,7 @@ function ConfigTab() {
 
         {/* Favicon */}
         <div style={card}>
-          <h4 style={{ fontSize: 16, fontWeight: 700, color: '#1a2533', marginBottom: 6 }}>Favicon</h4>
+          <h4 style={{ fontSize: 16, fontWeight: 700, color: '#1e1e1e', marginBottom: 6 }}>Favicon</h4>
           <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 20 }}>Icono que aparece en la pestaña del navegador. Recomendado: .ico o .png de 32×32px.</p>
 
           {/* Preview */}
@@ -1012,11 +1012,11 @@ function ConfigTab() {
           <label style={uploadArea}>
             <input type="file" accept="image/*,.ico" style={{ display: 'none' }} onChange={e => handleFile(e, 'favicon')} />
             {uploadingFav ? (
-              <div style={{ color: '#2ab3aa', fontWeight: 600 }}>⏳ Subiendo...</div>
+              <div style={{ color: '#ee7528', fontWeight: 600 }}>⏳ Subiendo...</div>
             ) : (
               <>
                 <div style={{ fontSize: 32, marginBottom: 8 }}>🌐</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: '#1a6478', marginBottom: 4 }}>Haz clic para subir nuevo favicon</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#c85f1b', marginBottom: 4 }}>Haz clic para subir nuevo favicon</div>
                 <div style={{ fontSize: 12, color: '#88a8b0' }}>ICO, PNG · 32×32px · Máx 2MB</div>
               </>
             )}
@@ -1122,7 +1122,7 @@ function NewsTab() {
     <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
 
       <div style={{ background: 'white', borderRadius: 16, border: '1px solid #eef1f4', padding: '16px 20px', display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
-        <span style={{ fontSize: 13, fontWeight: 700, color: '#1a2533' }}>Periodo:</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: '#1e1e1e' }}>Periodo:</span>
         <div style={{ display: 'flex', gap: 6 }}>
           {periodBtns.map(([key, label]) => (
             <button key={key} onClick={() => applyPeriod(key)}
@@ -1155,7 +1155,7 @@ function NewsTab() {
         ].map(([icon, label, value]) => (
           <div key={String(label)} style={{ background: 'white', borderRadius: 16, padding: '20px 24px', border: '1px solid #eef1f4', boxShadow: '0 2px 8px rgba(0,0,0,.04)' }}>
             <div style={{ fontSize: 24, marginBottom: 8 }}>{icon}</div>
-            <div style={{ fontSize: 26, fontWeight: 800, color: '#1a2533', lineHeight: 1 }}>{value}</div>
+            <div style={{ fontSize: 26, fontWeight: 800, color: '#1e1e1e', lineHeight: 1 }}>{value}</div>
             <div style={{ fontSize: 13, color: '#88a8b0', marginTop: 4 }}>{label}</div>
           </div>
         ))}
@@ -1163,7 +1163,7 @@ function NewsTab() {
 
       {costs && (
         <div style={{ background: 'white', borderRadius: 16, border: '1px solid #eef1f4', padding: '20px 24px' }}>
-          <div style={{ fontSize: 13, fontWeight: 700, color: '#1a2533', marginBottom: 4 }}>💸 Consumo y coste estimado de APIs</div>
+          <div style={{ fontSize: 13, fontWeight: 700, color: '#1e1e1e', marginBottom: 4 }}>💸 Consumo y coste estimado de APIs</div>
           <div style={{ fontSize: 12, color: '#88a8b0', marginBottom: 16 }}>
             Claude Haiku 4.5: 1/5 dolar por millon de tokens E/S. Google TTS Neural2: 16 dolares por millon de caracteres, 1M gratis al mes. NewsData.io: gratis hasta 200 llamadas/dia.
           </div>
@@ -1171,7 +1171,7 @@ function NewsTab() {
 
             {[['Generaciones', costs.runs], ['Llamadas NewsData', costs.newsdataCalls], ['Tokens Claude E/S', costs.claudeInputTokens + ' / ' + costs.claudeOutputTokens], ['Caracteres TTS', costs.ttsCharacters.toLocaleString('es-ES')], ['Coste total est.', '$' + costs.totalCostUsd.toFixed(4)]].map(([label, value]) => (
               <div key={String(label)}>
-                <div style={{ fontSize: 18, fontWeight: 800, color: '#1a2533' }}>{value}</div>
+                <div style={{ fontSize: 18, fontWeight: 800, color: '#1e1e1e' }}>{value}</div>
                 <div style={{ fontSize: 12, color: '#88a8b0' }}>{label}</div>
               </div>
             ))}
@@ -1197,7 +1197,7 @@ function NewsTab() {
             ) : (
               data.map(row => (
                 <tr key={row.id} style={{ borderTop: '1px solid #eef1f4' }}>
-                  <td style={{ padding: '12px 16px', fontWeight: 600, color: '#1a2533' }}>{row.name}</td>
+                  <td style={{ padding: '12px 16px', fontWeight: 600, color: '#1e1e1e' }}>{row.name}</td>
                   <td style={{ padding: '12px 16px', color: '#4a6572' }}>{row.email}</td>
                   <td style={{ padding: '12px 16px', color: '#4a6572' }}>{row.country}</td>
                   <td style={{ padding: '12px 16px', color: '#4a6572' }}>{[row.city, row.province].filter(Boolean).join(', ') || '—'}</td>
