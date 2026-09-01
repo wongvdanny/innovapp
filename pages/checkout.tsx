@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Seo from '../components/Seo'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
@@ -164,10 +164,12 @@ export default function Checkout() {
 
   return (
     <>
-      <Head>
-        <title>Checkout — {productName}</title>
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-      </Head>
+      <Seo
+        title={`Checkout — ${productName}`}
+        description="Completa tu suscripción a innovapp de forma segura."
+        canonical="/checkout"
+        noindex
+      />
 
       <div className="co-root">
 

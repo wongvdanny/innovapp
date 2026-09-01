@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Seo from '../components/Seo'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
@@ -53,7 +53,12 @@ export default function Bienvenida() {
 
   return (
     <>
-      <Head><title>¡Bienvenido! — innovapp</title></Head>
+      <Seo
+        title="¡Bienvenido! — innovapp"
+        description="Tu cuenta de innovapp está lista."
+        canonical="/bienvenida"
+        noindex
+      />
       <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#fdf0e8,#e8f7f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <div style={{ background: 'white', borderRadius: 24, padding: '56px 48px', maxWidth: 480, width: '100%', textAlign: 'center', boxShadow: '0 20px 60px rgba(238,117,40,0.15)' }}>
           <div style={{ fontSize: 72, marginBottom: 16 }}>🎉</div>

@@ -1,11 +1,15 @@
-import Head from 'next/head'
+import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 
 export default function Cookies() {
   return (
     <>
-      <Head><title>Política de Cookies — innovapp</title></Head>
+      <Seo
+        title="Política de Cookies — innovapp"
+        description="Política de cookies de innovapp: qué cookies utilizamos, con qué finalidad y cómo gestionarlas."
+        canonical="/cookies"
+      />
       <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <header style={{ background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/"><Logo variant="light" height={26} /></Link>

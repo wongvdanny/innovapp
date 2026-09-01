@@ -1,11 +1,15 @@
-import Head from 'next/head'
+import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 
 export default function Uso() {
   return (
     <>
-      <Head><title>Términos de Uso — innovapp</title></Head>
+      <Seo
+        title="Términos de Uso — innovapp"
+        description="Términos y condiciones de uso de los servicios de innovapp: Servix, GymStack y Agentes IA."
+        canonical="/uso"
+      />
       <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <header style={{ background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/"><Logo variant="light" height={26} /></Link>

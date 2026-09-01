@@ -1,11 +1,15 @@
-import Head from 'next/head'
+import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 
 export default function Privacidad() {
   return (
     <>
-      <Head><title>Política de Privacidad — innovapp</title></Head>
+      <Seo
+        title="Política de Privacidad — innovapp"
+        description="Política de privacidad de innovapp: qué datos tratamos, con qué base legal y cuáles son tus derechos."
+        canonical="/privacidad"
+      />
       <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <header style={{ background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/"><Logo variant="light" height={26} /></Link>

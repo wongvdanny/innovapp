@@ -1,5 +1,5 @@
-import Head from 'next/head'
 import Link from 'next/link'
+import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
@@ -11,30 +11,23 @@ export default function AgentesIaPage() {
 
   return (
     <>
-      <Head>
-        <title>Agentes IA — Agente de IA por WhatsApp para tu negocio | innovapp</title>
-        <meta name="description" content="Un agente de IA que atiende tu WhatsApp 24 horas: responde dudas, reserva citas y conoce tu negocio desde el primer día. Pide tu cotización personalizada." />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Agentes IA — Agente de IA por WhatsApp" />
-        <meta property="og:description" content="Responde, reserva citas y conoce tu negocio por WhatsApp, sin que tú tengas que estar ahí." />
-        <meta property="og:url" content="https://innovapp.es/agentes-ia" />
-        <meta property="og:image" content="https://innovapp.es/logo.webp" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <link rel="canonical" href="https://innovapp.es/agentes-ia" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Service',
-              name: 'Agentes IA',
-              serviceType: 'Agente de IA por WhatsApp para negocios locales',
-              provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
-              areaServed: 'ES',
-            }),
-          }}
-        />
-      </Head>
+      <Seo
+        title="Agentes IA — Agente de IA por WhatsApp para tu negocio | innovapp"
+        description="Un agente de IA que atiende tu WhatsApp 24 horas: responde dudas, reserva citas y conoce tu negocio desde el primer día. Pide tu cotización personalizada."
+        canonical="/agentes-ia"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          name: 'Agentes IA',
+          serviceType: 'Agente de IA por WhatsApp para negocios locales',
+          description:
+            'Un agente de IA que atiende tu WhatsApp 24 horas: responde dudas, reserva citas y conoce tu negocio desde el primer día.',
+          url: 'https://innovapp.es/agentes-ia',
+          image: 'https://innovapp.es/brand/og-image.png',
+          provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
+          areaServed: 'ES',
+        }}
+      />
 
       <Nav />
 

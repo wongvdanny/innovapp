@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import Seo from '../components/Seo'
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
@@ -27,7 +27,12 @@ export default function Login() {
 
   return (
     <>
-      <Head><title>Iniciar sesión — innovapp</title></Head>
+      <Seo
+        title="Iniciar sesión — innovapp"
+        description="Accede a tu panel de suscripción de innovapp."
+        canonical="/login"
+        noindex
+      />
       <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1e1e1e,#1e1e1e)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <div style={{ background: 'white', borderRadius: 24, padding: '48px 40px', maxWidth: 420, width: '100%', boxShadow: '0 40px 100px rgba(0,0,0,0.3)' }}>
           <Link href="/"><Logo variant="light" height={36} style={{ marginBottom: 32 }} /></Link>

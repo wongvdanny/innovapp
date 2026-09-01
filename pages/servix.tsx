@@ -1,5 +1,5 @@
-import Head from 'next/head'
 import { GetServerSideProps } from 'next'
+import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import Link from 'next/link'
@@ -21,45 +21,34 @@ export default function ServixPage({ plans }: { plans: PlanData[] }) {
 
   return (
     <>
-      <Head>
-        <title>Servix — TPV para Restaurantes, Bares y Cafeterías | innovapp</title>
-        <meta name="description" content="Servix digitaliza tu restaurante: gestión de mesas, carta QR, pantalla de cocina, reservas y pagos con Redsys. Empieza gratis, sin tarjeta." />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Servix — TPV para Restaurantes, Bares y Cafeterías" />
-        <meta property="og:description" content="Sistema completo de gestión para restaurantes: mesas, cocina, carta QR, reservas y pagos con tarjeta, todo en un solo panel." />
-        <meta property="og:url" content="https://innovapp.es/servix" />
-        <meta property="og:image" content="https://innovapp.es/logo.webp" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Servix — TPV para Restaurantes" />
-        <meta name="twitter:description" content="Gestión de mesas, carta QR, cocina y pagos, todo en un solo panel. Empieza gratis." />
-        <link rel="canonical" href="https://innovapp.es/servix" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              "@context": "https://schema.org",
-              "@type": "SoftwareApplication",
-              "name": "Servix",
-              "applicationCategory": "BusinessApplication",
-              "operatingSystem": "Web",
-              "description": "TPV y sistema de gestión para restaurantes, bares y cafeterías: mesas, carta QR, cocina, reservas y pagos con Redsys.",
-              "url": "https://innovapp.es/servix",
-              "offers": {
-                "@type": "AggregateOffer",
-                "priceCurrency": "EUR",
-                "lowPrice": "0",
-                "highPrice": "990",
-                "offerCount": "3",
-              },
-              "provider": {
-                "@type": "Organization",
-                "name": "innovapp",
-                "url": "https://innovapp.es",
-              },
-            }),
-          }}
-        />
-      </Head>
+      <Seo
+        title="Servix — TPV para Restaurantes, Bares y Cafeterías | innovapp"
+        description="Servix digitaliza tu restaurante: gestión de mesas, carta QR, pantalla de cocina, reservas y pagos con Redsys. Empieza gratis, sin tarjeta."
+        canonical="/servix"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'SoftwareApplication',
+          name: 'Servix',
+          applicationCategory: 'BusinessApplication',
+          operatingSystem: 'Web',
+          description:
+            'TPV y sistema de gestión para restaurantes, bares y cafeterías: mesas, carta QR, cocina, reservas y pagos con Redsys.',
+          url: 'https://innovapp.es/servix',
+          image: 'https://innovapp.es/brand/og-image.png',
+          offers: {
+            '@type': 'AggregateOffer',
+            priceCurrency: 'EUR',
+            lowPrice: '0',
+            highPrice: '990',
+            offerCount: '3',
+          },
+          provider: {
+            '@type': 'Organization',
+            name: 'innovapp',
+            url: 'https://innovapp.es',
+          },
+        }}
+      />
 
       <Nav />
 

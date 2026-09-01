@@ -1,11 +1,15 @@
-import Head from 'next/head'
+import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 
 export default function AvisoLegal() {
   return (
     <>
-      <Head><title>Aviso Legal — innovapp</title></Head>
+      <Seo
+        title="Aviso Legal — innovapp"
+        description="Aviso legal de innovapp: titularidad del sitio, condiciones de uso y propiedad intelectual."
+        canonical="/aviso-legal"
+      />
       <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <header style={{ background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/"><Logo variant="light" height={26} /></Link>

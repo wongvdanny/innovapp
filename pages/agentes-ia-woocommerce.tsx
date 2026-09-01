@@ -1,5 +1,5 @@
-import Head from 'next/head'
 import Link from 'next/link'
+import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
@@ -37,34 +37,24 @@ export default function AgentesIaWoocommercePage() {
 
   return (
     <>
-      <Head>
-        <title>Agente de IA por WhatsApp para WooCommerce | Innovapp</title>
-        <meta name="description" content="Integra un agente de IA con tu tienda WooCommerce: atiende WhatsApp 24/7, busca productos en tu catálogo real, arma el carrito y envía el enlace de pago. Pide tu demo gratuita." />
-        <meta name="keywords" content="agente IA WooCommerce, WhatsApp WooCommerce, plugin WooCommerce WhatsApp, chatbot IA tienda online, vender por WhatsApp WooCommerce" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Agente de IA por WhatsApp para WooCommerce" />
-        <meta property="og:description" content="Un agente de IA que atiende el WhatsApp de tu tienda WooCommerce: busca productos, arma el carrito y envía el enlace de pago, 24 horas al día." />
-        <meta property="og:url" content="https://innovapp.es/agentes-ia-woocommerce" />
-        <meta property="og:image" content="https://innovapp.es/logo.webp" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Agente de IA por WhatsApp para WooCommerce" />
-        <meta name="twitter:description" content="Busca productos, arma el carrito y envía el enlace de pago por WhatsApp, conectado a tu catálogo real de WooCommerce." />
-        <link rel="canonical" href="https://innovapp.es/agentes-ia-woocommerce" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Service',
-              name: 'Agente de IA por WhatsApp para WooCommerce',
-              serviceType: 'Integración de agente de IA por WhatsApp con tiendas WooCommerce',
-              provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
-              areaServed: 'ES',
-              audience: { '@type': 'Audience', audienceType: 'Tiendas online con WooCommerce' },
-            }),
-          }}
-        />
-      </Head>
+      <Seo
+        title="Agente de IA por WhatsApp para WooCommerce | Innovapp"
+        description="Integra un agente de IA con tu tienda WooCommerce: atiende WhatsApp 24/7, busca productos en tu catálogo real, arma el carrito y envía el enlace de pago. Pide tu demo gratuita."
+        canonical="/agentes-ia-woocommerce"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          name: 'Agente de IA por WhatsApp para WooCommerce',
+          serviceType: 'Integración de agente de IA por WhatsApp con tiendas WooCommerce',
+          description:
+            'Un agente de IA que atiende el WhatsApp de tu tienda WooCommerce: busca productos, arma el carrito y envía el enlace de pago, 24 horas al día.',
+          url: 'https://innovapp.es/agentes-ia-woocommerce',
+          image: 'https://innovapp.es/brand/og-image.png',
+          provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
+          areaServed: 'ES',
+          audience: { '@type': 'Audience', audienceType: 'Tiendas online con WooCommerce' },
+        }}
+      />
 
       <Nav />
 

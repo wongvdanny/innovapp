@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Seo from '../components/Seo'
 
 const COUNTRIES = [
   { code: 'ES', name: 'España' },
@@ -126,6 +127,13 @@ export default function RegistroNews() {
   }
 
   return (
+    <>
+      <Seo
+        title="News — Tu resumen diario de noticias en audio | innovapp"
+        description="Crea tu cuenta en News: un resumen diario de la actualidad en audio, con los temas que te interesan. Empieza gratis."
+        canonical="/registro-news"
+        noindex
+      />
     <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#1a1a2e 0%,#3d2b6f 50%,#e6672a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
       <div style={{ background: 'white', borderRadius: 24, padding: '48px 40px', maxWidth: 440, width: '100%', boxShadow: '0 40px 100px rgba(0,0,0,0.3)' }}>
 
@@ -237,5 +245,6 @@ export default function RegistroNews() {
         </div>
       </div>
     </div>
+    </>
   )
 }

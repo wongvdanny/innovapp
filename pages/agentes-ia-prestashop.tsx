@@ -1,5 +1,5 @@
-import Head from 'next/head'
 import Link from 'next/link'
+import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
@@ -37,34 +37,24 @@ export default function AgentesIaPrestashopPage() {
 
   return (
     <>
-      <Head>
-        <title>Agente de IA por WhatsApp para PrestaShop | Innovapp</title>
-        <meta name="description" content="Integra un agente de IA con tu tienda PrestaShop: atiende WhatsApp 24/7, busca productos en tu catálogo real, arma el carrito y envía el enlace de pago. Pide tu demo gratuita." />
-        <meta name="keywords" content="agente IA PrestaShop, WhatsApp PrestaShop, chatbot IA tienda online, módulo PrestaShop WhatsApp, vender por WhatsApp PrestaShop" />
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content="Agente de IA por WhatsApp para PrestaShop" />
-        <meta property="og:description" content="Un agente de IA que atiende el WhatsApp de tu tienda PrestaShop: busca productos, arma el carrito y envía el enlace de pago, 24 horas al día." />
-        <meta property="og:url" content="https://innovapp.es/agentes-ia-prestashop" />
-        <meta property="og:image" content="https://innovapp.es/logo.webp" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content="Agente de IA por WhatsApp para PrestaShop" />
-        <meta name="twitter:description" content="Busca productos, arma el carrito y envía el enlace de pago por WhatsApp, conectado a tu catálogo real de PrestaShop." />
-        <link rel="canonical" href="https://innovapp.es/agentes-ia-prestashop" />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{
-            __html: JSON.stringify({
-              '@context': 'https://schema.org',
-              '@type': 'Service',
-              name: 'Agente de IA por WhatsApp para PrestaShop',
-              serviceType: 'Integración de agente de IA por WhatsApp con tiendas PrestaShop',
-              provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
-              areaServed: 'ES',
-              audience: { '@type': 'Audience', audienceType: 'Tiendas online con PrestaShop' },
-            }),
-          }}
-        />
-      </Head>
+      <Seo
+        title="Agente de IA por WhatsApp para PrestaShop | Innovapp"
+        description="Integra un agente de IA con tu tienda PrestaShop: atiende WhatsApp 24/7, busca productos en tu catálogo real, arma el carrito y envía el enlace de pago. Pide tu demo gratuita."
+        canonical="/agentes-ia-prestashop"
+        jsonLd={{
+          '@context': 'https://schema.org',
+          '@type': 'Service',
+          name: 'Agente de IA por WhatsApp para PrestaShop',
+          serviceType: 'Integración de agente de IA por WhatsApp con tiendas PrestaShop',
+          description:
+            'Un agente de IA que atiende el WhatsApp de tu tienda PrestaShop: busca productos, arma el carrito y envía el enlace de pago, 24 horas al día.',
+          url: 'https://innovapp.es/agentes-ia-prestashop',
+          image: 'https://innovapp.es/brand/og-image.png',
+          provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
+          areaServed: 'ES',
+          audience: { '@type': 'Audience', audienceType: 'Tiendas online con PrestaShop' },
+        }}
+      />
 
       <Nav />
 
