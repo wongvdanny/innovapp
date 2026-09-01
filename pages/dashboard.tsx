@@ -12,10 +12,10 @@ export default function Dashboard({ user, subscription, invoices }: any) {
   return (
     <>
       <Head><title>Mi suscripción — innovapp</title></Head>
-      <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'Plus Jakarta Sans,sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'Manrope,sans-serif' }}>
         {/* Header */}
         <div style={{ background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 28 }} /></Link>
+          <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 36 }} /></Link>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
             <span style={{ fontSize: 14, color: '#88a8b0' }}>{user.email}</span>
             <button onClick={() => signOut({ callbackUrl: '/login' })} style={{ padding: '8px 16px', borderRadius: 8, border: '1px solid #eef1f4', background: 'white', fontSize: 13, fontWeight: 600, color: '#4a6572', cursor: 'pointer' }}>Cerrar sesión</button>

@@ -80,7 +80,7 @@ export default function Checkout() {
   const inp: React.CSSProperties = {
     width: '100%', padding: '11px 14px', borderRadius: 10,
     border: '1.5px solid #eef1f4', fontSize: 14, outline: 'none',
-    fontFamily: 'Plus Jakarta Sans,sans-serif', boxSizing: 'border-box',
+    fontFamily: 'Manrope,sans-serif', boxSizing: 'border-box',
     background: '#fafbfc', transition: 'border-color .2s',
   }
   const lbl: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }

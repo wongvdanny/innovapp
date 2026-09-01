@@ -15,10 +15,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         />
         {/* End Google Tag Manager */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
         <style>{`
           * { box-sizing: border-box; margin: 0; padding: 0; }
-          body { font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+          body { font-family: 'Manrope', system-ui, sans-serif; }
           a { text-decoration: none; }
           .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; }
           .servix-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }

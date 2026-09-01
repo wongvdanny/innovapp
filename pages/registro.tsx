@@ -146,7 +146,7 @@ export default function Registro() {
 
   const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); void doSubmit() }
 
-  const inputStyle = { width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid #eef1f4', fontSize: 14, outline: 'none', fontFamily: 'Plus Jakarta Sans,sans-serif', transition: 'border-color .2s', boxSizing: 'border-box' as const }
+  const inputStyle = { width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid #eef1f4', fontSize: 14, outline: 'none', fontFamily: 'Manrope,sans-serif', transition: 'border-color .2s', boxSizing: 'border-box' as const }
   const lblStyle = { fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 } as const
 
   if (plansLoading) {
@@ -168,7 +168,7 @@ export default function Registro() {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
-      <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1a2533 0%,#1a3d4f 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'Plus Jakarta Sans,sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1a2533 0%,#1a3d4f 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'Manrope,sans-serif' }}>
         <div style={{ background: 'white', borderRadius: 24, padding: '48px 40px', maxWidth: 520, width: '100%', boxShadow: '0 40px 100px rgba(0,0,0,0.3)' }}>
           <Link href="/">
             <img src="/logo.webp" alt="innovapp" style={{ height: 28, marginBottom: 32, display: 'block' }} />

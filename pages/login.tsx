@@ -22,14 +22,14 @@ export default function Login() {
     }
   }
 
-  const inputStyle = { width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid #eef1f4', fontSize: 14, outline: 'none', fontFamily: 'Plus Jakarta Sans,sans-serif', boxSizing: 'border-box' as const }
+  const inputStyle = { width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid #eef1f4', fontSize: 14, outline: 'none', fontFamily: 'Manrope,sans-serif', boxSizing: 'border-box' as const }
 
   return (
     <>
       <Head><title>Iniciar sesión — innovapp</title></Head>
-      <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1a2533,#1a3d4f)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'Plus Jakarta Sans,sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1a2533,#1a3d4f)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'Manrope,sans-serif' }}>
         <div style={{ background: 'white', borderRadius: 24, padding: '48px 40px', maxWidth: 420, width: '100%', boxShadow: '0 40px 100px rgba(0,0,0,0.3)' }}>
-          <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 28, marginBottom: 32, display: 'block' }} /></Link>
+          <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 36, marginBottom: 32, display: 'block' }} /></Link>
           <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1a2533' }}>Bienvenido de vuelta</h2>
           <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Accede a tu panel de suscripción</p>
           <form onSubmit={handleSubmit}>
