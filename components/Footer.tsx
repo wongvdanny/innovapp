@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Logo from './Logo'
+import { COOKIE_SETTINGS_EVENT } from './CookieBanner'
 
 const linkStyle: React.CSSProperties = {
   display: 'block', fontSize: 13, color: 'rgba(255,255,255,.35)',
@@ -38,9 +39,19 @@ export default function Footer() {
             </div>
           ))}
         </div>
-        <div style={{ borderTop: '1px solid rgba(255,255,255,.05)', paddingTop: 24, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+        <div style={{ borderTop: '1px solid rgba(255,255,255,.05)', paddingTop: 24, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,.25)', margin: 0 }}>© 2025 <span style={{ color: '#ee7528' }}>innovapp</span> · Todos los derechos reservados</p>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,.25)', margin: 0 }}>Hecho con ❤️ en España</p>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+            <button
+              onClick={() => window.dispatchEvent(new CustomEvent(COOKIE_SETTINGS_EVENT))}
+              style={{ background: 'none', border: 'none', padding: 0, fontSize: 12, color: 'rgba(255,255,255,.25)', cursor: 'pointer', textDecoration: 'underline' }}
+              onMouseEnter={hoverIn}
+              onMouseLeave={hoverOut}
+            >
+              Gestionar cookies
+            </button>
+            <p style={{ fontSize: 12, color: 'rgba(255,255,255,.25)', margin: 0 }}>Hecho con ❤️ en España</p>
+          </div>
         </div>
       </div>
       <style>{`

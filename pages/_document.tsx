@@ -3,6 +3,24 @@ export default function Document() {
   return (
     <Html lang="es">
       <Head>
+        {/* Google Consent Mode v2 -- debe ejecutarse ANTES que el script de GTM de abajo.
+            Fija los valores por defecto en "denied" en cada carga de página; CookieBanner
+            (components/CookieBanner.jsx) los actualiza a "granted" según la decisión del
+            usuario, guardada en localStorage. */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+window.gtag = gtag;
+gtag('consent', 'default', {
+  ad_storage: 'denied',
+  ad_user_data: 'denied',
+  ad_personalization: 'denied',
+  analytics_storage: 'denied',
+  wait_for_update: 500
+});`,
+          }}
+        />
         {/* Google Tag Manager */}
         <script
           dangerouslySetInnerHTML={{

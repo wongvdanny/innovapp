@@ -4,6 +4,7 @@ import Head from 'next/head'
 import { Gabarito } from 'next/font/google'
 import '../styles/globals.css'
 import WhatsAppBubble from '../components/WhatsAppBubble'
+import CookieBanner from '../components/CookieBanner'
 import { CONTACT_EMAIL } from '../lib/constants'
 
 const ORGANIZATION_JSONLD = {
@@ -42,6 +43,7 @@ export default function App({ Component, pageProps }: AppProps) {
       `}</style>
       <Component {...pageProps} />
       <WhatsAppBubble />
+      <CookieBanner />
     </>
   )
 }
