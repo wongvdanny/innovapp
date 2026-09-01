@@ -3,7 +3,7 @@
 .co-root {
   min-height: 100vh;
   background: #f8fafb;
-  font-family: 'Manrope', sans-serif;
+  font-family: var(--font-gabarito), system-ui, sans-serif;
   display: flex;
   flex-direction: column;
 }

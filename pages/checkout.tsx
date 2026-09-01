@@ -80,7 +80,7 @@ export default function Checkout() {
   const inp: React.CSSProperties = {
     width: '100%', padding: '11px 14px', borderRadius: 10,
     border: '1.5px solid #eef1f4', fontSize: 14, outline: 'none',
-    fontFamily: 'Manrope,sans-serif', boxSizing: 'border-box',
+    fontFamily: 'var(--font-gabarito), system-ui, sans-serif', boxSizing: 'border-box',
     background: '#fafbfc', transition: 'border-color .2s',
   }
   const lbl: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }
@@ -166,7 +166,6 @@ export default function Checkout() {
       <Head>
         <title>Checkout — {productName}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
       </Head>
 
       <div className="co-root">

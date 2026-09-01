@@ -54,7 +54,7 @@ export default function Bienvenida() {
   return (
     <>
       <Head><title>¡Bienvenido! — innovapp</title></Head>
-      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#f0f9f8,#e8f7f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'Manrope,sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#f0f9f8,#e8f7f6)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <div style={{ background: 'white', borderRadius: 24, padding: '56px 48px', maxWidth: 480, width: '100%', textAlign: 'center', boxShadow: '0 20px 60px rgba(42,179,170,0.15)' }}>
           <div style={{ fontSize: 72, marginBottom: 16 }}>🎉</div>
           <h1 style={{ fontSize: 28, fontWeight: 800, color: '#1a2533', marginBottom: 12 }}>¡Pago completado!</h1>

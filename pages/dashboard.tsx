@@ -12,7 +12,7 @@ export default function Dashboard({ user, subscription, invoices }: any) {
   return (
     <>
       <Head><title>Mi suscripción — innovapp</title></Head>
-      <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'Manrope,sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         {/* Header */}
         <div style={{ background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 36 }} /></Link>

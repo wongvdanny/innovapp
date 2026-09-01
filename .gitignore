@@ -4,3 +4,7 @@ node_modules/
 .env.local
 *.log
 *.bak
+
+# build info
+tsconfig.tsbuildinfo
+*.bak2

@@ -110,7 +110,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
   return (
     <>
       <Head><title>Admin — innovapp</title></Head>
-      <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'Plus Jakarta Sans,sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
 
         {/* Header */}
         <div style={{ background: 'linear-gradient(135deg,#1a2533,#1a3d4f)', padding: '16px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -347,7 +347,7 @@ function PlansTab({ plans }: { plans: any[] }) {
     setList(l => l.map(x => x.id === p.id ? { ...x, active: !x.active } : x))
   }
 
-  const inp = { width:'100%', padding:'11px 14px', borderRadius:10, border:'1.5px solid #eef1f4', fontSize:14, outline:'none', fontFamily:'Plus Jakarta Sans,sans-serif', boxSizing:'border-box' as const }
+  const inp = { width:'100%', padding:'11px 14px', borderRadius:10, border:'1.5px solid #eef1f4', fontSize:14, outline:'none', fontFamily:'var(--font-gabarito), system-ui, sans-serif', boxSizing:'border-box' as const }
 
   return (
     <div>
@@ -429,7 +429,7 @@ function RedsysTab({ config }: { config: any }) {
     setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 3000)
   }
 
-  const inp = { width:'100%', padding:'11px 14px', borderRadius:10, border:'1.5px solid #eef1f4', fontSize:14, outline:'none', fontFamily:'Plus Jakarta Sans,sans-serif', boxSizing:'border-box' as const }
+  const inp = { width:'100%', padding:'11px 14px', borderRadius:10, border:'1.5px solid #eef1f4', fontSize:14, outline:'none', fontFamily:'var(--font-gabarito), system-ui, sans-serif', boxSizing:'border-box' as const }
 
   return (
     <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 36, maxWidth: 560 }}>
@@ -498,7 +498,7 @@ function StripeTab({ config }: { config: any }) {
     setSaving(false); setSaved(true); setTimeout(() => setSaved(false), 3000)
   }
 
-  const inp = { width:'100%', padding:'11px 14px', borderRadius:10, border:'1.5px solid #eef1f4', fontSize:14, outline:'none', fontFamily:'Plus Jakarta Sans,sans-serif', boxSizing:'border-box' as const }
+  const inp = { width:'100%', padding:'11px 14px', borderRadius:10, border:'1.5px solid #eef1f4', fontSize:14, outline:'none', fontFamily:'var(--font-gabarito), system-ui, sans-serif', boxSizing:'border-box' as const }
 
   return (
     <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 36, maxWidth: 560 }}>
@@ -594,7 +594,7 @@ function NewsletterTab() {
     setTimeout(() => setSent(false), 4000)
   }
 
-  const inp = { width:'100%', padding:'11px 14px', borderRadius:10, border:'1.5px solid #eef1f4', fontSize:14, outline:'none', fontFamily:'Plus Jakarta Sans,sans-serif', boxSizing:'border-box' as const }
+  const inp = { width:'100%', padding:'11px 14px', borderRadius:10, border:'1.5px solid #eef1f4', fontSize:14, outline:'none', fontFamily:'var(--font-gabarito), system-ui, sans-serif', boxSizing:'border-box' as const }
 
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20 }}>
@@ -669,7 +669,7 @@ function RestaurantsTab() {
   const totalSales  = data.reduce((a, r) => a + r.totalSales, 0)
   const totalOrders = data.reduce((a, r) => a + r.totalOrders, 0)
 
-  const inp = { padding: '8px 12px', borderRadius: 8, border: '1.5px solid #eef1f4', fontSize: 13, outline: 'none', fontFamily: 'Plus Jakarta Sans,sans-serif' }
+  const inp = { padding: '8px 12px', borderRadius: 8, border: '1.5px solid #eef1f4', fontSize: 13, outline: 'none', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }
   const periodBtns = [['30d','30 días'],['6m','6 meses'],['1y','1 año'],['custom','Personalizado']]
 
   return (
@@ -813,7 +813,7 @@ function GymsTab() {
   const totalSales    = data.reduce((a, r) => a + r.totalSales, 0)
   const totalBookings = data.reduce((a, r) => a + r.totalBookings, 0)
 
-  const inp = { padding: '8px 12px', borderRadius: 8, border: '1.5px solid #eef1f4', fontSize: 13, outline: 'none', fontFamily: 'Plus Jakarta Sans,sans-serif' }
+  const inp = { padding: '8px 12px', borderRadius: 8, border: '1.5px solid #eef1f4', fontSize: 13, outline: 'none', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }
   const periodBtns = [['30d','30 días'],['6m','6 meses'],['1y','1 año'],['custom','Personalizado']]
 
   return (
@@ -1115,7 +1115,7 @@ function NewsTab() {
   const totalDigests = data.reduce((a, r) => a + r.digestsGenerated, 0)
   const totalRevenue = data.reduce((a, r) => a + r.planPrice, 0)
 
-  const inp = { padding: '8px 12px', borderRadius: 8, border: '1.5px solid #eef1f4', fontSize: 13, outline: 'none', fontFamily: 'Plus Jakarta Sans,sans-serif' }
+  const inp = { padding: '8px 12px', borderRadius: 8, border: '1.5px solid #eef1f4', fontSize: 13, outline: 'none', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }
   const periodBtns = [['30d','30 días'],['6m','6 meses'],['1y','1 año'],['custom','Personalizado']]
 
   return (

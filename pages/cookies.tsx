@@ -5,7 +5,7 @@ export default function Cookies() {
   return (
     <>
       <Head><title>Política de Cookies — innovapp</title></Head>
-      <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'Manrope,sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <header style={{ background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 26 }} /></Link>
           <Link href="/" style={{ fontSize: 13, color: '#88a8b0' }}>← Volver</Link>

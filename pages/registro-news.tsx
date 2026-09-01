@@ -122,11 +122,11 @@ export default function RegistroNews() {
   const inputStyle: React.CSSProperties = {
     width: '100%', padding: '12px 16px', borderRadius: 12,
     border: '1.5px solid #eef1f4', fontSize: 15, outline: 'none',
-    fontFamily: 'system-ui', boxSizing: 'border-box', background: '#f8fafb',
+    fontFamily: 'var(--font-gabarito), system-ui, sans-serif', boxSizing: 'border-box', background: '#f8fafb',
   }
 
   return (
-    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#1a1a2e 0%,#3d2b6f 50%,#e6672a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'system-ui' }}>
+    <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg,#1a1a2e 0%,#3d2b6f 50%,#e6672a 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
       <div style={{ background: 'white', borderRadius: 24, padding: '48px 40px', maxWidth: 440, width: '100%', boxShadow: '0 40px 100px rgba(0,0,0,0.3)' }}>
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 30 }}>
