@@ -1,6 +1,12 @@
 import Link from 'next/link'
 import Logo from './Logo'
-import { CONTACT_EMAIL } from '../lib/constants'
+
+const linkStyle: React.CSSProperties = {
+  display: 'block', fontSize: 13, color: 'rgba(255,255,255,.35)',
+  marginBottom: 10, textDecoration: 'none', transition: 'color .2s',
+}
+const hoverIn = (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = '#ee7528' }
+const hoverOut = (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = 'rgba(255,255,255,.35)' }
 
 export default function Footer() {
   return (
@@ -14,7 +20,7 @@ export default function Footer() {
             </p>
           </div>
           {[
-            { title: 'Empresa', links: [['#empresa','Quiénes somos'],[`mailto:${CONTACT_EMAIL}`,'Contacto']] },
+            { title: 'Empresa', links: [['#empresa','Quiénes somos'],['/contacto','Contacto']] },
             { title: 'Servix',  links: [['/servix','Ver producto'],['/servix#precios','Precios'],['https://servix.innovapp.es','Acceder']] },
             { title: 'GymStack', links: [['/gymstack','Ver producto'],['/gymstack#precios','Precios'],['https://gymstack.innovapp.es','Acceder']] },
             { title: 'Agentes IA', links: [['/agentes-ia','Ver producto'],['/agentes-ia-prestashop','Para PrestaShop'],['/agentes-ia-woocommerce','Para WooCommerce']] },
@@ -23,9 +29,11 @@ export default function Footer() {
             <div key={col.title}>
               <h5 style={{ fontSize: 11, fontWeight: 700, color: 'rgba(255,255,255,.45)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 14 }}>{col.title}</h5>
               {col.links.map(([href, label]) => (
-                <a key={href} href={href} style={{ display: 'block', fontSize: 13, color: 'rgba(255,255,255,.35)', marginBottom: 10, textDecoration: 'none', transition: 'color .2s' }}
-                  onMouseEnter={e => (e.currentTarget.style.color = '#ee7528')}
-                  onMouseLeave={e => (e.currentTarget.style.color = 'rgba(255,255,255,.35)')}>{label}</a>
+                href.startsWith('/') ? (
+                  <Link key={href} href={href} style={linkStyle} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>{label}</Link>
+                ) : (
+                  <a key={href} href={href} style={linkStyle} onMouseEnter={hoverIn} onMouseLeave={hoverOut}>{label}</a>
+                )
               ))}
             </div>
           ))}
