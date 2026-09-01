@@ -98,7 +98,7 @@ export async function sendWelcomeEmail(
       </table>
     </div>` : ''
 
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: FROM, to,
     subject: cfg.subjectWelcome,
     html: `
@@ -182,24 +182,27 @@ export async function sendWelcomeEmail(
       </div>
     </div>`
   })
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }
 
 export async function sendRenewalReminder(to: string, name: string, daysLeft: number, productSlug: string = 'servix') {
   const cfg = CONFIG_BY_PRODUCT[productSlug] || DEFAULT_CONFIG
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: FROM, to,
     subject: `⚠️ Tu suscripción ${cfg.displayName} vence en ${daysLeft} días`,
     html: `<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px"><h2>Hola ${name},</h2><p>Tu suscripción a ${cfg.displayName} vence en <strong>${daysLeft} días</strong>.</p><a href="https://innovapp.es/dashboard" style="display:block;background:${cfg.accentGradient};color:white;text-align:center;padding:14px;border-radius:10px;text-decoration:none;font-weight:700">Renovar suscripción →</a></div>`
   })
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }
 
 export async function sendCancellationEmail(to: string, name: string, productSlug: string = 'servix') {
   const cfg = CONFIG_BY_PRODUCT[productSlug] || DEFAULT_CONFIG
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: FROM, to,
     subject: `Tu suscripción ${cfg.displayName} ha sido cancelada`,
     html: `<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px"><h2>Hola ${name},</h2><p>Tu suscripción a ${cfg.displayName} ha sido cancelada. Lamentamos verte partir.</p><p>Si cambias de opinión, puedes volver cuando quieras en <a href="https://innovapp.es">innovapp.es</a>.</p></div>`
   })
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }
 
 export interface ContactPayload {
@@ -248,9 +251,10 @@ export async function sendContactEmail(data: ContactPayload) {
 }
 
 export async function sendNewsletterConfirmation(to: string) {
-  await resend.emails.send({
+  const { error } = await resend.emails.send({
     from: FROM, to,
     subject: '✅ Suscripción a la newsletter de innovapp confirmada',
     html: `<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px"><h2>¡Gracias por suscribirte!</h2><p>Te mantendremos informado sobre novedades de Servix, GymStack y el sector.</p></div>`
   })
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }
