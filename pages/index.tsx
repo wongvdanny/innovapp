@@ -85,9 +85,9 @@ export default function Home() {
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(238,117,40,.12)', border: '1px solid rgba(238,117,40,.25)', borderRadius: 100, padding: '6px 18px', marginBottom: 28 }}>
           <span style={{ color: '#f4a15c', fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>✦ Empresa española de tecnología web</span>
         </div>
-        <h1 style={{ fontSize: 'clamp(34px,6vw,78px)', fontWeight: 800, color: 'white', lineHeight: 1.06, letterSpacing: -2, marginBottom: 24, maxWidth: 860 }}>
+        <h2 style={{ fontSize: 'clamp(34px,6vw,78px)', fontWeight: 800, color: 'white', lineHeight: 1.06, letterSpacing: -2, marginBottom: 24, maxWidth: 860 }}>
           Desarrollamos aplicaciones<br />que hacen crecer tu <span style={{ background: 'linear-gradient(135deg,#f4a15c,#ee7528)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>negocio</span>
-        </h1>
+        </h2>
         <p style={{ fontSize: 'clamp(15px,2vw,19px)', color: 'rgba(255,255,255,.6)', maxWidth: 580, lineHeight: 1.75, marginBottom: 48 }}>
           En innovapp creamos software SaaS, aplicaciones web a medida y herramientas digitales para empresas que quieren crecer. Tecnología moderna, soporte en español, sin complicaciones.
         </p>
