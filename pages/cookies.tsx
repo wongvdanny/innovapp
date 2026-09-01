@@ -11,7 +11,7 @@ export default function Cookies() {
           <Link href="/" style={{ fontSize: 13, color: '#88a8b0' }}>← Volver</Link>
         </header>
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px' }}>
-          <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1a2533', marginBottom: 8 }}>Política de Cookies</h1>
+          <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1e1e1e', marginBottom: 8 }}>Política de Cookies</h1>
           <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: mayo 2025</p>
           <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: '40px 48px', lineHeight: 1.8, color: '#4a6572', fontSize: 15 }}>
             {[
@@ -22,7 +22,7 @@ export default function Cookies() {
               ['Contacto', 'Si tienes dudas sobre nuestra política de cookies, escríbenos a privacidad@innovapp.es.'],
             ].map(([title, text]) => (
               <div key={title as string} style={{ marginBottom: 28 }}>
-                <h2 style={{ fontSize: 17, fontWeight: 700, color: '#1a2533', marginBottom: 10 }}>{title}</h2>
+                <h2 style={{ fontSize: 17, fontWeight: 700, color: '#1e1e1e', marginBottom: 10 }}>{title}</h2>
                 <p style={{ margin: 0 }}>{text}</p>
               </div>
             ))}

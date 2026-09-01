@@ -103,7 +103,7 @@ export default function GymstackPage({ plans }: { plans: PlanData[] }) {
             {freePlan && (
               <div style={{ background: 'white', border: '2px solid #f1eef4', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: '#a88ab0', textTransform: 'uppercase', marginBottom: 8 }}>{freePlan.name}</div>
-                <div style={{ fontSize: 44, fontWeight: 800, color: '#1a2533' }}>{freePlan.price}€</div>
+                <div style={{ fontSize: 44, fontWeight: 800, color: '#1e1e1e' }}>{freePlan.price}€</div>
                 <div style={{ fontSize: 13, color: '#a88ab0', marginBottom: 20 }}>{freePlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {freePlan.features.map(f => (
@@ -116,14 +116,14 @@ export default function GymstackPage({ plans }: { plans: PlanData[] }) {
             {monthlyPlan && (
               <div style={{ background: 'white', border: '2px solid #f1eef4', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: '#a88ab0', textTransform: 'uppercase', marginBottom: 8 }}>{monthlyPlan.name}</div>
-                <div style={{ fontSize: 44, fontWeight: 800, color: '#1a2533' }}>{monthlyPlan.price}€<span style={{ fontSize: 15, color: '#a88ab0', fontWeight: 500 }}>/mes</span></div>
+                <div style={{ fontSize: 44, fontWeight: 800, color: '#1e1e1e' }}>{monthlyPlan.price}€<span style={{ fontSize: 15, color: '#a88ab0', fontWeight: 500 }}>/mes</span></div>
                 <div style={{ fontSize: 13, color: '#a88ab0', marginBottom: 20 }}>{monthlyPlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {monthlyPlan.features.map(f => (
                     <li key={f} style={{ fontSize: 13, color: '#3d1a4f', display: 'flex', gap: 8 }}><span style={{ color: '#a855f7', fontWeight: 700 }}>✓</span>{f}</li>
                   ))}
                 </ul>
-                <Link href={`/registro?product=gymstack&plan=${monthlyPlan.id}`} style={{ display: 'block', padding: '13px', background: '#1a2533', color: 'white', borderRadius: 12, fontSize: 14, fontWeight: 700, textAlign: 'center', textDecoration: 'none' }}>Contratar mensual →</Link>
+                <Link href={`/registro?product=gymstack&plan=${monthlyPlan.id}`} style={{ display: 'block', padding: '13px', background: '#1e1e1e', color: 'white', borderRadius: 12, fontSize: 14, fontWeight: 700, textAlign: 'center', textDecoration: 'none' }}>Contratar mensual →</Link>
               </div>
             )}
             {yearlyPlan && (
