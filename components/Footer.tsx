@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import Logo from './Logo'
 
 export default function Footer() {
   return (
@@ -6,7 +7,7 @@ export default function Footer() {
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div className="footer-grid" style={{ marginBottom: 40 }}>
           <div>
-            <img src="/logo.webp" alt="innovapp" style={{ height: 36, filter: 'brightness(0) invert(1) opacity(.6)', marginBottom: 14 }} />
+            <Logo variant="dark" height={36} style={{ marginBottom: 14, opacity: 0.6 }} />
             <p style={{ fontSize: 13, color: 'rgba(255,255,255,.35)', lineHeight: 1.75, maxWidth: 240 }}>
               Desarrollamos software SaaS para hostelería y gestión deportiva: Servix y GymStack.
             </p>

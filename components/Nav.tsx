@@ -1,6 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Logo from './Logo'
 export default function Nav() {
   const [scrolled, setScrolled] = useState(false)
   const [open, setOpen] = useState(false)
@@ -13,7 +14,7 @@ export default function Nav() {
   return (
     <>
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 40px', background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(30,30,30,0.07)', boxShadow: scrolled ? '0 4px 32px rgba(30,30,30,0.1)' : 'none', transition: 'box-shadow .3s' }}>
-        <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 60, width: 'auto' }} /></Link>
+        <Link href="/"><Logo variant="light" height={60} /></Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: 28 }} className="nav-desktop">
           {links.map(([href, label]) => (
             <a key={href} href={href} style={{ fontSize: 15, fontWeight: 600, color: '#4a6572', transition: 'color .2s' }}
