@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Logo from '../components/Logo'
 
 interface PlanData {
   id: string
@@ -169,7 +170,7 @@ export default function Registro() {
       <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1e1e1e 0%,#1e1e1e 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <div style={{ background: 'white', borderRadius: 24, padding: '48px 40px', maxWidth: 520, width: '100%', boxShadow: '0 40px 100px rgba(0,0,0,0.3)' }}>
           <Link href="/">
-            <img src="/logo.webp" alt="innovapp" style={{ height: 28, marginBottom: 32, display: 'block' }} />
+            <Logo variant="light" height={28} style={{ marginBottom: 32 }} />
           </Link>
 
           <div style={{ display: 'flex', gap: 8, marginBottom: 32 }}>

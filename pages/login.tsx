@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Logo from '../components/Logo'
 
 export default function Login() {
   const router = useRouter()
@@ -29,7 +30,7 @@ export default function Login() {
       <Head><title>Iniciar sesión — innovapp</title></Head>
       <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1e1e1e,#1e1e1e)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <div style={{ background: 'white', borderRadius: 24, padding: '48px 40px', maxWidth: 420, width: '100%', boxShadow: '0 40px 100px rgba(0,0,0,0.3)' }}>
-          <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 36, marginBottom: 32, display: 'block' }} /></Link>
+          <Link href="/"><Logo variant="light" height={36} style={{ marginBottom: 32 }} /></Link>
           <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1e1e1e' }}>Bienvenido de vuelta</h2>
           <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Accede a tu panel de suscripción</p>
           <form onSubmit={handleSubmit}>

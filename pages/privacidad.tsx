@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import Link from 'next/link'
+import Logo from '../components/Logo'
 
 export default function Privacidad() {
   return (
@@ -7,7 +8,7 @@ export default function Privacidad() {
       <Head><title>Política de Privacidad — innovapp</title></Head>
       <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <header style={{ background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <Link href="/"><img src="/logo.webp" alt="innovapp" style={{ height: 26 }} /></Link>
+          <Link href="/"><Logo variant="light" height={26} /></Link>
           <Link href="/" style={{ fontSize: 13, color: '#88a8b0' }}>← Volver</Link>
         </header>
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px' }}>

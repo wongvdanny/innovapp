@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
+import Logo from '../components/Logo'
 
 const STEPS = ['Datos','Facturación','Confirmar']
 
@@ -172,7 +173,7 @@ export default function Checkout() {
 
         {/* ── HEADER ── */}
         <header className="co-header">
-          <Link href="/"><img src="/logo.webp" alt="innovapp" className="co-logo" /></Link>
+          <Link href="/"><Logo variant="light" className="co-logo" /></Link>
 
           <div className="co-steps">
             {STEPS.map((s, i) => (
