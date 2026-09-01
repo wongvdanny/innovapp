@@ -3,7 +3,38 @@ import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
+import ComoFunciona from '../components/ComoFunciona'
 import { WHATSAPP_DEMO_ECOMMERCE_NUMBER } from '../components/WhatsAppBubble'
+
+const COMO_FUNCIONA_INTRO =
+  'Conectado directamente a tu catálogo de PrestaShop, para que cada respuesta sea sobre stock y precios reales, no genéricos.'
+
+const COMO_FUNCIONA_STEPS = [
+  {
+    title: 'El cliente pregunta por WhatsApp',
+    description: 'Sobre un producto, el estado de su pedido, o si algo está disponible en su talla/color.',
+  },
+  {
+    title: 'El agente consulta tu tienda PrestaShop en tiempo real',
+    description: 'Stock, precio, variantes y estado del pedido, directamente desde tu catálogo.',
+  },
+  {
+    title: 'Ayuda a elegir o resuelve la duda al momento',
+    description: 'Sin redirigir a la web ni hacer esperar al cliente.',
+  },
+  {
+    // Nota: el original pedía "Detecta carritos abandonados y los recupera" -- esa
+    // función no existe en la integración real (sin cron ni modelo de carrito en el
+    // agente), así que este paso describe lo que sí ocurre hoy: cliente y agente arman
+    // el carrito y el enlace de pago en la misma conversación.
+    title: 'Prepara el carrito y el enlace de pago',
+    description: 'En la misma conversación, sin que el cliente tenga que ir a la web ni repetir lo que quiere.',
+  },
+  {
+    title: 'Cierra la venta o escala a una persona',
+    description: 'Si el caso lo requiere (devoluciones, incidencias), pasa a atención humana sin fricción.',
+  },
+]
 
 const CONVERSACION_PRESTASHOP = [
   { rol: 'cliente' as const, texto: 'Hola! Tenéis la zapatilla Runner Pro en talla 42?' },
@@ -17,7 +48,7 @@ export default function AgentesIaPrestashopPage() {
 
   const pasos = [
     ['1', 'Instala el módulo', 'Se instala en tu panel de PrestaShop como cualquier otro módulo, en unos minutos.'],
-    ['2', 'Conecta tu WhatsApp Business', 'Vinculamos tu número de WhatsApp Business con el agente — sin cambiar tu forma de atender ahora.'],
+    ['2', 'Te asignamos un WhatsApp Business dedicado al agente', 'Tu número de contacto actual sigue funcionando igual para lo que ya haces con él.'],
     ['3', 'El agente ya conoce tu tienda', 'Catálogo, precios, stock y pedidos quedan disponibles para el agente desde el primer momento.'],
     ['4', 'Listo, ya vendes por WhatsApp', 'Tus clientes preguntan y compran directamente en la conversación, 24 horas al día.'],
   ]
@@ -92,6 +123,8 @@ export default function AgentesIaPrestashopPage() {
           </div>
         </div>
       </section>
+
+      <ComoFunciona intro={COMO_FUNCIONA_INTRO} steps={COMO_FUNCIONA_STEPS} />
 
       <section style={{ padding: '90px 24px', background: 'white' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>

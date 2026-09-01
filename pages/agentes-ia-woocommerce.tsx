@@ -3,7 +3,38 @@ import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
+import ComoFunciona from '../components/ComoFunciona'
 import { WHATSAPP_DEMO_ECOMMERCE_NUMBER } from '../components/WhatsAppBubble'
+
+const COMO_FUNCIONA_INTRO =
+  'Integrado con tu tienda WooCommerce, respondiendo con datos reales de producto y pedido desde tu propio WordPress.'
+
+const COMO_FUNCIONA_STEPS = [
+  {
+    title: 'El cliente pregunta por WhatsApp',
+    description: 'Sobre un producto, el estado de su pedido, o disponibilidad.',
+  },
+  {
+    title: 'El agente consulta tu tienda WooCommerce en tiempo real',
+    description: 'Stock, precio, variaciones y estado del pedido, sin salir de WhatsApp.',
+  },
+  {
+    title: 'Ayuda a elegir o resuelve la duda al momento',
+    description: 'Conversación natural, sin formularios ni esperas.',
+  },
+  {
+    // Nota: el original pedía "Detecta carritos abandonados y los recupera" -- esa
+    // función no existe en la integración real (sin cron ni modelo de carrito en el
+    // agente), así que este paso describe lo que sí ocurre hoy: cliente y agente arman
+    // el carrito y el enlace de pago en la misma conversación.
+    title: 'Prepara el carrito y el enlace de pago',
+    description: 'En la misma conversación, sin que el cliente tenga que ir a la web ni repetir lo que quiere.',
+  },
+  {
+    title: 'Cierra la venta o escala a una persona',
+    description: 'Casos de devoluciones o incidencias pasan a atención humana automáticamente.',
+  },
+]
 
 const CONVERSACION_WOOCOMMERCE = [
   { rol: 'cliente' as const, texto: 'Hola! Tenéis la zapatilla Runner Pro en talla 42?' },
@@ -17,7 +48,7 @@ export default function AgentesIaWoocommercePage() {
 
   const pasos = [
     ['1', 'Instala el plugin en WordPress', 'Se instala como cualquier otro plugin desde tu panel de WordPress, en unos minutos.'],
-    ['2', 'Conecta tu WhatsApp Business', 'Vinculamos tu número de WhatsApp Business con el agente — sin cambiar tu forma de atender ahora.'],
+    ['2', 'Te asignamos un WhatsApp Business dedicado al agente', 'Tu número de contacto actual sigue funcionando igual para lo que ya haces con él.'],
     ['3', 'El agente ya conoce tu tienda', 'Catálogo, precios, stock y pedidos de WooCommerce quedan disponibles para el agente desde el primer momento.'],
     ['4', 'Listo, ya vendes por WhatsApp', 'Tus clientes preguntan y compran directamente en la conversación, 24 horas al día.'],
   ]
@@ -93,6 +124,8 @@ export default function AgentesIaWoocommercePage() {
         </div>
       </section>
 
+      <ComoFunciona intro={COMO_FUNCIONA_INTRO} steps={COMO_FUNCIONA_STEPS} />
+
       <section style={{ padding: '90px 24px', background: 'white' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 50 }}>
@@ -158,10 +191,10 @@ export default function AgentesIaWoocommercePage() {
 
       <section style={{ padding: '90px 24px', background: '#12141a', textAlign: 'center' }}>
         <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#ece9e2' }}>
-          Prueba el agente con tu propio catálogo
+          Prueba el agente en acción
         </h2>
         <p style={{ fontSize: 16, color: '#97a0ac', maxWidth: 520, margin: '0 auto 40px' }}>
-          Te enseñamos el agente funcionando con productos reales de tu tienda WooCommerce, por WhatsApp.
+          Te enseñamos el agente funcionando en una conversación real por WhatsApp.
         </p>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
           <a

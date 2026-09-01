@@ -3,7 +3,34 @@ import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
+import ComoFunciona from '../components/ComoFunciona'
 import { WHATSAPP_NUMBER, WHATSAPP_DEMO_ECOMMERCE_NUMBER } from '../components/WhatsAppBubble'
+
+const COMO_FUNCIONA_INTRO =
+  'Un agente que responde por WhatsApp como lo haría tu mejor empleado: conoce tu negocio, tus horarios y tus servicios, y actúa solo.'
+
+const COMO_FUNCIONA_STEPS = [
+  {
+    title: 'El cliente escribe por WhatsApp',
+    description: 'A cualquier hora, sin que nadie de tu equipo tenga que estar pendiente del móvil.',
+  },
+  {
+    title: 'El agente entiende qué necesita',
+    description: 'Pedir cita, preguntar precios, saber horarios, o resolver una duda sobre el servicio.',
+  },
+  {
+    title: 'Consulta la información real de tu negocio',
+    description: 'Horarios, disponibilidad y servicios configurados, no respuestas genéricas inventadas.',
+  },
+  {
+    title: 'Agenda la cita o resuelve la duda al momento',
+    description: 'Sin que el cliente tenga que esperar a que alguien le conteste.',
+  },
+  {
+    title: 'Si la situación lo requiere, avisa a una persona',
+    description: 'Casos complejos o reclamaciones pasan a modo humano automáticamente, sin que el cliente lo note.',
+  },
+]
 
 export default function AgentesIaPage() {
   const mensajeWhatsapp = encodeURIComponent('Hola! Quiero información sobre Agentes Innovapp para mi negocio.')
@@ -68,6 +95,8 @@ export default function AgentesIaPage() {
           </div>
         </div>
       </section>
+
+      <ComoFunciona intro={COMO_FUNCIONA_INTRO} steps={COMO_FUNCIONA_STEPS} />
 
       <section style={{ padding: '90px 24px', background: 'white' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 20 }}>
