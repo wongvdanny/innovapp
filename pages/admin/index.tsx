@@ -5,6 +5,7 @@ import { isAdmin } from '../../lib/isAdmin'
 import { prisma } from '../../lib/prisma'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import Logo from '../../components/Logo'
 
 
 export default function Admin({ stats, subscriptions, plans, redsysConfig, stripeConfig }: any) {
@@ -115,7 +116,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
         {/* Header */}
         <div style={{ background: 'linear-gradient(135deg,#1e1e1e,#1e1e1e)', padding: '16px 48px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-            <img src="/logo.webp" alt="innovapp" style={{ height: 26, filter: 'brightness(0) invert(1) opacity(.8)' }} />
+            <Logo variant="dark" height={26} style={{ opacity: 0.8 }} />
             <div style={{ width: 1, height: 24, background: 'rgba(255,255,255,.15)' }} />
             <span style={{ fontSize: 13, fontWeight: 700, color: 'rgba(255,255,255,.6)', letterSpacing: 1, textTransform: 'uppercase' }}>Panel Admin</span>
           </div>
