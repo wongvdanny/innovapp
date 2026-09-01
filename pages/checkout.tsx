@@ -83,7 +83,7 @@ export default function Checkout() {
     fontFamily: 'var(--font-gabarito), system-ui, sans-serif', boxSizing: 'border-box',
     background: '#fafbfc', transition: 'border-color .2s',
   }
-  const lbl: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 }
+  const lbl: React.CSSProperties = { fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }
 
   const validateStep0 = () => {
     if (!form.name.trim())  return 'Introduce tu nombre completo'
@@ -153,7 +153,7 @@ export default function Checkout() {
     return (
       <div style={{ padding: 60, textAlign: 'center', fontFamily: 'sans-serif' }}>
         <p style={{ color: '#991b1b', fontWeight: 600, marginBottom: 16 }}>⚠️ {planError || 'Plan no encontrado'}</p>
-        <Link href="/" style={{ color: '#2ab3aa' }}>← Volver al inicio</Link>
+        <Link href="/" style={{ color: '#ee7528' }}>← Volver al inicio</Link>
       </div>
     )
   }
@@ -178,14 +178,14 @@ export default function Checkout() {
             {STEPS.map((s, i) => (
               <div key={s} className="co-step-row">
                 <div className="co-step-dot" style={{
-                  background: i < step ? '#2ab3aa' : i === step ? 'linear-gradient(135deg,#1a6478,#2ab3aa)' : '#eef1f4',
+                  background: i < step ? '#ee7528' : i === step ? 'linear-gradient(135deg,#c85f1b,#ee7528)' : '#eef1f4',
                   color: i <= step ? 'white' : '#88a8b0',
                 }}>
                   {i < step ? '✓' : i + 1}
                 </div>
-                <span className="co-step-label" style={{ color: i === step ? '#1a2533' : '#88a8b0' }}>{s}</span>
+                <span className="co-step-label" style={{ color: i === step ? '#1e1e1e' : '#88a8b0' }}>{s}</span>
                 {i < STEPS.length - 1 && (
-                  <div className="co-step-line" style={{ background: i < step ? '#2ab3aa' : '#eef1f4' }} />
+                  <div className="co-step-line" style={{ background: i < step ? '#ee7528' : '#eef1f4' }} />
                 )}
               </div>
             ))}
@@ -203,7 +203,7 @@ export default function Checkout() {
             {/* STEP 0 — Datos */}
             {step === 0 && (
               <>
-                <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1a2533', marginBottom: 6 }}>Tus datos de acceso</h2>
+                <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1e1e1e', marginBottom: 6 }}>Tus datos de acceso</h2>
                 <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Con estos datos accederás a {productName} y a tu cuenta.</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <div>
@@ -235,7 +235,7 @@ export default function Checkout() {
             {/* STEP 1 — Facturación */}
             {step === 1 && (
               <>
-                <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1a2533', marginBottom: 6 }}>Dirección de facturación</h2>
+                <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1e1e1e', marginBottom: 6 }}>Dirección de facturación</h2>
                 <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Estos datos aparecerán en tus facturas. Si eres empresa, rellena también los campos de empresa.</p>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
                   <div className="co-row">
@@ -275,7 +275,7 @@ export default function Checkout() {
             {/* STEP 2 — Confirmar */}
             {step === 2 && (
               <>
-                <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1a2533', marginBottom: 6 }}>Revisa y confirma</h2>
+                <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1e1e1e', marginBottom: 6 }}>Revisa y confirma</h2>
                 <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Comprueba que todo es correcto antes de pagar.</p>
 
                 <div style={{ background: '#f8fafb', borderRadius: 14, padding: 20, marginBottom: 20, border: '1px solid #eef1f4' }}>
@@ -289,21 +289,21 @@ export default function Checkout() {
                   ].map(([k, v]) => (
                     <div key={k} style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '4px 12px', padding: '7px 0', borderBottom: '1px solid #eef1f4', fontSize: 13 }}>
                       <span style={{ color: '#88a8b0', flexShrink: 0 }}>{k}</span>
-                      <span style={{ fontWeight: 600, color: '#1a2533', textAlign: 'right', wordBreak: 'break-word', maxWidth: '60%' }}>{v}</span>
+                      <span style={{ fontWeight: 600, color: '#1e1e1e', textAlign: 'right', wordBreak: 'break-word', maxWidth: '60%' }}>{v}</span>
                     </div>
                   ))}
                 </div>
 
                 {providers.redsys && providers.stripe && (
                   <div style={{ marginBottom: 20 }}>
-                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', marginBottom: 10 }}>Método de pago</div>
+                    <div style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', marginBottom: 10 }}>Método de pago</div>
                     <div style={{ display: 'flex', gap: 10 }}>
                       {[['redsys','💳 Tarjeta (Redsys)'],['stripe','💜 Tarjeta (Stripe)']].map(([key,label]) => (
                         <button key={key} type="button" onClick={() => setPayProvider(key as any)} style={{
                           flex: 1, padding: '12px 14px', borderRadius: 12, cursor: 'pointer', fontSize: 13, fontWeight: 700,
-                          border: `2px solid ${payProvider === key ? '#2ab3aa' : '#eef1f4'}`,
-                          background: payProvider === key ? '#f0f9f8' : 'white',
-                          color: payProvider === key ? '#1a6478' : '#4a6572',
+                          border: `2px solid ${payProvider === key ? '#ee7528' : '#eef1f4'}`,
+                          background: payProvider === key ? '#fdf0e8' : 'white',
+                          color: payProvider === key ? '#c85f1b' : '#4a6572',
                         }}>
                           {label}
                         </button>
@@ -314,14 +314,14 @@ export default function Checkout() {
 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 8 }}>
                   {[
-                    { key: 'acceptPrivacy', text: <>He leído y acepto la <Link href="/privacidad" target="_blank" style={{ color: '#2ab3aa' }}>Política de Privacidad</Link> *</> },
-                    { key: 'acceptTerms',   text: <>He leído y acepto los <Link href="/uso" target="_blank" style={{ color: '#2ab3aa' }}>Términos de Uso</Link> y las <Link href="/aviso-legal" target="_blank" style={{ color: '#2ab3aa' }}>Condiciones de Servicio</Link> *</> },
+                    { key: 'acceptPrivacy', text: <>He leído y acepto la <Link href="/privacidad" target="_blank" style={{ color: '#ee7528' }}>Política de Privacidad</Link> *</> },
+                    { key: 'acceptTerms',   text: <>He leído y acepto los <Link href="/uso" target="_blank" style={{ color: '#ee7528' }}>Términos de Uso</Link> y las <Link href="/aviso-legal" target="_blank" style={{ color: '#ee7528' }}>Condiciones de Servicio</Link> *</> },
                   ].map(({ key, text }) => (
                     <label key={key} style={{ display: 'flex', alignItems: 'flex-start', gap: 12, cursor: 'pointer' }}>
                       <div onClick={() => set(key, !(form as any)[key])} style={{
                         width: 20, height: 20, borderRadius: 6, flexShrink: 0, marginTop: 1, cursor: 'pointer',
-                        border: `2px solid ${(form as any)[key] ? '#2ab3aa' : '#dde3e8'}`,
-                        background: (form as any)[key] ? '#2ab3aa' : 'white',
+                        border: `2px solid ${(form as any)[key] ? '#ee7528' : '#dde3e8'}`,
+                        background: (form as any)[key] ? '#ee7528' : 'white',
                         display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all .15s',
                       }}>
                         {(form as any)[key] && <span style={{ color: 'white', fontSize: 12, fontWeight: 800 }}>✓</span>}
@@ -353,14 +353,14 @@ export default function Checkout() {
               {step < 2 ? (
                 <button onClick={next} style={{
                   flex: 1, padding: '13px', borderRadius: 12, border: 'none',
-                  background: 'linear-gradient(135deg,#1a6478,#2ab3aa)', color: 'white', fontSize: 15, fontWeight: 700, cursor: 'pointer',
+                  background: 'linear-gradient(135deg,#c85f1b,#ee7528)', color: 'white', fontSize: 15, fontWeight: 700, cursor: 'pointer',
                 }}>
                   Continuar →
                 </button>
               ) : (
                 <button onClick={submit} disabled={loading} style={{
                   flex: 1, padding: '13px', borderRadius: 12, border: 'none',
-                  background: loading ? '#ccc' : 'linear-gradient(135deg,#1a6478,#2ab3aa)',
+                  background: loading ? '#ccc' : 'linear-gradient(135deg,#c85f1b,#ee7528)',
                   color: 'white', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
                 }}>
                   {loading ? '⏳ Redirigiendo al pago...' : `💳 Pagar ${plan.price}€ — ${plan.name}`}
@@ -373,27 +373,27 @@ export default function Checkout() {
           <div className="co-sidebar">
             <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 28 }}>
               <div style={{ fontSize: 12, fontWeight: 700, color: '#88a8b0', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16 }}>Resumen del pedido</div>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#2ab3aa', marginBottom: 2 }}>{productName}</div>
-              <div style={{ fontSize: 18, fontWeight: 800, color: '#1a2533', marginBottom: 4 }}>{plan.name}</div>
-              <div style={{ fontSize: 32, fontWeight: 800, color: '#1a6478', marginBottom: 4 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#ee7528', marginBottom: 2 }}>{productName}</div>
+              <div style={{ fontSize: 18, fontWeight: 800, color: '#1e1e1e', marginBottom: 4 }}>{plan.name}</div>
+              <div style={{ fontSize: 32, fontWeight: 800, color: '#c85f1b', marginBottom: 4 }}>
                 {plan.price}€ <span style={{ fontSize: 14, fontWeight: 500, color: '#88a8b0' }}>/ {intervalLabel}</span>
               </div>
               <div style={{ borderTop: '1px solid #eef1f4', paddingTop: 16, marginTop: 16 }}>
                 {labels.features.map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0', fontSize: 13, color: '#4a6572' }}>
-                    <span style={{ color: '#2ab3aa', fontWeight: 700, flexShrink: 0 }}>✓</span> {f}
+                    <span style={{ color: '#ee7528', fontWeight: 700, flexShrink: 0 }}>✓</span> {f}
                   </div>
                 ))}
               </div>
-              <div style={{ borderTop: '1px solid #eef1f4', marginTop: 16, paddingTop: 16, display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 800, color: '#1a2533' }}>
+              <div style={{ borderTop: '1px solid #eef1f4', marginTop: 16, paddingTop: 16, display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 800, color: '#1e1e1e' }}>
                 <span>Total</span><span>{plan.price}€</span>
               </div>
               <div style={{ fontSize: 11, color: '#88a8b0', marginTop: 6, textAlign: 'right' }}>IVA incluido</div>
             </div>
 
-            <div style={{ background: '#f0f9f8', borderRadius: 16, border: '1px solid #d0eeec', padding: 20 }}>
+            <div style={{ background: '#fdf0e8', borderRadius: 16, border: '1px solid #f9dcc7', padding: 20 }}>
               {[['🔒','Pago seguro con Redsys'],['↩','Cancela cuando quieras'],['📧','Soporte por email incluido'],['⚡','Acceso inmediato tras el pago']].map(([icon, text])=> (
-                <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 13, color: '#1a6478', fontWeight: 500 }}>
+                <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '6px 0', fontSize: 13, color: '#c85f1b', fontWeight: 500 }}>
                   <span>{icon}</span><span>{text}</span>
                 </div>
               ))}

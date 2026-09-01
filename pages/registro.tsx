@@ -147,7 +147,7 @@ export default function Registro() {
   const handleSubmit = (e: React.FormEvent) => { e.preventDefault(); void doSubmit() }
 
   const inputStyle = { width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid #eef1f4', fontSize: 14, outline: 'none', fontFamily: 'var(--font-gabarito), system-ui, sans-serif', transition: 'border-color .2s', boxSizing: 'border-box' as const }
-  const lblStyle = { fontSize: 13, fontWeight: 600, color: '#1a2533', display: 'block', marginBottom: 6 } as const
+  const lblStyle = { fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 } as const
 
   if (plansLoading) {
     return <div style={{ padding: 60, textAlign: 'center', fontFamily: 'sans-serif', color: '#88a8b0' }}>Cargando planes...</div>
@@ -156,7 +156,7 @@ export default function Registro() {
     return (
       <div style={{ padding: 60, textAlign: 'center', fontFamily: 'sans-serif' }}>
         <p style={{ color: '#991b1b', fontWeight: 600, marginBottom: 16 }}>⚠️ {plansError}</p>
-        <Link href="/" style={{ color: '#2ab3aa' }}>← Volver al inicio</Link>
+        <Link href="/" style={{ color: '#ee7528' }}>← Volver al inicio</Link>
       </div>
     )
   }
@@ -166,7 +166,7 @@ export default function Registro() {
       <Head>
         <title>Registro — innovapp</title>
       </Head>
-      <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1a2533 0%,#1a3d4f 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
+      <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1e1e1e 0%,#1e1e1e 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
         <div style={{ background: 'white', borderRadius: 24, padding: '48px 40px', maxWidth: 520, width: '100%', boxShadow: '0 40px 100px rgba(0,0,0,0.3)' }}>
           <Link href="/">
             <img src="/logo.webp" alt="innovapp" style={{ height: 28, marginBottom: 32, display: 'block' }} />
@@ -174,13 +174,13 @@ export default function Registro() {
 
           <div style={{ display: 'flex', gap: 8, marginBottom: 32 }}>
             {Array.from({ length: totalSteps }).map((_, i) => (
-              <div key={i} style={{ flex: 1, height: 4, borderRadius: 4, background: (i + 1) <= step ? 'linear-gradient(90deg,#2ab3aa,#1a6478)' : '#eef1f4', transition: 'background .3s' }} />
+              <div key={i} style={{ flex: 1, height: 4, borderRadius: 4, background: (i + 1) <= step ? 'linear-gradient(90deg,#ee7528,#c85f1b)' : '#eef1f4', transition: 'background .3s' }} />
             ))}
           </div>
 
           {step === 1 && (
             <>
-              <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1a2533' }}>Elige tu plan de {productName}</h2>
+              <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1e1e1e' }}>Elige tu plan de {productName}</h2>
               <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Empieza gratis o elige un plan Pro. Puedes cambiar cuando quieras.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 28 }}>
                 {plans.map(p => {
@@ -188,15 +188,15 @@ export default function Registro() {
                   const badge = p.interval === 'free' ? '✦ Empieza ya' : p.interval === 'yearly' ? '⭐ Ahorra' : ''
                   return (
                     <div key={p.id} onClick={() => setPlan(p.id)}
-                      style={{ border: `2px solid ${plan === p.id ? '#2ab3aa' : '#eef1f4'}`, borderRadius: 16, padding: '20px 24px', cursor: 'pointer', background: plan === p.id ? '#f0f9f8' : 'white', transition: 'all .2s', position: 'relative' }}>
-                      {badge && <div style={{ position: 'absolute', top: -10, right: 16, background: p.interval === 'free' ? '#2ab3aa' : '#f59e0b', color: 'white', borderRadius: 8, padding: '2px 10px', fontSize: 11, fontWeight: 800 }}>{badge}</div>}
+                      style={{ border: `2px solid ${plan === p.id ? '#ee7528' : '#eef1f4'}`, borderRadius: 16, padding: '20px 24px', cursor: 'pointer', background: plan === p.id ? '#fdf0e8' : 'white', transition: 'all .2s', position: 'relative' }}>
+                      {badge && <div style={{ position: 'absolute', top: -10, right: 16, background: p.interval === 'free' ? '#ee7528' : '#f59e0b', color: 'white', borderRadius: 8, padding: '2px 10px', fontSize: 11, fontWeight: 800 }}>{badge}</div>}
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <div>
-                          <div style={{ fontSize: 16, fontWeight: 700, color: '#1a2533', marginBottom: 2 }}>{p.name}</div>
+                          <div style={{ fontSize: 16, fontWeight: 700, color: '#1e1e1e', marginBottom: 2 }}>{p.name}</div>
                           {p.description && <div style={{ fontSize: 12, color: '#88a8b0' }}>{p.description}</div>}
                         </div>
                         <div style={{ textAlign: 'right' }}>
-                          <span style={{ fontSize: 32, fontWeight: 800, color: plan === p.id ? '#1a6478' : '#1a2533' }}>{p.price}€</span>
+                          <span style={{ fontSize: 32, fontWeight: 800, color: plan === p.id ? '#c85f1b' : '#1e1e1e' }}>{p.price}€</span>
                           <span style={{ fontSize: 13, color: '#88a8b0' }}>{period}</span>
                         </div>
                       </div>
@@ -204,57 +204,57 @@ export default function Registro() {
                   )
                 })}
               </div>
-              <button onClick={() => setStep(2)} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+              <button onClick={() => setStep(2)} style={{ width: '100%', padding: 14, background: 'linear-gradient(135deg,#ee7528,#c85f1b)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
                 Continuar →
               </button>
               <p style={{ textAlign: 'center', marginTop: 16, fontSize: 13, color: '#88a8b0' }}>
-                ¿Ya tienes cuenta? <Link href="/login" style={{ color: '#1a6478', fontWeight: 600 }}>Inicia sesión</Link>
+                ¿Ya tienes cuenta? <Link href="/login" style={{ color: '#c85f1b', fontWeight: 600 }}>Inicia sesión</Link>
               </p>
             </>
           )}
 
           {step === 2 && (
             <div>
-              <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1a2533' }}>Crea tu cuenta</h2>
+              <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1e1e1e' }}>Crea tu cuenta</h2>
               <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>
-                Plan <strong style={{ color: '#1a6478' }}>{selectedPlan?.name}</strong>
+                Plan <strong style={{ color: '#c85f1b' }}>{selectedPlan?.name}</strong>
                 {selectedPlan && selectedPlan.price > 0 ? ` · ${selectedPlan.price}€${selectedPlan.interval === 'monthly' ? '/mes' : selectedPlan.interval === 'yearly' ? '/año' : ''}` : ' · gratis para siempre'}
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
                 <div>
                   <label style={lblStyle}>Tu nombre</label>
                   <input style={inputStyle} value={form.name} onChange={e=>setForm(f=>({...f,name:e.target.value}))} placeholder="Ej: Juan Pérez" required
-                    onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                    onFocus={e=>(e.target.style.borderColor='#ee7528')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                 </div>
                 <div>
                   <label style={lblStyle}>{labels.entityLabel}</label>
                   <input style={inputStyle} value={form.entityName} onChange={e=>setForm(f=>({...f,entityName:e.target.value}))} placeholder={labels.entityPlaceholder} required
-                    onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                    onFocus={e=>(e.target.style.borderColor='#ee7528')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                 </div>
                 <div>
                   <label style={lblStyle}>Email</label>
                   <input style={inputStyle} type="email" value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} placeholder="tu@email.com" required
-                    onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                    onFocus={e=>(e.target.style.borderColor='#ee7528')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                 </div>
                 <div>
                   <label style={lblStyle}>Teléfono (opcional)</label>
                   <input style={inputStyle} type="tel" value={form.phone} onChange={e=>setForm(f=>({...f,phone:e.target.value}))} placeholder="+34 600 000 000"
-                    onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                    onFocus={e=>(e.target.style.borderColor='#ee7528')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                 </div>
                 <div>
                   <label style={lblStyle}>Contraseña</label>
                   <input style={inputStyle} type="password" value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} placeholder="Mínimo 8 caracteres" required minLength={8}
-                    onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                    onFocus={e=>(e.target.style.borderColor='#ee7528')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                 </div>
               </div>
 
               {isFree && (
                 <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer', marginBottom: 16 }}>
                   <input type="checkbox" checked={privacyChecked} onChange={e => setPrivacyChecked(e.target.checked)}
-                    style={{ marginTop: 2, accentColor: '#2ab3aa', width: 16, height: 16, cursor: 'pointer', flexShrink: 0 }} />
+                    style={{ marginTop: 2, accentColor: '#ee7528', width: 16, height: 16, cursor: 'pointer', flexShrink: 0 }} />
                   <span style={{ fontSize: 12, color: '#5a7a87', lineHeight: 1.5 }}>
                     He leído y acepto la{' '}
-                    <a href="/privacidad" target="_blank" style={{ color: '#2ab3aa', fontWeight: 600, textDecoration: 'underline' }}>política de privacidad</a>
+                    <a href="/privacidad" target="_blank" style={{ color: '#ee7528', fontWeight: 600, textDecoration: 'underline' }}>política de privacidad</a>
                     {' '}y el tratamiento de mis datos personales conforme al RGPD.
                   </span>
                 </label>
@@ -262,7 +262,7 @@ export default function Registro() {
 
               {error && <div style={{ background: '#fff1f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#991b1b', fontWeight:600, marginBottom: 16 }}>⚠️ {error}</div>}
 
-              <button type="button" onClick={goNext} disabled={loading} style={{ width: '100%', padding: 14, background: loading ? '#ccc' : 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
+              <button type="button" onClick={goNext} disabled={loading} style={{ width: '100%', padding: 14, background: loading ? '#ccc' : 'linear-gradient(135deg,#ee7528,#c85f1b)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
                 {loading ? '⏳ Procesando...' : isFree ? '🚀 Crear cuenta gratis →' : 'Continuar →'}
               </button>
               <button type="button" onClick={() => setStep(1)} style={{ width: '100%', marginTop: 8, padding: '10px', background: 'none', border: 'none', color: '#88a8b0', fontSize: 13, cursor: 'pointer' }}>← Volver</button>
@@ -271,7 +271,7 @@ export default function Registro() {
 
           {step === 3 && !isFree && (
             <form onSubmit={handleSubmit}>
-              <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1a2533' }}>Dirección de facturación</h2>
+              <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1e1e1e' }}>Dirección de facturación</h2>
               <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Estos datos aparecerán en tus facturas. Si eres empresa, rellena también los campos de empresa.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
                 <div style={{ display: 'flex', gap: 12 }}>
@@ -287,18 +287,18 @@ export default function Registro() {
                 <div>
                   <label style={lblStyle}>Dirección</label>
                   <input style={inputStyle} value={billing.address} onChange={e=>setBilling(b=>({...b,address:e.target.value}))} placeholder="Calle Mayor 1, 2º A" required
-                    onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                    onFocus={e=>(e.target.style.borderColor='#ee7528')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                 </div>
                 <div style={{ display: 'flex', gap: 12 }}>
                   <div style={{ flex: 1 }}>
                     <label style={lblStyle}>Ciudad</label>
                     <input style={inputStyle} value={billing.city} onChange={e=>setBilling(b=>({...b,city:e.target.value}))} placeholder="Madrid" required
-                      onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                      onFocus={e=>(e.target.style.borderColor='#ee7528')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                   </div>
                   <div style={{ flex: 1 }}>
                     <label style={lblStyle}>Código postal</label>
                     <input style={inputStyle} value={billing.zip} onChange={e=>setBilling(b=>({...b,zip:e.target.value}))} placeholder="28001" required
-                      onFocus={e=>(e.target.style.borderColor='#2ab3aa')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
+                      onFocus={e=>(e.target.style.borderColor='#ee7528')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                   </div>
                 </div>
                 <div>
@@ -311,14 +311,14 @@ export default function Registro() {
 
               {providers.redsys && providers.stripe && (
                 <div style={{ marginBottom: 16 }}>
-                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1a2533', marginBottom: 10 }}>Método de pago</div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', marginBottom: 10 }}>Método de pago</div>
                   <div style={{ display: 'flex', gap: 10 }}>
                     {[['redsys','💳 Tarjeta (Redsys)'],['stripe','💜 Tarjeta (Stripe)']].map(([key,label]) => (
                       <button key={key} type="button" onClick={() => setPayProvider(key as any)} style={{
                         flex: 1, padding: '12px 14px', borderRadius: 12, cursor: 'pointer', fontSize: 13, fontWeight: 700,
-                        border: `2px solid ${payProvider === key ? '#2ab3aa' : '#eef1f4'}`,
-                        background: payProvider === key ? '#f0f9f8' : 'white',
-                        color: payProvider === key ? '#1a6478' : '#4a6572',
+                        border: `2px solid ${payProvider === key ? '#ee7528' : '#eef1f4'}`,
+                        background: payProvider === key ? '#fdf0e8' : 'white',
+                        color: payProvider === key ? '#c85f1b' : '#4a6572',
                       }}>
                         {label}
                       </button>
@@ -329,17 +329,17 @@ export default function Registro() {
 
               <label style={{ display: 'flex', alignItems: 'flex-start', gap: 10, cursor: 'pointer', marginBottom: 16 }}>
                 <input type="checkbox" checked={privacyChecked} onChange={e => setPrivacyChecked(e.target.checked)}
-                  style={{ marginTop: 2, accentColor: '#2ab3aa', width: 16, height: 16, cursor: 'pointer', flexShrink: 0 }} />
+                  style={{ marginTop: 2, accentColor: '#ee7528', width: 16, height: 16, cursor: 'pointer', flexShrink: 0 }} />
                 <span style={{ fontSize: 12, color: '#5a7a87', lineHeight: 1.5 }}>
                   He leído y acepto la{' '}
-                  <a href="/privacidad" target="_blank" style={{ color: '#2ab3aa', fontWeight: 600, textDecoration: 'underline' }}>política de privacidad</a>
+                  <a href="/privacidad" target="_blank" style={{ color: '#ee7528', fontWeight: 600, textDecoration: 'underline' }}>política de privacidad</a>
                   {' '}y el tratamiento de mis datos personales conforme al RGPD.
                 </span>
               </label>
 
               {error && <div style={{ background: '#fff1f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#991b1b', fontWeight:600, marginBottom: 16 }}>⚠️ {error}</div>}
 
-              <button type="submit" disabled={loading} style={{ width: '100%', padding: 14, background: loading ? '#ccc' : 'linear-gradient(135deg,#2ab3aa,#1a6478)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
+              <button type="submit" disabled={loading} style={{ width: '100%', padding: 14, background: loading ? '#ccc' : 'linear-gradient(135deg,#ee7528,#c85f1b)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
                 {loading ? '⏳ Redirigiendo al pago...' : '💳 Ir al pago →'}
               </button>
               <p style={{ fontSize: 12, color: '#88a8b0', textAlign: 'center', marginTop: 14 }}>
