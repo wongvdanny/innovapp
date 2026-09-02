@@ -8,3 +8,6 @@ node_modules/
 # build info
 tsconfig.tsbuildinfo
 *.bak2
+
+# credenciales (p.ej. cuenta de servicio de Google Search Console)
+secrets/

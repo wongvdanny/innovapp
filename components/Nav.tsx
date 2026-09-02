@@ -21,6 +21,9 @@ export default function Nav() {
               onMouseEnter={e => (e.currentTarget.style.color = '#1e1e1e')}
               onMouseLeave={e => (e.currentTarget.style.color = '#4a6572')}>{label}</a>
           ))}
+          <Link href="/blog" style={{ fontSize: 15, fontWeight: 600, color: '#4a6572', transition: 'color .2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#1e1e1e')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#4a6572')}>Blog</Link>
           <Link href="/contacto" style={{ fontSize: 15, fontWeight: 600, color: '#4a6572', transition: 'color .2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = '#1e1e1e')}
             onMouseLeave={e => (e.currentTarget.style.color = '#4a6572')}>Contacto</Link>
@@ -47,6 +50,7 @@ export default function Nav() {
           {links.map(([href, label]) => (
             <a key={href} href={href} onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1e1e1e', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>{label}</a>
           ))}
+          <Link href="/blog" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1e1e1e', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Blog</Link>
           <Link href="/contacto" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1e1e1e', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Contacto</Link>
           <a href="/servix" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#ee7528', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Servix</a>
           <a href="/gymstack" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#a855f7', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>GymStack</a>

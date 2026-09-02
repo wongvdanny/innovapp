@@ -44,7 +44,7 @@ const CONVERSACION_WOOCOMMERCE = [
 ]
 
 export default function AgentesIaWoocommercePage() {
-  const mensajeDemo = encodeURIComponent('Hola! Quiero ver la demo del agente de IA para mi tienda WooCommerce.')
+  const mensajeDemo = encodeURIComponent('Hola, quería preguntar por un producto que tenéis en la tienda')
 
   const pasos = [
     ['1', 'Instala el plugin en WordPress', 'Se instala como cualquier otro plugin desde tu panel de WordPress, en unos minutos.'],
@@ -114,7 +114,7 @@ export default function AgentesIaWoocommercePage() {
                 rel="noopener noreferrer"
                 style={{ padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
               >
-                Pide tu demo por WhatsApp →
+                Prueba tu demo por WhatsApp →
               </a>
             </div>
           </div>
@@ -203,7 +203,7 @@ export default function AgentesIaWoocommercePage() {
             rel="noopener noreferrer"
             style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
           >
-            Pide tu demo por WhatsApp →
+            Prueba tu demo por WhatsApp →
           </a>
           <Link href="/agentes-ia" style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}>
             Ver Agentes IA para cualquier negocio

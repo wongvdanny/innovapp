@@ -34,7 +34,7 @@ const COMO_FUNCIONA_STEPS = [
 
 export default function AgentesIaPage() {
   const mensajeWhatsapp = encodeURIComponent('Hola! Quiero información sobre Agentes Innovapp para mi negocio.')
-  const mensajeDemoEcommerce = encodeURIComponent('Hola! Me gustaría ver una demo de cómo funciona el agente de IA con una tienda online (e-commerce).')
+  const mensajeDemoEcommerce = encodeURIComponent('Hola, quería preguntar por un producto que tenéis en la tienda')
 
   return (
     <>
@@ -86,7 +86,7 @@ export default function AgentesIaPage() {
                 rel="noopener noreferrer"
                 style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}
               >
-                Ver demo con tu tienda online
+                Prueba tu demo por WhatsApp
               </a>
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function AgentesIaPage() {
             rel="noopener noreferrer"
             style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'transparent', border: '1.5px solid #12141a', color: '#12141a', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}
           >
-            Ver demo con tu tienda online
+            Prueba tu demo por WhatsApp
           </a>
         </div>
       </section>
