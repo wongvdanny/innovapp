@@ -110,11 +110,65 @@ function resolverSlugSinColision(slugBase, dir = BLOG_DIR, extension = '.mdx') {
   return slug
 }
 
-function limpiarPosiblesBackticks(texto) {
-  return texto.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '')
+/**
+ * Extrae y parsea el primer objeto JSON balanceado de la respuesta del modelo: busca
+ * el primer '{' y cuenta llaves anidadas (ignorando las que caigan dentro de strings,
+ * incluidas las escapadas) hasta encontrar su '}' de cierre correspondiente. Esto es
+ * más robusto que un regex de "primer { hasta último }", que se rompe si el modelo
+ * añade cualquier cosa después del JSON (una explicación, una llave suelta en un
+ * ejemplo, etc.) -- causa real del fallo "Unexpected non-whitespace character after
+ * JSON" visto en producción. También tolera que el JSON venga envuelto en backticks de
+ * markdown (```json ... ```), aunque el prompt pida explícitamente que no los use.
+ */
+function extraerJsonBalanceado(texto) {
+  const limpio = texto.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '')
+  const inicio = limpio.indexOf('{')
+  if (inicio === -1) {
+    throw new Error('No se encontró ningún "{" en la respuesta del modelo')
+  }
+
+  let profundidad = 0
+  let dentroString = false
+  let escapando = false
+
+  for (let i = inicio; i < limpio.length; i++) {
+    const c = limpio[i]
+
+    if (escapando) {
+      escapando = false
+      continue
+    }
+    if (c === '\\' && dentroString) {
+      escapando = true
+      continue
+    }
+    if (c === '"') {
+      dentroString = !dentroString
+      continue
+    }
+    if (dentroString) continue
+
+    if (c === '{') {
+      profundidad++
+    } else if (c === '}') {
+      profundidad--
+      if (profundidad === 0) {
+        return JSON.parse(limpio.slice(inicio, i + 1))
+      }
+    }
+  }
+
+  throw new Error('No se encontró un "}" de cierre balanceado para el JSON en la respuesta del modelo')
 }
 
-async function llamarClaude(anthropic, { system, userContent, maxTokens }) {
+function esperar(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+const REINTENTOS_MAXIMOS = 3
+const DELAY_ENTRE_REINTENTOS_MS = 2500
+
+async function llamarClaudeUnaVez(anthropic, { system, userContent, maxTokens }) {
   const respuesta = await anthropic.messages.create({
     model: MODEL,
     max_tokens: maxTokens,
@@ -125,7 +179,37 @@ async function llamarClaude(anthropic, { system, userContent, maxTokens }) {
   if (!bloqueTexto) {
     throw new Error('La respuesta del modelo no incluye ningún bloque de texto')
   }
-  return JSON.parse(limpiarPosiblesBackticks(bloqueTexto.text))
+  return extraerJsonBalanceado(bloqueTexto.text)
+}
+
+/**
+ * Llama a Claude con reintento automático si falla la extracción/parseo del JSON de
+ * respuesta -- un fallo transitorio del modelo (p.ej. texto extra después del JSON, o
+ * un truncamiento puntual), no un problema de la lógica. Hasta REINTENTOS_MAXIMOS
+ * intentos totales (osea 2 reintentos además del primero), con una pequeña espera
+ * entre cada uno para no golpear la API en ráfaga. Se loguea cada intento fallido con
+ * su motivo, para que quede rastro en el log del pipeline aunque el intento siguiente
+ * funcione. Si TODOS los intentos fallan, se relanza el último error tal cual -- el
+ * llamador aborta como antes, nunca se fuerza una publicación con datos a medias.
+ */
+async function llamarClaudeConReintento(anthropic, params, etiqueta) {
+  let ultimoError
+  for (let intento = 1; intento <= REINTENTOS_MAXIMOS; intento++) {
+    try {
+      return await llamarClaudeUnaVez(anthropic, params)
+    } catch (error) {
+      ultimoError = error
+      const quedan = REINTENTOS_MAXIMOS - intento
+      console.error(
+        `Intento ${intento}/${REINTENTOS_MAXIMOS} de "${etiqueta}" falló: ${error.message}` +
+          (quedan > 0 ? ` -- reintentando en ${DELAY_ENTRE_REINTENTOS_MS / 1000}s...` : ' -- sin más reintentos.')
+      )
+      if (quedan > 0) {
+        await esperar(DELAY_ENTRE_REINTENTOS_MS)
+      }
+    }
+  }
+  throw ultimoError
 }
 
 // --- Paso 1: generación del borrador ---
@@ -241,11 +325,11 @@ async function main() {
   // --- Llamada 1: generación ---
   let post
   try {
-    post = await llamarClaude(anthropic, {
+    post = await llamarClaudeConReintento(anthropic, {
       system: construirSystemPromptGeneracion(hechosVerificados),
       userContent: `${bloqueTemas}\n\nGenera el próximo post del blog.`,
       maxTokens: 4096,
-    })
+    }, 'generación del post')
     validarPost(post)
   } catch (error) {
     console.error('Error en la generación del post (llamada 1):', error.message)
@@ -255,11 +339,11 @@ async function main() {
   // --- Llamada 2: verificación de hechos ---
   let verificacion
   try {
-    verificacion = await llamarClaude(anthropic, {
+    verificacion = await llamarClaudeConReintento(anthropic, {
       system: SYSTEM_PROMPT_VERIFICACION,
       userContent: `DOCUMENTO DE HECHOS VERIFICADOS:\n${hechosVerificados}\n\nBORRADOR DEL POST A VERIFICAR:\n${post.contentMarkdown}`,
       maxTokens: 1024,
-    })
+    }, 'verificación de hechos')
     validarVerificacion(verificacion)
   } catch (error) {
     console.error('Error en la verificación de hechos (llamada 2):', error.message)
