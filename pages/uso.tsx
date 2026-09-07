@@ -18,16 +18,16 @@ export default function Uso() {
         </header>
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px' }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1e1e1e', marginBottom: 8 }}>Términos de Uso</h1>
-          <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: mayo 2025</p>
+          <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: septiembre 2026</p>
           <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: '40px 48px', lineHeight: 1.8, color: '#4a6572', fontSize: 15 }}>
             {[
-              ['1. Aceptación', 'Al registrarte y utilizar el servicio Servix, aceptas íntegramente estos Términos de Uso. Si no estás de acuerdo, no debes utilizar el servicio.'],
-              ['2. Descripción del servicio', 'Servix es un software de gestión para restaurantes que incluye gestión de mesas, comandas, carta QR, pantalla de cocina, informes y cobros. El servicio se presta en modalidad SaaS (Software as a Service) mediante suscripción mensual o anual.'],
-              ['3. Registro y cuenta', 'Para usar Servix debes registrarte con datos verídicos. Eres responsable de mantener la confidencialidad de tus credenciales y del uso que se haga con tu cuenta.'],
-              ['4. Pago y suscripción', 'El precio de la suscripción se cobra por adelantado al inicio de cada periodo. El pago se procesa de forma segura a través de Redsys. Puedes cancelar en cualquier momento; no se realizan reembolsos por el periodo en curso.'],
-              ['5. Uso aceptable', 'Queda prohibido usar Servix para actividades ilegales, intentar acceder a datos de otros restaurantes, realizar ingeniería inversa del software o revender el acceso a terceros.'],
-              ['6. Disponibilidad', 'Nos comprometemos a ofrecer una disponibilidad del servicio del 99% mensual. Podemos interrumpir el servicio temporalmente por mantenimiento, avisando con antelación siempre que sea posible.'],
-              ['7. Datos del restaurante', 'Tus datos (menú, comandas, clientes) son tuyos. No los vendemos ni compartimos con terceros. Al cancelar la suscripción, tienes 30 días para exportarlos antes de su eliminación.'],
+              ['1. Aceptación', 'innovapp es una plataforma que opera distintos servicios SaaS (en adelante, los "Servicios"), incluyendo entre otros Servix, GymStack y Agentes IA, así como cualquier otro producto que se incorpore en el futuro a la plataforma. Al registrarte y utilizar cualquiera de los Servicios, aceptas íntegramente estos Términos de Uso. Si no estás de acuerdo, no debes utilizar el Servicio correspondiente.'],
+              ['2. Descripción de los Servicios', 'Cada Servicio ofrecido bajo la plataforma innovapp cuenta con su propia funcionalidad y condiciones específicas de uso, detalladas en la página de cada producto (por ejemplo, Servix para gestión de hostelería o GymStack para gestión de gimnasios y centros deportivos). Todos los Servicios se prestan en modalidad SaaS (Software as a Service) mediante suscripción mensual o anual.'],
+              ['3. Registro y cuenta', 'Para usar cualquiera de los Servicios debes registrarte con datos verídicos. Eres responsable de mantener la confidencialidad de tus credenciales y del uso que se haga con tu cuenta.'],
+              ['4. Pago y suscripción', 'El precio de la suscripción de cada Servicio se cobra por adelantado al inicio de cada periodo. El pago se procesa de forma segura a través de nuestros proveedores de pago. Puedes cancelar en cualquier momento; no se realizan reembolsos por el periodo en curso.'],
+              ['5. Uso aceptable', 'Queda prohibido usar los Servicios para actividades ilegales, intentar acceder a datos de otros clientes, realizar ingeniería inversa del software o revender el acceso a terceros.'],
+              ['6. Disponibilidad', 'Nos comprometemos a ofrecer una disponibilidad del 99% mensual para cada Servicio. Podemos interrumpir un Servicio temporalmente por mantenimiento, avisando con antelación siempre que sea posible.'],
+              ['7. Tus datos', 'Los datos que introduces en cualquiera de los Servicios (por ejemplo, menús y comandas en Servix, o socios y reservas en GymStack) son tuyos. No los vendemos ni compartimos con terceros. Al cancelar una suscripción, tienes 30 días para exportar los datos de ese Servicio antes de su eliminación.'],
               ['8. Modificaciones', 'Nos reservamos el derecho de modificar estos términos notificándolo con al menos 30 días de antelación por email.'],
               ['9. Contacto', `Para cualquier consulta: ${CONTACT_EMAIL}`],
             ].map(([title, text]) => (
