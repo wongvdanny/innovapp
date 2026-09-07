@@ -18,13 +18,13 @@ export default function AvisoLegal() {
         </header>
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px' }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1e1e1e', marginBottom: 8 }}>Aviso Legal</h1>
-          <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: mayo 2025</p>
+          <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: septiembre 2026</p>
           <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: '40px 48px', lineHeight: 1.8, color: '#4a6572', fontSize: 15 }}>
             {[
               ['Titular del sitio web', `innovapp es el titular y responsable de este sitio web, con domicilio en España. Email de contacto: ${CONTACT_EMAIL}`],
-              ['Objeto', 'El presente Aviso Legal regula el uso del sitio web innovapp.es y del servicio Servix, de titularidad de innovapp.'],
+              ['Objeto', 'El presente Aviso Legal regula el uso del sitio web innovapp.es y de los distintos servicios SaaS operados bajo la plataforma innovapp (en adelante, los "Servicios"), incluyendo entre otros Servix, GymStack y Agentes IA, así como cualquier otro producto que se incorpore en el futuro a la plataforma.'],
               ['Propiedad intelectual', 'Todos los contenidos de este sitio web (textos, imágenes, logotipos, código fuente) son propiedad de innovapp o de sus licenciantes y están protegidos por la legislación española e internacional sobre propiedad intelectual. Queda prohibida su reproducción total o parcial sin autorización expresa.'],
-              ['Limitación de responsabilidad', 'innovapp no se responsabiliza de los daños o perjuicios que puedan derivarse del uso del servicio, interrupciones técnicas, errores en los datos o accesos no autorizados por causas ajenas a su control.'],
+              ['Limitación de responsabilidad', 'innovapp no se responsabiliza de los daños o perjuicios que puedan derivarse del uso de los Servicios, interrupciones técnicas, errores en los datos o accesos no autorizados por causas ajenas a su control.'],
               ['Ley aplicable', 'Este aviso legal se rige por la legislación española. Para cualquier controversia, las partes se someten a los juzgados y tribunales del domicilio del usuario, salvo que la ley determine otro fuero.'],
               ['Contacto', 'Para cualquier consulta legal: legal@innovapp.es'],
             ].map(([title, text]) => (
