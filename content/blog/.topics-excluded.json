@@ -1,13 +1,5 @@
 [
   {
-    "topic": "Cómo maximizar ingresos en épocas bajas: llena huecos de agenda con un agente que vende 24/7",
-    "rejectedDate": "2026-09-04"
-  },
-  {
-    "topic": "Por qué tu competencia te está ganando clientes en WhatsApp (y cómo recuperarlos)",
-    "rejectedDate": "2026-09-05"
-  },
-  {
     "topic": "Cómo un agente de IA en WhatsApp resuelve el problema de los clientes que preguntan lo mismo una y otra vez",
     "rejectedDate": "2026-09-07"
   },
@@ -18,5 +10,13 @@
   {
     "topic": "Cómo el miedo a automatizar WhatsApp te está costando dinero (y por qué es hora de cambiar de mentalidad)",
     "rejectedDate": "2026-09-09"
+  },
+  {
+    "topic": "Cómo los huecos de agenda sin cubrir te están robando dinero cada mes",
+    "rejectedDate": "2026-09-11"
+  },
+  {
+    "topic": "El problema real detrás de los clientes que agendan pero no se presentan: cómo recuperar ingresos perdidos",
+    "rejectedDate": "2026-09-12"
   }
 ]
