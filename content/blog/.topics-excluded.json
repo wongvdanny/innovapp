@@ -1,13 +1,5 @@
 [
   {
-    "topic": "Cómo un agente de IA en WhatsApp resuelve el problema de los clientes que preguntan lo mismo una y otra vez",
-    "rejectedDate": "2026-09-07"
-  },
-  {
-    "topic": "Cómo evitar que clientes se arrepientan de su compra: la importancia de aclarar dudas antes de cerrar la venta",
-    "rejectedDate": "2026-09-08"
-  },
-  {
     "topic": "Cómo el miedo a automatizar WhatsApp te está costando dinero (y por qué es hora de cambiar de mentalidad)",
     "rejectedDate": "2026-09-09"
   },
@@ -18,5 +10,9 @@
   {
     "topic": "El problema real detrás de los clientes que agendan pero no se presentan: cómo recuperar ingresos perdidos",
     "rejectedDate": "2026-09-12"
+  },
+  {
+    "topic": "Cómo el horario de atención limitado en WhatsApp te hace perder clientes en fin de semana",
+    "rejectedDate": "2026-09-14"
   }
 ]
