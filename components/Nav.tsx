@@ -56,7 +56,6 @@ export default function Nav() {
         </div>
         <div style={{ display: 'flex', gap: 10 }} className="nav-desktop">
           <Link href="/login" style={{ padding: '9px 18px', borderRadius: 10, border: '1px solid #eef1f4', fontSize: 14, fontWeight: 600, color: '#1e1e1e', background: '#f8fafb', textDecoration: 'none' }}>Entrar</Link>
-          <Link href="/registro?plan=free" style={{ padding: '9px 18px', borderRadius: 10, border: 'none', fontSize: 14, fontWeight: 700, color: 'white', background: 'linear-gradient(135deg,#ee7528,#c85f1b)', textDecoration: 'none', boxShadow: '0 4px 14px rgba(238,117,40,.3)' }}>Empezar gratis →</Link>
         </div>
         <button onClick={() => setOpen(!open)} className="nav-mobile" style={{ background: 'none', border: '1px solid #eef1f4', borderRadius: 8, padding: '8px 10px', cursor:'pointer', fontSize: 18 }}>
           {open ? '✕' : '☰'}
@@ -77,7 +76,6 @@ export default function Nav() {
           <Link href="/contacto" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1e1e1e', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Contacto</Link>
           <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
             <Link href="/login" onClick={() => setOpen(false)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1px solid #eef1f4', fontSize: 14, fontWeight: 600, color: '#1e1e1e', background: '#f8fafb', textDecoration: 'none', textAlign: 'center' }}>Entrar</Link>
-            <Link href="/registro?plan=free" onClick={() => setOpen(false)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: 'none', fontSize: 14, fontWeight: 700, color: 'white', background: 'linear-gradient(135deg,#ee7528,#c85f1b)', textDecoration: 'none', textAlign: 'center' }}>Empezar gratis →</Link>
           </div>
         </div>
       )}
