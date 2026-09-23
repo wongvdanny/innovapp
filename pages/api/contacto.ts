@@ -34,6 +34,31 @@ function clientIp(req: NextApiRequest): string {
   return req.socket.remoteAddress || 'unknown'
 }
 
+// Si RECAPTCHA_SECRET_KEY no está configurada todavía, no se exige el captcha -- así el
+// formulario sigue funcionando (con honeypot + rate limit) mientras se da de alta la
+// clave, en vez de romperse en despliegues donde aún no se ha añadido. Devuelve false
+// (rechaza) si la propia llamada a Google falla, para no fallar "abierto" por un problema
+// de red cuando el captcha sí está configurado y en teoría es obligatorio.
+async function recaptchaValido(token: string, ip: string): Promise<boolean> {
+  const secret = process.env.RECAPTCHA_SECRET_KEY
+  if (!secret) return true
+  if (!token) return false
+
+  try {
+    const params = new URLSearchParams({ secret, response: token, remoteip: ip })
+    const res = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: params.toString(),
+    })
+    const data = (await res.json()) as { success?: boolean }
+    return data.success === true
+  } catch (err) {
+    console.error('[api/contacto] error al verificar reCAPTCHA:', err)
+    return false
+  }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
@@ -48,6 +73,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const productRaw = String(body.product ?? '').trim()
   const product = PRODUCTS.includes(productRaw) ? productRaw : ''
   const honeypot = String(body.website ?? '').trim()
+  const recaptchaToken = String(body.recaptchaToken ?? '').trim()
 
   // Bot: honeypot relleno -> fingimos éxito sin enviar nada
   if (honeypot) return res.status(200).json({ ok: true })
@@ -62,8 +88,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ error: 'El mensaje es demasiado largo.' })
   }
 
-  if (rateLimited(clientIp(req))) {
+  const ip = clientIp(req)
+
+  if (rateLimited(ip)) {
     return res.status(429).json({ error: 'Demasiados envíos. Inténtalo de nuevo en unos minutos.' })
+  }
+
+  if (!(await recaptchaValido(recaptchaToken, ip))) {
+    return res.status(400).json({ error: 'No se ha podido verificar que no eres un robot. Recarga la página e inténtalo de nuevo.' })
   }
 
   try {

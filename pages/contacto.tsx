@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import Link from 'next/link'
+import Script from 'next/script'
 import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
@@ -9,6 +10,19 @@ import { CONTACT_EMAIL } from '../lib/constants'
 const PRODUCTS = ['Servix', 'GymStack', 'Agentes IA', 'Otro']
 
 type Status = 'idle' | 'sending' | 'success' | 'error'
+
+// Público a propósito (NEXT_PUBLIC_*): es la site key de reCAPTCHA, diseñada para ir en
+// el HTML del cliente. La secreta (RECAPTCHA_SECRET_KEY) solo se usa en pages/api/contacto.ts.
+const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+
+declare global {
+  interface Window {
+    grecaptcha?: {
+      getResponse: (widgetId?: number) => string
+      reset: (widgetId?: number) => void
+    }
+  }
+}
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid #eef1f4',
@@ -45,6 +59,11 @@ export default function Contacto() {
       setStatus('error'); setError('Debes aceptar la política de privacidad.'); return
     }
 
+    const recaptchaToken = RECAPTCHA_SITE_KEY ? window.grecaptcha?.getResponse() ?? '' : ''
+    if (RECAPTCHA_SITE_KEY && !recaptchaToken) {
+      setStatus('error'); setError('Marca la casilla "No soy un robot" antes de enviar.'); return
+    }
+
     setStatus('sending'); setError('')
     try {
       const res = await fetch('/api/contacto', {
@@ -57,6 +76,7 @@ export default function Contacto() {
           product: form.product,
           message: form.message.trim(),
           website: form.website, // honeypot
+          recaptchaToken,
         }),
       })
       if (!res.ok) throw new Error()
@@ -65,6 +85,10 @@ export default function Contacto() {
     } catch {
       setStatus('error')
       setError('No se ha podido enviar el mensaje. Inténtalo de nuevo en unos minutos o escríbenos por WhatsApp.')
+    } finally {
+      // El token de reCAPTCHA es de un solo uso -- se resetea tanto si fue bien (para el
+      // próximo envío) como si falló (para no reenviar un token ya usado o caducado).
+      window.grecaptcha?.reset()
     }
   }
 
@@ -78,6 +102,10 @@ export default function Contacto() {
         canonical="/contacto"
       />
       <Nav />
+
+      {RECAPTCHA_SITE_KEY && (
+        <Script src="https://www.google.com/recaptcha/api.js" strategy="afterInteractive" async defer />
+      )}
 
       <main style={{ background: '#f8fafb', minHeight: '100vh', padding: '140px 24px 90px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
@@ -160,6 +188,10 @@ export default function Contacto() {
                         <Link href="/privacidad" style={{ color: '#ee7528', fontWeight: 600 }}>política de privacidad</Link>. *
                       </span>
                     </label>
+
+                    {RECAPTCHA_SITE_KEY && (
+                      <div className="g-recaptcha" data-sitekey={RECAPTCHA_SITE_KEY} />
+                    )}
 
                     {status === 'error' && (
                       <p style={{ fontSize: 13, color: '#991b1b', background: '#fff1f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '10px 14px', margin: 0 }}>
