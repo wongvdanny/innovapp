@@ -1,8 +1,10 @@
 // Genera un post de blog nuevo con Claude en dos pasadas: (1) generación del borrador,
 // obligado a enlazar a una de las páginas de servicio y a ceñirse a
 // content/verified-facts.md, y (2) verificación estricta de que el borrador no afirma
-// nada que no esté respaldado por ese documento. Solo si pasa AMBAS comprobaciones
-// (verificación de hechos + enlace de servicio realmente presente en el texto) se
+// nada que no esté respaldado por ese documento. Si la verificación falla se hace UNA
+// reescritura con las violaciones encontradas y se vuelve a verificar; si vuelve a
+// fallar, el borrador va a content/blog/.rejected/. Si el texto no enlaza a la página de
+// servicio, se añade un CTA final con el enlace (no se rechaza por eso). Solo si pasa se
 // escribe content/blog/{slug}.mdx y se actualiza .topics-log.json. Evita repetir temas
 // ya usados (content/blog/.topics-log.json).
 // Uso: node scripts/generate-blog-post.mjs  (o  npm run blog:generate)
@@ -290,7 +292,13 @@ function validarPost(post) {
 
 // --- Paso 2: verificación de hechos ---
 
-const SYSTEM_PROMPT_VERIFICACION = `Eres un verificador de hechos estricto. Te paso un documento de hechos verificados y un borrador de blog post. Tu única tarea es comprobar si CADA afirmación del post sobre lo que hace Innovapp o su producto está respaldada literalmente por el documento de hechos. Si el post afirma algo que no está en el documento, o exagera/generaliza una función (por ejemplo, decir "recupera carritos automáticamente" cuando el documento dice que NO existe esa función), es una violación. Responde ÚNICAMENTE con JSON: { "passed": boolean, "violations": string[] (vacío si passed es true, si no, lista cada afirmación problemática exacta) }`
+const SYSTEM_PROMPT_VERIFICACION = `Eres un verificador de hechos estricto. Te paso un documento de hechos verificados y un borrador de blog post. Tu única tarea es comprobar si CADA afirmación del post sobre lo que hace Innovapp o su producto está respaldada literalmente por el documento de hechos. Si el post afirma algo que no está en el documento, o exagera/generaliza una función (por ejemplo, decir "recupera carritos automáticamente" cuando el documento dice que NO existe esa función), es una violación.
+
+NO incluyas afirmaciones correctas ni comentarios sobre lo que el post hace bien. Si no hay violaciones reales, passed=true y violations=[]. Sugerir al lector una función que el producto no tiene (aunque sea como consejo manual, p.ej. 'envía un recordatorio') cuenta como violación.
+
+Responde ÚNICAMENTE con JSON, sin texto antes ni después, con exactamente esta forma:
+{ "passed": boolean, "violations": [{ "cita": string, "motivo": string }] }
+donde "cita" es el fragmento EXACTO del post (copiado literalmente, sin parafrasear) que es falso o exagera, y "motivo" es el hecho del documento que lo contradice.`
 
 function validarVerificacion(v) {
   if (typeof v.passed !== 'boolean') {
@@ -299,11 +307,63 @@ function validarVerificacion(v) {
   if (!Array.isArray(v.violations)) {
     throw new Error('Falta o es inválido el campo "violations" en la respuesta de verificación')
   }
+  for (const [i, violacion] of v.violations.entries()) {
+    if (typeof violacion?.cita !== 'string' || typeof violacion?.motivo !== 'string') {
+      throw new Error(`La violación #${i + 1} no tiene la forma { "cita": string, "motivo": string }`)
+    }
+  }
+}
+
+function normalizarTexto(texto) {
+  return texto.replace(/\s+/g, ' ').trim().toLowerCase()
+}
+
+/**
+ * Descarta las violaciones cuya "cita" no aparece literalmente en el post (el modelo a
+ * veces parafrasea o se inventa frases que el borrador no contiene) y recalcula passed
+ * a partir de lo que queda -- el passed del modelo se ignora.
+ */
+function filtrarViolacionesReales(violations, contentMarkdown) {
+  const contenido = normalizarTexto(contentMarkdown)
+  const reales = []
+  for (const v of violations) {
+    const cita = normalizarTexto(v.cita)
+    if (cita && contenido.includes(cita)) {
+      reales.push(v)
+    } else {
+      console.error(`  (descartada violación con cita que no aparece en el post: "${v.cita}")`)
+    }
+  }
+  return { passed: reales.length === 0, violations: reales }
+}
+
+async function verificarPost(anthropic, hechosVerificados, post) {
+  const verificacion = await llamarClaudeConReintento(anthropic, {
+    system: SYSTEM_PROMPT_VERIFICACION,
+    userContent: `DOCUMENTO DE HECHOS VERIFICADOS:\n${hechosVerificados}\n\nBORRADOR DEL POST A VERIFICAR:\n${post.contentMarkdown}`,
+    maxTokens: 2048,
+  }, 'verificación de hechos')
+  validarVerificacion(verificacion)
+  return filtrarViolacionesReales(verificacion.violations, post.contentMarkdown)
+}
+
+// --- Enlace de servicio: si el modelo no lo puso en el texto, se añade un CTA al final ---
+
+const TEXTOS_CTA = {
+  '/agentes-ia': 'Descubre cómo funciona nuestro agente de IA para WhatsApp',
+  '/agentes-ia-prestashop': 'Descubre cómo funciona nuestro agente de IA para tiendas PrestaShop',
+  '/agentes-ia-woocommerce': 'Descubre cómo funciona nuestro agente de IA para tiendas WooCommerce',
+}
+
+function asegurarEnlaceServicio(post) {
+  if (PATRON_ENLACE_SERVICIO.test(post.contentMarkdown)) return
+  console.error(`Aviso: el contenido no enlaza a ninguna página de servicio -- se añade un CTA final a ${post.serviceLinkUsed}.`)
+  post.contentMarkdown = `${post.contentMarkdown.trim()}\n\n[${TEXTOS_CTA[post.serviceLinkUsed]}](${post.serviceLinkUsed}).\n`
 }
 
 // --- Borrador rechazado (para revisión manual, no cuenta como publicado) ---
 
-function guardarBorradorRechazado(post, violations, enlaceServicioDetectado) {
+function guardarBorradorRechazado(post, violations) {
   mkdirSync(REJECTED_DIR, { recursive: true })
   const hoy = new Date().toISOString().slice(0, 10)
   const slugBase = normalizarSlug(post.slug || 'sin-slug')
@@ -317,8 +377,7 @@ function guardarBorradorRechazado(post, violations, enlaceServicioDetectado) {
       {
         rejectedAt: new Date().toISOString(),
         violations,
-        serviceLinkClaimed: post.serviceLinkUsed || null,
-        serviceLinkDetectedInContent: enlaceServicioDetectado,
+        serviceLinkUsed: post.serviceLinkUsed || null,
         post,
       },
       null,
@@ -351,15 +410,18 @@ async function main() {
     ? `Estos temas fueron intentados recientemente y rechazados o ya publicados — elige un ángulo genuinamente distinto, no una variación superficial del mismo tema:\n${listaCombinada.join('\n')}`
     : '(ningún tema previo todavía -- este es el primer post)'
 
+  const systemGeneracion = construirSystemPromptGeneracion(hechosVerificados)
+
   // --- Llamada 1: generación ---
   let post
   try {
     post = await llamarClaudeConReintento(anthropic, {
-      system: construirSystemPromptGeneracion(hechosVerificados),
+      system: systemGeneracion,
       userContent: `${bloqueTemas}\n\nGenera el próximo post del blog.`,
       maxTokens: 4096,
     }, 'generación del post')
     validarPost(post)
+    asegurarEnlaceServicio(post)
   } catch (error) {
     console.error('Error en la generación del post (llamada 1):', error.message)
     process.exit(1)
@@ -368,32 +430,41 @@ async function main() {
   // --- Llamada 2: verificación de hechos ---
   let verificacion
   try {
-    verificacion = await llamarClaudeConReintento(anthropic, {
-      system: SYSTEM_PROMPT_VERIFICACION,
-      userContent: `DOCUMENTO DE HECHOS VERIFICADOS:\n${hechosVerificados}\n\nBORRADOR DEL POST A VERIFICAR:\n${post.contentMarkdown}`,
-      maxTokens: 1024,
-    }, 'verificación de hechos')
-    validarVerificacion(verificacion)
+    verificacion = await verificarPost(anthropic, hechosVerificados, post)
   } catch (error) {
     console.error('Error en la verificación de hechos (llamada 2):', error.message)
     process.exit(1)
   }
 
-  // --- Decisión: hechos verificados Y enlace de servicio realmente presente en el texto ---
-  const enlaceServicioDetectado = PATRON_ENLACE_SERVICIO.test(post.contentMarkdown)
-  const violations = [...verificacion.violations]
-  if (!enlaceServicioDetectado) {
-    violations.push(
-      `No se detectó en el contenido ningún enlace markdown a una de las páginas de servicio válidas (${RUTAS_SERVICIO.join(', ')}) -- el campo serviceLinkUsed ("${post.serviceLinkUsed}") no es suficiente por sí solo, se exige que el enlace esté realmente en el texto.`
-    )
+  // --- Si no pasa: UNA reescritura corrigiendo las violaciones, y se vuelve a verificar ---
+  if (!verificacion.passed) {
+    console.error(`Verificación fallida en el primer borrador ("${post.title}"), se intenta una reescritura:`)
+    for (const v of verificacion.violations) console.error(`  - "${v.cita}" → ${v.motivo}`)
+
+    const listaViolaciones = verificacion.violations
+      .map((v) => `- Cita: "${v.cita}"\n  Motivo: ${v.motivo}`)
+      .join('\n')
+    try {
+      post = await llamarClaudeConReintento(anthropic, {
+        system: systemGeneracion,
+        userContent: `Este es tu borrador anterior:\n${JSON.stringify(post, null, 2)}\n\nEl verificador de hechos ha encontrado estas afirmaciones falsas o exageradas:\n${listaViolaciones}\n\nCorrige estas afirmaciones, no añadas funciones nuevas. Mantén el mismo tema, título y estructura salvo donde haga falta cambiarlos para corregirlas. Devuelve el post completo con el mismo formato JSON.`,
+        maxTokens: 4096,
+      }, 'reescritura del post')
+      validarPost(post)
+      asegurarEnlaceServicio(post)
+      verificacion = await verificarPost(anthropic, hechosVerificados, post)
+    } catch (error) {
+      console.error('Error en la reescritura/reverificación del post (llamadas 3-4):', error.message)
+      process.exit(1)
+    }
   }
 
-  if (!verificacion.passed || !enlaceServicioDetectado) {
-    const rutaRechazado = guardarBorradorRechazado(post, violations, enlaceServicioDetectado)
+  if (!verificacion.passed) {
+    const rutaRechazado = guardarBorradorRechazado(post, verificacion.violations)
     anadirTemaExcluido(post.topic)
-    console.error(`✗ Post RECHAZADO por verificación de hechos: "${post.title}"`)
+    console.error(`✗ Post RECHAZADO por verificación de hechos (también tras la reescritura): "${post.title}"`)
     console.error('Violaciones encontradas:')
-    for (const v of violations) console.error(`  - ${v}`)
+    for (const v of verificacion.violations) console.error(`  - "${v.cita}" → ${v.motivo}`)
     console.error(`Borrador guardado para revisión manual en: ${rutaRechazado}`)
     process.exit(1)
   }
