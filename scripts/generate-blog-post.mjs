@@ -214,7 +214,36 @@ async function llamarClaudeConReintento(anthropic, params, etiqueta) {
 
 // --- Paso 1: generación del borrador ---
 
+/**
+ * Extrae de verified-facts.md las viñetas que describen funciones NO implementadas:
+ * las que empiezan por "NO" en mayúsculas o dicen "no (está) implementado". Cada viñeta
+ * puede ocupar varias líneas (las de continuación van indentadas), así que se agrupan
+ * antes de filtrar. La viñeta "NO como plataforma self-service" no entra porque el
+ * "NO" va en medio de la frase, no al principio.
+ */
+function extraerFuncionesNoImplementadas(hechosVerificados) {
+  const vinetas = []
+  for (const linea of hechosVerificados.split('\n')) {
+    if (/^-\s+/.test(linea)) {
+      vinetas.push(linea.replace(/^-\s+/, '').trim())
+    } else if (/^\s+\S/.test(linea) && vinetas.length > 0) {
+      vinetas[vinetas.length - 1] += ' ' + linea.trim()
+    }
+  }
+  return vinetas.filter((v) => /^NO\b/.test(v) || /no (?:está )?implementad[oa]/i.test(v))
+}
+
 function construirSystemPromptGeneracion(hechosVerificados) {
+  const noImplementadas = extraerFuncionesNoImplementadas(hechosVerificados)
+  const bloqueProhibido = noImplementadas.length > 0
+    ? `
+
+=== PROHIBIDO ===
+Estas funciones NO existen en el producto. NO las menciones ni las sugieras de ninguna forma: ni como función de Innovapp, ni como consejo general o manual para el lector (p.ej. "envía un recordatorio el día antes", "recupera los carritos abandonados con un mensaje"), ni como algo que "se puede hacer" con WhatsApp. Si el tema del artículo te lleva hacia ellas, cambia de ángulo.
+${noImplementadas.map((f) => `- ${f}`).join('\n')}
+=== FIN DE PROHIBIDO ===`
+    : ''
+
   return `Eres el redactor del blog de Innovapp, una empresa española que desarrolla agentes de IA por WhatsApp para negocios locales (peluquerías, clínicas estéticas, gimnasios, talleres, veterinarias, inmobiliarias) y para tiendas online (PrestaShop, WooCommerce).
 
 El público objetivo del blog son dueños y gestores de estos negocios -- NO son desarrolladores ni gente técnica. Escribe en español de España, con tono profesional pero cercano, centrado en problemas reales del día a día del negocio (perder clientes por no responder WhatsApp a tiempo, huecos de agenda mal aprovechados, automatizar reservas, no perder ventas por falta de atención fuera de horario, etc.), sin tecnicismos innecesarios.
@@ -227,7 +256,7 @@ Longitud objetivo del cuerpo del artículo: 700-1000 palabras, con subtítulos #
 No afirmes nada sobre lo que hace el producto que no esté en este documento. Si necesitas mencionar una función, usa exactamente cómo está descrita aquí, sin añadir detalles no confirmados. Todo lo marcado como "NO" o "no implementado" (p.ej. recordatorios automáticos de citas, integración con Google Calendar, recuperación automática de carritos abandonados, Instagram Messaging) NUNCA debe mencionarse como función existente, aunque parezca una idea natural para el artículo.
 
 ${hechosVerificados}
-=== FIN DE LA FUENTE DE HECHOS ===
+=== FIN DE LA FUENTE DE HECHOS ===${bloqueProhibido}
 
 ENLACE DE SERVICIO OBLIGATORIO: el post DEBE mencionar y enlazar, en formato markdown [texto del enlace](ruta), a UNA de estas tres páginas -- de forma natural dentro del cuerpo, cerca de donde tenga sentido mencionar el servicio, nunca forzado al final a modo de spam:
 - Si el post trata de negocios locales (peluquerías, clínicas, gimnasios, talleres, veterinarias, inmobiliarias) o es un tema general de atención al cliente/WhatsApp → enlaza a /agentes-ia
