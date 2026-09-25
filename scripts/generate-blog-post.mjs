@@ -26,6 +26,9 @@ const TOPICS_LOG_PATH = join(BLOG_DIR, '.topics-log.json')
 const TOPICS_EXCLUDED_PATH = join(BLOG_DIR, '.topics-excluded.json')
 const VERIFIED_FACTS_PATH = join(ROOT, 'content/verified-facts.md')
 const MODEL = 'claude-haiku-4-5-20251001'
+// La verificación usa un modelo más capaz: Haiku dejaba pasar cifras inventadas y
+// afirmaciones sobre funciones no documentadas.
+const MODEL_VERIFICACION = 'claude-sonnet-5'
 const DIAS_EXCLUSION_TEMPORAL = 7
 
 // Rutas de servicio válidas -- el post DEBE enlazar a una de ellas, en formato markdown
@@ -170,13 +173,16 @@ function esperar(ms) {
 const REINTENTOS_MAXIMOS = 3
 const DELAY_ENTRE_REINTENTOS_MS = 2500
 
-async function llamarClaudeUnaVez(anthropic, { system, userContent, maxTokens }) {
+async function llamarClaudeUnaVez(anthropic, { model = MODEL, system, userContent, maxTokens }) {
   const respuesta = await anthropic.messages.create({
-    model: MODEL,
+    model,
     max_tokens: maxTokens,
     system,
     messages: [{ role: 'user', content: userContent }],
   })
+  if (respuesta.stop_reason === 'max_tokens') {
+    throw new Error(`Respuesta cortada por max_tokens (${maxTokens}) antes de terminar el JSON`)
+  }
   const bloqueTexto = respuesta.content.find((b) => b.type === 'text')
   if (!bloqueTexto) {
     throw new Error('La respuesta del modelo no incluye ningún bloque de texto')
@@ -294,7 +300,7 @@ function validarPost(post) {
 
 const SYSTEM_PROMPT_VERIFICACION = `Eres un verificador de hechos estricto. Te paso un documento de hechos verificados y un borrador de blog post. Tu única tarea es comprobar si CADA afirmación del post sobre lo que hace Innovapp o su producto está respaldada literalmente por el documento de hechos. Si el post afirma algo que no está en el documento, o exagera/generaliza una función (por ejemplo, decir "recupera carritos automáticamente" cuando el documento dice que NO existe esa función), es una violación.
 
-NO incluyas afirmaciones correctas ni comentarios sobre lo que el post hace bien. Si no hay violaciones reales, passed=true y violations=[]. Sugerir al lector una función que el producto no tiene (aunque sea como consejo manual, p.ej. 'envía un recordatorio') cuenta como violación.
+NO incluyas afirmaciones correctas ni comentarios sobre lo que el post hace bien. Si no hay violaciones reales, passed=true y violations=[]. Sugerir al lector una función que el producto no tiene (aunque sea como consejo manual, p.ej. 'envía un recordatorio') cuenta como violación. Cualquier cifra, porcentaje o estadística que no aparezca en el documento es una violación, aunque se presente como estimación. También lo es cualquier afirmación sobre datos, historial o registros que el producto guarde u ofrezca, y cualquier afirmación sobre el número de WhatsApp que contradiga el documento.
 
 Responde ÚNICAMENTE con JSON, sin texto antes ni después, con exactamente esta forma:
 { "passed": boolean, "violations": [{ "cita": string, "motivo": string }] }
@@ -339,9 +345,12 @@ function filtrarViolacionesReales(violations, contentMarkdown) {
 
 async function verificarPost(anthropic, hechosVerificados, post) {
   const verificacion = await llamarClaudeConReintento(anthropic, {
+    model: MODEL_VERIFICACION,
     system: SYSTEM_PROMPT_VERIFICACION,
     userContent: `DOCUMENTO DE HECHOS VERIFICADOS:\n${hechosVerificados}\n\nBORRADOR DEL POST A VERIFICAR:\n${post.contentMarkdown}`,
-    maxTokens: 2048,
+    // Sonnet 5 razona (thinking adaptativo) por defecto y ese razonamiento cuenta dentro
+    // de max_tokens: con 2048 se quedaba sin sitio para el JSON.
+    maxTokens: 16000,
   }, 'verificación de hechos')
   validarVerificacion(verificacion)
   return filtrarViolacionesReales(verificacion.violations, post.contentMarkdown)
