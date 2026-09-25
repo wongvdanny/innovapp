@@ -1,7 +1,6 @@
 #!/bin/bash
 # Pipeline diario: genera un post de blog con IA, lo commitea/pushea, rebuilda y
 # reinicia el sitio, y avisa a Google Search Console del sitemap actualizado.
-# NO configurado en cron todavía -- ejecutar manualmente hasta confirmarlo.
 set -e
 
 LOG_FILE=/var/log/innovapp-blog-pipeline.log
@@ -47,6 +46,11 @@ log "Build completado."
 log "Reiniciando PM2 (innovapp-web)..."
 pm2 restart innovapp-web --update-env >> "$LOG_FILE" 2>&1
 log "PM2 reiniciado."
+
+sleep 2
+if ! curl -sfI https://innovapp.es > /dev/null; then
+  log "ERROR: https://innovapp.es no responde correctamente tras el reinicio de PM2."
+fi
 
 log "Enviando sitemap a Google Search Console..."
 if node scripts/submit-sitemap.mjs >> "$LOG_FILE" 2>&1; then
