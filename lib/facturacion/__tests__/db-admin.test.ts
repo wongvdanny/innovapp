@@ -116,11 +116,12 @@ describe.skipIf(!DB)('admin de facturación contra la BD (revertido)', () => {
         const g3 = await guardarGasto(null, { proveedor: 'Tienda', fecha: '2026-10-04', base_imponible: '100', cuota_iva: '15.50' }, null, actor)
         expect(fmt2(g3.cuota_iva)).toBe('15.50')
 
-        // Dashboard del 4T 2026: facturado 1000, IVA rep. 210, IVA sop. 21 + 42·50 % + 15,50
+        // Dashboard del 4T 2026, por fecha de devengo: la factura tiene fecha de operación 15/09 → cuenta en el 3T
+        // (facturado del trimestre 0, pero sí en el año). IVA soportado: 21 + 42·50 % + 15,50
         const r = await resumenDashboard(periodoActual('2026-10-05'))
         expect(r.periodo).toMatchObject({ anio: 2026, trimestre: 4, desde: '2026-10-01', hasta: '2026-12-31' })
-        expect([r.facturado.trimestre, r.ivaRepercutido.trimestre, r.ivaSoportado.trimestre, r.pendienteCobro.importe, r.pendienteCobro.facturas])
-          .toEqual(['1000.00', '210.00', '57.50', '1210.00', 1])
+        expect([r.facturado.trimestre, r.facturado.anio, r.ivaRepercutido.trimestre, r.ivaRepercutido.anio, r.ivaSoportado.trimestre, r.pendienteCobro.importe, r.pendienteCobro.facturas])
+          .toEqual(['0.00', '1000.00', '0.00', '210.00', '57.50', '1210.00', 1])
         expect(r.gastosDeducibles.trimestre).toBe('300.00') // 100 + 200·50 % + 100
         expect(r.borradores).toBe(1) // la simplificada
         expect(await cobrosSinFactura()).toEqual([])

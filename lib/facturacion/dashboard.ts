@@ -13,20 +13,21 @@ export function periodoActual(hoy = hoyMadrid()): Periodo {
 
 const n = (v: unknown) => (v === null || v === undefined ? '0.00' : String(v))
 
-/** Cifras del dashboard. Las anuladas no cuentan; las rectificativas restan (importes negativos). */
+/** Cifras del dashboard, por fecha de devengo (operación o, si no hay, expedición) como los informes.
+ * Las anuladas no cuentan; las rectificativas restan (importes negativos). */
 export async function resumenDashboard(p: Periodo = periodoActual()) {
   const hoy = hoyMadrid()
   const [emitidas] = await prisma.$queryRaw<any[]>`
     SELECT
-      coalesce(sum(base_imponible)  FILTER (WHERE fecha_expedicion BETWEEN ${p.desde}::date AND ${p.hasta}::date), 0)::text     AS base_trim,
-      coalesce(sum(base_imponible)  FILTER (WHERE fecha_expedicion BETWEEN ${p.desdeAnio}::date AND ${p.hastaAnio}::date), 0)::text AS base_anio,
-      coalesce(sum(cuota_iva)       FILTER (WHERE fecha_expedicion BETWEEN ${p.desde}::date AND ${p.hasta}::date), 0)::text     AS iva_rep_trim,
-      coalesce(sum(cuota_iva)       FILTER (WHERE fecha_expedicion BETWEEN ${p.desdeAnio}::date AND ${p.hastaAnio}::date), 0)::text AS iva_rep_anio,
-      coalesce(sum(cuota_retencion) FILTER (WHERE fecha_expedicion BETWEEN ${p.desde}::date AND ${p.hasta}::date), 0)::text     AS ret_trim,
-      coalesce(sum(cuota_retencion) FILTER (WHERE fecha_expedicion BETWEEN ${p.desdeAnio}::date AND ${p.hastaAnio}::date), 0)::text AS ret_anio,
-      coalesce(sum(liquido_a_cobrar) FILTER (WHERE estado = 'emitida'), 0)::text AS pendiente,
+      coalesce(sum(base_imponible)  FILTER (WHERE coalesce(fecha_operacion, fecha_expedicion) BETWEEN ${p.desde}::date AND ${p.hasta}::date), 0)::numeric(12,2)::text     AS base_trim,
+      coalesce(sum(base_imponible)  FILTER (WHERE coalesce(fecha_operacion, fecha_expedicion) BETWEEN ${p.desdeAnio}::date AND ${p.hastaAnio}::date), 0)::numeric(12,2)::text AS base_anio,
+      coalesce(sum(cuota_iva)       FILTER (WHERE coalesce(fecha_operacion, fecha_expedicion) BETWEEN ${p.desde}::date AND ${p.hasta}::date), 0)::numeric(12,2)::text     AS iva_rep_trim,
+      coalesce(sum(cuota_iva)       FILTER (WHERE coalesce(fecha_operacion, fecha_expedicion) BETWEEN ${p.desdeAnio}::date AND ${p.hastaAnio}::date), 0)::numeric(12,2)::text AS iva_rep_anio,
+      coalesce(sum(cuota_retencion) FILTER (WHERE coalesce(fecha_operacion, fecha_expedicion) BETWEEN ${p.desde}::date AND ${p.hasta}::date), 0)::numeric(12,2)::text     AS ret_trim,
+      coalesce(sum(cuota_retencion) FILTER (WHERE coalesce(fecha_operacion, fecha_expedicion) BETWEEN ${p.desdeAnio}::date AND ${p.hastaAnio}::date), 0)::numeric(12,2)::text AS ret_anio,
+      coalesce(sum(liquido_a_cobrar) FILTER (WHERE estado = 'emitida'), 0)::numeric(12,2)::text AS pendiente,
       count(*) FILTER (WHERE estado = 'emitida')::int AS pendientes_n,
-      coalesce(sum(liquido_a_cobrar) FILTER (WHERE estado = 'emitida' AND fecha_vencimiento < ${hoy}::date), 0)::text AS vencido,
+      coalesce(sum(liquido_a_cobrar) FILTER (WHERE estado = 'emitida' AND fecha_vencimiento < ${hoy}::date), 0)::numeric(12,2)::text AS vencido,
       count(*) FILTER (WHERE estado = 'emitida' AND fecha_vencimiento < ${hoy}::date)::int AS vencidas_n
     FROM fac_facturas WHERE estado IN ('emitida', 'pagada')`
   const [gastos] = await prisma.$queryRaw<any[]>`

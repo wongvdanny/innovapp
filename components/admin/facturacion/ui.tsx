@@ -21,6 +21,7 @@ const NAV = [
   ['/admin/facturacion/clientes', '👥 Clientes'],
   ['/admin/facturacion/recurrentes', '🔁 Recurrentes'],
   ['/admin/facturacion/gastos', '📥 Gastos'],
+  ['/admin/facturacion/informes', '📑 Informes'],
   ['/admin/facturacion/ajustes', '⚙️ Ajustes'],
 ]
 
