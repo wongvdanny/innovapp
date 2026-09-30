@@ -5,13 +5,10 @@ import { hoyMadrid } from '../../../lib/facturacion/fechas'
 import { periodoActual } from '../../../lib/facturacion/dashboard'
 import { D, r2 } from '../../../lib/facturacion/decimal'
 import { validarNifEspanol } from '../../../lib/facturacion/validacion'
+import { ETIQUETAS_CATEGORIA } from '../../../lib/facturacion/categorias'
 import { Layout, Card, Btn, Campo, Modal, Euros, ErrorApi, Interruptor, api, estiloInput, fechaCorta, useMensaje, RespuestaApi, C } from '../../../components/admin/facturacion/ui'
 
-const CATEGORIAS: Record<string, string> = {
-  software: 'Software y licencias', hardware: 'Equipos informáticos', hosting: 'Hosting y dominios', telefonia: 'Teléfono e internet',
-  formacion: 'Formación', asesoria: 'Asesoría y gestoría', cuota_autonomo: 'Cuota de autónomo', material_oficina: 'Material de oficina',
-  publicidad: 'Publicidad', desplazamientos: 'Desplazamientos', suministros: 'Suministros', comisiones_bancarias: 'Comisiones bancarias', otros: 'Otros',
-}
+const CATEGORIAS = ETIQUETAS_CATEGORIA
 const VACIO = { proveedor: '', proveedor_nif: '', proveedor_pais: 'ES', numero: '', fecha: '', concepto: '', categoria: 'software', base_imponible: '', tipo_iva: '21', cuota_iva: '',
   tipo_retencion: '0', deducible_pct: '100', iva_deducible: true, notas: '' }
 

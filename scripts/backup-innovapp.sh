@@ -11,6 +11,7 @@
 set -euo pipefail
 umask 027
 export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+export TZ=Europe/Madrid   # marcas de tiempo y log en hora peninsular (el servidor está en Europe/London)
 
 APP_DIR=/var/www/innovapp
 DEST=/var/backups/innovapp

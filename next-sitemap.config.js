@@ -13,6 +13,8 @@ module.exports = {
     '/registro-news',
     '/login',
     '/bienvenida',
+    '/gestor',
+    '/gestor/*',
   ],
   changefreq: 'weekly',
   priority: 0.7,

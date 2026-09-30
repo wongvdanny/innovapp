@@ -373,3 +373,32 @@ model fac_series {
 
   @@unique([codigo, anio])
 }
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model fac_dudas_gestor {
+  id         String   @id @default(dbgenerated("(gen_random_uuid())::text"))
+  orden      Int      @default(0)
+  tema       String
+  pregunta   String
+  respuesta  String?
+  estado     String   @default("abierta")
+  created_at DateTime @default(now()) @db.Timestamptz(6)
+  updated_at DateTime @default(now()) @db.Timestamptz(6)
+
+  @@index([estado, orden], map: "fac_dudas_gestor_orden_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model fac_enlaces_gestor {
+  id               String    @id @default(dbgenerated("(gen_random_uuid())::text"))
+  token_sha256     String    @unique
+  token_sufijo     String
+  nota             String?
+  creado_por       String
+  created_at       DateTime  @default(now()) @db.Timestamptz(6)
+  expira_at        DateTime  @db.Timestamptz(6)
+  revocado_at      DateTime? @db.Timestamptz(6)
+  revocado_por     String?
+  accesos          Int       @default(0)
+  ultimo_acceso_at DateTime? @db.Timestamptz(6)
+}

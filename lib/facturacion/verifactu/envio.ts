@@ -30,3 +30,10 @@ export class EnvioAEATNoImplementado implements EnvioAEAT {
   }
   tiempoEsperaSegundos() { return 60 }
 }
+
+/** Cliente de envío en uso. Al implementar el real, devolverlo aquí. */
+export function clienteEnvioAEAT(): EnvioAEAT {
+  return new EnvioAEATNoImplementado()
+}
+
+export const envioAEATImplementado = () => !(clienteEnvioAEAT() instanceof EnvioAEATNoImplementado)
