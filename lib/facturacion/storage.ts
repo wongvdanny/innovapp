@@ -5,7 +5,8 @@ import { randomUUID } from 'crypto'
 // Archivos de facturación fuera de /public: solo se sirven por endpoints autenticados.
 // En BD se guardan rutas relativas a STORAGE_ROOT.
 
-export const STORAGE_ROOT = path.join(process.cwd(), 'storage', 'facturacion')
+// FAC_STORAGE_ROOT solo para tests: nunca deben escribir en el almacenamiento real.
+export const STORAGE_ROOT = path.resolve(process.env.FAC_STORAGE_ROOT || path.join(process.cwd(), 'storage', 'facturacion'))
 
 export const MIME_ADJUNTOS: Record<string, string> = {
   'application/pdf': '.pdf',

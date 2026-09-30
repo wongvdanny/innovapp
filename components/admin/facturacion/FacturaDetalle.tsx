@@ -8,12 +8,14 @@ const REGIMEN = (l: any) => l.operacion_exenta ? `Exenta ${l.operacion_exenta}` 
 
 export default function FacturaDetalle({ f, hoy }: { f: any; hoy: string }) {
   const router = useRouter()
-  const [modal, setModal] = useState<null | 'pagar' | 'anular' | 'rectificar'>(null)
+  const [modal, setModal] = useState<null | 'pagar' | 'anular' | 'rectificar' | 'enviar'>(null)
   const [res, setRes] = useState<RespuestaApi | null>(null)
   const [ocupado, setOcupado] = useState(false)
   const [pago, setPago] = useState({ fecha: hoy, metodo: 'transferencia' })
   const [motivo, setMotivo] = useState('')
   const [rect, setRect] = useState({ tipo: 'I', codigo: 'R1' })
+  const [envio, setEnvio] = useState({ to: f.fac_clientes?.email || f.cliente_snapshot?.email || '', mensaje: '', copia: true })
+  const enviados = f.eventos.filter((ev: any) => ev.accion === 'factura.email_enviado')
 
   const e = f.emisor_snapshot || {}
   const c = f.cliente_snapshot || {}
@@ -33,6 +35,7 @@ export default function FacturaDetalle({ f, hoy }: { f: any; hoy: string }) {
 
   return (
     <>
+      {router.query.enviada && <Aviso tipo="ok">✅ Factura enviada a {router.query.enviada}. Queda marcada como entregada.</Aviso>}
       {router.query.emitida && <Aviso tipo="ok">✅ Factura {f.num_serie_factura} emitida y registrada en la cadena VeriFactu.</Aviso>}
       <ErrorApi r={res} />
 
@@ -41,6 +44,8 @@ export default function FacturaDetalle({ f, hoy }: { f: any; hoy: string }) {
         {f.entregada_at && <span style={{ fontSize: 12, color: C.gris }}>Entregada {fechaCorta(f.entregada_at)} ({f.entregada_via})</span>}
         {f.pago_ref && <span style={{ fontSize: 12, color: C.gris }}>Cobro online · {f.pago_ref}</span>}
         <span style={{ flex: 1 }} />
+        <a href={`/api/admin/facturacion/facturas/${f.id}/pdf`} target="_blank" rel="noreferrer"><Btn>📄 PDF</Btn></a>
+        {['emitida', 'pagada'].includes(f.estado) && <Btn onClick={() => { setRes(null); setModal('enviar') }}>✉️ {enviados.length ? 'Reenviar' : 'Enviar'}</Btn>}
         {f.estado === 'emitida' && <Btn variante="exito" onClick={() => setModal('pagar')}>✓ Marcar como pagada</Btn>}
         {f.estado === 'pagada' && !f.pago_ref && <Btn onClick={() => confirm('¿Deshacer el pago? La factura volverá a pendiente de cobro.') && accion('desmarcar')} disabled={ocupado}>Deshacer pago</Btn>}
         {['emitida', 'pagada'].includes(f.estado) && !f.entregada_at && <Btn onClick={() => confirm('¿Marcar como entregada al cliente? Después ya no se podrá anular, solo rectificar.') && accion('entregar')} disabled={ocupado}>Marcar como entregada</Btn>}
@@ -132,6 +137,27 @@ export default function FacturaDetalle({ f, hoy }: { f: any; hoy: string }) {
           </div>
         </Card>
       </div>
+
+      {modal === 'enviar' && (
+        <Modal titulo={`Enviar ${f.num_serie_factura}`} onCerrar={() => setModal(null)} ancho={500}>
+          <ErrorApi r={res} />
+          {enviados.length > 0 && <div style={{ fontSize: 12, color: C.gris, marginBottom: 12 }}>Ya enviada: {enviados.map((ev: any) => `${ev.payload?.to} (${new Date(ev.created_at).toLocaleDateString('es-ES')})`).join(', ')}</div>}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
+            <Campo label="Para *" ayuda={!f.fac_clientes?.email ? 'El cliente no tiene email guardado' : undefined}>
+              <input type="email" style={estiloInput} value={envio.to} onChange={ev => setEnvio(x => ({ ...x, to: ev.target.value }))} autoFocus />
+            </Campo>
+            <Campo label="Mensaje (opcional)"><textarea style={{ ...estiloInput, minHeight: 80 }} value={envio.mensaje} onChange={ev => setEnvio(x => ({ ...x, mensaje: ev.target.value }))} placeholder="Se añade al texto estándar del email" /></Campo>
+            <label style={{ display: 'flex', gap: 8, alignItems: 'center', fontSize: 13, color: C.grisTexto, cursor: 'pointer' }}>
+              <input type="checkbox" checked={envio.copia} onChange={ev => setEnvio(x => ({ ...x, copia: ev.target.checked }))} /> Enviarme una copia oculta (email de Ajustes)
+            </label>
+            <div style={{ fontSize: 12, color: C.gris }}>Se adjunta el PDF. Al enviarse correctamente, la factura queda marcada como entregada{puedeAnular ? ' y ya no se podrá anular (solo rectificar)' : ''}.</div>
+          </div>
+          <div style={{ display: 'flex', gap: 10, marginTop: 20, justifyContent: 'flex-end' }}>
+            <Btn onClick={() => setModal(null)}>Cancelar</Btn>
+            <Btn variante="primario" onClick={() => accion('enviar', envio, d => `${router.asPath.split('?')[0]}?enviada=${encodeURIComponent(d.to)}`)} disabled={ocupado || !envio.to.trim()}>{ocupado ? 'Enviando…' : 'Enviar factura'}</Btn>
+          </div>
+        </Modal>
+      )}
 
       {modal === 'pagar' && (
         <Modal titulo="Marcar como pagada" onCerrar={() => setModal(null)} ancho={420}>

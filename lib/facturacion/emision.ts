@@ -36,7 +36,7 @@ export function snapshotEmisor(a: fac_ajustes) {
   return {
     nombre: a.emisor_nombre, nombre_comercial: a.nombre_comercial, nif: validarNifEspanol(a.nif).normalizado,
     direccion: a.direccion, cp: a.cp, municipio: a.municipio, provincia: a.provincia, pais: a.pais,
-    email: a.email, telefono: a.telefono, iban: a.iban,
+    email: a.email, telefono: a.telefono, iban: a.iban, logo_path: a.logo_path,
   }
 }
 

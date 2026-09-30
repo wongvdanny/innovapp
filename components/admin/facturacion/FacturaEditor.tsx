@@ -118,6 +118,17 @@ export default function FacturaEditor({ factura, clienteInicial, ajustes, concep
     router.replace(`/admin/facturacion/facturas/${id}?emitida=1`)
   }
 
+  // Vista previa: guarda el borrador y abre su PDF (marca de agua, sin validez fiscal).
+  const vistaPrevia = async () => {
+    const ventana = window.open('', '_blank') // abierta ya, para que el navegador no la bloquee
+    setOcupado('vista'); setRes(null)
+    const id = await guardar()
+    setOcupado(null)
+    if (!id) { ventana?.close(); return }
+    if (ventana) ventana.location.href = `/api/admin/facturacion/facturas/${id}/pdf`
+    if (!factura) router.replace(`/admin/facturacion/facturas/${id}`)
+  }
+
   const eliminar = async () => {
     if (!confirm('¿Eliminar este borrador?')) return
     const r = await api(`/api/admin/facturacion/facturas/${factura.id}`, 'DELETE')
@@ -255,6 +266,7 @@ export default function FacturaEditor({ factura, clienteInicial, ajustes, concep
           {superaLimite && <div style={{ fontSize: 12, color: C.rojo, marginTop: 6 }}>Supera el límite de la factura simplificada: elige un cliente con NIF.</div>}
           <div style={{ display: 'flex', gap: 8, marginTop: 18, flexWrap: 'wrap', justifyContent: 'flex-end' }}>
             {factura && <Btn variante="peligro" onClick={eliminar} disabled={!!ocupado}>Eliminar</Btn>}
+            <Btn onClick={vistaPrevia} disabled={!!ocupado}>{ocupado === 'vista' ? 'Generando…' : '📄 Vista previa'}</Btn>
             <Btn onClick={accionGuardar} disabled={!!ocupado}>{ocupado === 'guardar' ? 'Guardando…' : 'Guardar borrador'}</Btn>
             <Btn variante="primario" onClick={accionEmitir} disabled={!!ocupado || !!emisorError || superaLimite}>{ocupado === 'emitir' ? 'Emitiendo…' : 'Emitir factura'}</Btn>
           </div>

@@ -258,3 +258,28 @@ export async function sendNewsletterConfirmation(to: string) {
   })
   if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }
+
+export interface FacturaEmail {
+  to: string
+  bcc?: string | null
+  replyTo?: string | null
+  asunto: string
+  html: string
+  adjunto: { nombre: string; datos: Buffer }
+}
+
+/** Envía una factura en PDF. Devuelve el id de Resend (para el log de facturación). */
+export async function sendFacturaEmail(m: FacturaEmail): Promise<string | null> {
+  const { data, error } = await resend.emails.send({
+    from: FROM,
+    to: m.to,
+    ...(m.bcc ? { bcc: m.bcc } : {}),
+    ...(m.replyTo ? { replyTo: m.replyTo } : {}),
+    subject: m.asunto,
+    html: m.html,
+    attachments: [{ filename: m.adjunto.nombre, content: m.adjunto.datos }],
+  })
+  // El SDK de Resend no lanza en errores de API: hay que mirar el campo `error`.
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
+  return data?.id ?? null
+}

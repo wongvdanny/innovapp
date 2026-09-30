@@ -14,6 +14,8 @@ export default function Ajustes({ ajustes, conceptos: iniciales }: any) {
   const [conceptos, setConceptos] = useState<any[]>(iniciales)
   const [nuevo, setNuevo] = useState({ descripcion: '', precio_unitario: '', tipo_iva: '21' })
   const [integridad, setIntegridad] = useState<any>(null)
+  const [logo, setLogo] = useState<string | null>(ajustes.logo_path)
+  const [subiendoLogo, setSubiendoLogo] = useState(false)
   const { mostrar, Mensaje } = useMensaje()
   const set = (k: string, v: any) => setF((x: any) => ({ ...x, [k]: v }))
   const nifError = f.nif && !validarNifEspanol(f.nif).valido ? validarNifEspanol(f.nif).error : null
@@ -36,6 +38,21 @@ export default function Ajustes({ ajustes, conceptos: iniciales }: any) {
     const r = await api(`/api/admin/facturacion/conceptos/${id}`, 'DELETE')
     if (r.ok) setConceptos(c => c.filter(x => x.id !== id))
   }
+  const subirLogo = async (archivo?: File) => {
+    if (!archivo) return
+    if (archivo.size > 5 * 1024 * 1024) return mostrar('error', 'El logo no puede superar 5 MB')
+    setSubiendoLogo(true)
+    const fd = new FormData(); fd.append('adjunto', archivo)
+    const r = await api('/api/admin/facturacion/ajustes/logo', 'POST', fd)
+    setSubiendoLogo(false)
+    r.ok ? (setLogo(r.data.logo_path), mostrar('ok', 'Logo actualizado: se usará en las próximas facturas')) : mostrar('error', r.error!)
+  }
+  const quitarLogo = async () => {
+    if (!confirm('¿Quitar el logo? Las próximas facturas mostrarán el nombre comercial.')) return
+    const r = await api('/api/admin/facturacion/ajustes/logo', 'DELETE')
+    if (r.ok) setLogo(null)
+  }
+
   const verificar = async () => {
     setIntegridad({ cargando: true })
     const r = await api('/api/admin/facturacion/integridad')
@@ -64,6 +81,19 @@ export default function Ajustes({ ajustes, conceptos: iniciales }: any) {
             <div className="fac-g3">{texto('cp', 'Código postal *')}{texto('municipio', 'Municipio *')}{texto('provincia', 'Provincia')}</div>
             <div className="fac-g2">{texto('email', 'Email (remitente y copia)', { input: { type: 'email' } })}{texto('telefono', 'Teléfono')}</div>
             {texto('iban', 'IBAN (aparece en la factura para transferencias)', { input: { placeholder: 'ES00 0000 0000 0000 0000 0000' } })}
+            <Campo label="Logo en las facturas" ayuda="PNG, JPG, WEBP o SVG. Se convierte a PNG. Sin logo, se muestra el nombre comercial.">
+              <div style={{ display: 'flex', gap: 12, alignItems: 'center', flexWrap: 'wrap' }}>
+                <div style={{ width: 170, height: 56, border: `1px dashed ${C.borde}`, borderRadius: 10, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'white', overflow: 'hidden' }}>
+                  {logo ? <img src={`/api/admin/facturacion/ajustes/logo?v=${encodeURIComponent(logo)}`} alt="Logo" style={{ maxWidth: 160, maxHeight: 48, objectFit: 'contain' }} />
+                    : <span style={{ color: C.naranja, fontWeight: 800 }}>{f.nombre_comercial || 'Sin logo'}</span>}
+                </div>
+                <label style={{ cursor: 'pointer' }}>
+                  <input type="file" accept="image/*" style={{ display: 'none' }} onChange={e => { subirLogo(e.target.files?.[0]); e.target.value = '' }} />
+                  <span style={{ padding: '9px 16px', borderRadius: 10, fontSize: 13, fontWeight: 700, border: `1px solid ${C.borde}`, display: 'inline-block' }}>{subiendoLogo ? 'Subiendo…' : logo ? 'Cambiar' : 'Subir logo'}</span>
+                </label>
+                {logo && <Btn variante="fantasma" onClick={quitarLogo}>Quitar</Btn>}
+              </div>
+            </Campo>
             <div style={{ fontSize: 12, color: C.gris }}>Actividad: IAE {ajustes.iae} · Inicio: {ajustes.fecha_inicio_actividad.slice(0, 10).split('-').reverse().join('/')} · País: {ajustes.pais}</div>
           </div>
         </Card>
