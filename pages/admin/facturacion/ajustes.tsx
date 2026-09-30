@@ -4,6 +4,7 @@ import { prisma } from '../../../lib/prisma'
 import { exigirAdmin, aJson } from '../../../lib/facturacion/api'
 import { validarNifEspanol } from '../../../lib/facturacion/validacion'
 import { Layout, Card, Btn, Campo, Interruptor, Aviso, Euros, ErrorApi, api, estiloInput, useMensaje, RespuestaApi, C } from '../../../components/admin/facturacion/ui'
+import Copias from '../../../components/admin/facturacion/Copias'
 
 const s = (v: any) => (v === null || v === undefined ? '' : String(v))
 
@@ -156,6 +157,8 @@ export default function Ajustes({ ajustes, conceptos: iniciales }: any) {
           </div>
         </Card>
       </div>
+
+      <Copias />
     </Layout>
   )
 }

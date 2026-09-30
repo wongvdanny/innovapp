@@ -1,13 +1,20 @@
 #!/bin/bash
-# Backup diario de innovapp: volcado completo de innovapp_db (incluye las tablas fac_*)
+# Backup de innovapp: volcado completo de innovapp_db, volcado solo de las tablas fac_*
 # y tar de storage/facturacion (PDFs de facturas y adjuntos de gastos).
-# Destino: /root/backups/innovapp/{db,storage}/ · rotación de 30 días · log en /var/log/innovapp-backup.log
-# Cron (root): 30 3 * * * /var/www/innovapp/scripts/backup-innovapp.sh
+# Destino: /var/backups/innovapp/{db,fac,storage}/ (root:innovapp-bk, 750/640) · rotación 30 días
+# Log: /var/log/innovapp-backup.log · última línea en stdout: BACKUP_TS=<marca>
+#
+# Se ejecuta SIEMPRE la copia instalada (root:root 0755), nunca la del repo:
+#   install -o root -g root -m 0755 scripts/backup-innovapp.sh /usr/local/sbin/innovapp-backup
+# Cron (root):  30 3 * * * /usr/local/sbin/innovapp-backup
+# Panel admin:  sudo -n /usr/local/sbin/innovapp-backup   (regla en /etc/sudoers.d/innovapp-backup)
 set -euo pipefail
-umask 077
+umask 027
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 APP_DIR=/var/www/innovapp
-DEST=/root/backups/innovapp
+DEST=/var/backups/innovapp
+GRUPO=innovapp-bk
 LOG=/var/log/innovapp-backup.log
 RETENCION_DIAS=30
 TS=$(date +%Y%m%d_%H%M%S)
@@ -20,7 +27,7 @@ trap 'fallo "línea $LINENO (código $?)"' ERR
 exec 9>/run/innovapp-backup.lock
 flock -n 9 || fallo "ya hay otro backup en curso"
 
-mkdir -p "$DEST/db" "$DEST/storage"
+install -d -o root -g "$GRUPO" -m 750 "$DEST" "$DEST/db" "$DEST/fac" "$DEST/storage"
 log "=== Inicio backup $TS ==="
 
 # Credenciales desde .env. La contraseña puede contener '@': se separa por la ÚLTIMA '@'.
@@ -38,6 +45,14 @@ TABLAS_FAC=$(pg_restore --list "$DUMP.tmp" | grep -c ' TABLE DATA public fac_' |
 mv "$DUMP.tmp" "$DUMP"
 log "BD: $(basename "$DUMP") ($(du -h "$DUMP" | cut -f1), $TABLAS_FAC tablas fac_)"
 
+# 1b. Solo facturación: tablas fac_* (para la descarga habitual; se restaura sobre innovapp_db)
+FAC="$DEST/fac/innovapp_fac_${TS}.dump"
+pg_dump --format=custom --compress=9 --no-owner --table='public.fac_*' --file="$FAC.tmp"
+TABLAS=$(pg_restore --list "$FAC.tmp" | grep -c ' TABLE DATA public fac_' || true)
+[ "$TABLAS" -ge 10 ] || fallo "el volcado de facturación solo contiene $TABLAS tablas fac_"
+mv "$FAC.tmp" "$FAC"
+log "Facturación: $(basename "$FAC") ($(du -h "$FAC" | cut -f1))"
+
 # 2. Archivos de facturación
 TAR="$DEST/storage/storage_facturacion_${TS}.tar.gz"
 mkdir -p "$APP_DIR/storage/facturacion"
@@ -47,14 +62,15 @@ mv "$TAR.tmp" "$TAR"
 log "Archivos: $(basename "$TAR") ($(du -h "$TAR" | cut -f1), $(tar -tzf "$TAR" | grep -vc '/$' || true) archivos)"
 
 # 3. Sumas de control
-( cd "$DEST" && sha256sum "db/$(basename "$DUMP")" "storage/$(basename "$TAR")" >> "$DEST/SHA256SUMS" )
+( cd "$DEST" && sha256sum "db/$(basename "$DUMP")" "fac/$(basename "$FAC")" "storage/$(basename "$TAR")" >> "$DEST/SHA256SUMS" )
+chgrp "$GRUPO" "$DUMP" "$FAC" "$TAR" "$DEST/SHA256SUMS"; chmod 640 "$DUMP" "$FAC" "$TAR" "$DEST/SHA256SUMS"
 
 # 4. Rotación
-BORRADOS=$(find "$DEST/db" "$DEST/storage" -type f \( -name '*.dump' -o -name '*.tar.gz' \) -mtime +$RETENCION_DIAS -print -delete | wc -l)
-find "$DEST/db" "$DEST/storage" -type f -name '*.tmp' -mmin +120 -delete
+BORRADOS=$(find "$DEST/db" "$DEST/fac" "$DEST/storage" -type f \( -name '*.dump' -o -name '*.tar.gz' \) -mtime +$RETENCION_DIAS -print -delete | wc -l)
+find "$DEST/db" "$DEST/fac" "$DEST/storage" -type f -name '*.tmp' -mmin +120 -delete
 if [ "$BORRADOS" -gt 0 ]; then
   # Quita del manifiesto las entradas de archivos ya rotados
-  ( cd "$DEST" && while read -r suma ruta; do [ -f "$ruta" ] && echo "$suma  $ruta"; done < SHA256SUMS > SHA256SUMS.new && mv SHA256SUMS.new SHA256SUMS )
+  ( cd "$DEST" && while read -r suma ruta; do [ -f "$ruta" ] && echo "$suma  $ruta"; done < SHA256SUMS > SHA256SUMS.new && mv SHA256SUMS.new SHA256SUMS && chgrp "$GRUPO" SHA256SUMS && chmod 640 SHA256SUMS )
 fi
 log "Rotación: $BORRADOS archivo(s) de más de $RETENCION_DIAS días eliminados"
 # 5. Copia fuera del servidor (opcional): remoto rclone cifrado "innovapp-offsite:"
@@ -62,10 +78,11 @@ log "Rotación: $BORRADOS archivo(s) de más de $RETENCION_DIAS días eliminados
 #    - mensuales/: el backup del día 1 de cada mes, conservado 6 años (obligación de conservar facturas)
 REMOTO=innovapp-offsite
 if command -v rclone >/dev/null && rclone listremotes 2>/dev/null | grep -qx "$REMOTO:"; then
-  rclone copy "$DEST" "$REMOTO:diarios" --include "db/*.dump" --include "storage/*.tar.gz" --include "SHA256SUMS" --max-age 48h --log-level ERROR
+  rclone copy "$DEST" "$REMOTO:diarios" --include "db/*.dump" --include "fac/*.dump" --include "storage/*.tar.gz" --include "SHA256SUMS" --max-age 48h --log-level ERROR
   rclone delete "$REMOTO:diarios" --min-age 90d --log-level ERROR || true
   if [ "$(date +%d)" = "01" ]; then
     rclone copy "$DUMP" "$REMOTO:mensuales/$(date +%Y-%m)" --log-level ERROR
+    rclone copy "$FAC" "$REMOTO:mensuales/$(date +%Y-%m)" --log-level ERROR
     rclone copy "$TAR" "$REMOTO:mensuales/$(date +%Y-%m)" --log-level ERROR
     rclone delete "$REMOTO:mensuales" --min-age 2200d --log-level ERROR || true
   fi
@@ -74,3 +91,4 @@ else
   log "Copia remota: omitida (remoto rclone '$REMOTO' no configurado)"
 fi
 log "=== Fin backup $TS ==="
+echo "BACKUP_TS=$TS"
