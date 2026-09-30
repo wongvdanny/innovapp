@@ -252,7 +252,7 @@ model fac_facturas {
   fac_clientes            fac_clientes?             @relation(fields: [cliente_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
   fac_facturas            fac_facturas?             @relation("fac_facturasTofac_facturas", fields: [rectificada_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
   other_fac_facturas      fac_facturas[]            @relation("fac_facturasTofac_facturas")
-  fac_recurrentes         fac_recurrentes?          @relation(fields: [recurrente_id], references: [id], onUpdate: NoAction)
+  fac_recurrentes         fac_recurrentes?          @relation(fields: [recurrente_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
   fac_series              fac_series?               @relation(fields: [serie_id], references: [id], onDelete: Restrict, onUpdate: NoAction)
   fac_lineas              fac_lineas[]
   fac_registros_verifactu fac_registros_verifactu[]
