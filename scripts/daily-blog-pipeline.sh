@@ -39,18 +39,12 @@ else
   exit 1
 fi
 
-log "Compilando el proyecto (npm run build)..."
-npm run build >> "$LOG_FILE" 2>&1
-log "Build completado."
-
-log "Reiniciando PM2 (innovapp-web)..."
-pm2 restart innovapp-web --update-env >> "$LOG_FILE" 2>&1
-log "PM2 reiniciado."
-
-sleep 2
-if ! curl -sfI https://innovapp.es > /dev/null; then
-  log "ERROR: https://innovapp.es no responde correctamente tras el reinicio de PM2."
+log "Desplegando (scripts/deploy.sh: build aparte, cambio atómico y rollback si no da 200)..."
+if ! scripts/deploy.sh >> "$LOG_FILE" 2>&1; then
+  log "ERROR: el despliegue ha fallado; la web sigue con la versión anterior. Ver /var/log/innovapp-deploy.log"
+  exit 1
 fi
+log "Despliegue completado."
 
 log "Enviando sitemap a Google Search Console..."
 if node scripts/submit-sitemap.mjs >> "$LOG_FILE" 2>&1; then

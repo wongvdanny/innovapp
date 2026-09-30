@@ -56,13 +56,9 @@ Hace: `chown` de `.next`, `storage`, logo y favicon a `innovapp:innovapp-bk`; `.
 
 Recrea `innovapp-web` exactamente como estaba (`npm run start -- --port 3001`, como root) y hace `pm2 save`. No hace falta deshacer permisos: root puede leer y escribir todo.
 
-## Después: cambio en el despliegue
+## Después: despliegue
 
-El build se sigue haciendo como root, así que tras cada build hay que devolver `.next` al usuario de la web:
-
-```bash
-npx next build && chown -R innovapp:innovapp-bk .next && pm2 restart innovapp-web && sleep 2 && curl -I https://innovapp.es && npx next-sitemap
-```
+Nada cambia: `scripts/deploy.sh` detecta que `innovapp-web` ya no corre como root y asigna `.next` a su usuario antes de reiniciar. Rollback de una versión: `scripts/deploy.sh --rollback`.
 
 Si se edita `scripts/backup-innovapp.sh`, reinstalar la copia que ejecutan cron y sudo:
 `install -o root -g root -m 0755 scripts/backup-innovapp.sh /usr/local/sbin/innovapp-backup`

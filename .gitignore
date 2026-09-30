@@ -14,3 +14,9 @@ secrets/
 
 # facturas, adjuntos de gastos y PDFs (fuera de /public, nunca al repo)
 storage/
+
+# despliegue seguro (scripts/deploy.sh)
+.next-build/
+.next-prev/
+.next-fallida/
+*.deploy.bak
