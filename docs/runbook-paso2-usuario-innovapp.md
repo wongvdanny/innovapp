@@ -16,6 +16,9 @@ Hoy todos los `next-server` corren como root. Un fallo en cualquier web equivale
 
 - Grupo `innovapp-bk`, usuario `innovapp` (uid 998, `/usr/sbin/nologin`).
 - Backups en `/var/backups/innovapp/{db,fac,storage}`; cron a las 03:30 → `/usr/local/sbin/innovapp-backup`.
+- `.env` de innovapp, servix, gymstack, lavid y news en 600 `root:root` (agentes ya lo estaba). El script de este paso lo pasa a 640 `root:innovapp-bk` solo en innovapp; los demás se ajustarán en su propia migración. (ps9.innovapp.es/PrestaShop no se ha tocado: su `.env` es de `www-data`.)
+- ufw: cerrados 8080 y 9090 (sin procesos escuchando); abiertos 22, 80/443 y correo.
+- Parados dos `next-server` huérfanos fuera de PM2 (innovapp :4321 y agentes :3997).
 - Comprobación previa como `innovapp` (solo lectura): código, `.next`, fuentes, motor de Prisma, pdfkit y sharp cargan; `/tmp` escribible; sudo permitido. Único bloqueo: `storage/` (root 700), que el script corrige.
 
 ## Antes de empezar
