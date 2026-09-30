@@ -148,6 +148,7 @@ model fac_ajustes {
   verifactu_activo           Boolean  @default(false)
   fecha_inicio_actividad     DateTime @default(dbgenerated("'2026-10-01'::date")) @db.Date
   updated_at                 DateTime @default(now()) @db.Timestamptz(6)
+  qr_no_verifactu            Boolean  @default(false)
 }
 
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.

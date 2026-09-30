@@ -73,7 +73,12 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
   }
 
   const deleteSub = async (s: any) => {
-    if (!confirm(`¿Eliminar completamente el registro de ${s.user.name}? Se borrará la suscripción de la BD.`)) return
+    // Aviso si hay facturas emitidas vinculadas a sus cobros (se conservan igualmente).
+    const fr = await fetch(`/api/admin/facturacion/suscripcion-facturas?subscriptionId=${s.id}`).then(r => r.ok ? r.json() : []).catch(() => [])
+    const avisoFacturas = fr.length
+      ? `\n\n⚠️ Tiene ${fr.length} factura(s) emitida(s): ${fr.map((f: any) => f.num_serie_factura).join(', ')}. Las facturas se conservan en Facturación (no se pueden borrar), pero perderán el enlace con este cobro.`
+      : ''
+    if (!confirm(`¿Eliminar completamente el registro de ${s.user.name}? Se borrará la suscripción de la BD.${avisoFacturas}`)) return
     setActionId(s.id)
     const res = await fetch('/api/admin/delete-subscription', {
       method: 'DELETE',
@@ -140,6 +145,9 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
             >
               🗄️ Gestor BD Servix
             </a>
+            <Link href="/admin/facturacion" style={{ fontSize: 13, fontWeight: 600, padding: '7px 14px', borderRadius: 8, background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.15)', color: 'rgba(255,255,255,.85)', textDecoration: 'none' }}>
+              🧾 Facturación
+            </Link>
             <Link href="/dashboard" style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', fontWeight: 500 }}>← Mi cuenta</Link>
           </div>
         </div>
