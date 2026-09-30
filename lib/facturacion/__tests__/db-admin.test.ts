@@ -42,6 +42,7 @@ describe.skipIf(!DB)('admin de facturación contra la BD (revertido)', () => {
 
   it('clientes, borradores, gastos y dashboard', async () => {
     const eventosAntes = await real.fac_eventos.count()
+    const [clientesAntes, gastosAntes] = [await real.fac_clientes.count(), await real.fac_gastos.count()]
 
     await expect(real.$transaction(async (tx: any) => {
       ;(prisma as any).__usar(tx)
@@ -134,7 +135,7 @@ describe.skipIf(!DB)('admin de facturación contra la BD (revertido)', () => {
     }, { timeout: 60_000 })).rejects.toBeInstanceOf(Rollback)
 
     expect(await real.fac_eventos.count()).toBe(eventosAntes)
-    expect(await real.fac_clientes.count()).toBe(0)
-    expect(await real.fac_gastos.count()).toBe(0)
+    expect(await real.fac_clientes.count()).toBe(clientesAntes)
+    expect(await real.fac_gastos.count()).toBe(gastosAntes)
   })
 })

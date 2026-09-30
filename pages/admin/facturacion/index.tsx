@@ -12,6 +12,17 @@ import { Layout, Card, Kpi, Btn, Aviso, Euros, Estado, estadoVisible, fechaCorta
 export default function Dashboard({ r, cobros, ultimas, emisorError, verifactuActivo, hoy }: any) {
   const [integridad, setIntegridad] = useState<any>(null)
   const [verificando, setVerificando] = useState(false)
+  const [reintentando, setReintentando] = useState<string | null>(null)
+  const [aviso, setAviso] = useState<{ tipo: 'ok' | 'error' | 'aviso'; texto: string } | null>(null)
+  const reintentar = async (invoiceId: string) => {
+    setReintentando(invoiceId)
+    const res = await api('/api/admin/facturacion/cobros/reintentar', 'POST', { invoiceId })
+    setReintentando(null)
+    if (!res.ok) return setAviso({ tipo: 'error', texto: res.error! })
+    const d = res.data
+    if (d.estado === 'emitida') { setAviso({ tipo: 'ok', texto: `Factura ${d.numero} emitida y enviada` }); setTimeout(() => location.reload(), 1200) }
+    else setAviso({ tipo: 'aviso', texto: d.motivo ? `Sigue sin poder emitirse: ${d.motivo}` : `Resultado: ${d.estado}` })
+  }
   const t = `${r.periodo.trimestre}T ${r.periodo.anio}`
   const ivaNeto = D(r.ivaRepercutido.trimestre).minus(D(r.ivaSoportado.trimestre)).toFixed(2)
 
@@ -30,6 +41,7 @@ export default function Dashboard({ r, cobros, ultimas, emisorError, verifactuAc
       {emisorError && (
         <Aviso tipo="aviso">⚠️ {emisorError} <Link href="/admin/facturacion/ajustes" style={{ color: C.ambar, fontWeight: 700 }}>Completar en Ajustes →</Link></Aviso>
       )}
+      {aviso && <Aviso tipo={aviso.tipo}>{aviso.texto}</Aviso>}
       {integridad && (integridad.ok
         ? <Aviso tipo="ok">✅ Cadena íntegra: {integridad.registros} registros y {integridad.facturasEmitidas} facturas verificados.</Aviso>
         : <Aviso tipo="error">⚠️ Problemas de integridad:<ul style={{ margin: '6px 0 0 18px' }}>{integridad.errores.map((e: any, i: number) => <li key={i}>{e.detalle}</li>)}</ul></Aviso>)}
@@ -60,7 +72,10 @@ export default function Dashboard({ r, cobros, ultimas, emisorError, verifactuAc
                   <td>{c.provider}</td>
                   <td className="fac-num"><Euros v={c.importe} /></td>
                   <td style={{ color: C.ambar }}>{c.bloqueo_motivo || 'Sin factura generada'}</td>
-                  <td>{c.borrador_id && <Link href={`/admin/facturacion/facturas/${c.borrador_id}`} style={{ color: C.naranjaOsc, fontWeight: 700 }}>Revisar →</Link>}</td>
+                  <td style={{ whiteSpace: 'nowrap' }}>
+                    <Btn onClick={() => reintentar(c.invoice_id)} disabled={!!reintentando} style={{ marginRight: 8 }}>{reintentando === c.invoice_id ? '⏳' : '↻ Reintentar'}</Btn>
+                    {c.borrador_id && <Link href={`/admin/facturacion/facturas/${c.borrador_id}`} style={{ color: C.naranjaOsc, fontWeight: 700 }}>Revisar →</Link>}
+                  </td>
                 </tr>
               ))}</tbody>
             </table>

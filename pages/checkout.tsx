@@ -3,6 +3,11 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Logo from '../components/Logo'
+import { validarNifEspanol } from '../lib/facturacion/validacion'
+
+// Por encima de este total no cabe factura simplificada: NIF y dirección obligatorios
+// (el servidor lo vuelve a comprobar con el límite de los ajustes de facturación).
+const LIMITE_SIMPLIFICADA = 400
 
 const STEPS = ['Datos','Facturación','Confirmar']
 
@@ -93,7 +98,13 @@ export default function Checkout() {
     if (form.password.length < 6) return 'La contraseña debe tener al menos 6 caracteres'
     return ''
   }
+  const nifObligatorio = !!plan && plan.price > LIMITE_SIMPLIFICADA
   const validateStep1 = () => {
+    if (nifObligatorio && !form.nif.trim()) return `Para importes superiores a ${LIMITE_SIMPLIFICADA} € necesitamos tu NIF/CIF para emitir la factura`
+    if (form.nif.trim() && form.country === 'España') {
+      const r = validarNifEspanol(form.nif)
+      if (!r.valido) return `NIF/CIF no válido: ${r.error}`
+    }
     if (!form.address.trim()) return 'Introduce tu dirección'
     if (!form.city.trim())    return 'Introduce tu ciudad'
     if (!form.zip.trim())     return 'Introduce el código postal'
@@ -247,7 +258,7 @@ export default function Checkout() {
                       <input style={inp} placeholder="Mi Empresa S.L." value={form.company} onChange={e => set('company', e.target.value)} />
                     </div>
                     <div>
-                      <label style={lbl}>NIF / CIF (opcional)</label>
+                      <label style={lbl}>NIF / CIF {nifObligatorio ? '*' : '(opcional)'}</label>
                       <input style={inp} placeholder="B12345678" value={form.nif} onChange={e => set('nif', e.target.value)} />
                     </div>
                   </div>

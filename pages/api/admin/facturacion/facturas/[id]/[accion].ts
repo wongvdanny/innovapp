@@ -6,6 +6,7 @@ import { hoyMadrid } from '../../../../../../lib/facturacion/fechas'
 import { FacturacionError } from '../../../../../../lib/facturacion/errores'
 import { asegurarPdf } from '../../../../../../lib/facturacion/documentos'
 import { enviarFactura } from '../../../../../../lib/facturacion/envio'
+import { conciliarCobro } from '../../../../../../lib/facturacion/pagos'
 
 // POST /api/admin/facturacion/facturas/:id/:accion
 export default adminApi({
@@ -15,6 +16,8 @@ export default adminApi({
     switch (texto(req.query.accion)) {
       case 'emitir': {
         const f = await emitirFactura(id, actor)
+        // Si venía de un cobro online (p. ej. bloqueada y corregida), queda pagada con ese cobro
+        if (f.invoice_id) await conciliarCobro(id, actor)
         // El PDF definitivo se genera ya; si falla, se generará en la primera descarga o envío.
         await asegurarPdf(id).catch(e => console.error('Facturación: PDF tras emitir', f.num_serie_factura, e.message))
         return f

@@ -57,4 +57,20 @@ if [ "$BORRADOS" -gt 0 ]; then
   ( cd "$DEST" && while read -r suma ruta; do [ -f "$ruta" ] && echo "$suma  $ruta"; done < SHA256SUMS > SHA256SUMS.new && mv SHA256SUMS.new SHA256SUMS )
 fi
 log "Rotación: $BORRADOS archivo(s) de más de $RETENCION_DIAS días eliminados"
+# 5. Copia fuera del servidor (opcional): remoto rclone cifrado "innovapp-offsite:"
+#    - diarios/: copia de los archivos nuevos; en remoto se conservan 90 días
+#    - mensuales/: el backup del día 1 de cada mes, conservado 6 años (obligación de conservar facturas)
+REMOTO=innovapp-offsite
+if command -v rclone >/dev/null && rclone listremotes 2>/dev/null | grep -qx "$REMOTO:"; then
+  rclone copy "$DEST" "$REMOTO:diarios" --include "db/*.dump" --include "storage/*.tar.gz" --include "SHA256SUMS" --max-age 48h --log-level ERROR
+  rclone delete "$REMOTO:diarios" --min-age 90d --log-level ERROR || true
+  if [ "$(date +%d)" = "01" ]; then
+    rclone copy "$DUMP" "$REMOTO:mensuales/$(date +%Y-%m)" --log-level ERROR
+    rclone copy "$TAR" "$REMOTO:mensuales/$(date +%Y-%m)" --log-level ERROR
+    rclone delete "$REMOTO:mensuales" --min-age 2200d --log-level ERROR || true
+  fi
+  log "Copia remota: OK ($REMOTO)"
+else
+  log "Copia remota: omitida (remoto rclone '$REMOTO' no configurado)"
+fi
 log "=== Fin backup $TS ==="

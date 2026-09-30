@@ -16,7 +16,7 @@ export interface OpcionesEnvio {
   copia?: boolean        // copia oculta al email del emisor (Ajustes)
 }
 
-function htmlFactura(f: any, emisor: any, mensaje?: string) {
+export function htmlFactura(f: any, emisor: any, mensaje?: string) {
   const fecha = (v: any) => v ? ddmmaaaa(v).replace(/-/g, '/') : ''
   const nombre = f.cliente_snapshot?.razon_social
   const rect = f.tipo_factura.startsWith('R')

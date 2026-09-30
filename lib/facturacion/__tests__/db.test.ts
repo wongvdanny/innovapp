@@ -46,6 +46,8 @@ describe.skipIf(!DB)('facturación contra la BD', () => {
   it('flujo completo: emitir, rectificar, anular, cadena íntegra (revertido)', async () => {
     const ahora = new Date('2026-10-01T09:00:00Z')
     const antes = await prisma.fac_registros_verifactu.count()
+    const seriesAntes = await prisma.fac_series.findMany({ where: { anio: 2026 }, orderBy: { codigo: 'asc' } })
+    const ajustesAntes = await prisma.fac_ajustes.findUniqueOrThrow({ where: { id: 1 } })
 
     await expect(prisma.$transaction(async tx => {
       const linea = (desc: string, precio: number) => {
@@ -60,6 +62,7 @@ describe.skipIf(!DB)('facturación contra la BD', () => {
       })
 
       // Emisor incompleto (NIF vacío en ajustes) → bloqueado
+      await tx.fac_ajustes.update({ where: { id: 1 }, data: { nif: '' } })
       const b0 = await borrador('F1', cliente.id, [linea('Desarrollo', 1000)])
       await esperarError(emitirEnTx(tx, b0.id, actor, { ahora }), 'EMISOR_INCOMPLETO')
       await tx.fac_ajustes.update({ where: { id: 1 }, data: { nif: '00000000T' } })
@@ -135,7 +138,7 @@ describe.skipIf(!DB)('facturación contra la BD', () => {
 
     // Nada ha quedado en la BD
     expect(await prisma.fac_registros_verifactu.count()).toBe(antes)
-    expect(await prisma.fac_series.count({ where: { anio: 2026 } })).toBe(0)
-    expect((await prisma.fac_ajustes.findUnique({ where: { id: 1 } }))!.nif).toBe('')
+    expect(await prisma.fac_series.findMany({ where: { anio: 2026 }, orderBy: { codigo: 'asc' } })).toEqual(seriesAntes)
+    expect(await prisma.fac_ajustes.findUniqueOrThrow({ where: { id: 1 } })).toEqual(ajustesAntes)
   })
 })

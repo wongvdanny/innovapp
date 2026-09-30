@@ -3,6 +3,7 @@ import { createServixTenant } from './provisioning/servix'
 import { createGymstackTenant } from './provisioning/gymstack'
 import { createNewsTenant } from './provisioning/news'
 import { sendWelcomeEmail } from './email'
+import { facturarCobro } from './facturacion/pagos'
 
 // Aprovisiona y activa una suscripción a partir de una factura ya cobrada.
 // Compartido entre el webhook de Redsys y el de Stripe para no duplicar
@@ -109,6 +110,15 @@ export async function fulfillInvoice(invoiceId: string) {
     }
   })
   await prisma.invoice.update({ where: { id: invoice.id }, data: { status: 'paid', paidAt: new Date() } })
+
+  // Factura legal del cobro (emisión, PDF y email). Un fallo no debe frenar el alta:
+  // queda en "Cobros sin factura" y el cron de facturación lo reintenta.
+  try {
+    const r = await facturarCobro(invoice.id)
+    console.log('Facturación del cobro', invoice.id, r)
+  } catch (e: any) {
+    console.error('Error facturación del cobro', invoice.id, e.message)
+  }
 
   try {
     await sendWelcomeEmail(user.email, emailName, (plan as any).name, (plan as any).price, (plan as any).interval, slug, billing, product?.slug || 'servix')

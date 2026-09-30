@@ -3,6 +3,7 @@ import { prisma } from '../../../lib/prisma'
 import bcrypt from 'bcryptjs'
 import { createRedsysAPI, SANDBOX_URLS, PRODUCTION_URLS, randomTransactionId } from 'redsys-easy'
 import Stripe from 'stripe'
+import { validarNifEspanol } from '../../../lib/facturacion/validacion'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
@@ -13,6 +14,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const plan = await prisma.plan.findUnique({ where: { id: planId }, include: { Product: true } as any })
     if (!plan) return res.status(400).json({ error: 'Plan no encontrado' })
     const product = (plan as any).Product as { slug: string; name: string } | null
+
+    // Datos fiscales: con NIF válido y dirección completa se emite factura completa (F1); por encima
+    // del límite de la simplificada (400 €) son obligatorios, porque no cabe emitir una F2.
+    const fiscal = { ...(billing || {}) }
+    const ajustesFac = await prisma.fac_ajustes.findUnique({ where: { id: 1 }, select: { limite_simplificada: true } })
+    const limite = Number(ajustesFac?.limite_simplificada ?? 400)
+    const esEspana = !fiscal.country || fiscal.country === 'España'
+    if (fiscal.nif?.trim() && esEspana) {
+      const r = validarNifEspanol(fiscal.nif)
+      if (!r.valido) return res.status(400).json({ error: `NIF/CIF no válido: ${r.error}` })
+      fiscal.nif = r.normalizado
+    }
+    if (plan.price > limite) {
+      if (!fiscal.nif?.trim()) return res.status(400).json({ error: `Para importes superiores a ${limite} € necesitamos tu NIF/CIF para emitir la factura` })
+      if (!fiscal.address?.trim() || !fiscal.city?.trim() || !fiscal.zip?.trim()) return res.status(400).json({ error: 'Completa la dirección de facturación (dirección, ciudad y código postal)' })
+    }
 
     // Determinar proveedor de pago activo
     const [redsysConfig, stripeConfig] = await Promise.all([
@@ -70,7 +87,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         planId,
         productId: plan.productId,
         status: 'pending',
-        billingData: JSON.stringify({ ...(billing || {}), entityName }) as any,
+        billingData: JSON.stringify({ ...fiscal, entityName }) as any,
       }
     })
 

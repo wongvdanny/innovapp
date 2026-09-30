@@ -95,6 +95,19 @@ export async function guardarBorrador(id: string | null, b: BorradorInput, actor
       : (cliente?.aplica_retencion ?? (cliente ? aplicaRetencionPorDefecto(cliente.tipo, cliente.pais) : false)) ? ajustes.retencion_defecto.toString() : '0'
     if (D(tipo_retencion).lessThan(0) || D(tipo_retencion).greaterThan(50)) throw new FacturacionError('DATOS_INVALIDOS', 'Retención fuera de rango')
 
+    // Borrador de un cobro online (IVA incluido): las líneas que no cambian conservan su base y
+    // cuota originales, para que el total siga cuadrando al céntimo con lo cobrado.
+    if (actual?.pago_ref) {
+      const previas = await tx.fac_lineas.findMany({ where: { factura_id: actual.id }, orderBy: { orden: 'asc' } })
+      lineas.forEach((l, i) => {
+        const p = previas[i]
+        if (p && p.descripcion === l.descripcion && D(p.cantidad).equals(l.cantidad) && D(p.precio_unitario).equals(l.precio_unitario)
+          && D(p.descuento_pct).equals(l.descuento_pct) && D(p.tipo_iva).equals(l.tipo_iva)) {
+          l.base = fmt2(p.base); l.cuota = fmt2(p.cuota)
+        }
+      })
+    }
+
     const tot = calcularTotales(lineas, tipo_retencion)
     const descripcion = (texto(b.descripcion_operacion) || lineas[0].descripcion).slice(0, 500)
     const dest = b.destinatario_simplificada
