@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "postbuild": "next-sitemap",
-    "blog:generate": "node scripts/generate-blog-post.mjs"
+    "blog:generate": "node scripts/generate-blog-post.mjs",
+    "test": "vitest run",
+    "test:db": "FAC_DB_TESTS=1 vitest run"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.123.0",
@@ -16,6 +18,7 @@
     "@prisma/client": "^5.22.0",
     "@types/formidable": "^3.5.1",
     "bcryptjs": "^3.0.3",
+    "decimal.js": "^10.6.0",
     "formidable": "^3.5.4",
     "googleapis": "^178.0.0",
     "gray-matter": "^4.0.3",
@@ -40,6 +43,7 @@
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "sharp": "^0.35.4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.1.9"
   }
 }
