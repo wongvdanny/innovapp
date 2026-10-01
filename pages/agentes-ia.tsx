@@ -4,6 +4,7 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
 import ComoFunciona from '../components/ComoFunciona'
+import VozDemo from '../components/VozDemo'
 import { WHATSAPP_NUMBER, WHATSAPP_DEMO_ECOMMERCE_NUMBER } from '../components/WhatsAppBubble'
 
 const COMO_FUNCIONA_INTRO =
@@ -97,6 +98,8 @@ export default function AgentesIaPage() {
       </section>
 
       <ComoFunciona intro={COMO_FUNCIONA_INTRO} steps={COMO_FUNCIONA_STEPS} />
+
+      <VozDemo />
 
       <section style={{ padding: '90px 24px', background: 'white' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 20 }}>

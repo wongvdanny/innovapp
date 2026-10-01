@@ -12,7 +12,7 @@ export default function Nav() {
     return () => window.removeEventListener('scroll', h)
   }, [])
   const links = [['/#empresa','Inicio']]
-  const agentesLinks = [['/agentes-ia-prestashop','Agentes para PrestaShop'],['/agentes-ia-woocommerce','Agentes para WooCommerce']]
+  const agentesLinks = [['/agentes-ia-prestashop','Agentes para PrestaShop'],['/agentes-ia-woocommerce','Agentes para WooCommerce'],['/agentes-voz','Agentes de voz']]
   return (
     <>
       <nav style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 40px', background: 'rgba(255,255,255,0.97)', backdropFilter: 'blur(20px)', borderBottom: '1px solid rgba(30,30,30,0.07)', boxShadow: scrolled ? '0 4px 32px rgba(30,30,30,0.1)' : 'none', transition: 'box-shadow .3s' }}>

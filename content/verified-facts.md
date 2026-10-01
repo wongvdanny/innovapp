@@ -31,6 +31,24 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
   existente.
 - Compatible con Stripe y Redsys para pagos.
 
+## Qué puede hacer el agente de voz (por teléfono)
+- Atiende las llamadas que el negocio no coge: el negocio desvía las
+  llamadas desde su móvil (cuando no contesta) al agente, y sigue
+  usando su número de siempre.
+- Informa sobre el negocio, agenda citas, toma recados y programa
+  llamadas de vuelta.
+- Puede transferir la llamada a una persona SOLO si el negocio ha
+  configurado un teléfono de transferencia (distinto del móvil desviado).
+  Sin ese teléfono, avisa al equipo en vez de transferir. NO presentar
+  la transferencia como función que funciona siempre.
+- Deja la transcripción y un resumen de cada llamada en el panel del
+  negocio.
+- Por teléfono NO crea pedidos ni carritos: en tiendas online informa de
+  productos, variantes, precios y stock, y el pedido se cierra en la web
+  o por WhatsApp.
+- Se presenta como asistente virtual al inicio de la llamada.
+- Número de demo (nuestro propio agente de voz): +34 984 276 259.
+
 ## Precios (a fecha de esta config; verificar si cambian)
 - Negocios locales: 89€/149€/229€ al mes, según tier (setup 300€/450€/600€)
 - E-commerce: 119€/199€/299€ al mes, según tier (setup 450€/700€/950€+)

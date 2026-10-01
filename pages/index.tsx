@@ -4,6 +4,7 @@ import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
+import VozDemo from '../components/VozDemo'
 import { WHATSAPP_NUMBER, WHATSAPP_DEMO_ECOMMERCE_NUMBER } from '../components/WhatsAppBubble'
 
 const MENSAJE_AGENTES_WHATSAPP = encodeURIComponent('Hola! Quiero información sobre Agentes IA para mi negocio.')
@@ -38,6 +39,11 @@ export default function Home() {
         <div style={{ position: 'absolute', top: -180, right: -180, width: 520, height: 520, borderRadius: '50%', background: 'radial-gradient(circle,rgba(232,163,61,.12) 0%,transparent 70%)', pointerEvents: 'none' }} />
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 56, flexWrap: 'wrap', position: 'relative' }}>
           <div style={{ flex: '1 1 380px', minWidth: 300 }}>
+            <a href="#agentes-voz" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 16, fontSize: 13, fontWeight: 600, color: '#ece9e2', textDecoration: 'none' }}>
+              <span style={{ background: '#e8a33d', color: '#12141a', borderRadius: 100, padding: '2px 10px', fontSize: 11, fontWeight: 800, letterSpacing: 0.5, textTransform: 'uppercase' }}>Nuevo</span>
+              Agentes de voz · Llama y pruébalo →
+            </a>
+            <br />
             <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(232,163,61,.12)', border: '1px solid rgba(232,163,61,.25)', borderRadius: 100, padding: '6px 18px', marginBottom: 24 }}>
               <span style={{ color: '#e8a33d', fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>✦ Nuestro producto estrella</span>
             </div>
@@ -78,6 +84,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <VozDemo tema="claro" />
 
       <section style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1e1e1e 0%,#1e1e1e 55%,#33261c 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '130px 24px 80px', position: 'relative', overflow: 'hidden' }}>
         <div style={{ position: 'absolute', top: -200, right: -200, width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle,rgba(238,117,40,.15) 0%,transparent 70%)', pointerEvents: 'none' }} />
