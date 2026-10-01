@@ -228,7 +228,7 @@ export default function Contacto() {
                   target="_blank" rel="noopener noreferrer"
                   style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 600, color: '#1e1e1e', textDecoration: 'none', marginBottom: 14 }}
                 >
-                  <span style={{ fontSize: 20 }}>💬</span> WhatsApp: +34 641 39 96 45
+                  <span style={{ fontSize: 20 }}>💬</span> WhatsApp: +34 643 45 20 65
                 </a>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
