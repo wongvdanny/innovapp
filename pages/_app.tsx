@@ -33,6 +33,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta key="facebook-domain-verification" name="facebook-domain-verification" content="7lkq06z03iie8clk0xypzrmxpfudgx" />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSONLD) }}
