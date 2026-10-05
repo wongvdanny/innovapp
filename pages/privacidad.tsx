@@ -1,6 +1,7 @@
 import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
+import LegalIdentity from '../components/LegalIdentity'
 import { CONTACT_EMAIL, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_NIF, LEGAL_ADDRESS } from '../lib/constants'
 
 export default function Privacidad() {
@@ -44,6 +45,7 @@ export default function Privacidad() {
           </div>
         </div>
         <LegalFooter />
+        <LegalIdentity tono="claro" fondo="white" />
       </div>
     </>
   )

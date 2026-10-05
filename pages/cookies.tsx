@@ -1,6 +1,7 @@
 import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
+import LegalIdentity from '../components/LegalIdentity'
 import { CONTACT_EMAIL } from '../lib/constants'
 import { COOKIE_SETTINGS_EVENT } from '../components/CookieBanner'
 
@@ -51,6 +52,7 @@ export default function Cookies() {
             <Link key={href} href={href} style={{ fontSize: 12, color: '#88a8b0', textDecoration: 'none' }}>{label}</Link>
           ))}
         </footer>
+        <LegalIdentity tono="claro" fondo="white" />
       </div>
     </>
   )

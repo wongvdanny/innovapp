@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import Logo from './Logo'
+import LegalIdentity from './LegalIdentity'
 import { COOKIE_SETTINGS_EVENT } from './CookieBanner'
 
 const linkStyle: React.CSSProperties = {
@@ -39,6 +40,7 @@ export default function Footer() {
             </div>
           ))}
         </div>
+        <LegalIdentity tono="oscuro" />
         <div style={{ borderTop: '1px solid rgba(255,255,255,.05)', paddingTop: 24, display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12 }}>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,.25)', margin: 0 }}>© 2025 <span style={{ color: '#ee7528' }}>innovapp</span> · Todos los derechos reservados</p>
           <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>

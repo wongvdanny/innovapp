@@ -5,12 +5,13 @@ import { Gabarito } from 'next/font/google'
 import '../styles/globals.css'
 import WhatsAppBubble from '../components/WhatsAppBubble'
 import CookieBanner from '../components/CookieBanner'
-import { CONTACT_EMAIL } from '../lib/constants'
+import { CONTACT_EMAIL, LEGAL_OWNER } from '../lib/constants'
 
 const ORGANIZATION_JSONLD = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
   name: 'innovapp',
+  legalName: LEGAL_OWNER,
   url: 'https://innovapp.es',
   logo: 'https://innovapp.es/brand/logo.png',
   image: 'https://innovapp.es/brand/og-image.png',

@@ -1,6 +1,7 @@
 import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
+import LegalIdentity from '../components/LegalIdentity'
 import { CONTACT_EMAIL } from '../lib/constants'
 
 export default function Uso() {
@@ -43,6 +44,7 @@ export default function Uso() {
             <Link key={href} href={href} style={{ fontSize: 12, color: '#88a8b0', textDecoration: 'none' }}>{label}</Link>
           ))}
         </footer>
+        <LegalIdentity tono="claro" fondo="white" />
       </div>
     </>
   )

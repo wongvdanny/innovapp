@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Logo from '../components/Logo'
+import LegalIdentity from '../components/LegalIdentity'
 import { validarNifEspanol } from '../lib/facturacion/validacion'
 
 // Por encima de este total no cabe factura simplificada: NIF y dirección obligatorios
@@ -425,6 +426,7 @@ export default function Checkout() {
             <Link key={href} href={href} style={{ fontSize: 12, color: '#88a8b0', textDecoration: 'none' }}>{label}</Link>
           ))}
         </footer>
+        <LegalIdentity tono="claro" />
       </div>
     </>
   )
