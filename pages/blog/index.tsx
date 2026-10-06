@@ -74,5 +74,7 @@ export default function BlogIndexPage({ posts }: Props) {
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
   const posts = obtenerTodosLosPosts()
-  return { props: { posts } }
+  // El listado se relee de content/blog cada 5 minutos, y al momento cuando se publica un
+  // post desde /admin (res.revalidate en pages/api/admin/blog.ts).
+  return { props: { posts }, revalidate: 300 }
 }

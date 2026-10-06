@@ -9,7 +9,7 @@ import Logo from '../../components/Logo'
 
 
 export default function Admin({ stats, subscriptions, plans, redsysConfig, stripeConfig }: any) {
-  const [tab, setTab] = useState<'subs'|'restaurants'|'gyms'|'news'|'plans'|'redsys'|'stripe'|'newsletter'|'config'>('subs')
+  const [tab, setTab] = useState<'subs'|'restaurants'|'gyms'|'news'|'plans'|'redsys'|'stripe'|'newsletter'|'blog'|'config'>('subs')
   const [subList, setSubList] = useState(subscriptions)
   const [actionId, setActionId] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
@@ -178,7 +178,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
         {/* Tabs */}
         <div style={{ padding: '24px 48px 0', maxWidth: 1400, margin: '0 auto' }}>
           <div style={{ display: 'flex', gap: 4, background: 'white', border: '1px solid #eef1f4', borderRadius: 14, padding: 4, width: 'fit-content' }}>
-            {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['gyms','💪 Gimnasios'],['news','🎙️ News'],['plans','📦 Planes'],['redsys','💳 Redsys'],['stripe','💜 Stripe'],['newsletter','📧 Newsletter'],['config','⚙️ Configuración']].map(([key, label]) => (
+            {[['subs','👥 Suscriptores'],['restaurants','🏪 Restaurantes'],['gyms','💪 Gimnasios'],['news','🎙️ News'],['plans','📦 Planes'],['redsys','💳 Redsys'],['stripe','💜 Stripe'],['newsletter','📧 Newsletter'],['blog','✍️ Blog'],['config','⚙️ Configuración']].map(([key, label]) => (
               <button key={key} onClick={() => setTab(key as any)}
                 style={{ padding: '8px 20px', borderRadius: 10, border: 'none', fontSize: 13, fontWeight: 600, cursor: 'pointer',
                   background: tab === key ? 'linear-gradient(135deg,#ee7528,#c85f1b)' : 'transparent',
@@ -324,6 +324,7 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
           {tab === 'redsys'     && <RedsysTab config={redsysConfig} />}
           {tab === 'stripe'     && <StripeTab config={stripeConfig} />}
           {tab === 'newsletter' && <NewsletterTab />}
+          {tab === 'blog'       && <BlogTab />}
         </div>
       </div>
     </>
@@ -644,6 +645,104 @@ function NewsletterTab() {
   )
 }
 
+
+// Generación manual de posts del blog (el cron diario está pausado). La generación corre
+// en el servidor en segundo plano (lib/blog-manual.ts); aquí se lanza y se consulta.
+function BlogTab() {
+  const [datos, setDatos] = useState<any>(null)
+  const [error, setError] = useState('')
+
+  const cargar = () =>
+    fetch('/api/admin/blog')
+      .then(r => (r.ok ? r.json() : Promise.reject(new Error(`Error ${r.status}`))))
+      .then(d => { setDatos(d); setError('') })
+      .catch(e => setError(e.message))
+
+  const generando = datos?.estado?.fase === 'generando'
+
+  // Carga inicial y, mientras se genera, una consulta cada 3 segundos.
+  useEffect(() => {
+    if (!datos) { cargar(); return }
+    if (!generando) return
+    const t = setInterval(cargar, 3000)
+    return () => clearInterval(t)
+  }, [datos === null, generando])
+
+  const generar = async () => {
+    if (!confirm('Se generará un post nuevo con IA y, si pasa la verificación de hechos, se publicará en el blog. ¿Continuar?')) return
+    setError('')
+    const r = await fetch('/api/admin/blog', { method: 'POST' })
+    const d = await r.json().catch(() => ({}))
+    if (!r.ok) setError(d.error || `Error ${r.status}`)
+    cargar()
+  }
+
+  if (!datos) return <div style={{ color: error ? '#991b1b' : '#88a8b0', padding: 40 }}>{error || 'Cargando...'}</div>
+
+  const e = datos.estado
+  const caja: React.CSSProperties = { background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: 28 }
+  const fecha = (iso: string) => new Date(iso).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' })
+
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(320px,1fr))', gap: 20 }}>
+      <div style={caja}>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e', marginBottom: 8 }}>Generar un post</h3>
+        <p style={{ fontSize: 13, color: '#4a6572', lineHeight: 1.7, marginBottom: 20 }}>
+          Genera un post con IA sobre un tema que no se haya tratado y lo contrasta con los hechos verificados del producto.
+          Si pasa, se publica directamente en el blog; si no, queda como borrador rechazado y no se publica nada. Tarda alrededor de un minuto.
+        </p>
+        <button
+          onClick={generar}
+          disabled={generando}
+          style={{
+            padding: '12px 24px', borderRadius: 10, border: 'none', fontSize: 14, fontWeight: 700, color: 'white',
+            background: generando ? '#f4a15c' : 'linear-gradient(135deg,#ee7528,#c85f1b)', cursor: generando ? 'default' : 'pointer',
+          }}
+        >
+          {generando ? 'Generando… (puedes dejar esta pestaña abierta)' : '✍️ Generar post ahora'}
+        </button>
+
+        {error && <p role="alert" style={{ fontSize: 13, color: '#991b1b', marginTop: 16 }}>{error}</p>}
+
+        {e.fase === 'publicado' && (
+          <div role="status" style={{ marginTop: 20, background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: 16, fontSize: 13, color: '#166534', lineHeight: 1.7 }}>
+            <strong>Publicado</strong> ({fecha(e.fin)}): «{e.titulo}».{' '}
+            <a href={`/blog/${e.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: '#166534', fontWeight: 700 }}>Ver el post →</a>
+            {e.avisos.map((a: string, i: number) => <div key={i} style={{ color: '#92400e', marginTop: 6 }}>⚠ {a}</div>)}
+          </div>
+        )}
+        {(e.fase === 'rechazado' || e.fase === 'error') && (
+          <div role="alert" style={{ marginTop: 20, background: '#fff1f2', border: '1px solid #fca5a5', borderRadius: 12, padding: 16, fontSize: 13, color: '#991b1b', lineHeight: 1.7 }}>
+            <strong>{e.fase === 'rechazado' ? 'No se ha publicado: la verificación de hechos ha rechazado el borrador' : 'No se ha podido generar el post'}</strong>
+            {e.titulo ? <> («{e.titulo}»)</> : null} · {fecha(e.fin)}
+            <ul style={{ margin: '8px 0 0', paddingLeft: 18 }}>
+              {e.detalle.map((d: string, i: number) => <li key={i} style={{ overflowWrap: 'anywhere' }}>{d}</li>)}
+            </ul>
+            {e.fase === 'rechazado' && <div style={{ marginTop: 8 }}>El borrador queda guardado en content/blog/.rejected/. Puedes volver a pulsar el botón: probará con otro tema.</div>}
+          </div>
+        )}
+      </div>
+
+      <div style={caja}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 20 }}>
+          <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e' }}>Últimos posts</h3>
+          <span style={{ background: '#fdf0e8', color: '#c85f1b', borderRadius: 20, padding: '4px 14px', fontSize: 13, fontWeight: 700 }}>{datos.totalPosts} publicados</span>
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {datos.posts.map((p: any) => (
+            <a key={p.slug} href={`/blog/${p.slug}`} target="_blank" rel="noopener noreferrer"
+              style={{ display: 'flex', justifyContent: 'space-between', gap: 12, padding: '10px 12px', background: '#f8fafb', borderRadius: 10, textDecoration: 'none' }}>
+              <span style={{ fontSize: 13, color: '#1e1e1e' }}>{p.title}</span>
+              <span style={{ fontSize: 12, color: '#88a8b0', whiteSpace: 'nowrap' }}>{p.date}</span>
+            </a>
+          ))}
+          {datos.posts.length === 0 && <p style={{ color: '#88a8b0', fontSize: 14, textAlign: 'center', padding: 24 }}>Todavía no hay posts</p>}
+        </div>
+        <p style={{ fontSize: 12, color: '#88a8b0', marginTop: 16 }}>{datos.rechazados} borradores rechazados guardados.</p>
+      </div>
+    </div>
+  )
+}
 
 function RestaurantsTab() {
   const [data, setData]       = useState<any[]>([])

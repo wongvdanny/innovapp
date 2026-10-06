@@ -69,13 +69,16 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const slugs = obtenerSlugsDePosts()
   return {
     paths: slugs.map((slug) => ({ params: { slug } })),
-    fallback: false,
+    // 'blocking': un post creado después del build (generación manual desde /admin, que
+    // escribe en content/blog sin recompilar) se genera en su primera visita.
+    fallback: 'blocking',
   }
 }
 
 export const getStaticProps: GetStaticProps<Props> = async ({ params }) => {
   const slug = params?.slug as string
   const post = await obtenerPostPorSlug(slug)
-  if (!post) return { notFound: true }
+  // El 404 se revalida: si el post aparece después, no se queda cacheado como inexistente.
+  if (!post) return { notFound: true, revalidate: 60 }
   return { props: { post } }
 }
