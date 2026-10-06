@@ -1,9 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
-import { sendContactEmail } from '../../lib/email'
+import { sendBajaEmail } from '../../lib/email'
 import { EMAIL_RE, clientIp, rateLimited, recaptchaValido } from '../../lib/formulario-publico'
 
-const PRODUCTS = ['Servix', 'GymStack', 'Agentes IA', 'Otro']
+const SERVICES = ['Servix', 'GymStack', 'Agentes IA', 'Otro']
 
+/** Formulario de /baja: envía la solicitud de baja de un servicio a contacto@innovapp.es. */
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST')
@@ -14,23 +15,23 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const name = String(body.name ?? '').trim()
   const email = String(body.email ?? '').trim()
   const phone = String(body.phone ?? '').trim()
-  const message = String(body.message ?? '').trim()
-  const productRaw = String(body.product ?? '').trim()
-  const product = PRODUCTS.includes(productRaw) ? productRaw : ''
+  const account = String(body.account ?? '').trim()
+  const reason = String(body.reason ?? '').trim()
+  const service = String(body.service ?? '').trim()
   const honeypot = String(body.website ?? '').trim()
   const recaptchaToken = String(body.recaptchaToken ?? '').trim()
 
   // Bot: honeypot relleno -> fingimos éxito sin enviar nada
   if (honeypot) return res.status(200).json({ ok: true })
 
-  if (!name || !email || !message) {
-    return res.status(400).json({ error: 'Nombre, email y mensaje son obligatorios.' })
+  if (!name || !email || !SERVICES.includes(service)) {
+    return res.status(400).json({ error: 'Nombre, email y servicio son obligatorios.' })
   }
   if (!EMAIL_RE.test(email)) {
     return res.status(400).json({ error: 'El email no tiene un formato válido.' })
   }
-  if (message.length > 5000 || name.length > 200) {
-    return res.status(400).json({ error: 'El mensaje es demasiado largo.' })
+  if (reason.length > 5000 || name.length > 200 || account.length > 200 || phone.length > 40) {
+    return res.status(400).json({ error: 'Algún campo es demasiado largo.' })
   }
 
   const ip = clientIp(req)
@@ -44,10 +45,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   try {
-    await sendContactEmail({ name, email, phone, product, message })
+    await sendBajaEmail({ name, email, phone, service, account, reason })
     return res.status(200).json({ ok: true })
   } catch (err) {
-    console.error('[api/contacto] fallo al enviar email:', err)
-    return res.status(500).json({ error: 'No se ha podido enviar el mensaje. Inténtalo más tarde.' })
+    console.error('[api/baja] fallo al enviar email:', err)
+    return res.status(500).json({ error: 'No se ha podido enviar la solicitud. Inténtalo más tarde.' })
   }
 }

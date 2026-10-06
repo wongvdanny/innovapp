@@ -250,6 +250,48 @@ export async function sendContactEmail(data: ContactPayload) {
   if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }
 
+export interface BajaPayload {
+  name: string
+  email: string
+  phone?: string
+  service: string
+  account?: string
+  reason?: string
+}
+
+/** Envía a contacto@innovapp.es una solicitud de baja de servicio del formulario de /baja.
+ *  reply_to = email del solicitante, para confirmarle la baja respondiendo al correo. */
+export async function sendBajaEmail(data: BajaPayload) {
+  const row = (label: string, value?: string) =>
+    value?.trim()
+      ? `<tr><td style="padding:6px 0;font-size:13px;color:#88a8b0;width:170px;vertical-align:top">${label}</td><td style="font-size:14px;color:#1e1e1e;white-space:pre-wrap">${escapeHtml(value)}</td></tr>`
+      : ''
+
+  const { error } = await resend.emails.send({
+    from: FROM,
+    to: CONTACT_EMAIL,
+    replyTo: data.email,
+    subject: `Solicitud de baja — ${data.service} — ${data.name}`,
+    html: `
+    <div style="font-family:system-ui,sans-serif;max-width:600px;margin:0 auto;padding:32px">
+      <h2 style="font-size:18px;color:#1e1e1e;margin:0 0 4px">Solicitud de baja de servicio</h2>
+      <p style="font-size:13px;color:#88a8b0;margin:0 0 20px">innovapp.es/baja — servicio: <strong>${escapeHtml(data.service)}</strong></p>
+      <table style="width:100%;border-collapse:collapse">
+        ${row('Nombre', data.name)}
+        ${row('Email de la cuenta', data.email)}
+        ${row('Teléfono', data.phone)}
+        ${row('Servicio', data.service)}
+        ${row('Negocio / cuenta', data.account)}
+        ${row('Motivo', data.reason)}
+      </table>
+      <p style="font-size:12px;color:#88a8b0;margin:20px 0 0">Comprueba que quien lo pide es el titular de la cuenta antes de tramitarla. Responde a este correo para confirmarle la baja.</p>
+    </div>`,
+  })
+
+  // El SDK de Resend no lanza en errores de API: hay que mirar el campo `error`.
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
+}
+
 export async function sendNewsletterConfirmation(to: string) {
   const { error } = await resend.emails.send({
     from: FROM, to,

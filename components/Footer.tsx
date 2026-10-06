@@ -22,7 +22,7 @@ export default function Footer() {
             </p>
           </div>
           {[
-            { title: 'Empresa', links: [['#empresa','Quiénes somos'],['/contacto','Contacto']] },
+            { title: 'Empresa', links: [['#empresa','Quiénes somos'],['/contacto','Contacto'],['/baja','Solicitar baja']] },
             { title: 'Servix',  links: [['/servix','Ver producto'],['/servix#precios','Precios'],['https://servix.innovapp.es','Acceder']] },
             { title: 'GymStack', links: [['/gymstack','Ver producto'],['/gymstack#precios','Precios'],['https://gymstack.innovapp.es','Acceder']] },
             { title: 'Agentes IA', links: [['/agentes-ia','Ver producto'],['/agentes-ia-prestashop','Para PrestaShop'],['/agentes-ia-woocommerce','Para WooCommerce']] },
