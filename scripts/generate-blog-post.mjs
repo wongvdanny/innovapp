@@ -1,13 +1,14 @@
 // Genera un post de blog nuevo con Claude en dos pasadas: (1) generación del borrador,
 // obligado a enlazar a una de las páginas de servicio y a ceñirse a
 // content/verified-facts.md, y (2) verificación estricta de que el borrador no afirma
-// nada que no esté respaldado por ese documento. Si la verificación falla se hace UNA
-// reescritura con las violaciones encontradas y se vuelve a verificar; si vuelve a
-// fallar, el borrador va a content/blog/.rejected/. Si el texto no enlaza a la página de
+// nada que no esté respaldado por ese documento. Si la verificación falla se reescribe
+// con las violaciones encontradas y se vuelve a verificar (hasta REESCRITURAS_MAXIMAS
+// veces); si sigue fallando, el borrador va a content/blog/.rejected/. Si el texto no enlaza a la página de
 // servicio, se añade un CTA final con el enlace (no se rechaza por eso). Solo si pasa se
 // escribe content/blog/{slug}.mdx y se actualiza .topics-log.json. Evita repetir temas
 // ya usados (content/blog/.topics-log.json).
 // Uso: node scripts/generate-blog-post.mjs  (o  npm run blog:generate)
+//      node scripts/generate-blog-post.mjs --dry-run   (genera y verifica sin escribir nada)
 import Anthropic from '@anthropic-ai/sdk'
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
@@ -25,11 +26,17 @@ const REJECTED_DIR = join(BLOG_DIR, '.rejected')
 const TOPICS_LOG_PATH = join(BLOG_DIR, '.topics-log.json')
 const TOPICS_EXCLUDED_PATH = join(BLOG_DIR, '.topics-excluded.json')
 const VERIFIED_FACTS_PATH = join(ROOT, 'content/verified-facts.md')
-const MODEL = 'claude-haiku-4-5-20251001'
+// BLOG_MODEL permite probar otro modelo de redacción sin tocar el código.
+const MODEL = process.env.BLOG_MODEL || 'claude-haiku-4-5-20251001'
 // La verificación usa un modelo más capaz: Haiku dejaba pasar cifras inventadas y
 // afirmaciones sobre funciones no documentadas.
 const MODEL_VERIFICACION = 'claude-sonnet-5'
 const DIAS_EXCLUSION_TEMPORAL = 7
+// Reescrituras como máximo cuando el verificador rechaza el borrador.
+const REESCRITURAS_MAXIMAS = 2
+// --dry-run: genera y verifica, pero no escribe nada (ni post, ni borrador rechazado, ni
+// logs de temas). Para probar cambios en los prompts sin publicar.
+const DRY_RUN = process.argv.includes('--dry-run')
 
 // Rutas de servicio válidas -- el post DEBE enlazar a una de ellas, en formato markdown
 // [texto](ruta). El regex exige que la ruta sea EXACTAMENTE una de estas tres (con
@@ -170,6 +177,8 @@ function esperar(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
+// Holgado: los modelos que razonan gastan parte de max_tokens en el razonamiento.
+const MAX_TOKENS_REDACCION = 16000
 const REINTENTOS_MAXIMOS = 3
 const DELAY_ENTRE_REINTENTOS_MS = 2500
 
@@ -266,6 +275,15 @@ No afirmes nada sobre lo que hace el producto que no esté en este documento. Si
 ${hechosVerificados}
 === FIN DE LA FUENTE DE HECHOS ===${bloqueProhibido}
 
+=== REGLAS DE REDACCIÓN (un verificador automático rechaza el post si se incumple UNA sola) ===
+1. NINGUNA CIFRA. No escribas números, porcentajes, estadísticas, importes en euros, tiempos ("5 minutos", "en menos de un segundo", "24 horas"), cantidades ("20 consultas", "dos o tres clientes") ni rangos, ni siquiera como ejemplo, estimación o caso hipotético. Exprésalo con palabras sin cantidad: "mucho tiempo", "al momento", "varias consultas", "una parte de tus ingresos". La única excepción son las cifras que aparezcan literalmente en la fuente de hechos.
+2. NADA DE DATOS DE ESTUDIOS NI DE "LA MAYORÍA": no afirmes cuántos clientes hacen algo, ni tasas de abandono, de respuesta o de no presentados.
+3. SOBRE EL AGENTE, SOLO LO DOCUMENTADO: cada cosa que digas que el agente hace, sabe, consulta, envía, confirma o avisa tiene que estar en la fuente de hechos, con el mismo alcance. No añadas detalles plausibles (plazos de envío, políticas de cambio, diagnósticos, especificaciones, "qué llevar a la cita", avisos al equipo...) que la fuente no mencione.
+4. SIN DIÁLOGOS NI CASOS INVENTADOS CON DATOS: si pones un ejemplo de conversación o de negocio, que no contenga precios, plazos ni ningún dato concreto.
+5. Los consejos generales al lector (cómo organizarse, qué cuidar al atender) sí están permitidos, siempre sin cifras y sin sugerir funciones de la lista PROHIBIDO.
+Antes de responder, repasa el texto frase a frase y elimina cualquier dígito o cantidad que se te haya escapado.
+=== FIN DE REGLAS ===
+
 ENLACE DE SERVICIO OBLIGATORIO: el post DEBE mencionar y enlazar, en formato markdown [texto del enlace](ruta), a UNA de estas tres páginas -- de forma natural dentro del cuerpo, cerca de donde tenga sentido mencionar el servicio, nunca forzado al final a modo de spam:
 - Si el post trata de negocios locales (peluquerías, clínicas, gimnasios, talleres, veterinarias, inmobiliarias) o es un tema general de atención al cliente/WhatsApp → enlaza a /agentes-ia
 - Si el post trata específicamente de tiendas PrestaShop → enlaza a /agentes-ia-prestashop
@@ -299,6 +317,8 @@ function validarPost(post) {
 // --- Paso 2: verificación de hechos ---
 
 const SYSTEM_PROMPT_VERIFICACION = `Eres un verificador de hechos estricto. Te paso un documento de hechos verificados y un borrador de blog post. Tu única tarea es comprobar si CADA afirmación del post sobre lo que hace Innovapp o su producto está respaldada literalmente por el documento de hechos. Si el post afirma algo que no está en el documento, o exagera/generaliza una función (por ejemplo, decir "recupera carritos automáticamente" cuando el documento dice que NO existe esa función), es una violación.
+
+Revisa el post ENTERO y devuelve TODAS las violaciones en esta única respuesta: el redactor solo tiene una oportunidad de corregirlas, así que no te detengas en las primeras ni dejes ninguna para después.
 
 NO incluyas afirmaciones correctas ni comentarios sobre lo que el post hace bien. Si no hay violaciones reales, passed=true y violations=[]. Sugerir al lector una función que el producto no tiene (aunque sea como consejo manual, p.ej. 'envía un recordatorio') cuenta como violación. Cualquier cifra, porcentaje o estadística que no aparezca en el documento es una violación, aunque se presente como estimación. También lo es cualquier afirmación sobre datos, historial o registros que el producto guarde u ofrezca, y cualquier afirmación sobre el número de WhatsApp que contradiga el documento.
 
@@ -427,7 +447,7 @@ async function main() {
     post = await llamarClaudeConReintento(anthropic, {
       system: systemGeneracion,
       userContent: `${bloqueTemas}\n\nGenera el próximo post del blog.`,
-      maxTokens: 4096,
+      maxTokens: MAX_TOKENS_REDACCION,
     }, 'generación del post')
     validarPost(post)
     asegurarEnlaceServicio(post)
@@ -445,9 +465,9 @@ async function main() {
     process.exit(1)
   }
 
-  // --- Si no pasa: UNA reescritura corrigiendo las violaciones, y se vuelve a verificar ---
-  if (!verificacion.passed) {
-    console.error(`Verificación fallida en el primer borrador ("${post.title}"), se intenta una reescritura:`)
+  // --- Si no pasa: hasta REESCRITURAS_MAXIMAS reescrituras corrigiendo las violaciones ---
+  for (let ronda = 1; !verificacion.passed && ronda <= REESCRITURAS_MAXIMAS; ronda++) {
+    console.error(`Verificación fallida ("${post.title}"), reescritura ${ronda}/${REESCRITURAS_MAXIMAS}:`)
     for (const v of verificacion.violations) console.error(`  - "${v.cita}" → ${v.motivo}`)
 
     const listaViolaciones = verificacion.violations
@@ -456,26 +476,31 @@ async function main() {
     try {
       post = await llamarClaudeConReintento(anthropic, {
         system: systemGeneracion,
-        userContent: `Este es tu borrador anterior:\n${JSON.stringify(post, null, 2)}\n\nEl verificador de hechos ha encontrado estas afirmaciones falsas o exageradas:\n${listaViolaciones}\n\nCorrige estas afirmaciones, no añadas funciones nuevas. Mantén el mismo tema, título y estructura salvo donde haga falta cambiarlos para corregirlas. Devuelve el post completo con el mismo formato JSON.`,
-        maxTokens: 4096,
+        userContent: `Este es tu borrador anterior:\n${JSON.stringify(post, null, 2)}\n\nEl verificador de hechos ha encontrado estas afirmaciones falsas o exageradas:\n${listaViolaciones}\n\nCorrige estas afirmaciones, no añadas funciones nuevas. Además, repasa TODO el texto con las REGLAS DE REDACCIÓN y elimina cualquier otra cifra, cantidad, tiempo o detalle sobre el agente que no esté en la fuente de hechos, aunque el verificador no lo haya citado: si queda uno solo, el post se rechaza. Mantén el mismo tema, título y estructura salvo donde haga falta cambiarlos para corregirlo. Devuelve el post completo con el mismo formato JSON.`,
+        maxTokens: MAX_TOKENS_REDACCION,
       }, 'reescritura del post')
       validarPost(post)
       asegurarEnlaceServicio(post)
       verificacion = await verificarPost(anthropic, hechosVerificados, post)
     } catch (error) {
-      console.error('Error en la reescritura/reverificación del post (llamadas 3-4):', error.message)
+      console.error('Error en la reescritura/reverificación del post:', error.message)
       process.exit(1)
     }
   }
 
   if (!verificacion.passed) {
-    const rutaRechazado = guardarBorradorRechazado(post, verificacion.violations)
-    anadirTemaExcluido(post.topic)
-    console.error(`✗ Post RECHAZADO por verificación de hechos (también tras la reescritura): "${post.title}"`)
+    const rutaRechazado = DRY_RUN ? '(dry-run: no se guarda)' : guardarBorradorRechazado(post, verificacion.violations)
+    if (!DRY_RUN) anadirTemaExcluido(post.topic)
+    console.error(`✗ Post RECHAZADO por verificación de hechos (también tras ${REESCRITURAS_MAXIMAS} reescrituras): "${post.title}"`)
     console.error('Violaciones encontradas:')
     for (const v of verificacion.violations) console.error(`  - "${v.cita}" → ${v.motivo}`)
     console.error(`Borrador guardado para revisión manual en: ${rutaRechazado}`)
     process.exit(1)
+  }
+
+  if (DRY_RUN) {
+    console.log(`✓ (dry-run) El post pasaría la verificación: "${post.title}". No se ha escrito nada.`)
+    return
   }
 
   // --- Todo correcto: escribir el post y actualizar el log de temas ---
