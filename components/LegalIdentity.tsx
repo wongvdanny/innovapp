@@ -1,4 +1,8 @@
-import { CONTACT_EMAIL, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_NIF, LEGAL_ADDRESS_ES, LEGAL_PHONE } from '../lib/constants'
+import { CONTACT_EMAIL, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_NIF, LEGAL_ADDRESS, LEGAL_PHONE } from '../lib/constants'
+import { WHATSAPP_NUMBER } from './WhatsAppBubble'
+
+// "34643452065" -> "+34 643 452 065"
+const WHATSAPP_VISIBLE = `+${WHATSAPP_NUMBER.slice(0, 2)} ${WHATSAPP_NUMBER.slice(2, 5)} ${WHATSAPP_NUMBER.slice(5, 8)} ${WHATSAPP_NUMBER.slice(8)}`
 
 /**
  * Identificación del titular (LSSI-CE art. 10), visible en el pie de las páginas públicas.
@@ -14,10 +18,12 @@ export default function LegalIdentity({ tono, fondo }: { tono: 'oscuro' | 'claro
       background: fondo, textAlign: tono === 'claro' ? 'center' : undefined,
       padding: tono === 'claro' ? '0 24px 20px' : '0 0 24px',
     }}>
-      <p style={{ margin: 0 }}>{`${LEGAL_TRADE_NAME} es un nombre comercial de ${LEGAL_OWNER} · NIF ${LEGAL_NIF}`}</p>
+      <p style={{ margin: 0 }}>{`${LEGAL_TRADE_NAME} — nombre comercial de ${LEGAL_OWNER} · NIF ${LEGAL_NIF}`}</p>
       <p style={{ margin: 0 }}>
-        {`${LEGAL_ADDRESS_ES} · Tel. `}
+        {`${LEGAL_ADDRESS} · Tel. `}
         <a href={`tel:${LEGAL_PHONE.replace(/\s/g, '')}`} style={enlace}>{LEGAL_PHONE}</a>
+        {' · WhatsApp '}
+        <a href={`https://wa.me/${WHATSAPP_NUMBER}`} style={enlace}>{WHATSAPP_VISIBLE}</a>
         {' · '}
         <a href={`mailto:${CONTACT_EMAIL}`} style={enlace}>{CONTACT_EMAIL}</a>
       </p>

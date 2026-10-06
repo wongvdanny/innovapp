@@ -3,8 +3,9 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ComoFunciona from '../components/ComoFunciona'
 import VozDemo, { VOZ_DEMO_TEL, VOZ_DEMO_TEL_VISIBLE } from '../components/VozDemo'
+import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
 
-const PROPUESTA_URL = 'https://wa.me/34641399645'
+const PROPUESTA_URL = `https://wa.me/${WHATSAPP_NUMBER}`
 const PDF_URL = '/pdf/innovapp-agentes-voz.pdf'
 
 const COMO_FUNCIONA_INTRO =

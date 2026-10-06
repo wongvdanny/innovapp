@@ -5,7 +5,7 @@ import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
 import ComoFunciona from '../components/ComoFunciona'
 import VozDemo from '../components/VozDemo'
-import { WHATSAPP_DEMO_ECOMMERCE_NUMBER } from '../components/WhatsAppBubble'
+import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
 
 const COMO_FUNCIONA_INTRO =
   'Integrado con tu tienda WooCommerce, respondiendo con datos reales de producto y pedido desde tu propio WordPress.'
@@ -45,7 +45,7 @@ const CONVERSACION_WOOCOMMERCE = [
 ]
 
 export default function AgentesIaWoocommercePage() {
-  const mensajeDemo = encodeURIComponent('Hola, quería preguntar por un producto que tenéis en la tienda')
+  const mensajeContacto = encodeURIComponent('Hola! Quiero información sobre Agentes Innovapp para mi tienda WooCommerce.')
 
   const pasos = [
     ['1', 'Instala el plugin en WordPress', 'Se instala como cualquier otro plugin desde tu panel de WordPress, en unos minutos.'],
@@ -110,12 +110,12 @@ export default function AgentesIaWoocommercePage() {
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <a
-                href={`https://wa.me/${WHATSAPP_DEMO_ECOMMERCE_NUMBER}?text=${mensajeDemo}`}
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeContacto}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
               >
-                Prueba tu demo por WhatsApp →
+                Contáctanos para tu cotización →
               </a>
             </div>
           </div>
@@ -201,12 +201,12 @@ export default function AgentesIaWoocommercePage() {
         </p>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
           <a
-            href={`https://wa.me/${WHATSAPP_DEMO_ECOMMERCE_NUMBER}?text=${mensajeDemo}`}
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeContacto}`}
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
           >
-            Prueba tu demo por WhatsApp →
+            Contáctanos para tu cotización →
           </a>
           <Link href="/agentes-ia" style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}>
             Ver Agentes IA para cualquier negocio

@@ -2,7 +2,7 @@ import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 import LegalIdentity from '../components/LegalIdentity'
-import { CONTACT_EMAIL } from '../lib/constants'
+import { CONTACT_EMAIL, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_NIF, LEGAL_ADDRESS } from '../lib/constants'
 import { COOKIE_SETTINGS_EVENT } from '../components/CookieBanner'
 
 export default function Cookies() {
@@ -20,9 +20,10 @@ export default function Cookies() {
         </header>
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px' }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1e1e1e', marginBottom: 8 }}>Política de Cookies</h1>
-          <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: 26 de septiembre de 2026</p>
+          <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: 6 de octubre de 2026</p>
           <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: '40px 48px', lineHeight: 1.8, color: '#4a6572', fontSize: 15 }}>
             {[
+              ['Responsable', `El responsable de este sitio web y del uso de las cookies descritas en esta política es ${LEGAL_OWNER}, persona física (trabajador autónomo) que opera bajo el nombre comercial "${LEGAL_TRADE_NAME}", con NIF ${LEGAL_NIF} y domicilio en ${LEGAL_ADDRESS}. Contacto: ${CONTACT_EMAIL}.`],
               ['¿Qué son las cookies?', 'Las cookies son pequeños archivos de texto que se almacenan en tu dispositivo cuando visitas un sitio web. Nos permiten recordar tus preferencias, mantener tu sesión y, si nos das permiso, entender cómo se usa el sitio.'],
               ['Cookies técnicas (siempre activas)', 'Son necesarias para el funcionamiento del sitio y no requieren consentimiento: (a) cookie de sesión de autenticación (next-auth.session-token), necesaria para mantener tu sesión iniciada; (b) cookie CSRF, para la seguridad de los formularios; (c) cookie de preferencias de cookies (innovapp_cookie_consent en tu navegador), donde guardamos tu decisión sobre las cookies opcionales; (d) cookies de Google reCAPTCHA en el formulario de contacto, necesarias para distinguir a personas de bots y evitar spam.'],
               ['Cookies analíticas y de publicidad (requieren tu consentimiento)', 'Si aceptas la categoría "Analíticas" en el panel de cookies, se activan las cookies de Google Analytics (cargadas a través de Google Tag Manager) para medir visitas y uso del sitio. Si aceptas la categoría "Publicidad", se activan las señales de Google Ads (ad_storage, ad_user_data, ad_personalization) para medir y personalizar campañas, incluidas conversiones. Usamos Google Consent Mode v2: hasta que no aceptas expresamente, estas señales están en "denegado" y no se cargan cookies de analítica ni de publicidad.'],

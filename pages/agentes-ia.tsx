@@ -5,7 +5,8 @@ import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
 import ComoFunciona from '../components/ComoFunciona'
 import VozDemo from '../components/VozDemo'
-import { WHATSAPP_NUMBER, WHATSAPP_DEMO_ECOMMERCE_NUMBER } from '../components/WhatsAppBubble'
+import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
+import { CONTACT_EMAIL } from '../lib/constants'
 
 const COMO_FUNCIONA_INTRO =
   'Un agente que responde por WhatsApp como lo haría tu mejor empleado: conoce tu negocio, tus horarios y tus servicios, y actúa solo.'
@@ -33,15 +34,46 @@ const COMO_FUNCIONA_STEPS = [
   },
 ]
 
+// Sección "Cómo funciona" en lenguaje llano: qué hace Innovapp con el WhatsApp del negocio
+// y con los datos de sus clientes. Debe coincidir con el apartado "Servicio de agentes de
+// WhatsApp" de /privacidad.
+const SERVICIO_PASOS = [
+  {
+    icon: '🔗',
+    title: 'Conectamos tu propio número de WhatsApp Business',
+    description:
+      'Innovapp conecta el número de WhatsApp Business de tu negocio a nuestra plataforma (agentes.innovapp.es) mediante el registro oficial de Meta. El número sigue siendo tuyo y, si ya usas la app WhatsApp Business, puedes seguir usándola.',
+  },
+  {
+    icon: '💬',
+    title: 'Un asistente automático responde a tus clientes',
+    description:
+      'Contesta dudas, informa de productos, precios y disponibilidad, y reserva citas. Si tienes tienda en PrestaShop o WooCommerce, también ayuda a tus clientes con sus pedidos.',
+  },
+  {
+    icon: '🖥️',
+    title: 'Tú ves todo y puedes intervenir cuando quieras',
+    description:
+      'Todas las conversaciones de tu negocio están en un panel privado. En cualquier momento puedes tomar el control de una conversación y contestar tú, o apagar el asistente.',
+  },
+]
+
+const SERVICIO_DATOS = [
+  ['Qué datos usamos', 'Solo los mensajes que tus clientes intercambian con tu negocio, su número de teléfono y su nombre en WhatsApp, y el estado de entrega de los mensajes. Si conectas tu app WhatsApp Business y lo autorizas, también tus contactos y conversaciones anteriores con clientes.'],
+  ['Para qué', 'Únicamente para responder a tus clientes en nombre de tu negocio y mostrarte las conversaciones en tu panel.'],
+  ['Lo que no hacemos', 'No vendemos los datos, no los usamos para publicidad y no los usamos para entrenar modelos de inteligencia artificial.'],
+  ['Cada negocio, lo suyo', 'Cada negocio solo ve sus propias conversaciones. Nadie más tiene acceso a ellas.'],
+  ['Desconexión y borrado', `Puedes desconectar tu número cuando quieras y pedirnos que borremos tus datos y los de tus clientes escribiendo a ${CONTACT_EMAIL}.`],
+]
+
 export default function AgentesIaPage() {
   const mensajeWhatsapp = encodeURIComponent('Hola! Quiero información sobre Agentes Innovapp para mi negocio.')
-  const mensajeDemoEcommerce = encodeURIComponent('Hola, quería preguntar por un producto que tenéis en la tienda')
 
   return (
     <>
       <Seo
-        title="Agentes IA — Agente de IA por WhatsApp para tu negocio | innovapp"
-        description="Un agente de IA que atiende tu WhatsApp 24 horas: responde dudas, reserva citas y conoce tu negocio desde el primer día. Pide tu cotización personalizada."
+        title="Agentes IA para WhatsApp Business — Innovapp"
+        description="Innovapp conecta el WhatsApp Business de tu negocio a un agente de IA que atiende a tus clientes 24 horas: responde dudas, informa de precios y reserva citas."
         canonical="/agentes-ia"
         jsonLd={{
           '@context': 'https://schema.org',
@@ -49,10 +81,10 @@ export default function AgentesIaPage() {
           name: 'Agentes IA',
           serviceType: 'Agente de IA por WhatsApp para negocios locales',
           description:
-            'Un agente de IA que atiende tu WhatsApp 24 horas: responde dudas, reserva citas y conoce tu negocio desde el primer día.',
+            'Innovapp conecta el WhatsApp Business de tu negocio a un agente de IA que atiende a tus clientes 24 horas: responde dudas, informa de precios y reserva citas.',
           url: 'https://innovapp.es/agentes-ia',
           image: 'https://innovapp.es/brand/og-image.png',
-          provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
+          provider: { '@type': 'Organization', name: 'Innovapp', url: 'https://innovapp.es' },
           areaServed: 'ES',
         }}
       />
@@ -81,14 +113,6 @@ export default function AgentesIaPage() {
               >
                 Contáctanos para tu cotización →
               </a>
-              <a
-                href={`https://wa.me/${WHATSAPP_DEMO_ECOMMERCE_NUMBER}?text=${mensajeDemoEcommerce}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}
-              >
-                Prueba tu demo por WhatsApp
-              </a>
             </div>
           </div>
           <div style={{ flex: '1 1 320px', display: 'flex', justifyContent: 'center' }}>
@@ -98,6 +122,43 @@ export default function AgentesIaPage() {
       </section>
 
       <ComoFunciona intro={COMO_FUNCIONA_INTRO} steps={COMO_FUNCIONA_STEPS} />
+
+      <section id="como-funciona-servicio" style={{ padding: '90px 24px', background: 'white' }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 50 }}>
+            <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#1a140d' }}>
+              Cómo funciona el servicio
+            </h2>
+            <p style={{ fontSize: 16, color: '#8a7a5a', maxWidth: 600, margin: '0 auto' }}>
+              Qué hace Innovapp con el WhatsApp de tu negocio y con los datos de tus clientes, explicado sin tecnicismos.
+            </p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 20, marginBottom: 20 }}>
+            {SERVICIO_PASOS.map((paso) => (
+              <div key={paso.title} style={{ background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: 26 }}>
+                <div style={{ width: 46, height: 46, borderRadius: 12, background: '#faf1de', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, marginBottom: 14 }}>{paso.icon}</div>
+                <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1a140d', margin: '0 0 8px' }}>{paso.title}</h3>
+                <p style={{ fontSize: 13, color: '#8a7a5a', lineHeight: 1.65, margin: 0 }}>{paso.description}</p>
+              </div>
+            ))}
+          </div>
+          <div style={{ background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: 'clamp(22px,3vw,32px)' }}>
+            <h3 style={{ fontSize: 17, fontWeight: 700, color: '#1a140d', margin: '0 0 18px' }}>Cómo usamos los datos</h3>
+            <dl style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: '16px 28px', margin: 0 }}>
+              {SERVICIO_DATOS.map(([titulo, texto]) => (
+                <div key={titulo}>
+                  <dt style={{ fontSize: 14, fontWeight: 700, color: '#1a140d', marginBottom: 4 }}>{titulo}</dt>
+                  <dd style={{ fontSize: 13, color: '#8a7a5a', lineHeight: 1.65, margin: 0 }}>{texto}</dd>
+                </div>
+              ))}
+            </dl>
+            <p style={{ fontSize: 13, color: '#8a7a5a', lineHeight: 1.65, margin: '18px 0 0' }}>
+              Más detalle en nuestra{' '}
+              <Link href="/privacidad#agentes-whatsapp" style={{ color: '#c98826', fontWeight: 600 }}>Política de privacidad</Link>.
+            </p>
+          </div>
+        </div>
+      </section>
 
       <VozDemo />
 
@@ -191,14 +252,6 @@ export default function AgentesIaPage() {
             style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#12141a', color: '#e8a33d', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
           >
             Contáctanos para tu cotización →
-          </a>
-          <a
-            href={`https://wa.me/${WHATSAPP_DEMO_ECOMMERCE_NUMBER}?text=${mensajeDemoEcommerce}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'transparent', border: '1.5px solid #12141a', color: '#12141a', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}
-          >
-            Prueba tu demo por WhatsApp
           </a>
         </div>
       </section>
