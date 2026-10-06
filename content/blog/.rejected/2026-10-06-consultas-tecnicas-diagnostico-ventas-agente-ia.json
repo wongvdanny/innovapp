@@ -1,0 +1,34 @@
+{
+  "rejectedAt": "2026-10-06T13:18:00.767Z",
+  "violations": [
+    {
+      "cita": "puede mantener a un asesor ocupado 5-10 minutos cuando debería ocupar 30 segundos",
+      "motivo": "Cifra de tiempo no respaldada por el documento de hechos verificados."
+    },
+    {
+      "cita": "Cuando tienes acumuladas 20 consultas, terminas dando respuestas incompletas o imprecisas para ir rápido.",
+      "motivo": "Estadística/cifra inventada que no aparece en el documento."
+    },
+    {
+      "cita": "Alguien busca en el sistema, responde en 5 minutos, cliente espera.",
+      "motivo": "Cifra de tiempo no respaldada por el documento de hechos verificados."
+    },
+    {
+      "cita": "Proceso de 10-15 minutos.",
+      "motivo": "Cifra de tiempo no respaldada por el documento de hechos verificados."
+    },
+    {
+      "cita": "Si son más de dos o tres, ya estás perdiendo dinero.",
+      "motivo": "Umbral numérico sin respaldo en el documento de hechos verificados."
+    }
+  ],
+  "serviceLinkUsed": "/agentes-ia",
+  "post": {
+    "topic": "Cómo convertir las consultas técnicas de clientes en diagnósticos rápidos que cierren ventas (sin sobrecargar tu equipo)",
+    "title": "De la consulta técnica a la venta: cómo un agente de IA acelera respuestas sin que pierdas dinero en explicaciones",
+    "slug": "consultas-tecnicas-diagnostico-ventas-agente-ia",
+    "description": "Las consultas técnicas alargan las conversaciones y saturan tu equipo. Descubre cómo un agente de IA responde con datos precisos y deja listo el cierre de venta antes de que intervenga un humano.",
+    "contentMarkdown": "## El problema real: consultas técnicas que consumen horas sin generar ventas\n\nUn cliente te escribe por WhatsApp con una duda específica sobre un producto o servicio. Parece simple, pero termina siendo un ping-pong de preguntas: \"¿Cuál es el precio exacto?\", \"¿Funciona con...?\", \"¿Se puede cambiar después?\", \"¿A qué hora abrís mañana?\". Cada pregunta requiere que alguien de tu equipo busque la respuesta, la escriba, espere la siguiente pregunta.\n\nMientras tanto, tu equipo está ocupado, el cliente se aburre esperando entre mensajes, y en muchos casos se va a otro sitio porque le resulta más fácil.\n\nEn talleres, clínicas estéticas, inmobiliarias y tiendas online, este patrón es especialmente costoso: una consulta sobre el negocio (\"¿cuál es vuestro horario?\", \"¿qué servicios ofrecéis?\", \"¿cuánto cuesta?\") debería resolverse en segundos, no en minutos.\n\n## Por qué tu equipo no puede (ni debe) encargarse de cada consulta\n\nLa realidad es incómoda: tu equipo es valioso, pero también es lento y caro para tareas que son, en el fondo, respuesta de información.\n\n- **Cuellos de botella**: Una pregunta sobre horarios, servicios o precios puede mantener a un asesor ocupado 5-10 minutos cuando debería ocupar 30 segundos.\n- **Errores por prisa**: Cuando tienes acumuladas 20 consultas, terminas dando respuestas incompletas o imprecisas para ir rápido.\n- **Frustración del cliente**: Esperar entre mensaje y mensaje (incluso si solo son minutos) hace que el cliente pierda confianza.\n- **Ventas perdidas**: Muchos clientes no persisten en conversaciones largas. Prefieren un sí-o-no rápido y luego decidir.\n\n## Cómo un agente de IA responde consultas al instante sin perder precisión\n\nUn agente de IA configurado con los datos reales de tu negocio (horarios, servicios, precios, variantes de productos) puede hacer algo que tu equipo no tiene capacidad de hacer: responder consultas **al instante y con datos verificados**.\n\nEn lugar de:\n- \"Espera, déjame preguntar\"\n- \"Voy a mirar en el sistema\"\n- \"No sé, preguntaré al responsable\"\n\nEl cliente obtiene:\n- Una respuesta inmediata con datos precisos de tu negocio\n- Información completa sobre horarios, servicios y precios sin tener que hacer 5 preguntas\n- Claridad sobre lo que ofreces y su coste, sin equívocos\n- Posibilidad de agendar una cita directamente en la conversación\n\nPor ejemplo:\n\n**Cliente de taller**: \"¿Abrís mañana? ¿Cuánto cuesta un cambio de aceite?\"\n\nSin agente: Alguien busca en el sistema, responde en 5 minutos, cliente espera.\n\nCon agente: Respuesta instantánea con horario exacto y precio del servicio configurado. El cliente ya sabe si puede venir y cuánto va a gastar.\n\n**Cliente de clínica estética**: \"¿Qué tratamientos ofrecéis? ¿Cuál es el más económico?\"\n\nSin agente: El asesor lista opciones, habla de cada una, propone una según lo que cree. Proceso de 10-15 minutos.\n\nCon agente: Listado completo de tratamientos disponibles con precios. El cliente ya sabe qué opciones existen cuando decide si reservar o hablar con un especialista.\n\n**Cliente de tienda online**: \"¿Este producto viene en otro color? ¿Hay stock?\"\n\nSin agente: Búsqueda manual, respuesta lenta o imprecisa, cliente se aburre.\n\nCon agente: Consulta instantánea del catálogo real en tiempo real — variantes, colores, stock disponible. El cliente ve exactamente qué hay y puede comprar sin fricciones.\n\n## El valor oculto: reduce carga, acelera cierres, mejora satisfacción\n\nNo se trata solo de velocidad. Se trata de tres beneficios que impactan directamente en tu negocio:\n\n### 1. Tu equipo respira\nTus asesores dejan de ser \"búsqueda de información\". Se dedican a casos que realmente necesitan criterio humano, negociación, argumentar, persuadir. Trabajo de valor real.\n\n### 2. Los clientes cierren más rápido\nUna respuesta rápida y precisa sobre lo que ofreces convierte \"no sé, voy a mirar en otro sitio\" en \"vale, esto me interesa\". Las consultas básicas son puntos de fricción. Eliminarlas acelera todo el embudo.\n\n### 3. Menos errores = menos reclamaciones\nCuando la información es precisa y automática (porque viene directa de tu sistema), no hay malentendidos. \"Yo pensaba que costaba X\" o \"Creí que erais abiertos a esa hora\" desaparece.\n\n## Cómo implementarlo sin que sea complicado\n\nNo necesitas un sistema nuevo ni que tu equipo aprenda a programar. [Un agente de IA por WhatsApp como el de Innovapp](/agentes-ia) se configura con tus datos (horarios, servicios, precios) y comienza a responder consultas en tiempo real, 24/7.\n\nEl agente escala a un humano cuando lo necesita (si el cliente quiere negociar, tiene un caso especial, o simplemente prefiere hablar con una persona). Pero la mayoría de consultas sobre tu negocio se resuelven sin que tengas que mover un dedo.\n\n## La pregunta que deberías hacerte hoy\n\n¿Cuántas consultas sobre horarios, servicios, precios o disponibilidad recibe tu negocio al día? ¿Cuántas se pierden porque el cliente se aburre esperando la respuesta o se va a un competidor que responde más rápido?\n\nSi son más de dos o tres, ya estás perdiendo dinero.\n\nUn agente de IA no reemplaza a tu equipo. Los libera.",
+    "serviceLinkUsed": "/agentes-ia"
+  }
+}
