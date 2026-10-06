@@ -4,7 +4,7 @@ import Script from 'next/script'
 import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
-import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
+import { WHATSAPP_NUMBER, formatearWhatsApp } from '../components/WhatsAppBubble'
 import { CONTACT_EMAIL } from '../lib/constants'
 
 const PRODUCTS = ['Servix', 'GymStack', 'Agentes IA', 'Otro']
@@ -228,7 +228,7 @@ export default function Contacto() {
                   target="_blank" rel="noopener noreferrer"
                   style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 600, color: '#1e1e1e', textDecoration: 'none', marginBottom: 14 }}
                 >
-                  <span style={{ fontSize: 20 }}>💬</span> WhatsApp: +34 643 45 20 65
+                  <span style={{ fontSize: 20 }}>💬</span> WhatsApp: {formatearWhatsApp(WHATSAPP_NUMBER)}
                 </a>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}

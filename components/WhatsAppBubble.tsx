@@ -1,7 +1,15 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 
-export const WHATSAPP_NUMBER = "34643452065";
+// Número de WhatsApp de la empresa: burbuja, pie, /contacto y botones de contacto.
+export const WHATSAPP_NUMBER = "34684902196";
+// Número que atiende el agente de IA: solo para los botones "Habla con nuestro agente".
+export const WHATSAPP_AGENT_NUMBER = "34643452065";
+
+/** "34684902196" -> "+34 684 902 196" */
+export function formatearWhatsApp(numero: string): string {
+  return `+${numero.slice(0, 2)} ${numero.slice(2, 5)} ${numero.slice(5, 8)} ${numero.slice(8)}`;
+}
 const MENSAJE_GENERICO = "Hola, quiero más información sobre Innovapp";
 
 // Mensaje prellenado según la ruta del visitante -- centralizado aquí para que añadir

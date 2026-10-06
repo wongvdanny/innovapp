@@ -5,7 +5,7 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
 import VozDemo from '../components/VozDemo'
-import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
+import { WHATSAPP_AGENT_NUMBER } from '../components/WhatsAppBubble'
 
 const MENSAJE_AGENTES_WHATSAPP = encodeURIComponent('Hola! Quiero información sobre Agentes IA para mi negocio.')
 
@@ -58,7 +58,7 @@ export default function Home() {
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${MENSAJE_AGENTES_WHATSAPP}`}
+                href={`https://wa.me/${WHATSAPP_AGENT_NUMBER}?text=${MENSAJE_AGENTES_WHATSAPP}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}

@@ -1,8 +1,7 @@
 import { CONTACT_EMAIL, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_NIF, LEGAL_ADDRESS, LEGAL_PHONE } from '../lib/constants'
-import { WHATSAPP_NUMBER } from './WhatsAppBubble'
+import { WHATSAPP_NUMBER, formatearWhatsApp } from './WhatsAppBubble'
 
-// "34643452065" -> "+34 643 452 065"
-const WHATSAPP_VISIBLE = `+${WHATSAPP_NUMBER.slice(0, 2)} ${WHATSAPP_NUMBER.slice(2, 5)} ${WHATSAPP_NUMBER.slice(5, 8)} ${WHATSAPP_NUMBER.slice(8)}`
+const WHATSAPP_VISIBLE = formatearWhatsApp(WHATSAPP_NUMBER)
 
 /**
  * Identificación del titular (LSSI-CE art. 10), visible en el pie de las páginas públicas.
