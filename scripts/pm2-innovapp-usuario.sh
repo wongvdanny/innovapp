@@ -14,7 +14,7 @@ chown root:innovapp-bk .env && chmod 640 .env
 
 pm2 delete innovapp-web
 pm2 start node_modules/next/dist/bin/next --name innovapp-web --cwd /var/www/innovapp \
-  --uid innovapp --gid innovapp-bk -- start --port 3001
+  --uid innovapp --gid innovapp-bk -- start --port 3001 -H 127.0.0.1
 pm2 save
 sleep 3
 ps -o user=,pid=,cmd= -p "$(pm2 pid innovapp-web)"
