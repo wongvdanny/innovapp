@@ -5,7 +5,41 @@ import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
 import ComoFunciona from '../components/ComoFunciona'
 import VozDemo from '../components/VozDemo'
+import Faq, { faqJsonLd, type FaqItem } from '../components/Faq'
 import { WHATSAPP_NUMBER, WHATSAPP_AGENT_NUMBER } from '../components/WhatsAppBubble'
+
+const FAQ: FaqItem[] = [
+  {
+    pregunta: "¿Qué puede hacer la IA en mi tienda WooCommerce?",
+    respuesta:
+      "Atiende el WhatsApp de tu tienda las 24 horas con datos reales de tu catálogo de WooCommerce (stock, precio y variantes), ayuda a elegir producto, informa del estado de los pedidos, prepara el carrito y envía un enlace de pago con acceso automático. Cuando un caso necesita a una persona, como una devolución o una incidencia, pasa la conversación a tu equipo.",
+  },
+  {
+    pregunta: "¿Con qué versiones de WooCommerce funciona?",
+    respuesta:
+      "Con las versiones actuales de WooCommerce y WordPress. Si tu tienda va con versiones antiguas de WooCommerce, WordPress o PHP, te ayudamos a actualizarla antes de conectar el agente.",
+  },
+  {
+    pregunta: "¿Necesito un número de WhatsApp nuevo?",
+    respuesta:
+      "El agente atiende desde un número de WhatsApp Business dedicado que te asignamos. Tu número de contacto actual sigue funcionando igual para lo que ya haces con él.",
+  },
+  {
+    pregunta: "¿Tengo que duplicar el catálogo o el stock?",
+    respuesta:
+      "No. El agente consulta tu WooCommerce en tiempo real: mismos productos, mismos precios y mismo stock, sin mantener nada por duplicado.",
+  },
+  {
+    pregunta: "¿Cómo pagan los clientes?",
+    respuesta:
+      "El agente genera un enlace de pago con acceso automático para que el cliente complete la compra en tu tienda sin tener que buscar el producto ni escribir su contraseña. Es compatible con Stripe y Redsys.",
+  },
+  {
+    pregunta: "¿Cuánto cuesta?",
+    respuesta:
+      "Desde 119 € al mes, más una puesta en marcha desde 450 €, según el plan que necesite tu tienda. Te recomendamos el plan adecuado después de ver tu catálogo.",
+  },
+]
 
 const COMO_FUNCIONA_INTRO =
   'Integrado con tu tienda WooCommerce, respondiendo con datos reales de producto y pedido desde tu propio WordPress.'
@@ -62,18 +96,20 @@ export default function AgentesIaWoocommercePage() {
   ]
 
   const casos = [
-    ['🔍', 'Búsqueda de productos por WhatsApp', 'El cliente pregunta por un producto en lenguaje natural y el agente consulta tu catálogo real de WooCommerce — precio, stock y variantes incluidos.'],
-    ['🛒', 'Carrito y enlace de pago sin salir de WhatsApp', 'El agente arma el carrito con lo que pide el cliente y genera un enlace de pago listo para completar la compra, sin que tenga que buscar nada en la web.'],
-    ['📦', 'Estado del pedido bajo petición', 'Si el cliente pregunta "¿dónde está mi pedido?", el agente consulta su pedido real en WooCommerce y responde con el estado al momento.'],
+    ['🌙', 'Atención al cliente 24/7', 'Responde al momento, a cualquier hora y también en festivos, con la información real de tu tienda. Si el caso necesita a una persona, lo pasa a tu equipo.'],
+    ['🎯', 'Recomendación de productos', 'Pregunta lo necesario para entender qué busca el cliente y le propone productos de tu catálogo que encajan, con su precio y disponibilidad.'],
+    ['🔍', 'Búsqueda inteligente', 'El cliente describe lo que quiere con sus palabras, sin saber el nombre exacto, y el agente lo encuentra en tu catálogo de WooCommerce con sus variantes y stock.'],
+    ['📦', 'Estado de pedidos por WhatsApp', 'Si el cliente pregunta "¿dónde está mi pedido?", el agente consulta su pedido real en WooCommerce y responde con el estado al momento.'],
+    ['🛒', 'Carrito y enlace de pago', 'El agente arma el carrito con lo que pide el cliente y genera un enlace de pago listo para completar la compra, sin que tenga que buscar nada en la web.'],
   ]
 
   return (
     <>
       <Seo
-        title="Agente de IA por WhatsApp para WooCommerce | Innovapp"
-        description="Integra un agente de IA con tu tienda WooCommerce: atiende WhatsApp 24/7, busca productos en tu catálogo real, arma el carrito y envía el enlace de pago. Pide tu demo gratuita."
+        title="IA para WooCommerce | Chatbot y agentes IA para tu tienda – Innovapp"
+        description="IA para WooCommerce: un agente que atiende el WhatsApp de tu tienda 24/7 con tu catálogo real, recomienda productos, informa del estado de los pedidos y envía el enlace de pago. Desde 119 €/mes."
         canonical="/agentes-ia-woocommerce"
-        jsonLd={{
+        jsonLd={[{
           '@context': 'https://schema.org',
           '@type': 'Service',
           name: 'Agente de IA por WhatsApp para WooCommerce',
@@ -85,7 +121,13 @@ export default function AgentesIaWoocommercePage() {
           provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
           areaServed: 'ES',
           audience: { '@type': 'Audience', audienceType: 'Tiendas online con WooCommerce' },
-        }}
+          offers: {
+            '@type': 'Offer',
+            priceCurrency: 'EUR',
+            priceSpecification: { '@type': 'UnitPriceSpecification', price: 119, priceCurrency: 'EUR', unitText: 'MONTH' },
+            description: 'Desde 119 € al mes más puesta en marcha desde 450 €, según plan.',
+          },
+        }, faqJsonLd(FAQ)]}
       />
 
       <Nav />
@@ -97,7 +139,7 @@ export default function AgentesIaWoocommercePage() {
               <span style={{ color: '#e8a33d', fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>✦ Integración con WooCommerce</span>
             </div>
             <h1 style={{ fontSize: 'clamp(28px,4.5vw,50px)', fontWeight: 500, letterSpacing: -1, color: '#ece9e2', maxWidth: 580, margin: '0 0 20px', lineHeight: 1.15 }}>
-              Agente de IA por WhatsApp <span style={{ fontStyle: 'italic', color: '#e8a33d' }}>para tu tienda WooCommerce</span>
+              IA para WooCommerce: <span style={{ fontStyle: 'italic', color: '#e8a33d' }}>un agente que atiende y vende por WhatsApp</span>
             </h1>
             <p style={{ fontSize: 17, color: '#97a0ac', maxWidth: 480, margin: '0 0 12px', lineHeight: 1.7 }}>
               Atención automática 24/7 y ventas por WhatsApp sin que tu cliente tenga que salir de la conversación: el agente conoce tu catálogo real, arma el carrito y manda el enlace de pago.
@@ -125,6 +167,23 @@ export default function AgentesIaWoocommercePage() {
         </div>
       </section>
 
+      <section style={{ padding: '90px 24px 40px', background: 'white' }}>
+        <div style={{ maxWidth: 820, margin: '0 auto', textAlign: 'center' }}>
+          <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 20, color: '#1a140d' }}>
+            Qué hace la IA para WooCommerce de Innovapp
+          </h2>
+          <p style={{ fontSize: 16, color: '#4a3f2e', lineHeight: 1.8, margin: '0 0 14px' }}>
+            Es un agente de inteligencia artificial conectado a tu tienda WooCommerce que atiende a tus clientes por WhatsApp.
+            Consulta tu catálogo real (stock, precio y variantes) y el estado de los pedidos, ayuda a elegir producto,
+            prepara el carrito y envía el enlace de pago, todo dentro de la conversación.
+          </p>
+          <p style={{ fontSize: 15, color: '#8a7a5a', lineHeight: 1.8, margin: 0 }}>
+            No es un chatbot de menús: entiende lo que el cliente escribe con sus propias palabras. Y cuando un caso necesita
+            a una persona, como una devolución o una incidencia, pasa la conversación a tu equipo.
+          </p>
+        </div>
+      </section>
+
       <ComoFunciona intro={COMO_FUNCIONA_INTRO} steps={COMO_FUNCIONA_STEPS} />
 
       <VozDemo variante="ecommerce" />
@@ -133,10 +192,10 @@ export default function AgentesIaWoocommercePage() {
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 50 }}>
             <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#1a140d' }}>
-              Lo que el agente ya hace hoy
+              Casos de uso de la IA en WooCommerce
             </h2>
             <p style={{ fontSize: 16, color: '#8a7a5a', maxWidth: 560, margin: '0 auto' }}>
-              Nada de promesas — esto es lo que la integración soporta ahora mismo con tu catálogo real.
+              Nada de promesas: esto es lo que el agente hace hoy con el catálogo real de tu tienda.
             </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 20 }}>
@@ -155,7 +214,7 @@ export default function AgentesIaWoocommercePage() {
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 50 }}>
             <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#1a140d' }}>
-              Cómo funciona la integración
+              Cómo se instala en tu WooCommerce
             </h2>
             <p style={{ fontSize: 16, color: '#8a7a5a', maxWidth: 520, margin: '0 auto' }}>
               Sin tocar código — pensado para el dueño de la tienda, no para su desarrollador.
@@ -192,6 +251,35 @@ export default function AgentesIaWoocommercePage() {
         </div>
       </section>
 
+      <section style={{ padding: '90px 24px', background: '#faf8f4' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 20 }}>
+          <div style={{ background: 'white', border: '1px solid #f1ece0', borderRadius: 18, padding: 30 }}>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1a140d', margin: '0 0 6px' }}>Compatibilidad de versiones</h2>
+            <div style={{ fontSize: 15, fontWeight: 700, color: '#c98826', marginBottom: 12 }}>WooCommerce y WordPress actualizados</div>
+            <p style={{ fontSize: 14, color: '#8a7a5a', lineHeight: 1.7, margin: '0 0 16px' }}>Se conecta a tu tienda WooCommerce y añade un plugin ligero de WordPress para el enlace de pago con acceso automático. Pagos compatibles con Stripe y Redsys.</p>
+            <p style={{ fontSize: 14, color: '#4a3f2e', lineHeight: 1.7, margin: 0 }}>
+              ¿WooCommerce, WordPress o PHP desactualizados?{' '}
+              <Link href="/desarrollo-prestashop-woocommerce" style={{ color: '#c98826', fontWeight: 700, textDecoration: 'underline' }}>
+                Te actualizamos la tienda primero →
+              </Link>
+            </p>
+          </div>
+          <div style={{ background: '#12141a', borderRadius: 18, padding: 30 }}>
+            <h2 style={{ fontSize: 22, fontWeight: 700, color: '#ece9e2', margin: '0 0 6px' }}>Precio</h2>
+            <div style={{ fontSize: 15, color: '#97a0ac', marginBottom: 4 }}>desde</div>
+            <div style={{ fontSize: 44, fontWeight: 700, color: '#e8a33d', letterSpacing: -1, lineHeight: 1.1 }}>
+              119 €<span style={{ fontSize: 17, fontWeight: 500, color: '#97a0ac' }}> /mes</span>
+            </div>
+            <p style={{ fontSize: 14, color: '#97a0ac', lineHeight: 1.7, margin: '12px 0 0' }}>
+              Más puesta en marcha desde 450 €. Tres planes según lo que necesite tu tienda: te recomendamos el adecuado
+              después de ver tu catálogo. IVA no incluido.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <Faq items={FAQ} titulo="Preguntas frecuentes sobre la IA para WooCommerce" />
+
       <section style={{ padding: '90px 24px', background: '#12141a', textAlign: 'center' }}>
         <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#ece9e2' }}>
           Prueba el agente en acción
@@ -216,6 +304,12 @@ export default function AgentesIaWoocommercePage() {
           ¿Tu tienda es PrestaShop en vez de WooCommerce?{' '}
           <Link href="/agentes-ia-prestashop" style={{ color: '#e8a33d', fontWeight: 700, textDecoration: 'underline' }}>
             Mira la versión para PrestaShop →
+          </Link>
+        </p>
+        <p style={{ fontSize: 13, color: '#97a0ac', marginTop: 10 }}>
+          ¿Necesitas actualizar la tienda o un plugin a medida?{' '}
+          <Link href="/desarrollo-prestashop-woocommerce" style={{ color: '#e8a33d', fontWeight: 700, textDecoration: 'underline' }}>
+            Desarrollo y actualización de PrestaShop y WooCommerce →
           </Link>
         </p>
       </section>

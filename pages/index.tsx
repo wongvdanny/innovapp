@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import { useState } from 'react'
 import Seo from '../components/Seo'
 import Nav from '../components/Nav'
@@ -9,6 +10,31 @@ import { WHATSAPP_NUMBER, WHATSAPP_AGENT_NUMBER } from '../components/WhatsAppBu
 
 const MENSAJE_AGENTES_WHATSAPP = encodeURIComponent('Hola! Quiero información sobre Agentes IA para mi negocio.')
 const MENSAJE_PRESUPUESTO_AUTOMATIZACION = encodeURIComponent('Hola, quiero presupuesto para automatizar un proceso.')
+
+// Bloque de servicios destacado: las tres páginas de negocio con anchor text descriptivo
+const SERVICIOS_ECOMMERCE = [
+  {
+    href: '/agentes-ia-prestashop',
+    icono: '🤖',
+    titulo: 'IA para PrestaShop',
+    texto: 'Un agente de IA conectado a tu catálogo que atiende el WhatsApp de tu tienda 24/7, recomienda productos, informa del estado de los pedidos y envía el enlace de pago.',
+    enlace: 'Ver la IA para PrestaShop',
+  },
+  {
+    href: '/agentes-ia-woocommerce',
+    icono: '💬',
+    titulo: 'IA para WooCommerce',
+    texto: 'El mismo agente para tiendas WooCommerce: búsqueda inteligente de productos, consultas de pedidos por WhatsApp y ventas sin salir de la conversación.',
+    enlace: 'Ver la IA para WooCommerce',
+  },
+  {
+    href: '/desarrollo-prestashop-woocommerce',
+    icono: '🛠️',
+    titulo: 'Desarrollo y actualización de tiendas',
+    texto: 'Tiendas nuevas, módulos y plugins a medida, migración de PrestaShop a 8 y 9, actualización de WooCommerce y PHP, mantenimiento y rendimiento.',
+    enlace: 'Ver desarrollo de PrestaShop y WooCommerce',
+  },
+]
 
 export default function Home() {
   const [email, setEmail] = useState('')
@@ -73,6 +99,25 @@ export default function Home() {
           </div>
           <div style={{ flex: '1 1 320px', display: 'flex', justifyContent: 'center' }}>
             <ChatDemo />
+          </div>
+        </div>
+      </section>
+
+      <section style={{ padding: '80px 24px', background: 'white' }} id="servicios">
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 44 }}>
+            <div className="label">Servicios para tiendas online</div>
+            <h2 style={{ fontSize: 'clamp(24px,3.5vw,40px)', fontWeight: 800, letterSpacing: -1, color: '#1e1e1e', margin: 0 }}>IA y desarrollo para PrestaShop y WooCommerce</h2>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 20 }}>
+            {SERVICIOS_ECOMMERCE.map(({ href, icono, titulo, texto, enlace }) => (
+              <Link key={href} href={href} style={{ display: 'flex', flexDirection: 'column', background: '#f8fafb', border: '1px solid #eef1f4', borderRadius: 20, padding: 28, textDecoration: 'none' }}>
+                <div style={{ fontSize: 30, marginBottom: 14 }}>{icono}</div>
+                <h3 style={{ fontSize: 19, fontWeight: 800, color: '#1e1e1e', margin: '0 0 10px' }}>{titulo}</h3>
+                <p style={{ fontSize: 14, color: '#4a6572', lineHeight: 1.7, margin: '0 0 18px', flex: 1 }}>{texto}</p>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#ee7528' }}>{enlace} →</span>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
