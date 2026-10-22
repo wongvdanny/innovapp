@@ -1,16 +1,16 @@
-// Genera un post de blog nuevo con Claude en dos pasadas: (1) generación del borrador,
-// obligado a enlazar a una de las páginas de servicio y a ceñirse a
-// content/verified-facts.md, y (2) verificación estricta de que el borrador no afirma
-// nada que no esté respaldado por ese documento. Si la verificación falla se reescribe
-// con las violaciones encontradas y se vuelve a verificar (hasta REESCRITURAS_MAXIMAS
-// veces); si sigue fallando, el borrador va a content/blog/.rejected/. Si el texto no enlaza a la página de
-// servicio, se añade un CTA final con el enlace (no se rechaza por eso). Solo si pasa se
-// escribe content/blog/{slug}.mdx y se actualiza .topics-log.json. Evita repetir temas
-// ya usados (content/blog/.topics-log.json).
+// Genera un post de blog nuevo con Claude, centrado en IA para PrestaShop/WooCommerce y en
+// desarrollo, migración y mantenimiento de tiendas: (1) generación del borrador ceñido a
+// content/verified-facts.md, (2) comprobación en código de la estructura (mínimo de
+// palabras, H2/H3, ejemplo práctico, preguntas frecuentes, 2-3 enlaces internos, tema no
+// duplicado de un post publicado) y (3) verificación estricta de hechos. Si algo falla se
+// reescribe con los problemas encontrados (hasta REESCRITURAS_MAXIMAS veces); si sigue
+// fallando, el borrador va a content/blog/.rejected/. Si el texto no termina con enlace a
+// /contacto, se añade un CTA final (no se rechaza por eso). Solo si pasa se escribe
+// content/blog/{slug}.mdx y se actualiza .topics-log.json.
 // Uso: node scripts/generate-blog-post.mjs  (o  npm run blog:generate)
-//      node scripts/generate-blog-post.mjs --dry-run   (genera y verifica sin escribir nada)
+//      node scripts/generate-blog-post.mjs --dry-run [--print]   (sin escribir nada; --print muestra el texto)
 import Anthropic from '@anthropic-ai/sdk'
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 import { dirname, join } from 'node:path'
 
@@ -32,22 +32,25 @@ const MODEL = process.env.BLOG_MODEL || 'claude-haiku-4-5-20251001'
 // afirmaciones sobre funciones no documentadas.
 const MODEL_VERIFICACION = 'claude-sonnet-5'
 const DIAS_EXCLUSION_TEMPORAL = 7
-// Reescrituras como máximo cuando el verificador rechaza el borrador.
-const REESCRITURAS_MAXIMAS = 2
+// Reescrituras como máximo cuando el borrador no cumple la estructura o el verificador lo rechaza.
+const REESCRITURAS_MAXIMAS = 3
 // --dry-run: genera y verifica, pero no escribe nada (ni post, ni borrador rechazado, ni
 // logs de temas). Para probar cambios en los prompts sin publicar.
 const DRY_RUN = process.argv.includes('--dry-run')
 
-// Rutas de servicio válidas -- el post DEBE enlazar a una de ellas, en formato markdown
-// [texto](ruta). El regex exige que la ruta sea EXACTAMENTE una de estas tres (con
-// slash final opcional), no basta con que "/agentes-ia" aparezca como prefijo de las
-// otras dos -- así no cuela un enlace a /agentes-ia-prestashop como si fuera el genérico.
-// Acepta tanto ruta relativa (/agentes-ia) como URL absoluta del mismo dominio
-// (https://innovapp.es/agentes-ia) -- el prompt de generación sigue pidiendo ruta
-// relativa como preferencia, pero un post que use la absoluta no debe rechazarse solo
-// por el formato del enlace (visto en pruebas reales de la tarea anterior).
-const RUTAS_SERVICIO = ['/agentes-ia', '/agentes-ia-prestashop', '/agentes-ia-woocommerce']
-const PATRON_ENLACE_SERVICIO = /\]\((?:https:\/\/innovapp\.es)?\/agentes-ia(?:-prestashop|-woocommerce)?\/?\)/
+// Páginas de servicio a las que enlaza el blog, en formato markdown [texto](ruta). El
+// regex exige la ruta EXACTA (con slash final opcional; también la URL absoluta del
+// dominio), así que un enlace a /agentes-ia-prestashop no cuenta como /agentes-ia.
+const RUTAS_SERVICIO = ['/agentes-ia-prestashop', '/agentes-ia-woocommerce', '/desarrollo-prestashop-woocommerce']
+const PATRON_ENLACE_SERVICIO_GLOBAL =
+  /\]\((?:https:\/\/innovapp\.es)?\/(?:agentes-ia-prestashop|agentes-ia-woocommerce|desarrollo-prestashop-woocommerce)\/?(?:#[^)]*)?\)/g
+const PATRON_ENLACE_CONTACTO = /\]\((?:https:\/\/innovapp\.es)?\/contacto\/?\)/
+
+// Requisitos de calidad (se comprueban en código; si falta algo, el redactor reescribe).
+const PALABRAS_MINIMAS = 1200
+const ENLACES_SERVICIO_MINIMOS = 2
+// Solapamiento de palabras del slug a partir del cual un tema se considera casi duplicado.
+const SIMILITUD_SLUG_MAXIMA = 0.5
 
 function leerHechosVerificados() {
   if (!existsSync(VERIFIED_FACTS_PATH)) {
@@ -55,6 +58,73 @@ function leerHechosVerificados() {
     process.exit(1)
   }
   return readFileSync(VERIFIED_FACTS_PATH, 'utf8')
+}
+
+/** Título y slug de cada post publicado (frontmatter de content/blog/*.mdx), para no repetir temas. */
+function leerPostsPublicados() {
+  if (!existsSync(BLOG_DIR)) return []
+  return readdirSync(BLOG_DIR)
+    .filter((nombre) => nombre.endsWith('.mdx') && !nombre.startsWith('.'))
+    .map((nombre) => {
+      const texto = readFileSync(join(BLOG_DIR, nombre), 'utf8')
+      const titulo = texto.match(/^title:\s*(.+)$/m)?.[1]?.replace(/^"|"$/g, '') ?? ''
+      return { slug: nombre.replace(/\.mdx$/, ''), title: titulo }
+    })
+}
+
+// Palabras vacías que no distinguen un tema de otro al comparar slugs.
+const PALABRAS_VACIAS_SLUG = new Set(['de', 'la', 'el', 'en', 'tu', 'y', 'a', 'para', 'por', 'con', 'sin', 'que', 'como', 'los', 'las', 'del', 'un', 'una', 'no', 'mas'])
+
+function palabrasDeSlug(slug) {
+  return new Set(normalizarSlug(slug).split('-').filter((p) => p.length > 2 && !PALABRAS_VACIAS_SLUG.has(p)))
+}
+
+/** Post publicado cuyo slug comparte demasiadas palabras con el nuevo, o null. */
+function postCasiDuplicado(slug, publicados) {
+  const nuevas = palabrasDeSlug(slug)
+  for (const p of publicados) {
+    const existentes = palabrasDeSlug(p.slug)
+    const comunes = [...nuevas].filter((x) => existentes.has(x)).length
+    const union = new Set([...nuevas, ...existentes]).size
+    if (union > 0 && comunes / union >= SIMILITUD_SLUG_MAXIMA) return p
+  }
+  return null
+}
+
+function contarPalabras(markdown) {
+  return markdown
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1') // el texto del enlace cuenta, la URL no
+    .replace(/[#*_>`|-]/g, ' ')
+    .split(/\s+/)
+    .filter(Boolean).length
+}
+
+/**
+ * Comprobaciones de estructura y SEO que no dependen de un modelo. Devuelve la lista de
+ * problemas (vacía si todo está bien) para pasárselos al redactor en la reescritura.
+ */
+function problemasDeCalidad(post, publicados) {
+  const problemas = []
+  const md = post.contentMarkdown
+  const palabras = contarPalabras(md)
+  if (palabras < PALABRAS_MINIMAS) {
+    problemas.push(`El cuerpo tiene unas ${palabras} palabras; el mínimo es ${PALABRAS_MINIMAS}. Amplía con contenido útil (más detalle en el ejemplo práctico y en las secciones), no con relleno.`)
+  }
+  if (!/^## /m.test(md)) problemas.push('Faltan subtítulos ## (H2).')
+  if (!/^### /m.test(md)) problemas.push('Faltan subtítulos ### (H3) dentro de alguna sección.')
+  if (!/^## .*preguntas frecuentes/im.test(md)) {
+    problemas.push('Falta la sección "## Preguntas frecuentes" con varias preguntas como ### y su respuesta.')
+  }
+  if (!/^##+ .*ejemplo/im.test(md)) problemas.push('Falta una sección de ejemplo práctico con un subtítulo que contenga "Ejemplo".')
+  const enlaces = (md.match(PATRON_ENLACE_SERVICIO_GLOBAL) || []).length
+  if (enlaces < ENLACES_SERVICIO_MINIMOS) {
+    problemas.push(`Hay ${enlaces} enlace(s) internos a páginas de servicio; deben ser entre ${ENLACES_SERVICIO_MINIMOS} y 3, contextuales y repartidos por el texto (${RUTAS_SERVICIO.join(', ')}).`)
+  }
+  const duplicado = postCasiDuplicado(post.slug, publicados)
+  if (duplicado) {
+    problemas.push(`El tema es casi igual al post ya publicado "${duplicado.title}" (/blog/${duplicado.slug}). Elige un tema distinto.`)
+  }
+  return problemas
 }
 
 function leerLogDeTemas() {
@@ -261,13 +331,25 @@ ${noImplementadas.map((f) => `- ${f}`).join('\n')}
 === FIN DE PROHIBIDO ===`
     : ''
 
-  return `Eres el redactor del blog de Innovapp, una empresa española que desarrolla agentes de IA por WhatsApp para negocios locales (peluquerías, clínicas estéticas, gimnasios, talleres, veterinarias, inmobiliarias) y para tiendas online (PrestaShop, WooCommerce).
+  return `Eres el redactor del blog de Innovapp, una empresa española que desarrolla y mantiene tiendas online con PrestaShop y WooCommerce y les añade inteligencia artificial (agentes de IA por WhatsApp conectados al catálogo real).
 
-El público objetivo del blog son dueños y gestores de estos negocios -- NO son desarrolladores ni gente técnica. Escribe en español de España, con tono profesional pero cercano, centrado en problemas reales del día a día del negocio (perder clientes por no responder WhatsApp a tiempo, huecos de agenda mal aprovechados, automatizar reservas, no perder ventas por falta de atención fuera de horario, etc.), sin tecnicismos innecesarios.
+El público del blog son dueños y responsables de tiendas online con PrestaShop o WooCommerce: saben manejar su tienda pero NO son desarrolladores. Escribe en español de España, con tono profesional y cercano, explicando lo técnico en lenguaje llano y siempre desde el impacto en el negocio (ventas, seguridad, tiempo, atención al cliente).
 
-Elige UN tema relevante para ese público que NO esté ya cubierto en la lista de temas ya publicados que se te pasa a continuación. Evita repetir el mismo ángulo de un tema ya tratado.
+TEMAS PERMITIDOS (elige UNO, concreto y útil):
+- IA para PrestaShop o WooCommerce: atención al cliente con IA, recomendación de productos, búsqueda en lenguaje natural, consultas de estado de pedido por WhatsApp.
+- Migración y actualización de PrestaShop (desde 1.6 o 1.7 a 8 o 9): riesgos de quedarse en una versión antigua, cómo planificarla, qué revisar antes y después, módulos y temas incompatibles.
+- Mantenimiento de WooCommerce: actualizaciones de WooCommerce, WordPress, plugins y PHP; errores habituales; copias de seguridad; rendimiento.
+- Desarrollo de tiendas online: módulos y plugins a medida, cuándo compensa desarrollar a medida frente a un módulo comercial, rendimiento y velocidad de la tienda.
+NO escribas sobre negocios locales, citas, peluquerías ni temas de WhatsApp genéricos: ese ángulo ya está cubierto.
 
-Longitud objetivo del cuerpo del artículo: 700-1000 palabras, con subtítulos ## donde tenga sentido para que se lea bien.
+NO repitas un tema ya publicado: se te pasa la lista de títulos y slugs existentes. Un tema con el mismo ángulo y otras palabras también cuenta como repetido.
+
+ESTRUCTURA OBLIGATORIA (se comprueba automáticamente):
+- Cuerpo de 1300 a 1700 palabras (mínimo absoluto ${PALABRAS_MINIMAS}).
+- Secciones con ## y, dentro de ellas, subsecciones con ### donde ayuden a leer.
+- Una sección "## Ejemplo práctico" (o un ## que empiece por "Ejemplo") con un caso paso a paso de una tienda ficticia, sin cifras inventadas.
+- Una sección "## Preguntas frecuentes" con entre tres y cinco preguntas en ### y su respuesta debajo.
+- No pongas un # (H1): el título ya va aparte.
 
 === ÚNICA FUENTE DE HECHOS PERMITIDA SOBRE INNOVAPP ===
 No afirmes nada sobre lo que hace el producto que no esté en este documento. Si necesitas mencionar una función, usa exactamente cómo está descrita aquí, sin añadir detalles no confirmados. Todo lo marcado como "NO" o "no implementado" (p.ej. recordatorios automáticos de citas, integración con Google Calendar, recuperación automática de carritos abandonados, Instagram Messaging) NUNCA debe mencionarse como función existente, aunque parezca una idea natural para el artículo.
@@ -276,7 +358,7 @@ ${hechosVerificados}
 === FIN DE LA FUENTE DE HECHOS ===${bloqueProhibido}
 
 === REGLAS DE REDACCIÓN (un verificador automático rechaza el post si se incumple UNA sola) ===
-1. NINGUNA CIFRA. No escribas números, porcentajes, estadísticas, importes en euros, tiempos ("5 minutos", "en menos de un segundo", "24 horas"), cantidades ("20 consultas", "dos o tres clientes") ni rangos, ni siquiera como ejemplo, estimación o caso hipotético. Exprésalo con palabras sin cantidad: "mucho tiempo", "al momento", "varias consultas", "una parte de tus ingresos". La única excepción son las cifras que aparezcan literalmente en la fuente de hechos.
+1. NINGUNA CIFRA. No escribas números, porcentajes, estadísticas, importes en euros, tiempos ("5 minutos", "en menos de un segundo", "24 horas"), cantidades ("20 consultas", "dos o tres clientes") ni rangos, ni siquiera como ejemplo, estimación o caso hipotético. Exprésalo con palabras sin cantidad: "mucho tiempo", "al momento", "varias consultas", "una parte de tus ingresos". Excepciones: las cifras que aparezcan literalmente en la fuente de hechos, y los números de VERSIÓN de software (PrestaShop 1.6, 1.7, 8 y 9; WooCommerce, WordPress y PHP con su número de versión), siempre que no afirmes fechas de fin de soporte ni datos que no puedas asegurar.
 2. NADA DE DATOS DE ESTUDIOS NI DE "LA MAYORÍA": no afirmes cuántos clientes hacen algo, ni tasas de abandono, de respuesta o de no presentados.
 3. SOBRE EL AGENTE, SOLO LO DOCUMENTADO: cada cosa que digas que el agente hace, sabe, consulta, envía, confirma o avisa tiene que estar en la fuente de hechos, con el mismo alcance. No añadas detalles plausibles (plazos de envío, políticas de cambio, diagnósticos, especificaciones, "qué llevar a la cita", avisos al equipo...) que la fuente no mencione.
 4. SIN DIÁLOGOS NI CASOS INVENTADOS CON DATOS: si pones un ejemplo de conversación o de negocio, que no contenga precios, plazos ni ningún dato concreto.
@@ -284,12 +366,13 @@ ${hechosVerificados}
 Antes de responder, repasa el texto frase a frase y elimina cualquier dígito o cantidad que se te haya escapado.
 === FIN DE REGLAS ===
 
-ENLACE DE SERVICIO OBLIGATORIO: el post DEBE mencionar y enlazar, en formato markdown [texto del enlace](ruta), a UNA de estas tres páginas -- de forma natural dentro del cuerpo, cerca de donde tenga sentido mencionar el servicio, nunca forzado al final a modo de spam:
-- Si el post trata de negocios locales (peluquerías, clínicas, gimnasios, talleres, veterinarias, inmobiliarias) o es un tema general de atención al cliente/WhatsApp → enlaza a /agentes-ia
-- Si el post trata específicamente de tiendas PrestaShop → enlaza a /agentes-ia-prestashop
-- Si el post trata específicamente de tiendas WooCommerce → enlaza a /agentes-ia-woocommerce
-- Si el post trata de e-commerce en general sin mencionar una plataforma concreta, elige la landing (PrestaShop o WooCommerce) que mejor encaje con el ejemplo o caso que uses en el artículo
-No inventes ninguna otra ruta -- usa el path EXACTO tal cual aparece arriba.
+ENLACES INTERNOS OBLIGATORIOS: entre 2 y 3 enlaces en formato markdown [texto descriptivo](ruta), dentro del cuerpo y en la frase donde de verdad aporten (nunca "haz clic aquí" ni todos juntos al final), a estas páginas según el tema:
+- /agentes-ia-prestashop → IA y agente de WhatsApp para tiendas PrestaShop
+- /agentes-ia-woocommerce → IA y agente de WhatsApp para tiendas WooCommerce
+- /desarrollo-prestashop-woocommerce → desarrollo, módulos/plugins a medida, migración, actualización y mantenimiento
+Un post de migración enlaza sobre todo a /desarrollo-prestashop-woocommerce, y puede enlazar a la página de IA de su plataforma; uno de IA enlaza a su plataforma y puede enlazar a desarrollo. Usa el texto del enlace para describir el destino ("migración de PrestaShop a la versión 9", "agente de IA para WooCommerce").
+CTA FINAL OBLIGATORIO: termina con un párrafo breve que invite a escribirnos, con un enlace a /contacto (p. ej. "[cuéntanos cómo es tu tienda](/contacto)").
+No inventes ninguna otra ruta: usa los paths EXACTOS de arriba.
 
 Responde ÚNICAMENTE con un JSON válido, sin texto antes ni después, sin backticks de markdown ni bloques de código, con exactamente esta forma:
 {
@@ -297,8 +380,8 @@ Responde ÚNICAMENTE con un JSON válido, sin texto antes ni después, sin backt
   "title": string,
   "slug": string (kebab-case, sin tildes ni caracteres especiales),
   "description": string (meta description, 150-160 caracteres),
-  "contentMarkdown": string (el cuerpo del post en markdown, debe incluir el enlace de servicio),
-  "serviceLinkUsed": "/agentes-ia" | "/agentes-ia-prestashop" | "/agentes-ia-woocommerce"
+  "contentMarkdown": string (el cuerpo del post en markdown, con los enlaces internos y el CTA a /contacto),
+  "serviceLinkUsed": "/agentes-ia-prestashop" | "/agentes-ia-woocommerce" | "/desarrollo-prestashop-woocommerce" (la página de servicio principal del post)
 }`
 }
 
@@ -320,7 +403,7 @@ const SYSTEM_PROMPT_VERIFICACION = `Eres un verificador de hechos estricto. Te p
 
 Revisa el post ENTERO y devuelve TODAS las violaciones en esta única respuesta: el redactor solo tiene una oportunidad de corregirlas, así que no te detengas en las primeras ni dejes ninguna para después.
 
-NO incluyas afirmaciones correctas ni comentarios sobre lo que el post hace bien. Si no hay violaciones reales, passed=true y violations=[]. Sugerir al lector una función que el producto no tiene (aunque sea como consejo manual, p.ej. 'envía un recordatorio') cuenta como violación. Cualquier cifra, porcentaje o estadística que no aparezca en el documento es una violación, aunque se presente como estimación. También lo es cualquier afirmación sobre datos, historial o registros que el producto guarde u ofrezca, y cualquier afirmación sobre el número de WhatsApp que contradiga el documento.
+NO incluyas afirmaciones correctas ni comentarios sobre lo que el post hace bien. Si no hay violaciones reales, passed=true y violations=[]. Sugerir al lector una función que el producto no tiene (aunque sea como consejo manual, p.ej. 'envía un recordatorio') cuenta como violación. Cualquier cifra, porcentaje o estadística que no aparezca en el documento es una violación, aunque se presente como estimación; los números de versión de software (PrestaShop 1.6/1.7/8/9, WooCommerce, WordPress, PHP) NO son violación, salvo que se usen para afirmar fechas de fin de soporte u otros datos no comprobables. Inventar clientes, casos de éxito, resultados medidos, precios o plazos de los servicios de desarrollo también es violación. También lo es cualquier afirmación sobre datos, historial o registros que el producto guarde u ofrezca, y cualquier afirmación sobre el número de WhatsApp que contradiga el documento.
 
 Responde ÚNICAMENTE con JSON, sin texto antes ni después, con exactamente esta forma:
 { "passed": boolean, "violations": [{ "cita": string, "motivo": string }] }
@@ -376,18 +459,15 @@ async function verificarPost(anthropic, hechosVerificados, post) {
   return filtrarViolacionesReales(verificacion.violations, post.contentMarkdown)
 }
 
-// --- Enlace de servicio: si el modelo no lo puso en el texto, se añade un CTA al final ---
+// --- CTA final a /contacto: si el modelo no lo puso, se añade (no se rechaza por eso) ---
 
-const TEXTOS_CTA = {
-  '/agentes-ia': 'Descubre cómo funciona nuestro agente de IA para WhatsApp',
-  '/agentes-ia-prestashop': 'Descubre cómo funciona nuestro agente de IA para tiendas PrestaShop',
-  '/agentes-ia-woocommerce': 'Descubre cómo funciona nuestro agente de IA para tiendas WooCommerce',
-}
+const TEXTO_CTA_CONTACTO =
+  '¿Tienes una tienda PrestaShop o WooCommerce y quieres saber qué podemos hacer por ella? [Cuéntanos tu caso y te preparamos una propuesta](/contacto).'
 
-function asegurarEnlaceServicio(post) {
-  if (PATRON_ENLACE_SERVICIO.test(post.contentMarkdown)) return
-  console.error(`Aviso: el contenido no enlaza a ninguna página de servicio -- se añade un CTA final a ${post.serviceLinkUsed}.`)
-  post.contentMarkdown = `${post.contentMarkdown.trim()}\n\n[${TEXTOS_CTA[post.serviceLinkUsed]}](${post.serviceLinkUsed}).\n`
+function asegurarCtaContacto(post) {
+  if (PATRON_ENLACE_CONTACTO.test(post.contentMarkdown)) return
+  console.error('Aviso: el contenido no enlaza a /contacto -- se añade el CTA final.')
+  post.contentMarkdown = `${post.contentMarkdown.trim()}\n\n${TEXTO_CTA_CONTACTO}\n`
 }
 
 // --- Borrador rechazado (para revisión manual, no cuenta como publicado) ---
@@ -431,12 +511,15 @@ async function main() {
   const hechosVerificados = leerHechosVerificados()
   const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY })
 
+  // Los .mdx publicados son la referencia (el log de temas no incluye los posts manuales)
+  const publicados = leerPostsPublicados()
   const listaCombinada = [
-    ...temasUsados.map((t) => `- ${t.topic} (ya publicado)`),
+    ...publicados.map((p) => `- ${p.title} (ya publicado, /blog/${p.slug})`),
+    ...temasUsados.map((t) => `- ${t.topic} (tema ya publicado)`),
     ...temasExcluidosRecientes.map((t) => `- ${t.topic} (rechazado recientemente)`),
   ]
   const bloqueTemas = listaCombinada.length > 0
-    ? `Estos temas fueron intentados recientemente y rechazados o ya publicados — elige un ángulo genuinamente distinto, no una variación superficial del mismo tema:\n${listaCombinada.join('\n')}`
+    ? `Estos temas ya están publicados o se rechazaron hace poco — elige un tema genuinamente distinto, no una variación superficial:\n${listaCombinada.join('\n')}`
     : '(ningún tema previo todavía -- este es el primer post)'
 
   const systemGeneracion = construirSystemPromptGeneracion(hechosVerificados)
@@ -450,13 +533,14 @@ async function main() {
       maxTokens: MAX_TOKENS_REDACCION,
     }, 'generación del post')
     validarPost(post)
-    asegurarEnlaceServicio(post)
+    asegurarCtaContacto(post)
   } catch (error) {
     console.error('Error en la generación del post (llamada 1):', error.message)
     process.exit(1)
   }
 
-  // --- Llamada 2: verificación de hechos ---
+  // --- Llamada 2: estructura (en código) y verificación de hechos ---
+  let problemas = problemasDeCalidad(post, publicados)
   let verificacion
   try {
     verificacion = await verificarPost(anthropic, hechosVerificados, post)
@@ -465,22 +549,31 @@ async function main() {
     process.exit(1)
   }
 
-  // --- Si no pasa: hasta REESCRITURAS_MAXIMAS reescrituras corrigiendo las violaciones ---
-  for (let ronda = 1; !verificacion.passed && ronda <= REESCRITURAS_MAXIMAS; ronda++) {
-    console.error(`Verificación fallida ("${post.title}"), reescritura ${ronda}/${REESCRITURAS_MAXIMAS}:`)
+  // --- Si no pasa: hasta REESCRITURAS_MAXIMAS reescrituras corrigiendo todo lo encontrado ---
+  for (let ronda = 1; (problemas.length > 0 || !verificacion.passed) && ronda <= REESCRITURAS_MAXIMAS; ronda++) {
+    console.error(`Borrador por corregir ("${post.title}"), reescritura ${ronda}/${REESCRITURAS_MAXIMAS}:`)
+    for (const p of problemas) console.error(`  - [estructura] ${p}`)
     for (const v of verificacion.violations) console.error(`  - "${v.cita}" → ${v.motivo}`)
 
-    const listaViolaciones = verificacion.violations
-      .map((v) => `- Cita: "${v.cita}"\n  Motivo: ${v.motivo}`)
-      .join('\n')
+    const bloques = []
+    if (problemas.length > 0) {
+      bloques.push(`No cumple la ESTRUCTURA OBLIGATORIA:\n${problemas.map((p) => `- ${p}`).join('\n')}`)
+    }
+    if (!verificacion.passed) {
+      const listaViolaciones = verificacion.violations
+        .map((v) => `- Cita: "${v.cita}"\n  Motivo: ${v.motivo}`)
+        .join('\n')
+      bloques.push(`El verificador de hechos ha encontrado estas afirmaciones falsas o exageradas:\n${listaViolaciones}\n\nCorrige estas afirmaciones, no añadas funciones nuevas.`)
+    }
     try {
       post = await llamarClaudeConReintento(anthropic, {
         system: systemGeneracion,
-        userContent: `Este es tu borrador anterior:\n${JSON.stringify(post, null, 2)}\n\nEl verificador de hechos ha encontrado estas afirmaciones falsas o exageradas:\n${listaViolaciones}\n\nCorrige estas afirmaciones, no añadas funciones nuevas. Además, repasa TODO el texto con las REGLAS DE REDACCIÓN y elimina cualquier otra cifra, cantidad, tiempo o detalle sobre el agente que no esté en la fuente de hechos, aunque el verificador no lo haya citado: si queda uno solo, el post se rechaza. Mantén el mismo tema, título y estructura salvo donde haga falta cambiarlos para corregirlo. Devuelve el post completo con el mismo formato JSON.`,
+        userContent: `Este es tu borrador anterior:\n${JSON.stringify(post, null, 2)}\n\n${bloques.join('\n\n')}\n\nAdemás, repasa TODO el texto con las REGLAS DE REDACCIÓN y elimina cualquier otra cifra, cantidad, tiempo o detalle sobre el producto que no esté en la fuente de hechos, aunque nadie lo haya citado: si queda uno solo, el post se rechaza. Mantén el mismo tema y título salvo que se te pida cambiar de tema. Devuelve el post completo con el mismo formato JSON.`,
         maxTokens: MAX_TOKENS_REDACCION,
       }, 'reescritura del post')
       validarPost(post)
-      asegurarEnlaceServicio(post)
+      asegurarCtaContacto(post)
+      problemas = problemasDeCalidad(post, publicados)
       verificacion = await verificarPost(anthropic, hechosVerificados, post)
     } catch (error) {
       console.error('Error en la reescritura/reverificación del post:', error.message)
@@ -488,18 +581,24 @@ async function main() {
     }
   }
 
-  if (!verificacion.passed) {
-    const rutaRechazado = DRY_RUN ? '(dry-run: no se guarda)' : guardarBorradorRechazado(post, verificacion.violations)
+  if (problemas.length > 0 || !verificacion.passed) {
+    const motivos = [
+      ...problemas.map((p) => ({ cita: '(estructura)', motivo: p })),
+      ...verificacion.violations,
+    ]
+    const rutaRechazado = DRY_RUN ? '(dry-run: no se guarda)' : guardarBorradorRechazado(post, motivos)
     if (!DRY_RUN) anadirTemaExcluido(post.topic)
-    console.error(`✗ Post RECHAZADO por verificación de hechos (también tras ${REESCRITURAS_MAXIMAS} reescrituras): "${post.title}"`)
+    console.error(`✗ Post RECHAZADO (también tras ${REESCRITURAS_MAXIMAS} reescrituras): "${post.title}"`)
     console.error('Violaciones encontradas:')
-    for (const v of verificacion.violations) console.error(`  - "${v.cita}" → ${v.motivo}`)
+    for (const v of motivos) console.error(`  - "${v.cita}" → ${v.motivo}`)
     console.error(`Borrador guardado para revisión manual en: ${rutaRechazado}`)
     process.exit(1)
   }
 
+  const resumen = `${contarPalabras(post.contentMarkdown)} palabras, ${(post.contentMarkdown.match(PATRON_ENLACE_SERVICIO_GLOBAL) || []).length} enlaces de servicio`
   if (DRY_RUN) {
-    console.log(`✓ (dry-run) El post pasaría la verificación: "${post.title}". No se ha escrito nada.`)
+    console.log(`✓ (dry-run) El post pasaría las comprobaciones: "${post.title}" (${resumen}). No se ha escrito nada.`)
+    if (process.argv.includes('--print')) console.log(`\n${post.contentMarkdown}`)
     return
   }
 
@@ -525,7 +624,7 @@ async function main() {
   writeFileSync(TOPICS_LOG_PATH, JSON.stringify(temasUsados, null, 2) + '\n', 'utf8')
 
   console.log(`✓ Post generado y verificado: "${post.title}" (content/blog/${slugFinal}.mdx)`)
-  console.log(`  Enlace de servicio: ${post.serviceLinkUsed}`)
+  console.log(`  Página de servicio principal: ${post.serviceLinkUsed} (${resumen})`)
 }
 
 main()

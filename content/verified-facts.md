@@ -31,6 +31,20 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
   existente.
 - Compatible con Stripe y Redsys para pagos.
 
+## Desarrollo, migración y mantenimiento de tiendas (PrestaShop y WooCommerce)
+- Innovapp desarrolla tiendas online con PrestaShop y con WooCommerce.
+- Desarrolla módulos de PrestaShop y plugins de WooCommerce a medida.
+- Migra y actualiza tiendas PrestaShop antiguas (1.6 y 1.7) a PrestaShop 8 y 9.
+- Actualiza WooCommerce, WordPress y la versión de PHP de la tienda.
+- Mantenimiento: corrección de errores y mejoras de rendimiento de la tienda.
+- Precio: presupuesto a medida según la tienda; NO hay tarifa publicada.
+  NO dar precios, plazos ni garantías para estos servicios.
+- NO hay casos de clientes, testimonios ni resultados publicados (empresa
+  nueva): NO inventar clientes, casos de éxito ni mejoras medidas.
+- El módulo del agente de IA para PrestaShop declara compatibilidad desde
+  PrestaShop 1.7. Si una tienda va en una versión anterior, primero se
+  actualiza.
+
 ## Qué puede hacer el agente de voz (por teléfono)
 - Atiende las llamadas que el negocio no coge: el negocio desvía las
   llamadas desde su móvil (cuando no contesta) al agente, y sigue
@@ -57,6 +71,9 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
 - /agentes-ia → genérica, negocios locales de cualquier sector
 - /agentes-ia-prestashop → específica para tiendas PrestaShop
 - /agentes-ia-woocommerce → específica para tiendas WooCommerce
+- /desarrollo-prestashop-woocommerce → desarrollo, migración, actualización y
+  mantenimiento de tiendas PrestaShop y WooCommerce
+- /contacto → formulario de contacto (CTA final de cada post)
 
 ## Instagram, integraciones futuras, etc.
 - Instagram Messaging aún no está implementado (solo arquitectura
