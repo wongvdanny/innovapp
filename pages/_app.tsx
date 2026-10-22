@@ -20,7 +20,7 @@ const ORGANIZATION_JSONLD = {
   description:
     'Empresa española de desarrollo web e inteligencia artificial para e-commerce: IA para PrestaShop y WooCommerce, desarrollo, migración y mantenimiento de tiendas online, agentes de IA por WhatsApp, Servix (TPV para restaurantes) y GymStack (gestión de gimnasios).',
   email: CONTACT_EMAIL,
-  telephone: '+34984276259',
+  telephone: '+34684902196',
   address: { '@type': 'PostalAddress', addressLocality: 'Oviedo', addressRegion: 'Asturias', addressCountry: 'ES' },
   areaServed: ['ES'],
   // sameAs: añadir aquí las URLs de los perfiles sociales cuando existan (hoy no hay ninguno enlazado en la web)

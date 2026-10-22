@@ -37,8 +37,14 @@ const FAQ: FaqItem[] = [
   {
     pregunta: "¿Cuánto cuesta?",
     respuesta:
-      "Desde 119 € al mes, más una puesta en marcha desde 450 €, según el plan que necesite tu tienda. Te recomendamos el plan adecuado después de ver tu catálogo.",
+      "Hay dos planes: Starter, desde 109 € al mes con alta desde 339 € y hasta 500 conversaciones al mes (consultas de catálogo), y Growth, desde 149 € al mes con alta desde 499 € y hasta 800 conversaciones al mes (venta guiada hasta el pago y revisión mensual). Precios sin IVA y sin permanencia.",
   },
+]
+
+// Precios oficiales e-commerce (sin IVA, sin permanencia). Mismos datos en content/verified-facts.md.
+const PLANES = [
+  { nombre: 'Starter', para: 'Consultas de catálogo', mes: 109, alta: 339, incluye: ['Hasta 500 conversaciones/mes', 'Consultas de catálogo: stock, precio y variantes'] },
+  { nombre: 'Growth', para: 'Venta guiada hasta el pago', mes: 149, alta: 499, destacado: true, incluye: ['Hasta 800 conversaciones/mes', 'Venta guiada hasta el pago: carrito y enlace de pago', 'Revisión mensual'] },
 ]
 
 const COMO_FUNCIONA_INTRO =
@@ -107,7 +113,7 @@ export default function AgentesIaPrestashopPage() {
     <>
       <Seo
         title="IA para PrestaShop | Chatbot y agentes IA para tu tienda – Innovapp"
-        description="IA para PrestaShop: un agente que atiende el WhatsApp de tu tienda 24/7 con tu catálogo real, recomienda productos, informa del estado de los pedidos y envía el enlace de pago. Desde 119 €/mes."
+        description="IA para PrestaShop: un agente que atiende el WhatsApp de tu tienda 24/7 con tu catálogo real, recomienda productos, informa del estado de los pedidos y envía el enlace de pago. Desde 109 €/mes."
         canonical="/agentes-ia-prestashop"
         jsonLd={[{
           '@context': 'https://schema.org',
@@ -122,10 +128,18 @@ export default function AgentesIaPrestashopPage() {
           areaServed: 'ES',
           audience: { '@type': 'Audience', audienceType: 'Tiendas online con PrestaShop' },
           offers: {
-            '@type': 'Offer',
+            '@type': 'AggregateOffer',
             priceCurrency: 'EUR',
-            priceSpecification: { '@type': 'UnitPriceSpecification', price: 119, priceCurrency: 'EUR', unitText: 'MONTH' },
-            description: 'Desde 119 € al mes más puesta en marcha desde 450 €, según plan.',
+            lowPrice: 109,
+            highPrice: 149,
+            offerCount: PLANES.length,
+            offers: PLANES.map((p) => ({
+              '@type': 'Offer',
+              name: p.nombre,
+              priceCurrency: 'EUR',
+              priceSpecification: { '@type': 'UnitPriceSpecification', price: p.mes, priceCurrency: 'EUR', unitText: 'MONTH', valueAddedTaxIncluded: false },
+              description: `Desde ${p.mes} €/mes sin IVA, alta desde ${p.alta} €. ${p.incluye.join('. ')}.`,
+            })),
           },
         }, faqJsonLd(FAQ)]}
       />
@@ -252,7 +266,7 @@ export default function AgentesIaPrestashopPage() {
       </section>
 
       <section style={{ padding: '90px 24px', background: '#faf8f4' }}>
-        <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 20 }}>
+        <div style={{ maxWidth: 760, margin: '0 auto', display: 'grid', gap: 20 }}>
           <div style={{ background: 'white', border: '1px solid #f1ece0', borderRadius: 18, padding: 30 }}>
             <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1a140d', margin: '0 0 6px' }}>Compatibilidad de versiones</h2>
             <div style={{ fontSize: 15, fontWeight: 700, color: '#c98826', marginBottom: 12 }}>PrestaShop 1.7, 8 y 9</div>
@@ -264,17 +278,41 @@ export default function AgentesIaPrestashopPage() {
               </Link>
             </p>
           </div>
-          <div style={{ background: '#12141a', borderRadius: 18, padding: 30 }}>
-            <h2 style={{ fontSize: 22, fontWeight: 700, color: '#ece9e2', margin: '0 0 6px' }}>Precio</h2>
-            <div style={{ fontSize: 15, color: '#97a0ac', marginBottom: 4 }}>desde</div>
-            <div style={{ fontSize: 44, fontWeight: 700, color: '#e8a33d', letterSpacing: -1, lineHeight: 1.1 }}>
-              119 €<span style={{ fontSize: 17, fontWeight: 500, color: '#97a0ac' }}> /mes</span>
-            </div>
-            <p style={{ fontSize: 14, color: '#97a0ac', lineHeight: 1.7, margin: '12px 0 0' }}>
-              Más puesta en marcha desde 450 €. Tres planes según lo que necesite tu tienda: te recomendamos el adecuado
-              después de ver tu catálogo. IVA no incluido.
+        </div>
+      </section>
+
+      <section id="precios" style={{ padding: '90px 24px', background: '#12141a' }}>
+        <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+          <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 40, color: '#ece9e2', textAlign: 'center' }}>
+            Precios
+          </h2>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 20 }}>
+            {PLANES.map((p) => (
+              <div key={p.nombre} style={{ background: 'rgba(255,255,255,.04)', border: `1.5px solid ${p.destacado ? '#e8a33d' : 'rgba(255,255,255,.1)'}`, borderRadius: 18, padding: 30 }}>
+                <h3 style={{ fontSize: 20, fontWeight: 700, color: '#ece9e2', margin: '0 0 4px' }}>{p.nombre}</h3>
+                <div style={{ fontSize: 14, color: '#97a0ac', marginBottom: 14 }}>{p.para}</div>
+                <div style={{ fontSize: 14, color: '#97a0ac' }}>desde</div>
+                <div style={{ fontSize: 42, fontWeight: 700, color: '#e8a33d', letterSpacing: -1, lineHeight: 1.1 }}>
+                  {p.mes} €<span style={{ fontSize: 16, fontWeight: 500, color: '#97a0ac' }}> /mes</span>
+                </div>
+                <div style={{ fontSize: 14, color: '#ece9e2', margin: '6px 0 16px' }}>Alta desde {p.alta} €</div>
+                <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14, color: '#c9cdd4', lineHeight: 1.8 }}>
+                  {p.incluye.map((i) => <li key={i}>{i}</li>)}
+                </ul>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 20, background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 18, padding: '22px 26px' }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: '#ece9e2', margin: '0 0 8px' }}>
+              Extra: <Link href="/agentes-voz" style={{ color: '#e8a33d', textDecoration: 'underline' }}>agente de voz</Link> para las llamadas que no coges
+            </h3>
+            <p style={{ fontSize: 14, color: '#c9cdd4', lineHeight: 1.8, margin: 0 }}>
+              Básico 120 min +49 €/mes · Plus 220 min +79 €/mes · Pro 350 min +119 €/mes. Minuto adicional 0,30 €. Alta de voz +119 €.
             </p>
           </div>
+          <p style={{ fontSize: 12, color: '#97a0ac', lineHeight: 1.7, margin: '20px 0 0', textAlign: 'center' }}>
+            Precios sin IVA. Sin permanencia. Mensajes de WhatsApp de Meta incluidos hasta el volumen del plan; por encima, y en campañas de marketing, se facturan aparte a coste de Meta.
+          </p>
         </div>
       </section>
 

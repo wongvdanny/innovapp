@@ -24,7 +24,7 @@ const SERVICIOS: [string, string, string][] = [
 
 const PASOS: [string, string, string][] = [
   ['1', 'Revisamos tu tienda', 'Versión de PrestaShop o WooCommerce, PHP, módulos o plugins, tema y servidor. Así sabemos qué hay que tocar antes de dar un precio.'],
-  ['2', 'Propuesta y presupuesto cerrado', 'Te explicamos qué vamos a hacer, cuánto cuesta y qué riesgos vemos, en lenguaje claro. Sin compromiso.'],
+  ['2', 'Propuesta y presupuesto detallado antes de empezar', 'Te explicamos qué vamos a hacer, cuánto cuesta y qué riesgos vemos, en lenguaje claro. Sin compromiso.'],
   ['3', 'Trabajamos sobre una copia', 'Las migraciones y actualizaciones se preparan y se prueban en una copia de tu tienda, sin tocar la que está vendiendo.'],
   ['4', 'Publicamos y revisamos contigo', 'Planificamos el cambio para un momento de poco tráfico y comprobamos juntos pedidos, pagos y envíos.'],
 ]
@@ -60,7 +60,7 @@ const FAQ: FaqItem[] = [
   {
     pregunta: '¿Cuánto cuesta?',
     respuesta:
-      'Depende de la tienda: versión, número de módulos o plugins, tema y servidor. Primero la revisamos y te damos un presupuesto cerrado, sin compromiso.',
+      'Depende de la tienda: versión, número de módulos o plugins, tema y servidor. Primero la revisamos y te damos un presupuesto detallado antes de empezar, sin compromiso.',
   },
   {
     pregunta: '¿Trabajáis con tiendas de toda España?',
@@ -80,7 +80,7 @@ export default function DesarrolloPrestashopWoocommercePage() {
     <>
       <Seo
         title="Desarrollo y actualización de PrestaShop y WooCommerce – Innovapp"
-        description="Desarrollo de tiendas online, módulos y plugins a medida, migración de PrestaShop 1.6/1.7 a 8 y 9, actualización de WooCommerce y PHP, mantenimiento y rendimiento. Presupuesto cerrado."
+        description="Desarrollo de tiendas online, módulos y plugins a medida, migración de PrestaShop 1.6/1.7 a 8 y 9, actualización de WooCommerce y PHP, mantenimiento y rendimiento. Presupuesto detallado antes de empezar."
         canonical="/desarrollo-prestashop-woocommerce"
         jsonLd={[
           {
@@ -113,7 +113,7 @@ export default function DesarrolloPrestashopWoocommercePage() {
           </h1>
           <p style={{ fontSize: 'clamp(15px,2vw,18px)', color: 'rgba(255,255,255,.65)', maxWidth: 660, margin: '0 auto 36px', lineHeight: 1.75 }}>
             Creamos tiendas online, programamos módulos y plugins a medida, migramos PrestaShop a las versiones 8 y 9 y mantenemos
-            tu WooCommerce al día. Te hablamos claro, con presupuesto cerrado y trabajando sobre una copia de tu tienda.
+            tu WooCommerce al día. Te hablamos claro, con un presupuesto detallado antes de empezar y trabajando sobre una copia de tu tienda.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/contacto" style={botonPrincipal}>Pide presupuesto sin compromiso →</Link>

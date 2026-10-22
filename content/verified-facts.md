@@ -63,9 +63,19 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
 - Se presenta como asistente virtual al inicio de la llamada.
 - Número de demo (nuestro propio agente de voz): +34 984 276 259.
 
-## Precios (a fecha de esta config; verificar si cambian)
-- Negocios locales: 89€/149€/229€ al mes, según tier (setup 300€/450€/600€)
-- E-commerce: 119€/199€/299€ al mes, según tier (setup 450€/700€/950€+)
+## Precios oficiales (sin IVA, sin permanencia). NO usar otros importes
+- Negocios locales (/agentes-ia):
+  - Esencial: desde 95 €/mes, alta desde 229 €, hasta 300 conversaciones/mes.
+  - Pro: desde 149 €/mes, alta desde 349 €, hasta 500 conversaciones/mes.
+- E-commerce (/agentes-ia-prestashop, /agentes-ia-woocommerce):
+  - Starter: desde 109 €/mes, alta desde 339 €, hasta 500 conversaciones/mes
+    (consultas de catálogo).
+  - Growth: desde 149 €/mes, alta desde 499 €, hasta 800 conversaciones/mes
+    (venta guiada hasta el pago, revisión mensual).
+- Extra de voz: Básico 120 min +49 €/mes, Plus 220 min +79 €/mes, Pro 350 min
+  +119 €/mes. Minuto adicional 0,30 €. Alta de voz +119 €.
+- Mensajes de WhatsApp de Meta incluidos hasta el volumen del plan; por
+  encima, y en campañas de marketing, se facturan aparte a coste de Meta.
 
 ## Landings/páginas de servicio (para enlazar desde el blog)
 - /agentes-ia → genérica, negocios locales de cualquier sector
