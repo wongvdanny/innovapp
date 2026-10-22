@@ -96,6 +96,7 @@ export default function Baja() {
         title="Solicitar la baja de un servicio — innovapp"
         description="Formulario para solicitar la baja de Servix, GymStack o los Agentes IA de innovapp."
         canonical="/baja"
+        noindex
       />
       <Nav />
 

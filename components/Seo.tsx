@@ -25,6 +25,9 @@ export interface SeoProps {
 const abs = (path: string) =>
   /^https?:\/\//.test(path) ? path : `${SITE_URL}${path.startsWith('/') ? '' : '/'}${path}`
 
+/** Canonical absoluto y sin barra final, igual que las <loc> del sitemap ('/' → https://innovapp.es). */
+const canonicalUrl = (path: string) => abs(path).replace(/\/+$/, '')
+
 export default function Seo({
   title,
   description,
@@ -34,7 +37,7 @@ export default function Seo({
   noindex = false,
   jsonLd,
 }: SeoProps) {
-  const url = abs(canonical)
+  const url = canonicalUrl(canonical)
   const image = abs(ogImage)
   const schemas = jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : []
 
