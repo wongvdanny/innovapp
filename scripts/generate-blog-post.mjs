@@ -161,7 +161,8 @@ function guardarTemasExcluidos(temas) {
 function podarYObtenerTemasExcluidosRecientes() {
   const todos = leerTemasExcluidos()
   const limite = Date.now() - DIAS_EXCLUSION_TEMPORAL * 24 * 60 * 60 * 1000
-  const recientes = todos.filter((t) => new Date(t.rejectedDate).getTime() >= limite)
+  // Las entradas permanent (temas de posts fusionados en otro) no caducan nunca
+  const recientes = todos.filter((t) => t.permanent || new Date(t.rejectedDate).getTime() >= limite)
   guardarTemasExcluidos(recientes)
   return recientes
 }
@@ -516,7 +517,7 @@ async function main() {
   const listaCombinada = [
     ...publicados.map((p) => `- ${p.title} (ya publicado, /blog/${p.slug})`),
     ...temasUsados.map((t) => `- ${t.topic} (tema ya publicado)`),
-    ...temasExcluidosRecientes.map((t) => `- ${t.topic} (rechazado recientemente)`),
+    ...temasExcluidosRecientes.map((t) => `- ${t.topic} (${t.permanent ? 'ya cubierto' : 'rechazado recientemente'})`),
   ]
   const bloqueTemas = listaCombinada.length > 0
     ? `Estos temas ya están publicados o se rechazaron hace poco — elige un tema genuinamente distinto, no una variación superficial:\n${listaCombinada.join('\n')}`

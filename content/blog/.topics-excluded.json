@@ -10,5 +10,41 @@
   {
     "topic": "Cómo convertir las consultas técnicas de clientes en diagnósticos rápidos que cierren ventas (sin sobrecargar tu equipo)",
     "rejectedDate": "2026-10-06"
+  },
+  {
+    "topic": "Cómo evitar perder clientes por no responder WhatsApp a tiempo",
+    "rejectedDate": "2026-10-22",
+    "permanent": true,
+    "motivo": "fusionado en /blog/responder-bien-whatsapp-no-perder-clientes"
+  },
+  {
+    "topic": "El coste oculto de dejar a un cliente sin respuesta en WhatsApp: cómo una no-respuesta se convierte en pérdida de ingresos recurrentes",
+    "rejectedDate": "2026-10-22",
+    "permanent": true,
+    "motivo": "fusionado en /blog/responder-bien-whatsapp-no-perder-clientes"
+  },
+  {
+    "topic": "Cómo la falta de respuesta inmediata en WhatsApp afecta a la reputación online de tu negocio",
+    "rejectedDate": "2026-10-22",
+    "permanent": true,
+    "motivo": "fusionado en /blog/responder-bien-whatsapp-no-perder-clientes"
+  },
+  {
+    "topic": "Cómo una mala experiencia en WhatsApp hace que clientes nunca vuelvan a tu negocio",
+    "rejectedDate": "2026-10-22",
+    "permanent": true,
+    "motivo": "fusionado en /blog/responder-bien-whatsapp-no-perder-clientes"
+  },
+  {
+    "topic": "Cómo rentabilizar las horas de cierre: vender mientras duermes con un agente de IA",
+    "rejectedDate": "2026-10-22",
+    "permanent": true,
+    "motivo": "fusionado en /blog/negocio-pierde-clientes-fuera-horario"
+  },
+  {
+    "topic": "Cómo convertir las preguntas frecuentes en oportunidades de venta que tu equipo está dejando escapar",
+    "rejectedDate": "2026-10-22",
+    "permanent": true,
+    "motivo": "fusionado en /blog/automatizar-consultas-repetitivas-whatsapp"
   }
 ]
