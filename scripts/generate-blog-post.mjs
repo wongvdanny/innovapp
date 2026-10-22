@@ -6,12 +6,13 @@
 // reescribe con los problemas encontrados (hasta REESCRITURAS_MAXIMAS veces); si sigue
 // fallando, el borrador va a content/blog/.rejected/. Si el texto no termina con enlace a
 // /contacto, se añade un CTA final (no se rechaza por eso). Solo si pasa se escribe
-// content/blog/{slug}.mdx y se actualiza .topics-log.json.
+// content/blog/.drafts/{slug}.mdx (borrador), se avisa por email y se actualiza
+// .topics-log.json; el borrador se publica al aprobarlo en /admin (pestaña Blog).
 // Uso: node scripts/generate-blog-post.mjs  (o  npm run blog:generate)
 //      node scripts/generate-blog-post.mjs --dry-run [--print]   (sin escribir nada; --print muestra el texto)
 import Anthropic from '@anthropic-ai/sdk'
 import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import { dirname, join } from 'node:path'
 
 try {
@@ -23,6 +24,9 @@ try {
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const BLOG_DIR = join(ROOT, 'content/blog')
 const REJECTED_DIR = join(BLOG_DIR, '.rejected')
+const DRAFTS_DIR = join(BLOG_DIR, '.drafts')
+const SITE_URL = 'https://innovapp.es'
+const AVISO_EMAIL = 'contacto@innovapp.es'
 const TOPICS_LOG_PATH = join(BLOG_DIR, '.topics-log.json')
 const TOPICS_EXCLUDED_PATH = join(BLOG_DIR, '.topics-excluded.json')
 const VERIFIED_FACTS_PATH = join(ROOT, 'content/verified-facts.md')
@@ -603,29 +607,76 @@ async function main() {
     return
   }
 
-  // --- Todo correcto: escribir el post y actualizar el log de temas ---
-  const slugFinal = resolverSlugSinColision(normalizarSlug(post.slug))
+  // --- Todo correcto: guardar como BORRADOR (se publica al aprobarlo en /admin) ---
+  const slugFinal = resolverSlugSinColisionTotal(normalizarSlug(post.slug))
   const hoy = new Date().toISOString().slice(0, 10)
+  const ruta = escribirBorrador({ ...post, slug: slugFinal, date: hoy })
 
-  const frontmatter = [
-    '---',
-    `title: ${JSON.stringify(post.title)}`,
-    `slug: ${JSON.stringify(slugFinal)}`,
-    `date: ${JSON.stringify(hoy)}`,
-    `description: ${JSON.stringify(post.description)}`,
-    `topic: ${JSON.stringify(post.topic)}`,
-    '---',
-    '',
-  ].join('\n')
-
-  const rutaArchivo = join(BLOG_DIR, `${slugFinal}.mdx`)
-  writeFileSync(rutaArchivo, frontmatter + post.contentMarkdown.trim() + '\n', 'utf8')
-
+  // El tema cuenta como usado desde ya, para no generar otro igual mientras espera aprobación
   temasUsados.push({ topic: post.topic, title: post.title, date: hoy })
   writeFileSync(TOPICS_LOG_PATH, JSON.stringify(temasUsados, null, 2) + '\n', 'utf8')
 
-  console.log(`✓ Post generado y verificado: "${post.title}" (content/blog/${slugFinal}.mdx)`)
+  console.log(`✓ Borrador generado y verificado: "${post.title}" (content/blog/.drafts/${slugFinal}.mdx)`)
   console.log(`  Página de servicio principal: ${post.serviceLinkUsed} (${resumen})`)
+  await avisarBorrador({ title: post.title, slug: slugFinal, resumen })
+  return ruta
 }
 
-main()
+// --- Borradores: se escriben en content/blog/.drafts/ y se publican desde /admin ---
+
+/** Slug libre tanto entre los publicados como entre los borradores pendientes. */
+function resolverSlugSinColisionTotal(slugBase) {
+  let slug = slugBase
+  let intento = 2
+  while (existsSync(join(BLOG_DIR, `${slug}.mdx`)) || existsSync(join(DRAFTS_DIR, `${slug}.mdx`))) {
+    slug = `${slugBase}-${intento}`
+    intento++
+  }
+  return slug
+}
+
+/** Escribe content/blog/.drafts/{slug}.mdx. extra: campos adicionales del frontmatter (p. ej. fusion). */
+export function escribirBorrador({ title, slug, date, description, topic, contentMarkdown }, extra = {}) {
+  mkdirSync(DRAFTS_DIR, { recursive: true })
+  const campos = { title, slug, date, description, topic, ...extra }
+  const frontmatter = ['---', ...Object.entries(campos).map(([k, v]) => `${k}: ${JSON.stringify(v)}`), '---', ''].join('\n')
+  const ruta = join(DRAFTS_DIR, `${slug}.mdx`)
+  writeFileSync(ruta, frontmatter + contentMarkdown.trim() + '\n', 'utf8')
+  return ruta
+}
+
+/**
+ * Email (Resend) a contacto@ con el enlace de vista previa del borrador. Un fallo del envío
+ * no anula el borrador: queda igualmente en la pestaña Blog de /admin.
+ */
+export async function avisarBorrador({ title, slug, resumen, motivo = 'Nuevo borrador del blog' }) {
+  const url = `${SITE_URL}/admin/blog/borrador/${slug}`
+  if (!process.env.RESEND_API_KEY) {
+    console.error(`Aviso: sin RESEND_API_KEY, no se envía el email. Vista previa: ${url}`)
+    return
+  }
+  try {
+    const { Resend } = await import('resend')
+    const resend = new Resend(process.env.RESEND_API_KEY)
+    const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+    const { error } = await resend.emails.send({
+      from: process.env.RESEND_FROM ?? 'innovapp <no-reply@mail.innovapp.es>',
+      to: AVISO_EMAIL,
+      subject: `${motivo}: ${title}`,
+      html: `<p>${esc(motivo)} pendiente de aprobación:</p><p><strong>${esc(title)}</strong>${resumen ? ` (${esc(resumen)})` : ''}</p><p><a href="${url}">Ver la vista previa y publicarlo o descartarlo</a></p><p style="color:#888;font-size:12px">No se publica nada hasta que lo apruebes en /admin.</p>`,
+    })
+    if (error) throw new Error(error.message)
+    console.log(`  Aviso enviado a ${AVISO_EMAIL}`)
+  } catch (error) {
+    console.error(`Aviso: no se pudo enviar el email (${error.message}). Vista previa: ${url}`)
+  }
+}
+
+export {
+  BLOG_DIR, DRAFTS_DIR, MAX_TOKENS_REDACCION, REESCRITURAS_MAXIMAS,
+  leerHechosVerificados, llamarClaudeConReintento, verificarPost, validarVerificacion,
+  extraerFuncionesNoImplementadas, asegurarCtaContacto, contarPalabras, anadirTemaExcluido,
+}
+
+// Solo al ejecutarlo directamente (node scripts/generate-blog-post.mjs), no al importarlo
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main()

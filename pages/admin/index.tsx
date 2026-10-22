@@ -685,11 +685,24 @@ function BlogTab() {
   }, [datos === null, generando])
 
   const generar = async () => {
-    if (!confirm('Se generará un post nuevo con IA y, si pasa la verificación de hechos, se publicará en el blog. ¿Continuar?')) return
+    if (!confirm('Se generará un post nuevo con IA y, si pasa la verificación de hechos, quedará como borrador para que lo revises. ¿Continuar?')) return
     setError('')
     const r = await fetch('/api/admin/blog', { method: 'POST' })
     const d = await r.json().catch(() => ({}))
     if (!r.ok) setError(d.error || `Error ${r.status}`)
+    cargar()
+  }
+
+  const actuarBorrador = async (accion: 'publicar' | 'descartar', b: any) => {
+    const pregunta = accion === 'publicar'
+      ? (b.sustituye ? `Se sustituirá el post publicado /blog/${b.slug} por el borrador. ¿Publicar?` : `¿Publicar «${b.title}»?`)
+      : `¿Descartar «${b.title}»? No se publicará.`
+    if (!confirm(pregunta)) return
+    setError('')
+    const r = await fetch('/api/admin/blog', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ accion, slug: b.slug }) })
+    const d = await r.json().catch(() => ({}))
+    if (!r.ok) setError(d.error || `Error ${r.status}`)
+    else if (d.avisos?.length) setError(d.avisos.join(' · '))
     cargar()
   }
 
@@ -705,7 +718,8 @@ function BlogTab() {
         <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e', marginBottom: 8 }}>Generar un post</h3>
         <p style={{ fontSize: 13, color: '#4a6572', lineHeight: 1.7, marginBottom: 20 }}>
           Genera un post con IA sobre un tema que no se haya tratado y lo contrasta con los hechos verificados del producto.
-          Si pasa, se publica directamente en el blog; si no, queda como borrador rechazado y no se publica nada. Tarda alrededor de un minuto.
+          Si pasa, queda como borrador pendiente (abajo) y te llega un email con la vista previa: no se publica hasta que lo apruebes. Tarda unos minutos.
+          El cron lo hace solo los lunes y jueves a las 6:00.
         </p>
         <button
           onClick={generar}
@@ -720,16 +734,15 @@ function BlogTab() {
 
         {error && <p role="alert" style={{ fontSize: 13, color: '#991b1b', marginTop: 16 }}>{error}</p>}
 
-        {e.fase === 'publicado' && (
+        {e.fase === 'borrador' && (
           <div role="status" style={{ marginTop: 20, background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: 12, padding: 16, fontSize: 13, color: '#166534', lineHeight: 1.7 }}>
-            <strong>Publicado</strong> ({fecha(e.fin)}): «{e.titulo}».{' '}
-            <a href={`/blog/${e.slug}`} target="_blank" rel="noopener noreferrer" style={{ color: '#166534', fontWeight: 700 }}>Ver el post →</a>
-            {e.avisos.map((a: string, i: number) => <div key={i} style={{ color: '#92400e', marginTop: 6 }}>⚠ {a}</div>)}
+            <strong>Borrador listo</strong> ({fecha(e.fin)}): «{e.titulo}».{' '}
+            <a href={`/admin/blog/borrador/${e.slug}`} style={{ color: '#166534', fontWeight: 700 }}>Revisar y publicar →</a>
           </div>
         )}
         {(e.fase === 'rechazado' || e.fase === 'error') && (
           <div role="alert" style={{ marginTop: 20, background: '#fff1f2', border: '1px solid #fca5a5', borderRadius: 12, padding: 16, fontSize: 13, color: '#991b1b', lineHeight: 1.7 }}>
-            <strong>{e.fase === 'rechazado' ? 'No se ha publicado: la verificación de hechos ha rechazado el borrador' : 'No se ha podido generar el post'}</strong>
+            <strong>{e.fase === 'rechazado' ? 'No hay borrador: la verificación lo ha rechazado' : 'No se ha podido generar el post'}</strong>
             {e.titulo ? <> («{e.titulo}»)</> : null} · {fecha(e.fin)}
             <ul style={{ margin: '8px 0 0', paddingLeft: 18 }}>
               {e.detalle.map((d: string, i: number) => <li key={i} style={{ overflowWrap: 'anywhere' }}>{d}</li>)}
@@ -737,6 +750,26 @@ function BlogTab() {
             {e.fase === 'rechazado' && <div style={{ marginTop: 8 }}>El borrador queda guardado en content/blog/.rejected/. Puedes volver a pulsar el botón: probará con otro tema.</div>}
           </div>
         )}
+      </div>
+
+      <div style={{ ...caja, gridColumn: '1 / -1' }}>
+        <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1e1e1e', marginBottom: 16 }}>Borradores pendientes de aprobación ({datos.borradores.length})</h3>
+        {datos.borradores.length === 0 && <p style={{ color: '#88a8b0', fontSize: 14 }}>No hay borradores pendientes.</p>}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+          {datos.borradores.map((b: any) => (
+            <div key={b.slug} style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap', padding: '12px 14px', background: '#fffbeb', border: '1px solid #fde68a', borderRadius: 10 }}>
+              <div style={{ flex: 1, minWidth: 220 }}>
+                <div style={{ fontSize: 14, fontWeight: 600, color: '#1e1e1e' }}>{b.title}</div>
+                <div style={{ fontSize: 12, color: '#92400e' }}>
+                  {b.fusion ? `Fusión de ${b.fusion.length} posts · sustituye a /blog/${b.slug}` : `Nuevo · /blog/${b.slug}`} · {b.updated ?? b.date}
+                </div>
+              </div>
+              <a href={`/admin/blog/borrador/${b.slug}`} style={{ fontSize: 13, fontWeight: 700, color: '#ee7528' }}>Vista previa</a>
+              <button onClick={() => actuarBorrador('descartar', b)} style={{ padding: '7px 12px', borderRadius: 8, border: '1px solid #e5e7eb', background: 'white', fontSize: 13, cursor: 'pointer' }}>Descartar</button>
+              <button onClick={() => actuarBorrador('publicar', b)} style={{ padding: '7px 14px', borderRadius: 8, border: 'none', background: 'linear-gradient(135deg,#ee7528,#c85f1b)', color: 'white', fontSize: 13, fontWeight: 700, cursor: 'pointer' }}>Publicar</button>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div style={caja}>

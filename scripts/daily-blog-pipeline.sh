@@ -1,6 +1,9 @@
 #!/bin/bash
-# Pipeline diario: genera un post de blog con IA, lo commitea/pushea, rebuilda y
-# reinicia el sitio, y avisa a Google Search Console del sitemap actualizado.
+# Pipeline del blog (cron: lunes y jueves a las 6:00). Genera un post con IA como BORRADOR
+# en content/blog/.drafts/ y avisa por email (Resend) a contacto@innovapp.es con el enlace
+# de vista previa. No publica, no commitea y no despliega: el post se publica al aprobarlo
+# en /admin (pestaña Blog), que lo pasa a content/blog, lo confirma en git, lo añade al
+# sitemap y avisa a Search Console. Todo eso lo hace scripts/generate-blog-post.mjs + lib/blog-manual.ts.
 set -e
 
 LOG_FILE=/var/log/innovapp-blog-pipeline.log
@@ -11,46 +14,24 @@ log() {
 
 cd /var/www/innovapp
 
-log "=== Inicio del pipeline ==="
+log "=== Inicio del pipeline (modo borrador) ==="
 
-# Para distinguir en el log un rechazo por verificación de hechos de cualquier otro
-# fallo (API caída, falta ANTHROPIC_API_KEY, JSON inválido, etc.), se cuentan los
-# borradores en content/blog/.rejected/ antes y después -- si generate-blog-post.mjs
-# escribió uno nuevo, fue justo ese el motivo del código de salida distinto de cero.
+# Para distinguir en el log un rechazo por verificación de cualquier otro fallo (API caída,
+# sin crédito, JSON inválido...), se cuentan los rechazados antes y después.
 REJECTED_DIR="content/blog/.rejected"
 RECHAZADOS_ANTES=$(find "$REJECTED_DIR" -type f -name '*.json' 2>/dev/null | wc -l)
 
-log "Generando post de blog..."
+log "Generando borrador..."
 if node scripts/generate-blog-post.mjs >> "$LOG_FILE" 2>&1; then
-  log "Post generado correctamente."
-
-  log "Commiteando y subiendo el post..."
-  git add content/blog/
-  git commit -m "Blog post automático: $(date +%F)" >> "$LOG_FILE" 2>&1
-  git push >> "$LOG_FILE" 2>&1
-  log "Commit y push completados."
+  log "Borrador generado y aviso enviado (ver arriba). Pendiente de aprobación en /admin."
 else
   RECHAZADOS_DESPUES=$(find "$REJECTED_DIR" -type f -name '*.json' 2>/dev/null | wc -l)
   if [ "$RECHAZADOS_DESPUES" -gt "$RECHAZADOS_ANTES" ]; then
-    log "Post rechazado por verificación de hechos, revisar content/blog/.rejected/"
+    log "Borrador rechazado por verificación, revisar content/blog/.rejected/"
   else
-    log "ERROR: no se pudo generar el post de blog. Se aborta el pipeline sin tocar el despliegue."
+    log "ERROR: no se pudo generar el borrador."
   fi
   exit 1
-fi
-
-log "Desplegando (scripts/deploy.sh: build aparte, cambio atómico y rollback si no da 200)..."
-if ! scripts/deploy.sh >> "$LOG_FILE" 2>&1; then
-  log "ERROR: el despliegue ha fallado; la web sigue con la versión anterior. Ver /var/log/innovapp-deploy.log"
-  exit 1
-fi
-log "Despliegue completado."
-
-log "Enviando sitemap a Google Search Console..."
-if node scripts/submit-sitemap.mjs >> "$LOG_FILE" 2>&1; then
-  log "Sitemap enviado correctamente."
-else
-  log "AVISO: fallo al enviar el sitemap a Search Console (el despliegue ya se hizo igualmente)."
 fi
 
 log "=== Fin del pipeline ==="

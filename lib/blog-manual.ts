@@ -2,14 +2,16 @@ import { spawn, execFile } from 'child_process'
 import { promisify } from 'util'
 import fs from 'fs'
 import path from 'path'
+import matter from 'gray-matter'
 
 // Generación manual de un post del blog desde /admin (pestaña Blog). SOLO servidor: usa
 // child_process y fs, no importar desde una página (solo desde pages/api/admin/blog.ts).
 //
-// Hace lo mismo que scripts/daily-blog-pipeline.sh salvo el despliegue: ejecuta
-// scripts/generate-blog-post.mjs (generación + verificación de hechos) y, si el post pasa,
-// lo confirma en git y lo añade al sitemap. No hace falta recompilar la web: /blog y
-// /blog/[slug] leen content/blog en caliente (ISR, ver esas páginas).
+// Igual que scripts/daily-blog-pipeline.sh: ejecuta scripts/generate-blog-post.mjs
+// (generación + verificación de hechos), que deja el post como BORRADOR en
+// content/blog/.drafts/ y avisa por email. publicarBorrador() lo publica al aprobarlo:
+// lo mueve a content/blog, lo confirma en git y lo añade al sitemap. No hace falta
+// recompilar la web: /blog y /blog/[slug] leen content/blog en caliente (ISR).
 
 const exec = promisify(execFile)
 const ROOT = process.cwd()
@@ -17,7 +19,7 @@ const SITEMAP = path.join(ROOT, 'public/sitemap-0.xml')
 const TIMEOUT_MS = 5 * 60 * 1000
 
 export type EstadoBlogManual = {
-  fase: 'inactivo' | 'generando' | 'publicado' | 'rechazado' | 'error'
+  fase: 'inactivo' | 'generando' | 'borrador' | 'rechazado' | 'error'
   inicio: string | null
   fin: string | null
   por: string | null
@@ -25,10 +27,6 @@ export type EstadoBlogManual = {
   slug: string | null
   /** Motivos del rechazo o del error. */
   detalle: string[]
-  /** Pasos posteriores a la generación que no salieron bien (git, sitemap): el post está publicado igualmente. */
-  avisos: string[]
-  /** /blog ya se ha regenerado con el post nuevo (lo hace la API en la primera consulta tras publicar). */
-  revalidado: boolean
 }
 
 // En globalThis: una sola generación a la vez en todo el proceso (la web corre en un único
@@ -37,20 +35,20 @@ const g = globalThis as unknown as { blogManual?: EstadoBlogManual }
 
 export function estadoBlogManual(): EstadoBlogManual {
   return (g.blogManual ??= {
-    fase: 'inactivo', inicio: null, fin: null, por: null, titulo: null, slug: null, detalle: [], avisos: [], revalidado: false,
+    fase: 'inactivo', inicio: null, fin: null, por: null, titulo: null, slug: null, detalle: [],
   })
 }
 
 export type ResultadoGenerador =
-  | { fase: 'publicado'; titulo: string; slug: string }
+  | { fase: 'borrador'; titulo: string; slug: string }
   | { fase: 'rechazado'; titulo: string | null; detalle: string[] }
   | { fase: 'error'; detalle: string[] }
 
 /** Interpreta la salida de scripts/generate-blog-post.mjs (sus mensajes ✓ / ✗ y su código de salida). */
 export function interpretarSalida(codigo: number | null, salida: string): ResultadoGenerador {
   const lineas = salida.split('\n').map((l) => l.trimEnd()).filter(Boolean)
-  const exito = salida.match(/✓ Post generado y verificado: "(.+)" \(content\/blog\/(.+)\.mdx\)/)
-  if (codigo === 0 && exito) return { fase: 'publicado', titulo: exito[1], slug: exito[2] }
+  const exito = salida.match(/✓ Borrador generado y verificado: "(.+)" \(content\/blog\/\.drafts\/(.+)\.mdx\)/)
+  if (codigo === 0 && exito) return { fase: 'borrador', titulo: exito[1], slug: exito[2] }
 
   const rechazo = salida.match(/✗ Post RECHAZADO[^"]*"(.+)"/)
   if (rechazo) {
@@ -80,20 +78,48 @@ function anadirAlSitemap(slug: string): void {
   fs.writeFileSync(SITEMAP, xml.replace('</urlset>', `${entrada}</urlset>`), 'utf8')
 }
 
-async function publicar(estado: EstadoBlogManual, titulo: string, slug: string): Promise<void> {
+const BLOG_DIR = path.join(ROOT, 'content/blog')
+const DRAFTS_DIR = path.join(BLOG_DIR, '.drafts')
+const PATRON_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
+
+/**
+ * Publica un borrador aprobado: content/blog/.drafts/{slug}.mdx → content/blog/{slug}.mdx
+ * (si es una fusión, sustituye al post con ese slug), git (commit + push en main), sitemap
+ * y aviso a Search Console. Devuelve los pasos posteriores que fallaron: el post queda
+ * publicado igualmente. La API revalida /blog y /blog/{slug} después.
+ */
+export async function publicarBorrador(slug: string): Promise<{ titulo: string; avisos: string[] }> {
+  if (!PATRON_SLUG.test(slug)) throw new Error('Slug no válido')
+  const origen = path.join(DRAFTS_DIR, `${slug}.mdx`)
+  if (!fs.existsSync(origen)) throw new Error('El borrador no existe')
+  const titulo = String(matter(fs.readFileSync(origen, 'utf8')).data.title ?? slug)
+  fs.renameSync(origen, path.join(BLOG_DIR, `${slug}.mdx`))
+
+  const avisos: string[] = []
   const paso = async (nombre: string, fn: () => unknown | Promise<unknown>) => {
     try {
       await fn()
     } catch (error) {
       const mensaje = error instanceof Error ? error.message.split('\n')[0] : String(error)
       console.error(`[blog-manual] ${nombre}:`, error)
-      estado.avisos.push(`${nombre}: ${mensaje}`)
+      avisos.push(`${nombre}: ${mensaje}`)
     }
   }
   await paso('No se pudo confirmar el post en git', () => confirmarEnGit(titulo))
   await paso('No se pudo añadir al sitemap', () => anadirAlSitemap(slug))
   await paso('No se pudo avisar a Google Search Console', () =>
     exec('node', ['scripts/submit-sitemap.mjs'], { cwd: ROOT, timeout: 60_000 }))
+  return { titulo, avisos }
+}
+
+/** Descarta un borrador: lo aparta a .drafts/.descartados/ (no se borra). */
+export function descartarBorrador(slug: string): void {
+  if (!PATRON_SLUG.test(slug)) throw new Error('Slug no válido')
+  const origen = path.join(DRAFTS_DIR, `${slug}.mdx`)
+  if (!fs.existsSync(origen)) throw new Error('El borrador no existe')
+  const destino = path.join(DRAFTS_DIR, '.descartados')
+  fs.mkdirSync(destino, { recursive: true })
+  fs.renameSync(origen, path.join(destino, `${new Date().toISOString().slice(0, 10)}-${slug}.mdx`))
 }
 
 /**
@@ -105,7 +131,7 @@ export function generarPostManual(por: string): boolean {
   if (actual.fase === 'generando') return false
 
   const estado: EstadoBlogManual = {
-    fase: 'generando', inicio: new Date().toISOString(), fin: null, por, titulo: null, slug: null, detalle: [], avisos: [], revalidado: false,
+    fase: 'generando', inicio: new Date().toISOString(), fin: null, por, titulo: null, slug: null, detalle: [],
   }
   g.blogManual = estado
 
@@ -124,13 +150,11 @@ export function generarPostManual(por: string): boolean {
     clearTimeout(limite)
     console.log(`[blog-manual] generador terminado (código ${codigo}) lanzado por ${por}:\n${salida}`)
     const resultado = interpretarSalida(codigo, salida)
-    if (resultado.fase !== 'publicado') {
+    if (resultado.fase !== 'borrador') {
       terminar({ fase: resultado.fase, titulo: 'titulo' in resultado ? resultado.titulo : null, detalle: resultado.detalle })
       return
     }
-    estado.titulo = resultado.titulo
-    estado.slug = resultado.slug
-    publicar(estado, resultado.titulo, resultado.slug).finally(() => terminar({ fase: 'publicado' }))
+    terminar({ fase: 'borrador', titulo: resultado.titulo, slug: resultado.slug })
   })
   return true
 }

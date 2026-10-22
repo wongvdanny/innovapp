@@ -20,3 +20,6 @@ storage/
 .next-prev/
 .next-fallida/
 *.deploy.bak
+
+# Borradores del blog (se publican desde /admin) y descartados
+/content/blog/.drafts/
