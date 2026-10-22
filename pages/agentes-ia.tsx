@@ -8,6 +8,20 @@ import VozDemo from '../components/VozDemo'
 import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
 import { CONTACT_EMAIL } from '../lib/constants'
 
+// Sección "¿Qué es un agente de IA?", en lenguaje llano y sin tecnicismos: qué es, en qué
+// se diferencia de un chatbot de menús, y qué procesos (más allá de WhatsApp/voz) se
+// pueden automatizar con IA a medida.
+const PROCESOS_AUTOMATIZABLES = [
+  ['📅', 'Atención y reservas'],
+  ['📦', 'Seguimiento de pedidos'],
+  ['🎯', 'Captación y cualificación de leads'],
+  ['🔔', 'Recordatorios y confirmaciones'],
+  ['🧾', 'Presupuestos, facturas y documentos'],
+  ['🔄', 'Sincronizar datos entre programas (tienda, CRM, Excel, email)'],
+  ['📊', 'Informes automáticos'],
+  ['🗂️', 'Tareas internas del equipo'],
+]
+
 const COMO_FUNCIONA_INTRO =
   'Un agente que responde por WhatsApp como lo haría tu mejor empleado: conoce tu negocio, tus horarios y tus servicios, y actúa solo.'
 
@@ -68,20 +82,22 @@ const SERVICIO_DATOS = [
 
 export default function AgentesIaPage() {
   const mensajeWhatsapp = encodeURIComponent('Hola! Quiero información sobre Agentes Innovapp para mi negocio.')
+  const mensajeInfoMedida = encodeURIComponent('Hola, quiero información a medida sobre Agentes IA para mi negocio.')
+  const mensajeAutomatizar = encodeURIComponent('Hola, quiero automatizar un proceso de mi negocio.')
 
   return (
     <>
       <Seo
-        title="Agentes IA para WhatsApp Business — Innovapp"
-        description="Innovapp conecta el WhatsApp Business de tu negocio a un agente de IA que atiende a tus clientes 24 horas: responde dudas, informa de precios y reserva citas."
+        title="Agentes IA y automatización a medida — Innovapp"
+        description="Agentes de IA por WhatsApp Business que atienden a tus clientes 24 horas, y automatización a medida de cualquier proceso repetitivo de tu negocio: reservas, pedidos, presupuestos, informes y más."
         canonical="/agentes-ia"
         jsonLd={{
           '@context': 'https://schema.org',
           '@type': 'Service',
           name: 'Agentes IA',
-          serviceType: 'Agente de IA por WhatsApp para negocios locales',
+          serviceType: 'Agente de IA por WhatsApp y automatización a medida para negocios locales',
           description:
-            'Innovapp conecta el WhatsApp Business de tu negocio a un agente de IA que atiende a tus clientes 24 horas: responde dudas, informa de precios y reserva citas.',
+            'Innovapp conecta el WhatsApp Business de tu negocio a un agente de IA que atiende a tus clientes 24 horas, y desarrolla a medida la automatización de cualquier proceso repetitivo del negocio.',
           url: 'https://innovapp.es/agentes-ia',
           image: 'https://innovapp.es/brand/og-image.png',
           provider: { '@type': 'Organization', name: 'Innovapp', url: 'https://innovapp.es' },
@@ -106,18 +122,67 @@ export default function AgentesIaPage() {
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeWhatsapp}`}
+                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeInfoMedida}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
               >
-                Contáctanos para tu cotización →
+                Solicitar información a medida
               </a>
             </div>
           </div>
           <div style={{ flex: '1 1 320px', display: 'flex', justifyContent: 'center' }}>
             <ChatDemo />
           </div>
+        </div>
+      </section>
+
+      <section style={{ padding: '90px 24px', background: 'white' }}>
+        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
+          <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 20, color: '#1a140d' }}>
+            ¿Qué es un agente de IA?
+          </h2>
+          <p style={{ fontSize: 16, color: '#4a3f2e', lineHeight: 1.75, maxWidth: 740, margin: '0 auto 16px' }}>
+            Es un empleado digital que trabaja 24/7: entiende lo que le escriben o le dicen (por WhatsApp o por teléfono),
+            consulta los sistemas de tu negocio y actúa — reserva citas, responde dudas, consulta stock y precios, prepara
+            pedidos, y avisa a una persona cuando hace falta.
+          </p>
+          <p style={{ fontSize: 15, color: '#8a7a5a', lineHeight: 1.75, maxWidth: 680, margin: '0 auto' }}>
+            No es como un chatbot de menús de toda la vida: no sigue un guion fijo ni te obliga a pulsar opciones.
+            Entiende lenguaje natural, como si hablaras con una persona, y ejecuta tareas reales en tus propias
+            herramientas — no solo contesta, resuelve.
+          </p>
+        </div>
+
+        <div style={{ maxWidth: 1100, margin: '60px auto 0' }}>
+          <div style={{ background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 20, padding: 'clamp(28px,4vw,40px)' }}>
+            <h3 style={{ fontSize: 'clamp(19px,2.5vw,24px)', fontWeight: 700, color: '#1a140d', textAlign: 'center', margin: '0 0 28px' }}>
+              Si un proceso se repite, se puede automatizar
+            </h3>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 16 }}>
+              {PROCESOS_AUTOMATIZABLES.map(([icon, texto]) => (
+                <div key={texto} style={{ background: 'white', border: '1px solid #f1ece0', borderRadius: 14, padding: '18px 20px', display: 'flex', alignItems: 'center', gap: 12 }}>
+                  <span style={{ fontSize: 22, flexShrink: 0 }}>{icon}</span>
+                  <span style={{ fontSize: 14, fontWeight: 600, color: '#1a140d', lineHeight: 1.4 }}>{texto}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div style={{ maxWidth: 740, margin: '48px auto 0', textAlign: 'center' }}>
+          <p style={{ fontSize: 15, color: '#8a7a5a', lineHeight: 1.75, margin: '0 0 28px' }}>
+            Los agentes de WhatsApp y voz son el ejemplo más visible, pero en Innovapp desarrollamos a medida la
+            automatización de cualquier proceso de tu negocio.
+          </p>
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeAutomatizar}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
+          >
+            Cuéntanos tu proceso y te lo presupuestamos →
+          </a>
         </div>
       </section>
 

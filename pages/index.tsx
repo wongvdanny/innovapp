@@ -5,9 +5,10 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
 import VozDemo from '../components/VozDemo'
-import { WHATSAPP_AGENT_NUMBER } from '../components/WhatsAppBubble'
+import { WHATSAPP_NUMBER, WHATSAPP_AGENT_NUMBER } from '../components/WhatsAppBubble'
 
 const MENSAJE_AGENTES_WHATSAPP = encodeURIComponent('Hola! Quiero información sobre Agentes IA para mi negocio.')
+const MENSAJE_PRESUPUESTO_AUTOMATIZACION = encodeURIComponent('Hola, quiero presupuesto para automatizar un proceso.')
 
 export default function Home() {
   const [email, setEmail] = useState('')
@@ -26,8 +27,8 @@ export default function Home() {
   return (
     <>
       <Seo
-        title="innovapp — Agentes de IA por WhatsApp para tu negocio"
-        description="Innovapp desarrolla Agentes de IA que atienden tu WhatsApp 24 horas: responden dudas, gestionan citas sin dobles reservas y venden por catálogo, sin que tengas que estar pendiente del móvil. También ofrecemos Servix (TPV para restaurantes) y GymStack (gestión de gimnasios)."
+        title="innovapp — Agentes de IA y automatización a medida para tu negocio"
+        description="Innovapp desarrolla Agentes de IA que atienden tu WhatsApp 24 horas y automatiza a medida cualquier proceso repetitivo de tu negocio: reservas, pedidos, presupuestos y seguimientos. También ofrecemos Servix (TPV para restaurantes) y GymStack (gestión de gimnasios)."
         canonical="/"
       />
       <Head><meta name="author" content="innovapp" /></Head>
@@ -165,10 +166,10 @@ export default function Home() {
 
       <section style={{ padding: '80px 24px', background: 'linear-gradient(135deg,#fdf0e8,#fdf0e8)' }}>
         <div style={{ maxWidth: 860, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 'clamp(22px,3vw,38px)', fontWeight: 800, letterSpacing: -1, marginBottom: 16, color: '#1e1e1e' }}>¿Por qué ofrecemos un plan gratuito?</h2>
-          <p style={{ fontSize: 16, color: '#5a7a87', lineHeight: 1.85, maxWidth: 640, margin: '0 auto 40px' }}>Porque creemos que la tecnología no debería ser una barrera de entrada. Queremos que cualquier negocio, grande o pequeño, pueda digitalizarse sin riesgo. Cuando compruebes el valor real de nuestros productos, el paso a Pro es natural.</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 16 }}>
-            {[['🚀','Sin riesgo','Prueba todas las funciones básicas sin poner la tarjeta. Cero compromiso.'],['📈','Crece a tu ritmo','Cuando tu restaurante crezca y necesites más mesas o empleados, el upgrade es instantáneo.'],['🔓','Sin trampas','El plan gratis no caduca. No te forzamos a pagar con presión artificial.']].map(([icon, title, desc]) => (
+          <h2 style={{ fontSize: 'clamp(22px,3vw,38px)', fontWeight: 800, letterSpacing: -1, marginBottom: 16, color: '#1e1e1e' }}>¿Cuántas horas pierde tu negocio en tareas repetitivas?</h2>
+          <p style={{ fontSize: 16, color: '#5a7a87', lineHeight: 1.85, maxWidth: 640, margin: '0 auto 40px' }}>Responder siempre las mismas preguntas, pasar datos de un programa a otro, perseguir confirmaciones, preparar presupuestos... Todo eso se puede automatizar. Programamos a medida, con inteligencia artificial, la solución que tu negocio necesita: tú nos cuentas el proceso y nosotros lo convertimos en algo que funciona solo.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 16, marginBottom: 40 }}>
+            {[['⏱️','Recupera tu tiempo','Lo repetitivo lo hace la máquina; tu equipo se dedica a vender y atender.'],['🧩','Hecho a tu medida','Nada de plantillas genéricas: nos adaptamos a tus herramientas y tu forma de trabajar.'],['💶','Presupuesto cerrado','Te decimos qué automatizar, cuánto cuesta y en qué plazo, antes de empezar.']].map(([icon, title, desc]) => (
               <div key={String(title)} style={{ background: 'white', borderRadius: 20, padding: '28px 24px', border: '1px solid rgba(238,117,40,.12)', boxShadow: '0 4px 20px rgba(30,30,30,.05)' }}>
                 <div style={{ fontSize: 32, marginBottom: 12 }}>{icon}</div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#1e1e1e', marginBottom: 8 }}>{title}</div>
@@ -176,6 +177,14 @@ export default function Home() {
               </div>
             ))}
           </div>
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${MENSAJE_PRESUPUESTO_AUTOMATIZACION}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'linear-gradient(135deg,#f4a15c,#ee7528)', color: 'white', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
+          >
+            Pide presupuesto sin compromiso →
+          </a>
         </div>
       </section>
 

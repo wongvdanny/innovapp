@@ -5,7 +5,7 @@ import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
 import ComoFunciona from '../components/ComoFunciona'
 import VozDemo from '../components/VozDemo'
-import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
+import { WHATSAPP_NUMBER, WHATSAPP_AGENT_NUMBER } from '../components/WhatsAppBubble'
 
 const COMO_FUNCIONA_INTRO =
   'Integrado con tu tienda WooCommerce, respondiendo con datos reales de producto y pedido desde tu propio WordPress.'
@@ -201,7 +201,7 @@ export default function AgentesIaWoocommercePage() {
         </p>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
           <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeContacto}`}
+            href={`https://wa.me/${WHATSAPP_AGENT_NUMBER}?text=${mensajeContacto}`}
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
