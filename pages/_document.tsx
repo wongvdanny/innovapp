@@ -18,7 +18,10 @@ gtag('consent', 'default', {
   ad_personalization: 'denied',
   analytics_storage: 'denied',
   wait_for_update: 500
-});`,
+});
+// Tráfico interno (lib/track.ts, INTERNAL_TRAFFIC_KEY): antes que GTM, para que el primer
+// page_view ya lleve traffic_type. Lo marca el login de admin o el botón del panel.
+try { if (localStorage.getItem('ia_internal') === '1') dataLayer.push({ traffic_type: 'internal' }); } catch (e) {}`,
           }}
         />
         {/* Google Tag Manager */}

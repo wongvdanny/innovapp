@@ -55,3 +55,25 @@ export function trackSignUpOnce(subscriptionId: string, product: string): void {
   }
   track('sign_up', { product })
 }
+
+// --- Tráfico interno ---
+// Marca en localStorage que _document.tsx lee ANTES de cargar GTM y convierte en
+// dataLayer.push({ traffic_type: 'internal' }), para que GA4 lo filtre como tráfico interno.
+export const INTERNAL_TRAFFIC_KEY = 'ia_internal'
+
+export function isInternalBrowser(): boolean {
+  try {
+    return localStorage.getItem(INTERNAL_TRAFFIC_KEY) === '1'
+  } catch {
+    return false
+  }
+}
+
+export function setInternalBrowser(interno: boolean): void {
+  try {
+    if (interno) localStorage.setItem(INTERNAL_TRAFFIC_KEY, '1')
+    else localStorage.removeItem(INTERNAL_TRAFFIC_KEY)
+  } catch {
+    // Sin localStorage no hay marca posible
+  }
+}

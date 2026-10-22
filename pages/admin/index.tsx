@@ -6,6 +6,7 @@ import { prisma } from '../../lib/prisma'
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Logo from '../../components/Logo'
+import { isInternalBrowser, setInternalBrowser } from '../../lib/track'
 
 
 export default function Admin({ stats, subscriptions, plans, redsysConfig, stripeConfig }: any) {
@@ -13,6 +14,15 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
   const [subList, setSubList] = useState(subscriptions)
   const [actionId, setActionId] = useState<string | null>(null)
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null)
+  // null hasta leer localStorage en el cliente (evita desajuste de hidratación)
+  const [interno, setInterno] = useState<boolean | null>(null)
+  useEffect(() => { setInterno(isInternalBrowser()) }, [])
+  const alternarInterno = () => {
+    const nuevo = !interno
+    setInternalBrowser(nuevo)
+    setInterno(nuevo)
+    setMsg({ ok: true, text: nuevo ? 'Este navegador queda marcado como tráfico interno (GA4 lo excluirá).' : 'Este navegador ya no se marca como tráfico interno.' })
+  }
 
   const showMsg = (ok: boolean, text: string) => {
     setMsg({ ok, text })
@@ -148,6 +158,12 @@ export default function Admin({ stats, subscriptions, plans, redsysConfig, strip
             <Link href="/admin/facturacion" style={{ fontSize: 13, fontWeight: 600, padding: '7px 14px', borderRadius: 8, background: 'rgba(255,255,255,.08)', border: '1px solid rgba(255,255,255,.15)', color: 'rgba(255,255,255,.85)', textDecoration: 'none' }}>
               🧾 Facturación
             </Link>
+            {interno !== null && (
+              <button onClick={alternarInterno} title="Guarda una marca en este navegador para que GA4 no cuente tus visitas (útil en el móvil)"
+                style={{ fontSize: 13, fontWeight: 600, padding: '7px 14px', borderRadius: 8, background: interno ? 'rgba(126,232,228,.15)' : 'rgba(255,255,255,.08)', border: `1px solid ${interno ? 'rgba(126,232,228,.4)' : 'rgba(255,255,255,.15)'}`, color: interno ? '#7ee8e4' : 'rgba(255,255,255,.85)', cursor: 'pointer', fontFamily: 'inherit' }}>
+                {interno ? '✓ Navegador interno (quitar marca)' : '🏷️ Marcar este navegador como interno'}
+              </button>
+            )}
             <Link href="/dashboard" style={{ fontSize: 13, color: 'rgba(255,255,255,.5)', fontWeight: 500 }}>← Mi cuenta</Link>
           </div>
         </div>

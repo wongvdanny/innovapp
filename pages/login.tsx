@@ -2,6 +2,7 @@ import Seo from '../components/Seo'
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
+import { setInternalBrowser } from '../lib/track'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 
@@ -18,7 +19,10 @@ export default function Login() {
     if (res?.error) { setError('Email o contraseña incorrectos'); setLoading(false) }
     else {
       const session = await fetch('/api/auth/session').then(r => r.json())
-      if (session?.user?.role === 'admin') router.push('/admin')
+      if (session?.user?.role === 'admin') {
+        setInternalBrowser(true)
+        router.push('/admin')
+      }
       else router.push('/dashboard')
     }
   }
