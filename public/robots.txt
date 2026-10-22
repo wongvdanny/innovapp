@@ -1,11 +1,13 @@
+# *
 User-agent: *
 Allow: /
 Disallow: /admin
+Disallow: /gestor
 Disallow: /api
 Disallow: /dashboard
-Disallow: /checkout
-Disallow: /registro
-Disallow: /gestor
 
+# Host
+Host: https://innovapp.es
+
+# Sitemaps
 Sitemap: https://innovapp.es/sitemap.xml
-
