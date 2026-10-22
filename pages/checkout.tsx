@@ -5,6 +5,7 @@ import Link from 'next/link'
 import Logo from '../components/Logo'
 import LegalIdentity from '../components/LegalIdentity'
 import { validarNifEspanol } from '../lib/facturacion/validacion'
+import { track } from '../lib/track'
 
 // Por encima de este total no cabe factura simplificada: NIF y dirección obligatorios
 // (el servidor lo vuelve a comprobar con el límite de los ajustes de facturación).
@@ -54,6 +55,10 @@ export default function Checkout() {
       .catch(e => setPlanError(e.message))
       .finally(() => setPlanLoading(false))
   }, [router.isReady, planId])
+
+  useEffect(() => {
+    if (plan && product) track('begin_checkout', { product: product.slug, plan: plan.id })
+  }, [plan?.id]) // eslint-disable-line react-hooks/exhaustive-deps
 
   const labels = (product && LABELS_BY_PRODUCT[product.slug]) || DEFAULT_LABELS
 

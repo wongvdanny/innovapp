@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Logo from '../components/Logo'
+import { track, trackSignUpOnce } from '../lib/track'
 
 interface PlanData {
   id: string
@@ -70,6 +71,11 @@ export default function Registro() {
   const isFree = selectedPlan?.interval === 'free'
   const totalSteps = isFree ? 2 : 3
 
+  // Los planes de pago se pagan desde el paso 3 de esta página (no pasan por /checkout)
+  useEffect(() => {
+    if (step === 3 && !isFree && plan) track('begin_checkout', { product: productSlug, plan })
+  }, [step]) // eslint-disable-line react-hooks/exhaustive-deps
+
   const validateAccount = () => {
     if (!form.name.trim()) return 'Introduce tu nombre completo'
     if (!form.entityName.trim()) return `Introduce el ${labels.entityLabel.toLowerCase()}`
@@ -116,6 +122,7 @@ export default function Registro() {
         })
         const data = await res.json()
         if (!res.ok) throw new Error(data.error || 'Error')
+        trackSignUpOnce(data.subscriptionId, productSlug)
         router.push(`/bienvenida?sub=${data.subscriptionId}`)
         return
       }

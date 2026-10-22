@@ -1,11 +1,13 @@
 import '../styles/checkout.css'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
+import { useEffect } from 'react'
 import { Gabarito } from 'next/font/google'
 import '../styles/globals.css'
 import WhatsAppBubble from '../components/WhatsAppBubble'
 import CookieBanner from '../components/CookieBanner'
 import { CONTACT_EMAIL, LEGAL_OWNER } from '../lib/constants'
+import { trackContactClicks } from '../lib/track'
 
 const ORGANIZATION_JSONLD = {
   '@context': 'https://schema.org',
@@ -29,6 +31,9 @@ const gabarito = Gabarito({
 })
 
 export default function App({ Component, pageProps }: AppProps) {
+  // click_whatsapp / click_tel / click_email en cualquier enlace de la web
+  useEffect(() => trackContactClicks(), [])
+
   return (
     <>
       <Head>

@@ -2,6 +2,7 @@ import Seo from '../components/Seo'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import { trackSignUpOnce } from '../lib/track'
 
 const CONFIG_BY_PRODUCT: Record<string, { message: string; panelUrl: string; panelLabel: string; loginUrl: string; entity: string }> = {
   servix: {
@@ -44,7 +45,11 @@ export default function Bienvenida() {
     if (!router.isReady || !subId) { setLoading(false); return }
     fetch(`/api/subscriptions/summary?id=${subId}`)
       .then(r => r.json())
-      .then(data => setProductSlug(data?.product?.slug || null))
+      .then(data => {
+        setProductSlug(data?.product?.slug || null)
+        // Altas de pago (vuelven aquí desde Stripe/Redsys); las gratuitas ya se contaron en /registro
+        if (data?.product?.slug) trackSignUpOnce(subId, data.product.slug)
+      })
       .catch(() => {})
       .finally(() => setLoading(false))
   }, [router.isReady, subId])

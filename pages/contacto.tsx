@@ -6,6 +6,7 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import { WHATSAPP_NUMBER, formatearWhatsApp } from '../components/WhatsAppBubble'
 import { CONTACT_EMAIL } from '../lib/constants'
+import { track } from '../lib/track'
 
 const PRODUCTS = ['Servix', 'GymStack', 'Agentes IA', 'Otro']
 
@@ -81,6 +82,7 @@ export default function Contacto() {
       })
       if (!res.ok) throw new Error()
       setStatus('success')
+      track('generate_lead', { form: 'contacto', page_path: window.location.pathname })
       setForm({ name: '', email: '', phone: '', product: '', message: '', privacy: false, website: '' })
     } catch {
       setStatus('error')

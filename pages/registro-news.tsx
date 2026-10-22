@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Seo from '../components/Seo'
+import { track } from '../lib/track'
 
 const COUNTRIES = [
   { code: 'ES', name: 'España' },
@@ -83,6 +84,7 @@ export default function RegistroNews() {
         })
         const data = await res.json()
         if (!res.ok) { setError(data.error || 'Error al registrarte'); setLoading(false); return }
+        track('sign_up', { product: 'news' })
         window.location.href = 'https://news.innovapp.es/login'
         return
       }
