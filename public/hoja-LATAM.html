@@ -1,0 +1,372 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Hoja de Visita LATAM</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: ficha de visita a la izquierda, presupuesto vivo fijo a la derecha; archivo de fichas arriba */
+:root{
+  --bg:#f5f4f1; --surface:#ffffff; --line:#dedbd4; --fg:#1b1d22; --muted:#6b6a66;
+  --accent:#c9831f; --accent-ink:#1b1d22; --accent-soft:#f6e7cc;
+  --ok:#2f7d4f; --warn:#b07a12; --bad:#b3412e;
+  --f-display:"Familjen Grotesk","Helvetica Neue",Arial,sans-serif;
+  --f-body:"IBM Plex Sans",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#12141a; --surface:#1c1f27; --line:#2d313c; --fg:#ebe9e4; --muted:#9a9890;
+  --accent:#e8a33d; --accent-ink:#12141a; --accent-soft:#3a2f1c;
+  --ok:#5fbf86; --warn:#e2b04a; --bad:#e3735f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12141a; --surface:#1c1f27; --line:#2d313c; --fg:#ebe9e4; --muted:#9a9890;
+  --accent:#e8a33d; --accent-ink:#12141a; --accent-soft:#3a2f1c;
+  --ok:#5fbf86; --warn:#e2b04a; --bad:#e3735f; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.45}
+.wrap{max-width:1180px;margin:0 auto;padding-block:20px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header.top{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:flex-end;justify-content:space-between;padding-bottom:16px;border-bottom:2px solid var(--fg)}
+h1{font-family:var(--f-display);font-size:30px;line-height:1.05;margin:0;letter-spacing:-.01em;text-wrap:balance}
+h1 small{display:block;font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+button{font:500 14px var(--f-body);border:1px solid var(--line);background:var(--surface);color:var(--fg);padding:8px 14px;border-radius:6px;cursor:pointer}
+button:hover{border-color:var(--fg)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);font-weight:600}
+button.danger{color:var(--bad)}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button:disabled{opacity:.5;cursor:not-allowed}
+.status{font-size:13px;color:var(--muted);min-height:1.2em}
+.archive{margin-top:16px;display:flex;flex-direction:column;gap:8px}
+.archive-head{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.archive-head input{flex:1;min-width:0}
+.list{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px}
+.chip-card{flex:0 0 auto;min-width:190px;max-width:240px;text-align:left;display:flex;flex-direction:column;gap:2px;padding:10px 12px}
+.chip-card b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chip-card span{font-size:12px;color:var(--muted);font-family:var(--f-mono)}
+.chip-card.on{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.empty{font-size:13px;color:var(--muted);padding:10px 0}
+.grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:28px;margin-top:22px;align-items:start}
+@media (max-width:900px){.grid{grid-template-columns:minmax(0,1fr)}}
+fieldset{border:0;border-top:1px solid var(--line);margin:0;padding:18px 0 22px}
+legend{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);padding:0 8px 0 0}
+.fields{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px 16px;margin-top:8px}
+.f{display:flex;flex-direction:column;gap:5px;min-width:0}
+.f.wide{grid-column:1/-1}
+.f label{font-size:13px;font-weight:500}
+.f .hint{font-size:12px;color:var(--muted)}
+input,select,textarea{font:15px var(--f-body);color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;width:100%}
+input[type=number]{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+textarea{min-height:84px;resize:vertical}
+aside.quote{position:sticky;top:calc(env(safe-area-inset-top,0px) + 12px);background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:16px}
+@media (max-width:900px){aside.quote{position:static}}
+.q-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.q-head h2{font-family:var(--f-display);font-size:20px;margin:0}
+.pill{font:600 11px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px;border:1px solid currentColor;white-space:nowrap}
+.pill.ok{color:var(--ok)}.pill.warn{color:var(--warn)}.pill.bad{color:var(--bad)}
+.big{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.big div{display:flex;flex-direction:column;gap:2px}
+.big span{font-size:12px;color:var(--muted)}
+.big strong{font-family:var(--f-display);font-size:30px;line-height:1;font-variant-numeric:tabular-nums}
+.big em{font-style:normal;font-family:var(--f-mono);font-size:12px;color:var(--muted)}
+.plan{background:var(--accent-soft);border-radius:8px;padding:10px 12px;font-size:14px}
+.plan b{font-family:var(--f-display);font-size:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td{padding:5px 0;border-bottom:1px dashed var(--line);vertical-align:top}
+td.n{text-align:right;font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap;padding-left:10px}
+tr.tot td{border-bottom:0;border-top:1px solid var(--fg);font-weight:600;padding-top:7px}
+.sub{font-family:var(--f-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin:0 0 4px}
+.note{font-size:12px;color:var(--muted);margin:0}
+details.params{margin-top:28px;border-top:2px solid var(--fg);padding-top:14px}
+details.params summary{cursor:pointer;font-family:var(--f-display);font-size:18px;font-weight:700}
+.params .fields{grid-template-columns:repeat(auto-fill,minmax(230px,1fr))}
+.formula{font-family:var(--f-mono);font-size:13px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;overflow-x:auto;white-space:pre;margin-top:12px}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <h1><small>Innovapp · LATAM · Ecuador · USD</small>Hoja de visita y presupuesto</h1>
+    <div class="toolbar">
+      <button id="btnNew">Nueva ficha</button>
+      <button id="btnSave" class="primary">Guardar ficha</button>
+      <button id="btnDel" class="danger" hidden>Borrar</button>
+      <button id="btnCsv" hidden>Exportar CSV</button>
+    </div>
+  </header>
+  <div class="status" id="status" aria-live="polite"></div>
+
+  <section class="archive">
+    <div class="archive-head">
+      <span class="sub" style="margin:0">Fichas guardadas</span>
+      <input id="q" type="search" placeholder="Buscar negocio, ciudad o comercial">
+    </div>
+    <div class="list" id="list"><div class="empty">Cargando fichas…</div></div>
+  </section>
+
+  <div class="grid">
+    <form id="form" autocomplete="off"></form>
+    <aside class="quote" id="quote"></aside>
+  </div>
+
+  <details class="params" id="paramsBox">
+    <summary>Parámetros de coste y tarifas</summary>
+    <p class="note" id="paramsNote" style="margin-top:8px"></p>
+    <div class="formula">Coste IA por conversación (Haiku 4.5, en USD)
+  llamadas = turnos × llamadas_por_turno
+  entrada  = prompt_fijo × precio_caché + historial_medio + resultados_tools
+  coste    = llamadas × (entrada × $in + salida × $out) / 1M × factor_seguridad
+
+Coste variable mensual = conversaciones × coste_conv + plantillas Meta (tarifa resto de Latinoamérica)
+
+Cuota recomendada = máx(cuota del plan, gestión + (IA + avisos) × multiplicador) + marketing repercutido
+Margen mínimo aceptable: 40 % con el plan usado al máximo</div>
+    <div class="fields" id="paramsForm"></div>
+    <div class="toolbar" style="margin-top:14px">
+      <button id="btnParams" class="primary">Guardar parámetros</button>
+      <button id="btnParamsReset">Restaurar valores por defecto</button>
+    </div>
+  </details>
+</div>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const usd=(n,d=0)=>(isFinite(n)?n:0).toLocaleString('es-EC',{style:'currency',currency:'USD',minimumFractionDigits:d,maximumFractionDigits:d});
+const num=(n,d=0)=>(isFinite(n)?n:0).toLocaleString('es-EC',{maximumFractionDigits:d});
+
+/* ---------- Parámetros por defecto (editables) ---------- */
+const DEF={
+  in_usd:1.00, out_usd:5.00, cache_read:0.10, cache_write:1.25, cache_min:4096, cache_hit:0.80,
+  user_tok:60, out_tok:140, tool_out_tok:80, factor_seg:1.3,
+  wa_utility:0.0113, wa_marketing:0.074,
+  mult:3, gestion:29, hora:35, marketing_recargo:1.15, comision_cobro:0.045,
+  esencial_setup:169, esencial_mes:49, esencial_conv:200,
+  pro_setup:259, pro_mes:79, pro_conv:600
+};
+const PLAB={
+  in_usd:['Haiku entrada ($/M tokens)',''], out_usd:['Haiku salida ($/M tokens)',''],
+  cache_read:['Multiplicador lectura caché','0,1 × entrada'], cache_write:['Multiplicador escritura caché','1,25 × (5 min)'],
+  cache_min:['Mínimo cacheable (tokens)','Haiku 4.5: 4.096'], cache_hit:['% de llamadas con caché acertada','0–1'],
+  user_tok:['Tokens por mensaje del cliente',''], out_tok:['Tokens por respuesta del agente',''], tool_out_tok:['Tokens por llamada a herramienta',''],
+  factor_seg:['Factor de seguridad','reintentos, conversaciones largas'],
+  wa_utility:['Meta plantilla utilidad ($/msg)','resto de Latinoamérica'], wa_marketing:['Meta plantilla marketing ($/msg)','resto de Latinoamérica'],
+  mult:['Multiplicador sobre consumo','3 = 67 % margen sobre consumo'], gestion:['Gestión base a medida ($/mes)',''],
+  hora:['Hora de desarrollo extra ($)',''], marketing_recargo:['Recargo plantillas marketing','1,15 = +15 %'],
+  comision_cobro:['Comisión de cobro internacional','tarjeta + cambio, 0–1'],
+  esencial_setup:['Esencial · alta ($)','España −35 %'], esencial_mes:['Esencial · cuota ($/mes)','España −35 %'], esencial_conv:['Esencial · conversaciones/mes',''],
+  pro_setup:['Pro · alta ($)','España −35 %'], pro_mes:['Pro · cuota ($/mes)','España −35 %'], pro_conv:['Pro · conversaciones/mes','']
+};
+let P={...DEF};
+
+/* ---------- Esquema de la ficha ---------- */
+const KNOW={basico:['Básico · pocos servicios y FAQ',3500],medio:['Medio · servicios amplios, políticas',6000],amplio:['Amplio · mucha documentación',10000]};
+const INTEG={ninguna:['Informa y capta contactos',1.1,0,300],citas:['Informa y reserva citas',1.5,250,900]};
+const SCHEMA=[
+ ['Negocio',[
+  ['nombre','text','Nombre del negocio',''],
+  ['sector','select','Sector','',{opts:['Peluquería / estética','Clínica / consultorio','Odontología','Gimnasio','Taller mecánico','Veterinaria','Inmobiliaria','Restaurante / cafetería','Academia / formación','Servicios online / consultoría','Otro']}],
+  ['tipo','select','Tipo de negocio','',{opts:[['local','Local físico'],['online','Online sin tienda']]}],
+  ['contacto','text','Persona de contacto',''],
+  ['telefono','tel','Teléfono',''],
+  ['email','email','Email',''],
+  ['ciudad','text','Ciudad',''],
+  ['pais','select','País','',{opts:['Ecuador']}],
+  ['comercial','text','Comercial',''],
+  ['fecha','date','Fecha de visita',''],
+  ['estado','select','Estado','',{opts:['Visitado','Presupuesto enviado','Ganado','Perdido']}]
+ ]],
+ ['Volumen de WhatsApp',[
+  ['convDia','number','Conversaciones nuevas al día','Clientes distintos que escriben en un día normal'],
+  ['dias','number','Días con actividad al mes','30 si el agente atiende también feriados'],
+  ['pctAgente','number','% que atenderá el agente','El resto lo sigue llevando el negocio'],
+  ['turnos','number','Mensajes del cliente por conversación','Típico 4–8'],
+  ['escalado','number','% que pasa a una persona','Cada escalado genera un aviso al negocio']
+ ]],
+ ['Qué hará el agente',[
+  ['conocimiento','select','Base de conocimiento','',{opts:Object.entries(KNOW).map(([k,v])=>[k,v[0]])}],
+  ['integracion','select','Función principal','',{opts:Object.entries(INTEG).map(([k,v])=>[k,v[0]])}],
+  ['citasMes','number','Citas al mes por WhatsApp','0 si solo informa'],
+  ['marketingMes','number','Mensajes de marketing al mes','Campañas; coste Meta repercutido']
+ ]],
+ ['Extras y notas',[
+  ['horasExtra','number','Horas de desarrollo a medida','Integraciones o flujos fuera de plan'],
+  ['notas','textarea','Necesidades y objeciones','',{wide:1}]
+ ]]
+];
+const today=()=>new Date().toISOString().slice(0,10);
+const EXAMPLE={nombre:'Peluquería ejemplo',sector:'Peluquería / estética',tipo:'local',contacto:'',telefono:'',email:'',ciudad:'Quito',pais:'Ecuador',comercial:'',fecha:today(),estado:'Visitado',
+ convDia:8,dias:26,pctAgente:80,turnos:6,escalado:10,conocimiento:'medio',integracion:'citas',citasMes:120,marketingMes:0,horasExtra:0,notas:'Ficha de ejemplo: sustitúyela por los datos reales del negocio.'};
+
+/* ---------- Construir formulario ---------- */
+const form=$('#form');
+SCHEMA.forEach(([title,fields])=>{
+  const fs=document.createElement('fieldset');
+  fs.innerHTML='<legend>'+title+'</legend><div class="fields"></div>';
+  const box=fs.querySelector('.fields');
+  fields.forEach(([id,type,label,hint,o={}])=>{
+    const d=document.createElement('div');d.className='f'+(o.wide?' wide':'');
+    let ctl;
+    if(type==='select'){ctl=document.createElement('select');(o.opts||[]).forEach(op=>{const [v,t]=Array.isArray(op)?op:[op,op];const e=document.createElement('option');e.value=v;e.textContent=t;ctl.appendChild(e)})}
+    else if(type==='textarea'){ctl=document.createElement('textarea')}
+    else{ctl=document.createElement('input');ctl.type=type;if(type==='number'){ctl.min='0';ctl.step='any'}}
+    ctl.id='f_'+id;ctl.name=id;
+    const l=document.createElement('label');l.htmlFor=ctl.id;l.textContent=label;
+    d.append(l,ctl);
+    if(hint){const h=document.createElement('span');h.className='hint';h.textContent=hint;d.appendChild(h)}
+    box.appendChild(d);
+  });
+  form.appendChild(fs);
+});
+const FIELDS=SCHEMA.flatMap(s=>s[1].map(f=>[f[0],f[1]]));
+function readForm(){const o={};FIELDS.forEach(([id,t])=>{const e=$('#f_'+id);o[id]=t==='number'?(parseFloat(e.value)||0):e.value});return o}
+function fillForm(o){FIELDS.forEach(([id])=>{const e=$('#f_'+id);e.value=o[id]??''})}
+
+/* ---------- Cálculo ---------- */
+function calc(d){
+  const k=KNOW[d.conocimiento]||KNOW.medio, ig=INTEG[d.integracion]||INTEG.citas;
+  const F=k[1]+ig[3], c=ig[1], R=ig[2], T=Math.max(1,d.turnos);
+  const cacheable=F>=P.cache_min;
+  const fPrice=cacheable?(P.cache_hit*P.cache_read+(1-P.cache_hit)*P.cache_write):1;
+  const histTurn=P.user_tok+P.out_tok+(c-1)*(P.tool_out_tok+R);
+  const avgHist=histTurn*(T-1)/2+P.user_tok;
+  const toolCtx=(c-1)*(R+P.tool_out_tok)/2;
+  const inTok=F*fPrice+avgHist+toolCtx;
+  const outTok=(P.out_tok+(c-1)*P.tool_out_tok)/c;
+  const calls=T*c;
+  const convUSD=calls*(inTok*P.in_usd+outTok*P.out_usd)/1e6*P.factor_seg;
+  const conv=Math.round(d.convDia*d.dias*d.pctAgente/100);
+  const ia=conv*convUSD;
+  const utilMsgs=Math.round(conv*d.escalado/100)+d.citasMes;
+  const util=utilMsgs*P.wa_utility;
+  const mkt=d.marketingMes*P.wa_marketing;
+  const plans=[['Esencial',P.esencial_setup,P.esencial_mes,P.esencial_conv],['Pro',P.pro_setup,P.pro_mes,P.pro_conv]];
+  let plan=plans.find(p=>conv<=p[3]); const custom=!plan; if(!plan)plan=plans[plans.length-1];
+  const aMedida=P.gestion+(ia+util)*P.mult;
+  const baseMes=Math.max(custom?0:plan[2],aMedida);
+  const mktVenta=mkt*P.marketing_recargo;
+  const cuota=baseMes+mktVenta;
+  const comision=cuota*P.comision_cobro;
+  const C=ia+util+mkt+comision;
+  const setup=plan[1]+d.horasExtra*P.hora;
+  const margen=cuota>0?(cuota-C)/cuota:0;
+  return {F,cacheable,calls,inTok,convUSD,conv,ia,utilMsgs,util,mkt,comision,C,plan,custom,aMedida,baseMes,mktVenta,cuota,setup,margen,overPlan:!custom&&aMedida>plan[2]};
+}
+
+function render(){
+  const d=readForm(), r=calc(d);
+  const cls=r.margen>=.6?'ok':r.margen>=.4?'warn':'bad';
+  const lab=r.margen>=.6?'Margen sano':r.margen>=.4?'Margen mínimo':'Por debajo del mínimo';
+  let planTxt;
+  if(r.custom) planTxt='<b>Presupuesto a medida</b><br>Supera '+num(r.plan[3])+' conversaciones/mes del plan '+r.plan[0]+'.';
+  else if(r.overPlan) planTxt='<b>'+r.plan[0]+' con ajuste</b><br>El consumo pide '+usd(r.aMedida)+'/mes, por encima de la cuota del plan ('+usd(r.plan[2])+').';
+  else planTxt='<b>Plan '+r.plan[0]+'</b><br>Hasta '+num(r.plan[3])+' conversaciones/mes · '+usd(r.plan[2])+'/mes.';
+  $('#quote').innerHTML=
+   '<div class="q-head"><h2>Presupuesto</h2><span class="pill '+cls+'">'+lab+' · '+num(r.margen*100)+' %</span></div>'+
+   '<div class="big"><div><span>Cuota mensual</span><strong>'+usd(r.cuota)+'</strong><em>USD, sin impuestos</em></div>'+
+   '<div><span>Alta (setup)</span><strong>'+usd(r.setup)+'</strong><em>pago único</em></div></div>'+
+   '<div class="plan">'+planTxt+'</div>'+
+   '<div><p class="sub">Tu coste estimado al mes</p><table>'+
+   '<tr><td>IA WhatsApp · '+num(r.conv)+' conversaciones × '+usd(r.convUSD,3)+'</td><td class="n">'+usd(r.ia,2)+'</td></tr>'+
+   '<tr><td>Plantillas de utilidad Meta · '+num(r.utilMsgs)+' msg</td><td class="n">'+usd(r.util,2)+'</td></tr>'+
+   (r.mkt?'<tr><td>Plantillas de marketing Meta</td><td class="n">'+usd(r.mkt,2)+'</td></tr>':'')+
+   '<tr><td>Comisión de cobro internacional</td><td class="n">'+usd(r.comision,2)+'</td></tr>'+
+   '<tr class="tot"><td>Coste variable</td><td class="n">'+usd(r.C,2)+'</td></tr></table></div>'+
+   '<div><p class="sub">Cómo sale la cuota</p><table>'+
+   '<tr><td>'+(r.custom?'Gestión + consumo × '+num(P.mult,1):'Máx. entre plan y gestión + consumo × '+num(P.mult,1))+'</td><td class="n">'+usd(r.baseMes,2)+'</td></tr>'+
+   (r.mktVenta?'<tr><td>Marketing repercutido</td><td class="n">'+usd(r.mktVenta,2)+'</td></tr>':'')+
+   '<tr class="tot"><td>Cuota</td><td class="n">'+usd(r.cuota,2)+'</td></tr></table></div>'+
+   '<p class="note">Cada conversación: '+num(r.calls,1)+' llamadas al modelo, ~'+num(r.inTok)+' tokens de entrada equivalentes por llamada. '+
+   (r.cacheable?'Prompt fijo de '+num(r.F)+' tokens con caché.':'Prompt fijo de '+num(r.F)+' tokens: por debajo del mínimo cacheable, se paga entero.')+' Sin agente de voz ni tienda online en LATAM.</p>';
+}
+form.addEventListener('input',render);
+
+/* ---------- Parámetros ---------- */
+const pf=$('#paramsForm');
+Object.keys(DEF).forEach(k=>{
+  const d=document.createElement('div');d.className='f';
+  d.innerHTML='<label for="p_'+k+'"></label><input type="number" step="any" min="0" id="p_'+k+'">'+(PLAB[k][1]?'<span class="hint"></span>':'');
+  d.querySelector('label').textContent=PLAB[k][0];
+  if(PLAB[k][1])d.querySelector('.hint').textContent=PLAB[k][1];
+  pf.appendChild(d);
+});
+function fillParams(){Object.keys(DEF).forEach(k=>{$('#p_'+k).value=P[k]})}
+pf.addEventListener('input',()=>{Object.keys(DEF).forEach(k=>{const v=parseFloat($('#p_'+k).value);P[k]=isFinite(v)?v:DEF[k]});render()});
+
+/* ---------- Estado y almacenamiento ---------- */
+let db=null, currentId=null, fichas=[], canEdit=false, downloads=null;
+const status=t=>{$('#status').textContent=t};
+fillForm(EXAMPLE);fillParams();render();
+$('#paramsNote').textContent='Valores de partida. Calíbralos con el coste real por conversación que ves en Uso de IA del panel.';
+
+function renderList(){
+  const q=$('#q').value.toLowerCase().trim();
+  const box=$('#list');box.innerHTML='';
+  const rows=fichas.filter(f=>!q||[f.nombre,f.ciudad,f.comercial,f.sector].join(' ').toLowerCase().includes(q));
+  if(!db){box.innerHTML='<div class="empty">Guardar fichas no está disponible en esta vista. El cálculo funciona igual.</div>';return}
+  if(!rows.length){box.innerHTML='<div class="empty">'+(fichas.length?'Ninguna ficha coincide con la búsqueda.':'Aún no hay fichas. Rellena el formulario y pulsa Guardar ficha.')+'</div>';return}
+  rows.forEach(f=>{
+    const b=document.createElement('button');b.type='button';b.className='chip-card'+(f._id===currentId?' on':'');
+    const t=document.createElement('b');t.textContent=f.nombre||'Sin nombre';
+    const s=document.createElement('span');s.textContent=(f.estado||'')+' · '+usd(f._calc?.cuota||0)+'/mes';
+    const s2=document.createElement('span');s2.textContent=(f.ciudad||'')+(f.fecha?' · '+f.fecha:'');
+    b.append(t,s,s2);
+    b.onclick=()=>{currentId=f._id;fillForm(f);render();renderList();$('#btnDel').hidden=false;status('Ficha abierta: '+(f.nombre||'sin nombre'))};
+    box.appendChild(b);
+  });
+}
+$('#q').addEventListener('input',renderList);
+
+$('#btnNew').onclick=()=>{currentId=null;fillForm({...EXAMPLE,nombre:'',ciudad:'',notas:'',fecha:today()});render();renderList();$('#btnDel').hidden=true;status('Ficha nueva.')};
+
+$('#btnSave').onclick=async()=>{
+  if(!db){status('No se puede guardar en esta vista.');return}
+  const d=readForm(); if(!d.nombre.trim()){status('Pon el nombre del negocio antes de guardar.');$('#f_nombre').focus();return}
+  const r=calc(d);
+  d._calc={conv:r.conv,coste:+r.C.toFixed(2),cuota:+r.cuota.toFixed(2),setup:+r.setup.toFixed(2),plan:r.custom?'A medida':r.plan[0],margen:+r.margen.toFixed(3)};
+  d._updated=new Date().toISOString();
+  $('#btnSave').disabled=true;
+  try{
+    const ref=currentId?db.collection('fichas').doc(currentId):db.collection('fichas').doc();
+    await ref.set(d);currentId=ref.id;$('#btnDel').hidden=false;status('Ficha guardada.');
+  }catch(e){status(e.code==='invalid_argument'?'No tienes permiso para guardar fichas en esta hoja.':e.code==='quota_exceeded'?'Se ha llenado el espacio de fichas. Borra alguna antigua.':'No se pudo guardar. Inténtalo de nuevo.')}
+  $('#btnSave').disabled=false;
+};
+
+let delArmed=false;
+$('#btnDel').onclick=async()=>{
+  if(!currentId)return;
+  if(!delArmed){delArmed=true;$('#btnDel').textContent='Pulsa otra vez para borrar';setTimeout(()=>{delArmed=false;$('#btnDel').textContent='Borrar'},4000);return}
+  delArmed=false;$('#btnDel').textContent='Borrar';
+  try{await db.collection('fichas').doc(currentId).delete();currentId=null;$('#btnDel').hidden=true;status('Ficha borrada.')}catch(e){status('No se pudo borrar la ficha.')}
+};
+
+$('#btnParams').onclick=async()=>{
+  if(!db||!canEdit){status('Solo quien edita la hoja puede guardar parámetros.');return}
+  try{await db.doc('config/parametros').set({...P});status('Parámetros guardados para todos los comerciales.')}catch(e){status('No se pudieron guardar los parámetros.')}
+};
+$('#btnParamsReset').onclick=()=>{P={...DEF};fillParams();render();status('Parámetros por defecto cargados. Pulsa Guardar parámetros para aplicarlos a todos.')};
+
+$('#btnCsv').onclick=async()=>{
+  if(!downloads)return;
+  const cols=FIELDS.map(f=>f[0]).concat(['conversaciones_mes','coste_mes_usd','cuota_mes_usd','setup_usd','plan','margen']);
+  const esc=v=>{v=String(v??'');return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+  const lines=[cols.join(';')].concat(fichas.map(f=>FIELDS.map(c=>esc(f[c[0]])).concat([f._calc?.conv,f._calc?.coste,f._calc?.cuota,f._calc?.setup,f._calc?.plan,f._calc?.margen].map(esc)).join(';')));
+  try{await downloads.save({filename:'fichas-innovapp-latam.csv',data:'﻿'+lines.join('\n')});status('CSV preparado.')}catch(e){status('Descarga cancelada.')}
+};
+
+(async()=>{
+  try{
+    const [d,u,dl]=await Promise.all([claude.use('db'),claude.use('user'),claude.use('downloads')]);
+    db=d;downloads=dl;
+    canEdit=u?await u.canEdit():false;
+    $('#btnParams').disabled=!canEdit;
+    if(!canEdit)$('#paramsNote').textContent='Valores fijados por Innovapp. Puedes probar cambios aquí, pero no se guardan.';
+    if(downloads)$('#btnCsv').hidden=false;
+    if(!db){renderList();return}
+    db.doc('config/parametros').onSnapshot(s=>{if(s.exists){P={...DEF,...s.data()};fillParams();render()}},()=>{});
+    db.collection('fichas').orderBy('_updated','desc').onSnapshot(s=>{
+      fichas=s.docs.map(x=>({...x.data(),_id:x.id}));renderList();
+    },()=>{status('Se perdió la conexión con las fichas. Recarga la página.')});
+  }catch(e){renderList()}
+})();
+})();
+</script>
+
+</body></html>
