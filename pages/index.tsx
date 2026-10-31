@@ -5,7 +5,9 @@ import Footer from '../components/Footer'
 import Hero from '../components/home/Hero'
 import Servicios from '../components/home/Servicios'
 import Demo from '../components/home/Demo'
-import Casos from '../components/home/Casos'
+import Cases from '../components/home/Cases'
+import Testimonials from '../components/home/Testimonials'
+import Stats from '../components/home/Stats'
 import Proceso from '../components/home/Proceso'
 import SobreMi from '../components/home/SobreMi'
 import Precios from '../components/home/Precios'
@@ -28,8 +30,10 @@ export default function Home() {
       <main>
         <Hero />
         <Servicios />
+        <Stats />
         <Demo />
-        <Casos />
+        <Cases />
+        <Testimonials />
         <Proceso />
         <SobreMi />
         <Precios />
