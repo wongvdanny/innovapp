@@ -23,3 +23,7 @@ storage/
 
 # Borradores del blog (se publican desde /admin) y descartados
 /content/blog/.drafts/
+
+# Generados por next-sitemap en cada despliegue (scripts/deploy.sh); el blog solo los edita en disco
+/public/sitemap*.xml
+/public/robots.txt
