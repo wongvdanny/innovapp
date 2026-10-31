@@ -7,6 +7,7 @@ import Footer from '../Footer'
 import ComoFunciona from '../ComoFunciona'
 import Faq, { faqJsonLd } from '../Faq'
 import Icono from '../Icono'
+import DeviceFrame from '../DeviceFrame'
 import ConversacionWhatsApp from './ConversacionWhatsApp'
 import LeadForm from './LeadForm'
 import { SECTORES, type Sector } from '../../data/sectores'
@@ -82,8 +83,15 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
               {ctas}
             </div>
             <div className="sl-hero-img">
-              <Image src={s.imagen} alt="" width={1200} height={750} sizes="(max-width: 900px) 100vw, 440px"
-                style={{ width: '100%', height: 'auto', borderRadius: 'var(--radio-lg)', display: 'block' }} />
+              <div style={{ position: 'relative', aspectRatio: '4 / 5', borderRadius: 'var(--radio-lg)', overflow: 'hidden', background: '#1c1f27' }}>
+                <Image src={s.imagen} alt={s.imagenAlt} fill priority sizes="(max-width: 900px) calc(100vw - 32px), 440px"
+                  style={{ objectFit: 'cover' }} />
+              </div>
+              {s.imagenChat && (
+                <div className="sl-hero-chat">
+                  <DeviceFrame variante="movil" src={s.imagenChat.src} alt={s.imagenChat.alt} width={s.imagenChat.ancho} height={s.imagenChat.alto} sizes="200px" />
+                </div>
+              )}
             </div>
           </div>
         </section>
@@ -183,7 +191,9 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
       <style>{`
         .sl-hero { max-width: 1100px; margin: 0 auto; display: grid; gap: 36px; }
         .sl-ctas { display: flex; flex-direction: column; gap: 12px; }
-        .sl-hero-img { max-width: 520px; }
+        .sl-hero-img { position: relative; width: 100%; max-width: 440px; }
+        /* Captura de chat: en móvil, debajo de la foto; en escritorio, sobre su esquina inferior */
+        .sl-hero-chat { width: 170px; margin: 16px auto 0; }
         .sl-grid { display: grid; gap: 16px; }
         .sl-ejemplo { max-width: 1000px; margin: 0 auto; display: grid; gap: 32px; }
         @media (min-width: 600px) {
@@ -192,6 +202,7 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
         }
         @media (min-width: 900px) {
           .sl-hero { grid-template-columns: minmax(0,1.3fr) minmax(0,1fr); align-items: center; gap: 56px; }
+          .sl-hero-chat { position: absolute; right: -12px; bottom: -36px; margin: 0; width: 190px; }
           .sl-ejemplo { grid-template-columns: 1fr 1fr; align-items: center; gap: 56px; }
         }
       `}</style>

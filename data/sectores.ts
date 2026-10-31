@@ -26,8 +26,12 @@ export type Sector = {
   faq: FaqItem[]
   /** Mensaje prerrellenado del CTA «Pide una demo» (WhatsApp comercial). */
   mensajeWhatsApp: string
-  /** Ruta en public/ (placeholder neutro hasta tener la imagen definitiva). */
+  /** Foto del hero, 4:5 (scripts/gen-sector-images.mjs). Si no hay foto, es el placeholder neutro. */
   imagen: string
+  /** Texto alternativo de la foto. */
+  imagenAlt: string
+  /** Captura opcional de la conversación con el agente, en un marco de móvil sobre la foto. */
+  imagenChat?: { src: string; alt: string; ancho: number; alto: number }
   /** Etiqueta del campo «negocio» del formulario. */
   etiquetaNegocio: string
   /** Para el email de respuesta automática y el JSON-LD Service. */
@@ -95,6 +99,7 @@ export const SECTORES: Record<Sector['slug'], Sector> = {
     ],
     mensajeWhatsApp: 'Hola, quiero ver la demo del agente para peluquerías',
     imagen: '/sectores/peluquerias.webp',
+    imagenAlt: 'Esteticista con mascarilla haciendo un tratamiento facial a una clienta tumbada en la camilla',
     etiquetaNegocio: 'Peluquería o centro',
     servicio: 'el agente de WhatsApp para peluquerías y centros de estética',
   },
@@ -152,6 +157,7 @@ export const SECTORES: Record<Sector['slug'], Sector> = {
     ],
     mensajeWhatsApp: 'Hola, quiero ver la demo del agente para clínicas',
     imagen: '/sectores/clinicas.webp',
+    imagenAlt: 'Dentista con bata blanca revisando una radiografía sentado a la mesa de su consulta',
     etiquetaNegocio: 'Clínica',
     servicio: 'el agente de WhatsApp para clínicas',
   },
@@ -204,6 +210,7 @@ export const SECTORES: Record<Sector['slug'], Sector> = {
     ],
     mensajeWhatsApp: 'Hola, quiero ver la demo del agente para talleres',
     imagen: '/sectores/talleres.webp',
+    imagenAlt: 'Mecánico revisando la rueda de un coche elevado en el taller',
     etiquetaNegocio: 'Taller',
     servicio: 'el agente de WhatsApp para talleres',
   },
