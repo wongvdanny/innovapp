@@ -5,6 +5,7 @@ import Footer from '../components/Footer'
 import ComoFunciona from '../components/ComoFunciona'
 import Faq, { faqJsonLd, type FaqItem } from '../components/Faq'
 import LeadForm from '../components/sector/LeadForm'
+import Icono from '../components/Icono'
 import { MENSAJE_DEMO_RESTAURANTE } from '../data/sectores'
 import { COMMERCIAL_PHONE, LEGAL_ADDRESS_ES, waLink } from '../lib/constants'
 
@@ -43,25 +44,25 @@ const FAQ: FaqItem[] = [
 
 const BLOQUES = [
   {
-    icono: '📅',
+    icono: 'CalendarCheck',
     titulo: 'Reservas de mesa 24 h',
     texto:
       'Pide fecha, hora, personas y nombre, comprueba la disponibilidad y asigna la mesa (y junta mesas si hace falta). Si no hay sitio, ofrece otras horas. Tus clientes también cancelan o cambian la reserva por WhatsApp.',
   },
   {
-    icono: '🍽️',
+    icono: 'UtensilsCrossed',
     titulo: 'Menú del día y alérgenos',
     texto:
       'Publicas el menú desde el móvil, para hoy o con antelación, y el asistente lo explica con los 14 alérgenos. Nunca inventa platos ni precios: solo cuenta lo que tú has publicado.',
   },
   {
-    icono: '⏱️',
+    icono: 'Timer',
     titulo: 'Registro de jornada por WhatsApp',
     texto:
       'El equipo ficha con sus palabras («ya estoy», «me voy a comer»). Registro inalterable, informe mensual en PDF y Excel y enlace de solo lectura para la Inspección.',
   },
   {
-    icono: '🙋',
+    icono: 'Hand',
     titulo: 'Tú decides cuándo intervenir',
     texto:
       'Quejas, alergias graves y grupos grandes pasan a una persona, con aviso en el móvil (app instalable). En el panel tienes todas las conversaciones.',
@@ -200,14 +201,14 @@ export default function AgentesIaRestaurantesPage() {
             <div className="lr-aviso" aria-hidden>
               <div style={{ fontSize: 12, color: '#97a0ac', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>Mientras tanto, en tu móvil</div>
               <div style={{ background: '#1c1f27', border: '1px solid #2e333f', borderRadius: 16, padding: '14px 16px', display: 'flex', gap: 12 }}>
-                <div style={{ fontSize: 22 }}>📅</div>
+                <div style={{ color: 'var(--agentes-oro)' }}><Icono icono="CalendarCheck" /></div>
                 <div>
                   <div style={{ fontSize: 14, color: '#ece9e2', fontWeight: 600 }}>Nueva reserva</div>
                   <div style={{ fontSize: 13, color: '#b4bcc6', lineHeight: 1.5 }}>Sábado 21:30 · 4 personas · Marta López</div>
                 </div>
               </div>
               <div style={{ background: '#1c1f27', border: '1px solid #2e333f', borderRadius: 16, padding: '14px 16px', display: 'flex', gap: 12, marginTop: 10 }}>
-                <div style={{ fontSize: 22 }}>🙋</div>
+                <div style={{ color: 'var(--agentes-oro)' }}><Icono icono="Hand" /></div>
                 <div>
                   <div style={{ fontSize: 14, color: '#ece9e2', fontWeight: 600 }}>Te necesita una persona</div>
                   <div style={{ fontSize: 13, color: '#b4bcc6', lineHeight: 1.5 }}>Grupo de 14 para una comida de empresa</div>
@@ -234,7 +235,7 @@ export default function AgentesIaRestaurantesPage() {
             <div className="lr-grid">
               {BLOQUES.map(b => (
                 <div key={b.titulo} style={{ background: 'white', border: '1px solid #f1ece0', borderRadius: 18, padding: 24 }}>
-                  <div style={{ fontSize: 28, marginBottom: 10 }} aria-hidden>{b.icono}</div>
+                  <div style={{ width: 46, height: 46, borderRadius: 12, background: '#faf1de', color: 'var(--agentes-oro-texto)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 12 }}><Icono icono={b.icono} /></div>
                   <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a140d', margin: '0 0 8px' }}>{b.titulo}</h3>
                   <p style={{ fontSize: 15, color: '#4a3f2e', lineHeight: 1.65, margin: 0 }}>{b.texto}</p>
                 </div>

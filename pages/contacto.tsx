@@ -5,6 +5,8 @@ import Footer from '../components/Footer'
 import { CONTACT_EMAIL, formatearWhatsApp, waLink } from '../lib/constants'
 import { track } from '../lib/track'
 import { useRecaptcha } from '../components/Recaptcha'
+import { CircleCheck, Mail, MessageCircle } from 'lucide-react'
+import Icono from '../components/Icono'
 
 const PRODUCTS = ['Servix', 'GymStack', 'Agentes IA', 'Otro']
 
@@ -107,7 +109,7 @@ export default function Contacto() {
             <div style={{ background: 'white', border: '1px solid var(--gris-200)', borderRadius: 24, padding: 'clamp(24px,4vw,40px)' }}>
               {status === 'success' ? (
                 <div style={{ textAlign: 'center', padding: '32px 8px' }}>
-                  <div style={{ fontSize: 52, marginBottom: 16 }}>✅</div>
+                  <div style={{ marginBottom: 16, color: '#15803d', display: 'flex', justifyContent: 'center' }}><Icono icono={CircleCheck} size={52} /></div>
                   <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1e1e1e', marginBottom: 10 }}>¡Mensaje enviado!</h2>
                   <p style={{ fontSize: 15, color: 'var(--gris-600)', lineHeight: 1.7, marginBottom: 24 }}>
                     Gracias por escribirnos. Te responderemos al email que nos has indicado lo antes posible.
@@ -210,13 +212,13 @@ export default function Contacto() {
                   target="_blank" rel="noopener noreferrer"
                   style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 600, color: '#1e1e1e', textDecoration: 'none', marginBottom: 14 }}
                 >
-                  <span style={{ fontSize: 20 }}>💬</span> WhatsApp: {formatearWhatsApp()}
+                  <Icono icono={MessageCircle} color="#c85f1b" /> WhatsApp: {formatearWhatsApp()}
                 </a>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}
                   style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 600, color: '#1e1e1e', textDecoration: 'none' }}
                 >
-                  <span style={{ fontSize: 20 }}>✉️</span> {CONTACT_EMAIL}
+                  <Icono icono={Mail} color="#c85f1b" /> {CONTACT_EMAIL}
                 </a>
               </div>
               <div style={{ background: '#fdf0e8', border: '1px solid #f9dcc7', borderRadius: 20, padding: 28 }}>

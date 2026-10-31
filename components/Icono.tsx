@@ -1,17 +1,17 @@
 import {
-  Armchair, BellRing, Brain, CalendarCheck, CalendarCheck2, CalendarDays, ChartColumn, ChefHat, CircleArrowUp,
+  Armchair, BellRing, Brain, CalendarCheck, CalendarCheck2, CalendarDays, ChartColumn, ChefHat, CircleArrowUp, CircleCheck,
   CreditCard, Dumbbell, FolderKanban, Gauge, Hand, KeyRound, Link2, MessageCircle, Monitor, Moon, Package,
-  PhoneIncoming, Plug, Puzzle, QrCode, Receipt, RefreshCw, Scissors, ShoppingBag, ShoppingCart, Sparkles, Stethoscope, Store, Target,
-  TrendingUp, Users, Utensils, UtensilsCrossed, Wrench, Zap, type LucideIcon,
+  PhoneIncoming, Plug, Puzzle, QrCode, Receipt, RefreshCw, Scissors, Search, ShoppingBag, ShoppingCart, Sparkles, Stethoscope, Store, Target,
+  Timer, TrendingUp, Users, Utensils, UtensilsCrossed, Wrench, Zap, type LucideIcon,
 } from 'lucide-react'
 
 // Iconos que las páginas nombran por texto (listas de tuplas [icono, título, texto]).
 // Explícito a propósito: solo entran en el bundle los iconos que se usan.
 const ICONOS = {
-  Armchair, BellRing, Brain, CalendarCheck, CalendarCheck2, CalendarDays, ChartColumn, ChefHat, CircleArrowUp,
+  Armchair, BellRing, Brain, CalendarCheck, CalendarCheck2, CalendarDays, ChartColumn, ChefHat, CircleArrowUp, CircleCheck,
   CreditCard, Dumbbell, FolderKanban, Gauge, Hand, KeyRound, Link2, MessageCircle, Monitor, Moon, Package,
-  PhoneIncoming, Plug, Puzzle, QrCode, Receipt, RefreshCw, Scissors, ShoppingBag, ShoppingCart, Sparkles, Stethoscope, Store, Target,
-  TrendingUp, Users, Utensils, UtensilsCrossed, Wrench, Zap,
+  PhoneIncoming, Plug, Puzzle, QrCode, Receipt, RefreshCw, Scissors, Search, ShoppingBag, ShoppingCart, Sparkles, Stethoscope, Store, Target,
+  Timer, TrendingUp, Users, Utensils, UtensilsCrossed, Wrench, Zap,
 } satisfies Record<string, LucideIcon>
 
 export type NombreIcono = keyof typeof ICONOS

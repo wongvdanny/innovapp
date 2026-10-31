@@ -3,6 +3,8 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ComoFunciona from '../components/ComoFunciona'
 import VozDemo from '../components/VozDemo'
+import { Phone } from 'lucide-react'
+import Icono from '../components/Icono'
 import { COMMERCIAL_PHONE, telLink, waLink } from '../lib/constants'
 
 const PROPUESTA_URL = waLink()
@@ -65,7 +67,7 @@ export default function AgentesVozPage() {
           </p>
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center' }}>
             <a href={telLink()} data-cta="llamada-voz-demo" style={botonPrincipal}>
-              📞 Llama a nuestro agente: {COMMERCIAL_PHONE}
+              <Icono icono={Phone} size={20} style={{ verticalAlign: '-4px', marginRight: 8 }} />Llama a nuestro agente: {COMMERCIAL_PHONE}
             </a>
             <a href={PROPUESTA_URL} target="_blank" rel="noopener noreferrer" style={botonSecundario}>
               Pedir propuesta
@@ -117,7 +119,7 @@ export default function AgentesVozPage() {
         </p>
         <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center' }}>
           <a href={telLink()} data-cta="llamada-voz-demo" style={botonPrincipal}>
-            📞 Llama a nuestro agente: {COMMERCIAL_PHONE}
+            <Icono icono={Phone} size={20} style={{ verticalAlign: '-4px', marginRight: 8 }} />Llama a nuestro agente: {COMMERCIAL_PHONE}
           </a>
           <a href={PROPUESTA_URL} target="_blank" rel="noopener noreferrer" style={botonSecundario}>
             Pedir propuesta

@@ -6,6 +6,7 @@ import ChatDemo from '../components/ChatDemo'
 import ComoFunciona from '../components/ComoFunciona'
 import VozDemo from '../components/VozDemo'
 import Faq, { faqJsonLd, type FaqItem } from '../components/Faq'
+import Icono from '../components/Icono'
 import { waLink } from '../lib/constants'
 
 const FAQ: FaqItem[] = [
@@ -96,18 +97,18 @@ export default function AgentesIaPrestashopPage() {
   ]
 
   const beneficios = [
-    ['✅', 'Cero mensajes sin responder', 'El agente contesta al instante, a cualquier hora — ningún cliente se queda esperando ni se va a la competencia por falta de respuesta.'],
-    ['🛒', 'Menos carritos abandonados', 'Buscar el producto y generar el enlace de pago ocurre en la misma conversación: el cliente completa la compra sin fricción, sin salir de WhatsApp ni perder el hilo.'],
-    ['🌙', 'Vende mientras duermes', 'Preguntas, búsquedas y pedidos se atienden 24 horas al día, findes y festivos incluidos, sin que tengas que estar detrás del móvil.'],
-    ['🔌', 'Sin duplicar catálogo ni stock', 'El agente consulta tu PrestaShop en tiempo real — mismos precios, mismo stock, sin mantener nada por duplicado.'],
+    ['CircleCheck', 'Cero mensajes sin responder', 'El agente contesta al instante, a cualquier hora — ningún cliente se queda esperando ni se va a la competencia por falta de respuesta.'],
+    ['ShoppingCart', 'Menos carritos abandonados', 'Buscar el producto y generar el enlace de pago ocurre en la misma conversación: el cliente completa la compra sin fricción, sin salir de WhatsApp ni perder el hilo.'],
+    ['Moon', 'Vende mientras duermes', 'Preguntas, búsquedas y pedidos se atienden 24 horas al día, findes y festivos incluidos, sin que tengas que estar detrás del móvil.'],
+    ['Plug', 'Sin duplicar catálogo ni stock', 'El agente consulta tu PrestaShop en tiempo real — mismos precios, mismo stock, sin mantener nada por duplicado.'],
   ]
 
   const casos = [
-    ['🌙', 'Atención al cliente 24/7', 'Responde al momento, a cualquier hora y también en festivos, con la información real de tu tienda. Si el caso necesita a una persona, lo pasa a tu equipo.'],
-    ['🎯', 'Recomendación de productos', 'Pregunta lo necesario para entender qué busca el cliente y le propone productos de tu catálogo que encajan, con su precio y disponibilidad.'],
-    ['🔍', 'Búsqueda inteligente', 'El cliente describe lo que quiere con sus palabras, sin saber el nombre exacto, y el agente lo encuentra en tu catálogo de PrestaShop con sus variantes y stock.'],
-    ['📦', 'Estado de pedidos por WhatsApp', 'Si el cliente pregunta "¿dónde está mi pedido?", el agente consulta su pedido real en PrestaShop y responde con el estado al momento.'],
-    ['🛒', 'Carrito y enlace de pago', 'El agente arma el carrito con lo que pide el cliente y genera un enlace de pago listo para completar la compra, sin que tenga que buscar nada en la web.'],
+    ['Moon', 'Atención al cliente 24/7', 'Responde al momento, a cualquier hora y también en festivos, con la información real de tu tienda. Si el caso necesita a una persona, lo pasa a tu equipo.'],
+    ['Target', 'Recomendación de productos', 'Pregunta lo necesario para entender qué busca el cliente y le propone productos de tu catálogo que encajan, con su precio y disponibilidad.'],
+    ['Search', 'Búsqueda inteligente', 'El cliente describe lo que quiere con sus palabras, sin saber el nombre exacto, y el agente lo encuentra en tu catálogo de PrestaShop con sus variantes y stock.'],
+    ['Package', 'Estado de pedidos por WhatsApp', 'Si el cliente pregunta "¿dónde está mi pedido?", el agente consulta su pedido real en PrestaShop y responde con el estado al momento.'],
+    ['ShoppingCart', 'Carrito y enlace de pago', 'El agente arma el carrito con lo que pide el cliente y genera un enlace de pago listo para completar la compra, sin que tenga que buscar nada en la web.'],
   ]
 
   return (
@@ -216,7 +217,7 @@ export default function AgentesIaPrestashopPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 20 }}>
             {casos.map(([icon, title, desc]) => (
               <div key={title} style={{ background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: 26 }}>
-                <div style={{ fontSize: 28, marginBottom: 12 }}>{icon}</div>
+                <div style={{ marginBottom: 12, color: 'var(--agentes-oro-texto)' }}><Icono icono={icon} size={28} /></div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#1a140d', marginBottom: 8 }}>{title}</div>
                 <div style={{ fontSize: 13, color: 'var(--agentes-texto-2)', lineHeight: 1.65 }}>{desc}</div>
               </div>
@@ -257,7 +258,7 @@ export default function AgentesIaPrestashopPage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 20 }}>
             {beneficios.map(([icon, title, desc]) => (
               <div key={title} style={{ background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: 26 }}>
-                <div style={{ fontSize: 28, marginBottom: 12 }}>{icon}</div>
+                <div style={{ marginBottom: 12, color: 'var(--agentes-oro-texto)' }}><Icono icono={icon} size={28} /></div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#1a140d', marginBottom: 8 }}>{title}</div>
                 <div style={{ fontSize: 13, color: 'var(--agentes-texto-2)', lineHeight: 1.65 }}>{desc}</div>
               </div>
