@@ -58,8 +58,10 @@ fi
 
 log "=== Despliegue $(git rev-parse --short HEAD) ==="
 rm -rf "$BUILD"
-# La caché de compilación acelera el build; se copia para no tocar la de la versión en marcha
-[ -d .next/cache ] && mkdir -p "$BUILD" && cp -a .next/cache "$BUILD/cache"
+# La caché de compilación acelera el build; se copia para no tocar la de la versión en marcha.
+# Sin cache/images: si se sustituye una imagen de public/ con el mismo nombre, la versión
+# optimizada antigua se serviría (STALE) en la primera visita tras el despliegue.
+[ -d .next/cache ] && mkdir -p "$BUILD" && cp -a .next/cache "$BUILD/cache" && rm -rf "$BUILD/cache/images"
 
 if ! NEXT_DIST_DIR="$BUILD" npx next build >> "$LOG" 2>&1; then
   log "ERROR: el build ha fallado (detalle en $LOG). La web sigue con la versión anterior, sin reiniciar."
