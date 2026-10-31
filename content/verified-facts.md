@@ -3,9 +3,9 @@
 ## Qué es el servicio
 - Innovapp ofrece agentes de IA por WhatsApp como servicio gestionado
   (agente + mantenimiento mensual), NO como plataforma self-service.
-- Cada agente se conecta a un número de WhatsApp Business dedicado
-  (vía WhatsApp Business Cloud API), separado del número personal/de
-  atención humana del negocio.
+- El agente se conecta al número de WhatsApp Business del propio negocio
+  (coexistencia: el negocio sigue usando su app) o, si lo prefiere, a un
+  número dedicado.
 
 ## Qué puede hacer el agente (negocios locales: peluquerías, clínicas
 estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
@@ -18,6 +18,35 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
   como existente.
 - NO tiene integración con Google Calendar todavía — está planeada,
   no implementada.
+
+## Qué puede hacer el asistente para restaurantes (/agentes-ia-restaurantes)
+- Se conecta al WhatsApp Business del propio restaurante: no hace falta
+  cambiar de número.
+- Reservas de mesa 24 h: pide fecha, hora, personas y nombre, comprueba la
+  disponibilidad, asigna la mesa (y junta mesas si hace falta) y, si no hay
+  sitio, ofrece otras horas. El cliente cancela o cambia la reserva por
+  WhatsApp.
+- Menú del día: el restaurante lo publica desde el móvil (para hoy o con
+  antelación) y el asistente lo explica con los 14 alérgenos. Nunca inventa
+  platos ni precios: solo cuenta lo publicado.
+- Registro de jornada por WhatsApp: el equipo ficha con sus palabras
+  («ya estoy», «me voy a comer»), sin instalar ninguna app. Registro
+  inalterable (las correcciones quedan anotadas aparte), informe mensual en
+  PDF y Excel y enlace de solo lectura para la Inspección.
+- Quejas, alergias graves y grupos grandes pasan a una persona, con aviso
+  en el móvil del dueño (app instalable). Panel con todas las conversaciones.
+- Marco legal: el registro de jornada es obligatorio desde 2019 (art. 34.9
+  del Estatuto de los Trabajadores) y el Gobierno prepara un real decreto
+  para que sea digital y consultable a distancia por la Inspección. NO decir
+  que el registro digital ya es obligatorio ni dar fechas de entrada en vigor.
+- Cómo se empieza: visita de 15 minutos, se deja configurado y conectado el
+  WhatsApp del restaurante, y el restaurante lo prueba y se ajusta.
+- Precio: propuesta a medida tras una visita de 15 minutos. NO hay precios
+  publicados para restaurantes: NO dar importes (ni mensualidad ni alta).
+- Sin permanencia: se puede dar de baja cuando quiera con 30 días de
+  preaviso.
+- Demo por WhatsApp (reserva de mesa de prueba):
+  https://wa.me/34617940994?text=Hola%2C%20quiero%20reservar%20mesa
 
 ## Qué puede hacer el agente (e-commerce: PrestaShop y WooCommerce)
 - Consulta el catálogo real en tiempo real: stock, precio, variantes,
@@ -81,6 +110,8 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
 - /agentes-ia → genérica, negocios locales de cualquier sector
 - /agentes-ia-prestashop → específica para tiendas PrestaShop
 - /agentes-ia-woocommerce → específica para tiendas WooCommerce
+- /agentes-ia-restaurantes → específica para restaurantes y bares: reservas
+  de mesa, menú del día con alérgenos y registro de jornada por WhatsApp
 - /desarrollo-prestashop-woocommerce → desarrollo, migración, actualización y
   mantenimiento de tiendas PrestaShop y WooCommerce
 - /contacto → formulario de contacto (CTA final de cada post)

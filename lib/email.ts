@@ -292,6 +292,77 @@ export async function sendBajaEmail(data: BajaPayload) {
   if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }
 
+// Remitente de los avisos de la landing de restaurantes (dominio verificado en Resend).
+const FROM_NOTIFICACIONES = 'Innovapp <notificaciones@mail.innovapp.es>'
+
+export interface LeadRestauranteEmail {
+  nombre: string
+  restaurante: string
+  telefono: string
+  email: string
+  localidad: string
+  mensaje?: string
+  consentimiento: { fecha: string; ip: string; texto: string }
+}
+
+/** Aviso a contacto@innovapp.es de un lead de /agentes-ia-restaurantes, con la prueba del
+ *  consentimiento (fecha, IP y texto aceptado). reply_to = email del lead. */
+export async function sendLeadRestauranteEmail(data: LeadRestauranteEmail) {
+  const row = (label: string, value?: string) =>
+    value?.trim()
+      ? `<tr><td style="padding:6px 0;font-size:13px;color:#88a8b0;width:150px;vertical-align:top">${label}</td><td style="font-size:14px;color:#1e1e1e;white-space:pre-wrap">${escapeHtml(value)}</td></tr>`
+      : ''
+  const fecha = new Date(data.consentimiento.fecha).toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })
+
+  const { error } = await resend.emails.send({
+    from: FROM_NOTIFICACIONES,
+    to: CONTACT_EMAIL,
+    replyTo: data.email,
+    subject: `Nuevo lead restaurante — ${data.restaurante} (${data.localidad})`,
+    html: `
+    <div style="font-family:system-ui,sans-serif;max-width:600px;margin:0 auto;padding:32px">
+      <h2 style="font-size:18px;color:#1e1e1e;margin:0 0 4px">Quieren que les llaméis</h2>
+      <p style="font-size:13px;color:#88a8b0;margin:0 0 20px">innovapp.es/agentes-ia-restaurantes</p>
+      <table style="width:100%;border-collapse:collapse">
+        ${row('Nombre', data.nombre)}
+        ${row('Restaurante', data.restaurante)}
+        ${row('Teléfono', data.telefono)}
+        ${row('Email', data.email)}
+        ${row('Localidad', data.localidad)}
+        ${row('Mensaje', data.mensaje)}
+      </table>
+      <p style="font-size:12px;color:#88a8b0;line-height:1.6;margin:20px 0 0">
+        Consentimiento: ${escapeHtml(fecha)} (Europe/Madrid) desde la IP ${escapeHtml(data.consentimiento.ip)}.<br>
+        Texto aceptado: «${escapeHtml(data.consentimiento.texto)}»
+      </p>
+    </div>`,
+  })
+
+  // El SDK de Resend no lanza en errores de API: hay que mirar el campo `error`.
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
+}
+
+/** Respuesta automática al lead de /agentes-ia-restaurantes. reply_to = contacto@innovapp.es. */
+export async function sendLeadRestauranteAutorespuesta(to: string, nombre: string) {
+  const { error } = await resend.emails.send({
+    from: FROM_NOTIFICACIONES,
+    to,
+    replyTo: CONTACT_EMAIL,
+    subject: 'Hemos recibido tu solicitud — Innovapp',
+    html: `
+    <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#1e1e1e">
+      <h2 style="font-size:20px;margin:0 0 16px">Hola, ${escapeHtml(nombre)}:</h2>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Gracias por tu interés en el asistente de WhatsApp para restaurantes. Te llamaremos en cuanto podamos para concertar una visita de 15 minutos y ver qué necesita tu restaurante.</p>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Mientras tanto, puedes probar la demo escribiendo por WhatsApp: <a href="https://wa.me/34617940994?text=Hola%2C%20quiero%20reservar%20mesa" style="color:#c98826;font-weight:600">reservar una mesa de prueba</a>.</p>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 24px">Si quieres añadir algo, responde a este correo.</p>
+      <p style="font-size:15px;margin:0">El equipo de Innovapp</p>
+      <p style="font-size:12px;color:#88a8b0;line-height:1.6;margin:28px 0 0">Recibes este correo porque has rellenado el formulario de innovapp.es/agentes-ia-restaurantes. Si no has sido tú, ignóralo o escríbenos a ${CONTACT_EMAIL}.</p>
+    </div>`,
+  })
+
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
+}
+
 export async function sendNewsletterConfirmation(to: string) {
   const { error } = await resend.emails.send({
     from: FROM, to,

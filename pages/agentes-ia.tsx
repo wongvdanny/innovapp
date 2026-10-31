@@ -302,6 +302,17 @@ export default function AgentesIaPage() {
         </div>
       </section>
 
+      <section style={{ padding: '0 24px 90px', background: 'white' }}>
+        <Link href="/agentes-ia-restaurantes" style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 20px', background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: '26px 30px', textDecoration: 'none' }}>
+          <span style={{ fontSize: 32 }}>🍽️</span>
+          <span style={{ flex: '1 1 260px' }}>
+            <span style={{ display: 'block', fontSize: 18, fontWeight: 700, color: '#1a140d', marginBottom: 4 }}>¿Tienes un restaurante?</span>
+            <span style={{ display: 'block', fontSize: 14, color: '#6b5d45', lineHeight: 1.6 }}>Reservas de mesa 24 h, menú del día con alérgenos y registro de jornada del equipo, todo por WhatsApp.</span>
+          </span>
+          <span style={{ fontSize: 15, fontWeight: 700, color: '#8a5a12' }}>Ver el asistente para restaurantes →</span>
+        </Link>
+      </section>
+
       <section style={{ padding: '90px 24px', background: '#faf8f4', textAlign: 'center' }}>
         <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#1a140d' }}>
           ¿Vendes por WhatsApp? Podemos ir más lejos

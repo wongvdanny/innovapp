@@ -1,29 +1,15 @@
 import { useState } from 'react'
-import Link from 'next/link'
-import Script from 'next/script'
 import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import { WHATSAPP_NUMBER, formatearWhatsApp } from '../components/WhatsAppBubble'
 import { CONTACT_EMAIL } from '../lib/constants'
 import { track } from '../lib/track'
+import { useRecaptcha } from '../components/Recaptcha'
 
 const PRODUCTS = ['Servix', 'GymStack', 'Agentes IA', 'Otro']
 
 type Status = 'idle' | 'sending' | 'success' | 'error'
-
-// Público a propósito (NEXT_PUBLIC_*): es la site key de reCAPTCHA, diseñada para ir en
-// el HTML del cliente. La secreta (RECAPTCHA_SECRET_KEY) solo se usa en pages/api/contacto.ts.
-const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
-
-declare global {
-  interface Window {
-    grecaptcha?: {
-      getResponse: (widgetId?: number) => string
-      reset: (widgetId?: number) => void
-    }
-  }
-}
 
 const inputStyle: React.CSSProperties = {
   width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid #eef1f4',
@@ -42,6 +28,7 @@ export default function Contacto() {
   })
   const [status, setStatus] = useState<Status>('idle')
   const [error, setError] = useState('')
+  const captcha = useRecaptcha()
 
   const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) =>
     setForm(f => ({ ...f, [k]: v }))
@@ -60,8 +47,8 @@ export default function Contacto() {
       setStatus('error'); setError('Debes aceptar la política de privacidad.'); return
     }
 
-    const recaptchaToken = RECAPTCHA_SITE_KEY ? window.grecaptcha?.getResponse() ?? '' : ''
-    if (RECAPTCHA_SITE_KEY && !recaptchaToken) {
+    const recaptchaToken = captcha.token()
+    if (captcha.activo && !recaptchaToken) {
       setStatus('error'); setError('Marca la casilla "No soy un robot" antes de enviar.'); return
     }
 
@@ -90,7 +77,7 @@ export default function Contacto() {
     } finally {
       // El token de reCAPTCHA es de un solo uso -- se resetea tanto si fue bien (para el
       // próximo envío) como si falló (para no reenviar un token ya usado o caducado).
-      window.grecaptcha?.reset()
+      captcha.reset()
     }
   }
 
@@ -104,10 +91,6 @@ export default function Contacto() {
         canonical="/contacto"
       />
       <Nav />
-
-      {RECAPTCHA_SITE_KEY && (
-        <Script src="https://www.google.com/recaptcha/api.js" strategy="afterInteractive" async defer />
-      )}
 
       <main style={{ background: '#f8fafb', minHeight: '100vh', padding: '140px 24px 90px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
@@ -138,7 +121,7 @@ export default function Contacto() {
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} noValidate>
+                <form onSubmit={handleSubmit} onFocus={captcha.cargar} noValidate>
                   {/* honeypot: invisible para humanos, tentador para bots */}
                   <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, overflow: 'hidden' }}>
                     <label htmlFor="website">No rellenar este campo</label>
@@ -187,13 +170,11 @@ export default function Contacto() {
                         style={{ marginTop: 2, width: 16, height: 16, flexShrink: 0, accentColor: '#ee7528' }} />
                       <span>
                         He leído y acepto la{' '}
-                        <Link href="/privacidad" style={{ color: '#ee7528', fontWeight: 600 }}>política de privacidad</Link>. *
+                        <a href="/privacidad" target="_blank" rel="noopener noreferrer" style={{ color: '#ee7528', fontWeight: 600 }}>política de privacidad</a>. *
                       </span>
                     </label>
 
-                    {RECAPTCHA_SITE_KEY && (
-                      <div className="g-recaptcha" data-sitekey={RECAPTCHA_SITE_KEY} />
-                    )}
+                    {captcha.widget}
 
                     {status === 'error' && (
                       <p style={{ fontSize: 13, color: '#991b1b', background: '#fff1f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '10px 14px', margin: 0 }}>
