@@ -247,31 +247,39 @@ export default function AgentesIaPage() {
         </div>
       </section>
 
-      <section style={{ padding: '90px 24px', background: '#faf8f4' }}>
+      <section id="por-sector" style={{ padding: '90px 24px', background: '#faf8f4', scrollMarginTop: 80 }}>
         <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 50 }}>
-            <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#1a140d' }}>
+          <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 12, color: '#1a140d' }}>
               ¿Para qué negocios funciona?
             </h2>
-            <p style={{ fontSize: 16, color: 'var(--agentes-texto-2)', maxWidth: 520, margin: '0 auto' }}>
-              Si tu negocio vive de WhatsApp y de las citas o los pedidos, esto es para ti.
+            <p style={{ fontSize: 16, color: 'var(--agentes-texto-2)', maxWidth: 560, margin: '0 auto' }}>
+              Si tu negocio vive de WhatsApp y de las citas, las reservas o los pedidos, esto es para ti. Mira lo que hace el agente en cada sector.
             </p>
           </div>
-          <div style={{ maxWidth: 900, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 20 }}>
-            {[
-              ['Scissors', 'Peluquerías y salones de belleza', 'Reserva citas comprobando la disponibilidad real al momento — nunca se solapan dos clientes a la misma hora.'],
-              ['Sparkles', 'Clínicas y centros de estética', 'El mismo sistema de citas, y si además vendes productos relacionados, el agente también los vende por WhatsApp.'],
-              ['Wrench', 'Talleres y negocios con cita previa', 'Cualquier negocio que trabaje con cita previa puede automatizar la reserva sin perder el trato cercano.'],
-              ['ShoppingBag', 'Tiendas con catálogo online', 'El agente consulta productos, precios, stock y variantes reales, y completa el pedido sin salir de WhatsApp. Compatible con PrestaShop y WooCommerce.'],
-              ['MessageCircle', 'Cualquier negocio con WhatsApp muy activo', 'Si te repiten las mismas preguntas todo el día, el agente se encarga y tu equipo se centra en lo que de verdad necesita a una persona.'],
-            ].map(([icon, title, desc]) => (
-              <div key={String(title)} style={{ background: 'white', border: '1px solid #f1ece0', borderRadius: 18, padding: 26 }}>
-                <div style={{ width: 46, height: 46, borderRadius: 12, background: '#faf1de', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14, color: 'var(--agentes-oro-texto)' }}><Icono icono={icon} /></div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1a140d', marginBottom: 8 }}>{title}</div>
-                <div style={{ fontSize: 13, color: 'var(--agentes-texto-2)', lineHeight: 1.65 }}>{desc}</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,260px),1fr))', gap: 20 }}>
+            {TARJETAS_SECTOR.map(t => (
+              <div key={t.clave} style={{ display: 'flex', flexDirection: 'column', background: 'white', border: '1px solid #f1ece0', borderRadius: 18, padding: 26 }}>
+                <div style={{ width: 46, height: 46, borderRadius: 12, background: '#faf1de', color: 'var(--agentes-oro-texto)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
+                  <Icono icono={t.icono} />
+                </div>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a140d', margin: '0 0 8px' }}>{t.nombre}</h3>
+                <p style={{ fontSize: 14, color: 'var(--agentes-texto-2)', lineHeight: 1.65, margin: '0 0 16px', flex: 1 }}>{t.texto}</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 16px' }}>
+                  {t.enlaces.map(([href, texto]) => (
+                    <Link key={href} href={href} style={{ fontSize: 15, fontWeight: 700, color: 'var(--agentes-oro-texto)' }}>{texto} →</Link>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
+          <p style={{ textAlign: 'center', fontSize: 16, color: '#4a3f2e', lineHeight: 1.7, margin: '36px auto 0', maxWidth: 680 }}>
+            ¿Tu sector no está? El agente se adapta a cualquier negocio que atienda por WhatsApp.{' '}
+            <a href={waLink('Hola, mi sector no está en la web y quiero saber si el agente me sirve')} target="_blank" rel="noopener noreferrer" data-cta="otro-sector"
+              style={{ color: 'var(--agentes-oro-texto)', fontWeight: 700, textDecoration: 'underline', whiteSpace: 'nowrap' }}>
+              Cuéntanos tu caso por WhatsApp →
+            </a>
+          </p>
         </div>
       </section>
 
@@ -299,33 +307,6 @@ export default function AgentesIaPage() {
                 <div>
                   <div style={{ fontSize: 15, fontWeight: 700, color: '#1a140d', marginBottom: 6 }}>{title}</div>
                   <div style={{ fontSize: 13, color: 'var(--agentes-texto-2)', lineHeight: 1.65 }}>{desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section id="por-sector" style={{ padding: '0 24px 90px', background: 'white', scrollMarginTop: 80 }}>
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 40 }}>
-            <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 12, color: '#1a140d' }}>Por sector</h2>
-            <p style={{ fontSize: 16, color: 'var(--agentes-texto-2)', maxWidth: 560, margin: '0 auto' }}>
-              Lo que hace el agente en cada tipo de negocio, con un ejemplo de conversación.
-            </p>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,260px),1fr))', gap: 20 }}>
-            {TARJETAS_SECTOR.map(t => (
-              <div key={t.clave} style={{ display: 'flex', flexDirection: 'column', background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: 26 }}>
-                <div style={{ width: 46, height: 46, borderRadius: 12, background: '#faf1de', color: 'var(--agentes-oro-texto)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
-                  <Icono icono={t.icono} />
-                </div>
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a140d', margin: '0 0 8px' }}>{t.nombre}</h3>
-                <p style={{ fontSize: 14, color: 'var(--agentes-texto-2)', lineHeight: 1.65, margin: '0 0 16px', flex: 1 }}>{t.texto}</p>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 16px' }}>
-                  {t.enlaces.map(([href, texto]) => (
-                    <Link key={href} href={href} style={{ fontSize: 15, fontWeight: 700, color: 'var(--agentes-oro-texto)' }}>{texto} →</Link>
-                  ))}
                 </div>
               </div>
             ))}

@@ -63,8 +63,9 @@ export default function LeadForm({ source, etiquetaNegocio }: {
       const data = (await res.json().catch(() => ({}))) as { error?: string }
       if (!res.ok) return fallo(data.error || 'No se ha podido enviar. Inténtalo de nuevo en unos minutos.')
       setEstado('success')
-      // Sin datos personales en el dataLayer; GTM aplica el Consent Mode a cada etiqueta.
-      track('generate_lead', { form: source, page_path: window.location.pathname })
+      // Un único push por envío: { event: 'generate_lead', lead_source }. Sin datos personales;
+      // GTM aplica el Consent Mode a cada etiqueta.
+      track('generate_lead', { lead_source: source })
       setForm(FORM_VACIO)
     } catch {
       fallo('No se ha podido enviar. Inténtalo de nuevo en unos minutos o escríbenos por WhatsApp.')
