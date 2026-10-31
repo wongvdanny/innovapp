@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Bot, Cloud, Code } from 'lucide-react'
 import Icono from '../Icono'
+import { TARJETAS_SECTOR } from '../../data/sectores'
 
 // Tres líneas de negocio. Recoge lo útil de los bloques que había antes en la home
 // («Desarrollamos aplicaciones…», «Otras soluciones SaaS» y «¿Cuántas horas pierde…?»).
@@ -10,12 +11,12 @@ const SERVICIOS = [
     titulo: 'Agentes IA',
     subtitulo: 'WhatsApp y voz',
     texto:
-      'Atienden tu WhatsApp y las llamadas que no coges, las 24 horas: responden dudas con la información real de tu negocio, gestionan citas y reservas sin dobles reservas, y pasan a una persona lo que lo necesita.',
+      'Para cualquier negocio que atienda por WhatsApp, tenga o no web: contestan tu WhatsApp y las llamadas que no coges a cualquier hora, dan citas y reservas en tu agenda sin dobles reservas, y pasan a una persona lo que lo necesita.',
     enlaces: [
       ['/agentes-ia', 'Agentes IA para tu negocio'],
       ['/agentes-voz', 'Agentes de voz'],
-      ['/agentes-ia-restaurantes', 'Asistente para restaurantes'],
     ],
+    porSector: true,
   },
   {
     icono: Code,
@@ -53,6 +54,21 @@ export default function Servicios() {
               <h3 style={{ fontSize: 20, fontWeight: 800, color: '#1e1e1e', margin: '0 0 4px' }}>{s.titulo}</h3>
               <div style={{ fontSize: 14, fontWeight: 600, color: '#b2561a', marginBottom: 12 }}>{s.subtitulo}</div>
               <p style={{ fontSize: 15, color: 'var(--gris-600)', lineHeight: 1.7, margin: '0 0 18px', flex: 1 }}>{s.texto}</p>
+              {'porSector' in s && s.porSector && (
+                <p style={{ fontSize: 14, color: 'var(--gris-600)', lineHeight: 1.9, margin: '0 0 14px' }}>
+                  <strong style={{ color: '#1e1e1e' }}>Por sector: </strong>
+                  {TARJETAS_SECTOR.map((t, i) => (
+                    <span key={t.clave}>
+                      {i > 0 && ' · '}
+                      {t.enlaces.length === 1
+                        ? <Link href={t.enlaces[0][0]} style={{ color: '#b2561a', fontWeight: 600, textDecoration: 'underline' }}>{t.nombreCorto}</Link>
+                        : <>{t.nombreCorto} ({t.enlaces.map(([href, texto], j) => (
+                            <span key={href}>{j > 0 && ' / '}<Link href={href} style={{ color: '#b2561a', fontWeight: 600, textDecoration: 'underline' }}>{texto}</Link></span>
+                          ))})</>}
+                    </span>
+                  ))}
+                </p>
+              )}
               <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 8 }}>
                 {s.enlaces.map(([href, texto]) => (
                   <li key={href}>

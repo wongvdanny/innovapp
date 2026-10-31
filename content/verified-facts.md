@@ -13,9 +13,11 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
   (horarios, servicios, precios configurados).
 - Agenda citas, con sistema anti-doble-reserva.
 - Escala a atención humana cuando el caso lo requiere.
-- NO ENVÍA recordatorios automáticos de citas todavía (24h/2h antes) —
-  está en el roadmap, no implementado. NO mencionar esta función
-  como existente.
+- Envía recordatorios de la cita por WhatsApp (24 h y 2 h antes), con
+  plantilla aprobada por Meta; el cliente puede responder para confirmar o
+  cancelar. NO dar cifras de reducción de ausencias.
+- Las citas se reservan en la agenda del panel de Agentes. NO está integrado
+  con otros programas de citas (salvo lo que se monte a medida).
 - NO tiene integración con Google Calendar todavía — está planeada,
   no implementada.
 
@@ -110,6 +112,17 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
 - /agentes-ia-woocommerce → específica para tiendas WooCommerce
 - /agentes-ia-restaurantes → específica para restaurantes y bares: reservas
   de mesa, menú del día con alérgenos y registro de jornada por WhatsApp
+- /agentes-ia-peluquerias → peluquerías y centros de estética: citas, cambios
+  y cancelaciones 24/7, recordatorios, huecos libres, servicios/horarios/precios
+  configurados y, con el agente de voz (extra), llamadas perdidas
+- /agentes-ia-clinicas → clínicas dentales, de fisioterapia y veterinarias:
+  citas, preguntas frecuentes, recordatorios; urgencias y consultas clínicas
+  pasan a una persona. El agente NO da consejo médico ni diagnósticos. RGPD:
+  la clínica es responsable e Innovapp encargado. NO afirmar certificaciones.
+- /agentes-ia-talleres → talleres mecánicos: cita para revisión, pre-ITV,
+  neumáticos o diagnosis, servicios y horarios, recordatorio de la cita; los
+  presupuestos pasan a una persona. El agente NO da precios de reparaciones.
+- /agentes-ia#por-sector → tarjetas de todos los sectores
 - /desarrollo-prestashop-woocommerce → desarrollo, migración, actualización y
   mantenimiento de tiendas PrestaShop y WooCommerce
 - /contacto → formulario de contacto (CTA final de cada post)

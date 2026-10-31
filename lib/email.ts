@@ -1,6 +1,6 @@
 import { Resend } from 'resend'
 import { CONTACT_EMAIL, waLink } from './constants'
-import { MENSAJE_DEMO_RESTAURANTE } from './lead-restaurante'
+import type { FuenteLead } from '../data/sectores'
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM ?? 'innovapp <onboarding@resend.dev>'
 
@@ -293,12 +293,14 @@ export async function sendBajaEmail(data: BajaPayload) {
   if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }
 
-// Remitente de los avisos de la landing de restaurantes (dominio verificado en Resend).
+// Remitente de los avisos de las landings de Agentes IA (dominio verificado en Resend).
 const FROM_NOTIFICACIONES = 'Innovapp <notificaciones@mail.innovapp.es>'
 
-export interface LeadRestauranteEmail {
+export interface LeadEmail {
+  /** Origen del lead: clave de FUENTES_LEAD (data/sectores.ts). */
+  fuente: FuenteLead & { clave: string }
   nombre: string
-  restaurante: string
+  negocio: string
   telefono: string
   email: string
   localidad: string
@@ -306,12 +308,12 @@ export interface LeadRestauranteEmail {
   consentimiento: { fecha: string; ip: string; texto: string }
 }
 
-/** Aviso a contacto@innovapp.es de un lead de /agentes-ia-restaurantes, con la prueba del
- *  consentimiento (fecha, IP y texto aceptado). reply_to = email del lead. */
-export async function sendLeadRestauranteEmail(data: LeadRestauranteEmail) {
+/** Aviso a contacto@innovapp.es de un lead de una landing de Agentes IA (restaurantes o sector),
+ *  con la prueba del consentimiento (fecha, IP y texto aceptado). reply_to = email del lead. */
+export async function sendLeadEmail(data: LeadEmail) {
   const row = (label: string, value?: string) =>
     value?.trim()
-      ? `<tr><td style="padding:6px 0;font-size:13px;color:#88a8b0;width:150px;vertical-align:top">${label}</td><td style="font-size:14px;color:#1e1e1e;white-space:pre-wrap">${escapeHtml(value)}</td></tr>`
+      ? `<tr><td style="padding:6px 0;font-size:13px;color:#6e6862;width:150px;vertical-align:top">${label}</td><td style="font-size:14px;color:#1e1e1e;white-space:pre-wrap">${escapeHtml(value)}</td></tr>`
       : ''
   const fecha = new Date(data.consentimiento.fecha).toLocaleString('es-ES', { timeZone: 'Europe/Madrid' })
 
@@ -319,20 +321,20 @@ export async function sendLeadRestauranteEmail(data: LeadRestauranteEmail) {
     from: FROM_NOTIFICACIONES,
     to: CONTACT_EMAIL,
     replyTo: data.email,
-    subject: `Nuevo lead restaurante — ${data.restaurante} (${data.localidad})`,
+    subject: `Nuevo lead ${data.fuente.clave} — ${data.negocio} (${data.localidad})`,
     html: `
     <div style="font-family:system-ui,sans-serif;max-width:600px;margin:0 auto;padding:32px">
       <h2 style="font-size:18px;color:#1e1e1e;margin:0 0 4px">Quieren que les llaméis</h2>
-      <p style="font-size:13px;color:#88a8b0;margin:0 0 20px">innovapp.es/agentes-ia-restaurantes</p>
+      <p style="font-size:13px;color:#6e6862;margin:0 0 20px">innovapp.es${escapeHtml(data.fuente.ruta)}</p>
       <table style="width:100%;border-collapse:collapse">
         ${row('Nombre', data.nombre)}
-        ${row('Restaurante', data.restaurante)}
+        ${row(data.fuente.etiquetaNegocio, data.negocio)}
         ${row('Teléfono', data.telefono)}
         ${row('Email', data.email)}
         ${row('Localidad', data.localidad)}
         ${row('Mensaje', data.mensaje)}
       </table>
-      <p style="font-size:12px;color:#88a8b0;line-height:1.6;margin:20px 0 0">
+      <p style="font-size:12px;color:#6e6862;line-height:1.6;margin:20px 0 0">
         Consentimiento: ${escapeHtml(fecha)} (Europe/Madrid) desde la IP ${escapeHtml(data.consentimiento.ip)}.<br>
         Texto aceptado: «${escapeHtml(data.consentimiento.texto)}»
       </p>
@@ -343,8 +345,8 @@ export async function sendLeadRestauranteEmail(data: LeadRestauranteEmail) {
   if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }
 
-/** Respuesta automática al lead de /agentes-ia-restaurantes. reply_to = contacto@innovapp.es. */
-export async function sendLeadRestauranteAutorespuesta(to: string, nombre: string) {
+/** Respuesta automática al lead, con el texto de su sector. reply_to = contacto@innovapp.es. */
+export async function sendLeadAutorespuesta(to: string, nombre: string, fuente: FuenteLead) {
   const { error } = await resend.emails.send({
     from: FROM_NOTIFICACIONES,
     to,
@@ -353,11 +355,11 @@ export async function sendLeadRestauranteAutorespuesta(to: string, nombre: strin
     html: `
     <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#1e1e1e">
       <h2 style="font-size:20px;margin:0 0 16px">Hola, ${escapeHtml(nombre)}:</h2>
-      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Gracias por tu interés en el asistente de WhatsApp para restaurantes. Te llamaremos en cuanto podamos para concertar una visita de 15 minutos y ver qué necesita tu restaurante.</p>
-      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Mientras tanto, si quieres, puedes <a href="${waLink(MENSAJE_DEMO_RESTAURANTE)}" style="color:#c98826;font-weight:600">hablar por WhatsApp con nuestro agente IA</a> y ver la demo del asistente para restaurantes.</p>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Gracias por tu interés en ${escapeHtml(fuente.servicio)}. Te llamaremos en cuanto podamos para concertar una visita de 15 minutos y ver qué necesita tu ${escapeHtml(fuente.etiquetaNegocio.toLowerCase())}.</p>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Mientras tanto, si quieres, puedes <a href="${waLink(fuente.mensajeDemo)}" style="color:#8a5a12;font-weight:600">hablar por WhatsApp con nuestro agente IA</a> y ver la demo.</p>
       <p style="font-size:15px;line-height:1.7;margin:0 0 24px">Si quieres añadir algo, responde a este correo.</p>
       <p style="font-size:15px;margin:0">El equipo de Innovapp</p>
-      <p style="font-size:12px;color:#88a8b0;line-height:1.6;margin:28px 0 0">Recibes este correo porque has rellenado el formulario de innovapp.es/agentes-ia-restaurantes. Si no has sido tú, ignóralo o escríbenos a ${CONTACT_EMAIL}.</p>
+      <p style="font-size:12px;color:#6e6862;line-height:1.6;margin:28px 0 0">Recibes este correo porque has rellenado el formulario de innovapp.es${escapeHtml(fuente.ruta)}. Si no has sido tú, ignóralo o escríbenos a ${CONTACT_EMAIL}.</p>
     </div>`,
   })
 

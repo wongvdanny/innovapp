@@ -4,6 +4,7 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
 import Icono from '../components/Icono'
+import { TARJETAS_SECTOR } from '../data/sectores'
 import ComoFunciona from '../components/ComoFunciona'
 import VozDemo from '../components/VozDemo'
 import { CONTACT_EMAIL, waLink } from '../lib/constants'
@@ -305,15 +306,31 @@ export default function AgentesIaPage() {
         </div>
       </section>
 
-      <section style={{ padding: '0 24px 90px', background: 'white' }}>
-        <Link href="/agentes-ia-restaurantes" style={{ maxWidth: 900, margin: '0 auto', display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '10px 20px', background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: '26px 30px', textDecoration: 'none' }}>
-          <span style={{ color: 'var(--agentes-oro-texto)' }}><Icono icono="UtensilsCrossed" size={32} /></span>
-          <span style={{ flex: '1 1 260px' }}>
-            <span style={{ display: 'block', fontSize: 18, fontWeight: 700, color: '#1a140d', marginBottom: 4 }}>¿Tienes un restaurante?</span>
-            <span style={{ display: 'block', fontSize: 14, color: '#6b5d45', lineHeight: 1.6 }}>Reservas de mesa 24 h, menú del día con alérgenos y registro de jornada del equipo, todo por WhatsApp.</span>
-          </span>
-          <span style={{ fontSize: 15, fontWeight: 700, color: '#8a5a12' }}>Ver el asistente para restaurantes →</span>
-        </Link>
+      <section id="por-sector" style={{ padding: '0 24px 90px', background: 'white', scrollMarginTop: 80 }}>
+        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: 40 }}>
+            <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 12, color: '#1a140d' }}>Por sector</h2>
+            <p style={{ fontSize: 16, color: 'var(--agentes-texto-2)', maxWidth: 560, margin: '0 auto' }}>
+              Lo que hace el agente en cada tipo de negocio, con un ejemplo de conversación.
+            </p>
+          </div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,260px),1fr))', gap: 20 }}>
+            {TARJETAS_SECTOR.map(t => (
+              <div key={t.clave} style={{ display: 'flex', flexDirection: 'column', background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: 26 }}>
+                <div style={{ width: 46, height: 46, borderRadius: 12, background: '#faf1de', color: 'var(--agentes-oro-texto)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}>
+                  <Icono icono={t.icono} />
+                </div>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a140d', margin: '0 0 8px' }}>{t.nombre}</h3>
+                <p style={{ fontSize: 14, color: 'var(--agentes-texto-2)', lineHeight: 1.65, margin: '0 0 16px', flex: 1 }}>{t.texto}</p>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px 16px' }}>
+                  {t.enlaces.map(([href, texto]) => (
+                    <Link key={href} href={href} style={{ fontSize: 15, fontWeight: 700, color: 'var(--agentes-oro-texto)' }}>{texto} →</Link>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
 
       <section style={{ padding: '90px 24px', background: '#faf8f4', textAlign: 'center' }}>

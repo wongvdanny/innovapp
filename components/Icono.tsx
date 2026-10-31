@@ -1,7 +1,7 @@
 import {
   Armchair, BellRing, Brain, CalendarCheck, CalendarCheck2, CalendarDays, ChartColumn, ChefHat, CircleArrowUp,
   CreditCard, Dumbbell, FolderKanban, Gauge, Hand, KeyRound, Link2, MessageCircle, Monitor, Moon, Package,
-  Plug, Puzzle, QrCode, Receipt, RefreshCw, Scissors, ShoppingBag, ShoppingCart, Sparkles, Store, Target,
+  PhoneIncoming, Plug, Puzzle, QrCode, Receipt, RefreshCw, Scissors, ShoppingBag, ShoppingCart, Sparkles, Stethoscope, Store, Target,
   TrendingUp, Users, Utensils, UtensilsCrossed, Wrench, Zap, type LucideIcon,
 } from 'lucide-react'
 
@@ -10,7 +10,7 @@ import {
 const ICONOS = {
   Armchair, BellRing, Brain, CalendarCheck, CalendarCheck2, CalendarDays, ChartColumn, ChefHat, CircleArrowUp,
   CreditCard, Dumbbell, FolderKanban, Gauge, Hand, KeyRound, Link2, MessageCircle, Monitor, Moon, Package,
-  Plug, Puzzle, QrCode, Receipt, RefreshCw, Scissors, ShoppingBag, ShoppingCart, Sparkles, Store, Target,
+  PhoneIncoming, Plug, Puzzle, QrCode, Receipt, RefreshCw, Scissors, ShoppingBag, ShoppingCart, Sparkles, Stethoscope, Store, Target,
   TrendingUp, Users, Utensils, UtensilsCrossed, Wrench, Zap,
 } satisfies Record<string, LucideIcon>
 

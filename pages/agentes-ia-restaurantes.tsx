@@ -1,13 +1,11 @@
-import { useState } from 'react'
 import Link from 'next/link'
 import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ComoFunciona from '../components/ComoFunciona'
 import Faq, { faqJsonLd, type FaqItem } from '../components/Faq'
-import { track } from '../lib/track'
-import { useRecaptcha } from '../components/Recaptcha'
-import { CONSENTIMIENTO_RESTAURANTE, LIMITES_LEAD, MENSAJE_DEMO_RESTAURANTE, TELEFONO_RE } from '../lib/lead-restaurante'
+import LeadForm from '../components/sector/LeadForm'
+import { MENSAJE_DEMO_RESTAURANTE } from '../data/sectores'
 import { COMMERCIAL_PHONE, LEGAL_ADDRESS_ES, waLink } from '../lib/constants'
 
 // Demo: WhatsApp comercial (nuestro agente IA) con el mensaje de demo precargado. Es un enlace
@@ -87,141 +85,7 @@ const PASOS = [
   { title: 'Lo probáis y ajustamos', description: 'Hacéis reservas de prueba y fichajes, y afinamos lo que haga falta antes de abrirlo a los clientes.' },
 ]
 
-type Estado = 'idle' | 'sending' | 'success' | 'error'
-
-const FORM_VACIO = { nombre: '', restaurante: '', telefono: '', email: '', localidad: '', mensaje: '', consentimiento: false, website: '' }
-
-const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-
-const inputStyle: React.CSSProperties = {
-  width: '100%', padding: '13px 14px', borderRadius: 10, border: '1.5px solid #e6dfcf',
-  fontSize: 16, outline: 'none', fontFamily: 'var(--font-gabarito), system-ui, sans-serif',
-  boxSizing: 'border-box', background: 'white', color: '#1a140d',
-}
-const lblStyle: React.CSSProperties = { fontSize: 14, fontWeight: 600, color: '#1a140d', display: 'block', marginBottom: 6 }
-
 const h2Claro: React.CSSProperties = { fontSize: 'clamp(26px,5vw,38px)', fontWeight: 700, letterSpacing: -1, lineHeight: 1.2, margin: '0 0 16px', color: '#1a140d' }
-
-function FormularioRestaurante() {
-  const [form, setForm] = useState(FORM_VACIO)
-  const [estado, setEstado] = useState<Estado>('idle')
-  const [error, setError] = useState('')
-  const captcha = useRecaptcha()
-
-  const set = <K extends keyof typeof form>(k: K, v: (typeof form)[K]) => setForm(f => ({ ...f, [k]: v }))
-  const enviando = estado === 'sending'
-
-  const fallo = (msg: string) => { setEstado('error'); setError(msg) }
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (enviando) return
-    const d = {
-      nombre: form.nombre.trim(), restaurante: form.restaurante.trim(), telefono: form.telefono.trim(),
-      email: form.email.trim(), localidad: form.localidad.trim(), mensaje: form.mensaje.trim(),
-    }
-    if (!d.nombre || !d.restaurante || !d.telefono || !d.email || !d.localidad) return fallo('Rellena nombre, restaurante, teléfono, email y localidad.')
-    if (!TELEFONO_RE.test(d.telefono)) return fallo('Revisa el teléfono.')
-    if (!EMAIL_RE.test(d.email)) return fallo('El email no tiene un formato válido.')
-    if (!form.consentimiento) return fallo('Para que te contactemos tienes que marcar la casilla de consentimiento.')
-    const recaptchaToken = captcha.token()
-    if (captcha.activo && !recaptchaToken) return fallo('Marca la casilla «No soy un robot» antes de enviar.')
-
-    setEstado('sending'); setError('')
-    try {
-      const res = await fetch('/api/lead-restaurante', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...d, consentimiento: true, website: form.website, recaptchaToken }),
-      })
-      const data = (await res.json().catch(() => ({}))) as { error?: string }
-      if (!res.ok) return fallo(data.error || 'No se ha podido enviar. Inténtalo de nuevo en unos minutos.')
-      setEstado('success')
-      // Sin datos personales en el dataLayer; GTM aplica el Consent Mode a cada etiqueta.
-      track('generate_lead', { form: 'restaurantes', page_path: window.location.pathname })
-      setForm(FORM_VACIO)
-    } catch {
-      fallo('No se ha podido enviar. Inténtalo de nuevo en unos minutos o escríbenos por WhatsApp.')
-    } finally {
-      // Token de un solo uso: se resetea tanto si fue bien como si falló.
-      captcha.reset()
-    }
-  }
-
-  if (estado === 'success') {
-    return (
-      <div role="status" style={{ textAlign: 'center', padding: '24px 4px' }}>
-        <div style={{ fontSize: 44, marginBottom: 12 }} aria-hidden>✅</div>
-        <h3 style={{ fontSize: 22, fontWeight: 700, color: '#1a140d', margin: '0 0 10px' }}>¡Recibido!</h3>
-        <p style={{ fontSize: 16, color: '#4a3f2e', lineHeight: 1.7, margin: 0 }}>
-          Te llamamos en cuanto podamos para concertar la visita. Te hemos enviado un email de confirmación.
-        </p>
-      </div>
-    )
-  }
-
-  const campo = (id: 'nombre' | 'restaurante' | 'telefono' | 'email' | 'localidad', label: string, type: string, autoComplete: string) => (
-    <div>
-      <label style={lblStyle} htmlFor={`lr-${id}`}>{label} *</label>
-      <input
-        id={`lr-${id}`} name={id} type={type} autoComplete={autoComplete} style={inputStyle}
-        value={form[id]} onChange={e => set(id, e.target.value)} maxLength={LIMITES_LEAD[id]}
-        required disabled={enviando}
-      />
-    </div>
-  )
-
-  return (
-    <form onSubmit={handleSubmit} onFocus={captcha.cargar} noValidate>
-      {/* honeypot: invisible para humanos, tentador para bots */}
-      <div aria-hidden="true" style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, overflow: 'hidden' }}>
-        <label htmlFor="lr-website">No rellenar este campo</label>
-        <input id="lr-website" name="website" type="text" tabIndex={-1} autoComplete="off"
-          value={form.website} onChange={e => set('website', e.target.value)} />
-      </div>
-
-      <div style={{ display: 'grid', gap: 16 }}>
-        <div className="lr-fila">
-          {campo('nombre', 'Nombre', 'text', 'name')}
-          {campo('restaurante', 'Restaurante', 'text', 'organization')}
-        </div>
-        <div className="lr-fila">
-          {campo('telefono', 'Teléfono', 'tel', 'tel')}
-          {campo('email', 'Email', 'email', 'email')}
-        </div>
-        {campo('localidad', 'Localidad', 'text', 'address-level2')}
-        <div>
-          <label style={lblStyle} htmlFor="lr-mensaje">Mensaje (opcional)</label>
-          <textarea id="lr-mensaje" name="mensaje" rows={3} style={{ ...inputStyle, resize: 'vertical' }}
-            value={form.mensaje} onChange={e => set('mensaje', e.target.value)} maxLength={LIMITES_LEAD.mensaje} disabled={enviando} />
-        </div>
-
-        <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 14, color: '#4a3f2e', lineHeight: 1.5, cursor: 'pointer' }}>
-          <input type="checkbox" checked={form.consentimiento} onChange={e => set('consentimiento', e.target.checked)}
-            disabled={enviando} required
-            style={{ marginTop: 2, width: 20, height: 20, flexShrink: 0, accentColor: 'var(--agentes-oro-texto)' }} />
-          <span>
-            {CONSENTIMIENTO_RESTAURANTE}{' '}
-            <a href="/privacidad" target="_blank" rel="noopener noreferrer" style={{ color: '#8a5a12', fontWeight: 600, textDecoration: 'underline' }}>Política de privacidad</a>. *
-          </span>
-        </label>
-
-        {captcha.widget}
-
-        {estado === 'error' && (
-          <p role="alert" style={{ fontSize: 14, color: '#991b1b', background: '#fff1f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '10px 14px', margin: 0 }}>
-            {error}
-          </p>
-        )}
-
-        <button type="submit" disabled={enviando}
-          style={{ padding: '16px 28px', borderRadius: 12, border: 'none', background: '#12141a', color: 'var(--agentes-oro)', fontSize: 16, fontWeight: 700, cursor: enviando ? 'default' : 'pointer', opacity: enviando ? 0.75 : 1 }}>
-          {enviando ? 'Enviando…' : 'Quiero que me llaméis'}
-        </button>
-      </div>
-    </form>
-  )
-}
 
 function ConversacionWhatsApp() {
   return (
@@ -442,7 +306,7 @@ export default function AgentesIaRestaurantesPage() {
               Déjanos tus datos y te llamamos para concertar la visita de 15 minutos.
             </p>
             <div style={{ background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 20, padding: 'clamp(20px,5vw,36px)', position: 'relative' }}>
-              <FormularioRestaurante />
+              <LeadForm source="restaurantes" etiquetaNegocio="Restaurante" />
             </div>
             <p style={{ fontSize: 14, color: '#4a3f2e', textAlign: 'center', margin: '20px 0 0' }}>
               ¿Prefieres escribir?{' '}
@@ -464,12 +328,10 @@ export default function AgentesIaRestaurantesPage() {
         .lr-aviso { display: none; }
         .lr-grid { display: grid; gap: 16px; }
         .lr-ejemplo { max-width: 1000px; margin: 0 auto; display: grid; gap: 32px; }
-        .lr-fila { display: grid; gap: 16px; }
         .wa-movil { width: 100%; max-width: 380px; margin: 0 auto; border-radius: 22px; overflow: hidden; border: 6px solid #12141a; box-shadow: 0 10px 30px rgba(0,0,0,.15); }
         @media (min-width: 600px) {
           .lr-ctas { flex-direction: row; flex-wrap: wrap; }
           .lr-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
-          .lr-fila { grid-template-columns: 1fr 1fr; }
         }
         @media (min-width: 900px) {
           .lr-hero { grid-template-columns: minmax(0,1.4fr) minmax(0,1fr); align-items: center; gap: 56px; }

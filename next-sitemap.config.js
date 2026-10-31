@@ -36,6 +36,9 @@ module.exports = {
       path === '/agentes-ia-prestashop' ||
       path === '/agentes-ia-woocommerce' ||
       path === '/agentes-ia-restaurantes' ||
+      path === '/agentes-ia-peluquerias' ||
+      path === '/agentes-ia-clinicas' ||
+      path === '/agentes-ia-talleres' ||
       path === '/desarrollo-prestashop-woocommerce'
     ) priority = 0.9;
     if (path === '/servix' || path === '/gymstack') priority = 0.8;
