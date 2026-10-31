@@ -31,12 +31,8 @@ const SERVICIOS = [
     icono: '☁️',
     titulo: 'SaaS propios',
     subtitulo: 'Servix y GymStack',
-    texto:
-      'Productos propios en la nube, listos para usar desde el primer día: Servix, el TPV para restaurantes, y GymStack, la gestión para gimnasios.',
-    enlaces: [
-      ['/servix', 'Servix · TPV para restaurantes'],
-      ['/gymstack', 'GymStack · Gestión para gimnasios'],
-    ],
+    texto: 'TPV para restaurantes y gestión para gimnasios, listos para usar.',
+    enlaces: [['#productos', 'Ver nuestros productos']],
   },
 ]
 

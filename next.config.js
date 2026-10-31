@@ -22,9 +22,13 @@ const nextConfig = {
       'negocio-pierde-clientes-fuera-horario': ['vender-24-7-agente-ia-fuera-horario'],
       'automatizar-consultas-repetitivas-whatsapp': ['preguntas-frecuentes-ventas-automaticas'],
     }
-    return Object.entries(fusiones).flatMap(([destino, origenes]) =>
-      origenes.map((o) => ({ source: `/blog/${o}`, destination: `/blog/${destino}`, statusCode: 301 }))
-    )
+    return [
+      // /casos se quitó el 2026-10-31: los productos están ahora en la home (#productos)
+      { source: '/casos', destination: '/#productos', statusCode: 301 },
+      ...Object.entries(fusiones).flatMap(([destino, origenes]) =>
+        origenes.map((o) => ({ source: `/blog/${o}`, destination: `/blog/${destino}`, statusCode: 301 }))
+      ),
+    ]
   },
   async headers() {
     const noindex = (source, value = 'noindex') => ({ source, headers: [{ key: 'X-Robots-Tag', value }] })
