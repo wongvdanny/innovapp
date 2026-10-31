@@ -7,7 +7,7 @@ export default function Contacto() {
     <section id="contacto" style={{ padding: 'clamp(56px,10vw,90px) 16px', background: '#fdf0e8' }}>
       <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
         <h2 style={{ fontSize: 'clamp(26px,4vw,40px)', fontWeight: 800, letterSpacing: -1, color: '#1e1e1e', margin: '0 0 14px' }}>Pide presupuesto</h2>
-        <p style={{ fontSize: 16, color: '#4a6572', lineHeight: 1.75, margin: '0 0 28px' }}>
+        <p style={{ fontSize: 16, color: 'var(--gris-600)', lineHeight: 1.75, margin: '0 0 28px' }}>
           Cuéntanos qué necesitas y te decimos qué automatizar, cuánto cuesta y en qué plazo, antes de empezar. Sin compromiso.
         </p>
         <div className="home-contacto-ctas">
@@ -23,7 +23,7 @@ export default function Contacto() {
             Formulario de contacto
           </Link>
         </div>
-        <p style={{ fontSize: 15, color: '#4a6572', margin: '20px 0 0' }}>
+        <p style={{ fontSize: 15, color: 'var(--gris-600)', margin: '20px 0 0' }}>
           O por email: <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: '#b2561a', fontWeight: 700 }}>{CONTACT_EMAIL}</a>
         </p>
       </div>

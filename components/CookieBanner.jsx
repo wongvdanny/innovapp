@@ -136,22 +136,26 @@ export default function CookieBanner() {
         left: 0,
         right: 0,
         bottom: 0,
-        zIndex: 9998,
+        // Por encima de la burbuja de WhatsApp (9999), que si no tapa «Aceptar todo» en móvil
+        zIndex: 10000,
         background: 'rgba(22,22,22,.96)',
         backdropFilter: 'blur(8px)',
         borderTop: '1px solid rgba(255,255,255,.1)',
         color: '#ece9e2',
         padding: '20px 24px',
+        maxHeight: '85vh',
+        overflowY: 'auto',
       }}
+      className="cb"
     >
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-        <div style={{ display: 'flex', gap: 24, alignItems: 'flex-start', flexWrap: 'wrap' }}>
-          <p style={{ flex: '1 1 380px', fontSize: 13, lineHeight: 1.65, color: 'rgba(255,255,255,.75)', margin: 0 }}>
+        <div className="cb-fila" style={{ display: 'flex', gap: 24, alignItems: 'flex-start', flexWrap: 'wrap' }}>
+          <p className="cb-texto" style={{ flex: '1 1 380px', fontSize: 13, lineHeight: 1.65, color: 'rgba(255,255,255,.75)', margin: 0 }}>
             Usamos cookies necesarias para que el sitio funcione y, si nos das permiso, cookies
             de analítica y publicidad para entender el uso del sitio y medir nuestras
             campañas. Puedes aceptar todas, rechazarlas o elegir qué categorías permitir.
           </p>
-          <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+          <div className="cb-botones" style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
             <button
               onClick={() => setExpanded(e => !e)}
               style={{
@@ -218,14 +222,13 @@ export default function CookieBanner() {
       </div>
 
       <style>{`
+        /* Móvil: barra inferior compacta (≈ 25 % de la altura a 390 px), botones en una fila */
         @media (max-width: 640px) {
-          [role="dialog"][aria-label="Preferencias de cookies"] > div > div:first-child {
-            flex-direction: column;
-            align-items: stretch;
-          }
-          [role="dialog"][aria-label="Preferencias de cookies"] button {
-            width: 100%;
-          }
+          .cb { padding: 12px 16px calc(12px + env(safe-area-inset-bottom)) !important; }
+          .cb-fila { flex-direction: column; align-items: stretch; gap: 10px !important; }
+          .cb-texto { flex: none !important; font-size: 12.5px !important; line-height: 1.5 !important; }
+          .cb-botones { display: grid !important; grid-template-columns: repeat(3, 1fr); gap: 8px !important; }
+          .cb button { width: 100%; padding: 10px 6px !important; }
         }
       `}</style>
     </div>

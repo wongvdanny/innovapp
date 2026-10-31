@@ -12,15 +12,15 @@ export default function Privacidad() {
         description="Política de privacidad de innovapp: qué datos tratamos, con qué base legal y cuáles son tus derechos."
         canonical="/privacidad"
       />
-      <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
-        <header style={{ background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ minHeight: '100vh', background: 'var(--gris-50)', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
+        <header style={{ background: 'white', borderBottom: '1px solid var(--gris-200)', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/"><Logo variant="light" height={26} /></Link>
-          <Link href="/" style={{ fontSize: 13, color: '#88a8b0' }}>← Volver</Link>
+          <Link href="/" style={{ fontSize: 13, color: 'var(--gris-500)' }}>← Volver</Link>
         </header>
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px' }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1e1e1e', marginBottom: 8 }}>Política de Privacidad</h1>
-          <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: 6 de octubre de 2026</p>
-          <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: '40px 48px', lineHeight: 1.8, color: '#4a6572', fontSize: 15 }}>
+          <p style={{ fontSize: 13, color: 'var(--gris-500)', marginBottom: 40 }}>Última actualización: 6 de octubre de 2026</p>
+          <div style={{ background: 'white', borderRadius: 20, border: '1px solid var(--gris-200)', padding: '40px 48px', lineHeight: 1.8, color: 'var(--gris-600)', fontSize: 15 }}>
             {[
               ['1. Responsable del tratamiento', `${LEGAL_OWNER}, persona física (trabajador autónomo) que opera bajo el nombre comercial "${LEGAL_TRADE_NAME}", con NIF ${LEGAL_NIF} y domicilio en ${LEGAL_ADDRESS}, es el responsable del tratamiento de los datos personales recogidos a través de este sitio web (innovapp.es) y de los distintos servicios SaaS operados bajo la plataforma ${LEGAL_TRADE_NAME} (en adelante, los "Servicios"), incluyendo entre otros Servix (gestión para hostelería), GymStack (gestión para gimnasios y centros deportivos) y Agentes IA, así como cualquier otro producto que se incorpore en el futuro a la plataforma. Contacto: ${CONTACT_EMAIL}.`],
               ['2. Datos que tratamos', 'Tratamos las siguientes categorías de datos: (a) datos identificativos y de contacto que nos facilitas en el formulario de /contacto, en el registro o en el checkout (nombre, email, teléfono); (b) datos de facturación (empresa, NIF/CIF, dirección, ciudad, código postal, país) necesarios para emitir la factura de tu suscripción; (c) datos de la cuenta y de uso de los Servicios contratados (credenciales de acceso -- la contraseña se almacena cifrada --, configuración, y datos propios de la funcionalidad de cada Servicio); (d) datos de navegación recogidos mediante cookies de analítica, únicamente si has dado tu consentimiento (ver Política de Cookies).'],
@@ -54,9 +54,9 @@ export default function Privacidad() {
 
 function LegalFooter() {
   return (
-    <footer style={{ borderTop: '1px solid #eef1f4', padding: '20px 40px', background: 'white', display: 'flex', justifyContent: 'center', gap: 24, marginTop: 40 }}>
+    <footer style={{ borderTop: '1px solid var(--gris-200)', padding: '20px 40px', background: 'white', display: 'flex', justifyContent: 'center', gap: 24, marginTop: 40 }}>
       {[['Aviso Legal','/aviso-legal'],['Privacidad','/privacidad'],['Cookies','/cookies'],['Términos de Uso','/uso']].map(([label, href]) => (
-        <Link key={href} href={href} style={{ fontSize: 12, color: '#88a8b0', textDecoration: 'none' }}>{label}</Link>
+        <Link key={href} href={href} style={{ fontSize: 12, color: 'var(--gris-500)', textDecoration: 'none' }}>{label}</Link>
       ))}
     </footer>
   )

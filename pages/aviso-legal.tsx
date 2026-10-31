@@ -12,15 +12,15 @@ export default function AvisoLegal() {
         description="Aviso legal de innovapp: titularidad del sitio, condiciones de uso y propiedad intelectual."
         canonical="/aviso-legal"
       />
-      <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
-        <header style={{ background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ minHeight: '100vh', background: 'var(--gris-50)', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
+        <header style={{ background: 'white', borderBottom: '1px solid var(--gris-200)', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/"><Logo variant="light" height={26} /></Link>
-          <Link href="/" style={{ fontSize: 13, color: '#88a8b0' }}>← Volver</Link>
+          <Link href="/" style={{ fontSize: 13, color: 'var(--gris-500)' }}>← Volver</Link>
         </header>
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px' }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1e1e1e', marginBottom: 8 }}>Aviso Legal</h1>
-          <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: 6 de octubre de 2026</p>
-          <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: '40px 48px', lineHeight: 1.8, color: '#4a6572', fontSize: 15 }}>
+          <p style={{ fontSize: 13, color: 'var(--gris-500)', marginBottom: 40 }}>Última actualización: 6 de octubre de 2026</p>
+          <div style={{ background: 'white', borderRadius: 20, border: '1px solid var(--gris-200)', padding: '40px 48px', lineHeight: 1.8, color: 'var(--gris-600)', fontSize: 15 }}>
             {[
               ['Identificación del titular (LSSI-CE, art. 10)', `En cumplimiento del deber de información del artículo 10 de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa de que el titular del sitio web innovapp.es es ${LEGAL_OWNER}, persona física (trabajador autónomo) que opera bajo el nombre comercial "${LEGAL_TRADE_NAME}", con NIF ${LEGAL_NIF} y domicilio en ${LEGAL_ADDRESS}. Teléfono: ${COMMERCIAL_PHONE}. Email de contacto: ${CONTACT_EMAIL}. Actividad: ${LEGAL_ACTIVITY}.`],
               ['Objeto', `El presente Aviso Legal regula el uso del sitio web innovapp.es y de los distintos servicios SaaS operados bajo la plataforma ${LEGAL_TRADE_NAME} (en adelante, los "Servicios"), incluyendo entre otros Agentes IA (agentes de inteligencia artificial para WhatsApp Business, en agentes.innovapp.es), Servix y GymStack, así como cualquier otro producto que se incorpore en el futuro a la plataforma.`],
@@ -38,9 +38,9 @@ export default function AvisoLegal() {
             ))}
           </div>
         </div>
-        <footer style={{ borderTop: '1px solid #eef1f4', padding: '20px 40px', background: 'white', display: 'flex', justifyContent: 'center', gap: 24, marginTop: 40 }}>
+        <footer style={{ borderTop: '1px solid var(--gris-200)', padding: '20px 40px', background: 'white', display: 'flex', justifyContent: 'center', gap: 24, marginTop: 40 }}>
           {[['Aviso Legal','/aviso-legal'],['Privacidad','/privacidad'],['Cookies','/cookies'],['Términos de Uso','/uso']].map(([label, href]) => (
-            <Link key={href} href={href} style={{ fontSize: 12, color: '#88a8b0', textDecoration: 'none' }}>{label}</Link>
+            <Link key={href} href={href} style={{ fontSize: 12, color: 'var(--gris-500)', textDecoration: 'none' }}>{label}</Link>
           ))}
         </footer>
         <LegalIdentity tono="claro" fondo="white" />

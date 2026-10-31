@@ -12,7 +12,7 @@ export default function SeccionPendiente({ id, titulo, fondo = 'white', children
     <section id={id} style={{ padding: 'clamp(48px,8vw,72px) 16px', background: fondo }}>
       <div style={{ maxWidth: 820, margin: '0 auto', textAlign: 'center' }}>
         <h2 style={{ fontSize: 'clamp(24px,3.5vw,34px)', fontWeight: 800, letterSpacing: -1, color: '#1e1e1e', margin: '0 0 12px' }}>{titulo}</h2>
-        <div style={{ fontSize: 16, color: '#4a6572', lineHeight: 1.7 }}>{children}</div>
+        <div style={{ fontSize: 16, color: 'var(--gris-600)', lineHeight: 1.7 }}>{children}</div>
       </div>
     </section>
   )

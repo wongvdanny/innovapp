@@ -3,6 +3,8 @@ import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import Link from 'next/link'
+import { Check, Star } from 'lucide-react'
+import Icono from '../components/Icono'
 import { prisma } from '../lib/prisma'
 
 interface PlanData {
@@ -34,7 +36,7 @@ export default function GymstackPage({ plans }: { plans: PlanData[] }) {
           description:
             'Software de gestión para gimnasios y centros deportivos: socios, reservas de clases, control de accesos y seguimiento de rutinas.',
           url: 'https://innovapp.es/gymstack',
-          image: 'https://innovapp.es/brand/og-image.png',
+          image: 'https://innovapp.es/og-image.png',
           offers: {
             '@type': 'AggregateOffer',
             priceCurrency: 'EUR',
@@ -54,10 +56,11 @@ export default function GymstackPage({ plans }: { plans: PlanData[] }) {
 
       <section style={{ background: 'linear-gradient(160deg,#1a0d2d 0%,#3d1a4f 55%,#5c0f4a 100%)', padding: '140px 24px 90px', textAlign: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, marginBottom: 24 }}>
-          <div style={{ width: 56, height: 56, borderRadius: 16, background: 'linear-gradient(135deg,#a855f7,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>💪</div>
+          <div style={{ width: 56, height: 56, borderRadius: 16, background: 'linear-gradient(135deg,#a855f7,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}><Icono icono="Dumbbell" size={28} /></div>
           <div style={{ fontSize: 40, fontWeight: 800, color: 'white' }}>gym<span style={{ color: '#c084fc' }}>stack</span></div>
         </div>
         <h1 style={{ fontSize: 'clamp(28px,5vw,54px)', fontWeight: 800, color: 'white', letterSpacing: -1.5, maxWidth: 720, margin: '0 auto 20px', lineHeight: 1.15 }}>
+          {/* // COPY */}
           La plataforma que digitaliza tu gimnasio de principio a fin
         </h1>
         <p style={{ fontSize: 17, color: 'rgba(255,255,255,.6)', maxWidth: 560, margin: '0 auto 40px', lineHeight: 1.75 }}>
@@ -69,13 +72,14 @@ export default function GymstackPage({ plans }: { plans: PlanData[] }) {
       <section style={{ padding: '90px 24px', background: 'white' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 20 }}>
           {[
-            ['🧑‍🤝‍🧑','Gestión de socios','Altas, bajas, cuotas y estado de cada socio en un solo lugar.'],
-            ['📅','Reservas de clases','Tus socios reservan sus clases desde el móvil, sin llamadas.'],
-            ['🔑','Control de accesos','Registra entradas y salidas de forma automática y segura.'],
-            ['📈','Rutinas y seguimiento','Planes de entrenamiento y evolución física de cada socio.'],
+            ['Users','Gestión de socios','Altas, bajas, cuotas y estado de cada socio en un solo lugar.'],
+            ['CalendarDays','Reservas de clases','Tus socios reservan sus clases desde el móvil, sin llamadas.'],
+            // COPY
+            ['KeyRound','Control de accesos','Registra entradas y salidas de forma automática y segura.'],
+            ['TrendingUp','Rutinas y seguimiento','Planes de entrenamiento y evolución física de cada socio.'],
           ].map(([icon, title, desc]) => (
             <div key={String(title)} style={{ background: '#faf8fb', border: '1px solid #f1eef4', borderRadius: 18, padding: 24 }}>
-              <div style={{ fontSize: 28, marginBottom: 10 }}>{icon}</div>
+              <div style={{ marginBottom: 12, color: '#a855f7' }}><Icono icono={icon} size={28} /></div>
               <div style={{ fontSize: 15, fontWeight: 700, color: '#3d1a4f', marginBottom: 6 }}>{title}</div>
               <div style={{ fontSize: 13, color: '#7a5a87', lineHeight: 1.65 }}>{desc}</div>
             </div>
@@ -96,7 +100,7 @@ export default function GymstackPage({ plans }: { plans: PlanData[] }) {
                 <div style={{ fontSize: 13, color: '#a88ab0', marginBottom: 20 }}>{freePlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {freePlan.features.map(f => (
-                    <li key={f} style={{ fontSize: 13, color: '#3d1a4f', display: 'flex', gap: 8 }}><span style={{ color: '#a855f7', fontWeight: 700 }}>✓</span>{f}</li>
+                    <li key={f} style={{ fontSize: 13, color: '#3d1a4f', display: 'flex', gap: 8 }}><Icono icono={Check} size={18} color="#a855f7" />{f}</li>
                   ))}
                 </ul>
                 <Link href={`/registro?product=gymstack&plan=${freePlan.id}`} style={{ display: 'block', padding: '13px', background: 'linear-gradient(135deg,#a855f7,#7c3aed)', color: 'white', borderRadius: 12, fontSize: 14, fontWeight: 700, textAlign: 'center', textDecoration: 'none' }}>Crear cuenta gratis →</Link>
@@ -109,7 +113,7 @@ export default function GymstackPage({ plans }: { plans: PlanData[] }) {
                 <div style={{ fontSize: 13, color: '#a88ab0', marginBottom: 20 }}>{monthlyPlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {monthlyPlan.features.map(f => (
-                    <li key={f} style={{ fontSize: 13, color: '#3d1a4f', display: 'flex', gap: 8 }}><span style={{ color: '#a855f7', fontWeight: 700 }}>✓</span>{f}</li>
+                    <li key={f} style={{ fontSize: 13, color: '#3d1a4f', display: 'flex', gap: 8 }}><Icono icono={Check} size={18} color="#a855f7" />{f}</li>
                   ))}
                 </ul>
                 <Link href={`/registro?product=gymstack&plan=${monthlyPlan.id}`} style={{ display: 'block', padding: '13px', background: '#1e1e1e', color: 'white', borderRadius: 12, fontSize: 14, fontWeight: 700, textAlign: 'center', textDecoration: 'none' }}>Contratar mensual →</Link>
@@ -117,13 +121,13 @@ export default function GymstackPage({ plans }: { plans: PlanData[] }) {
             )}
             {yearlyPlan && (
               <div style={{ background: 'linear-gradient(145deg,#3d1a4f,#1a0d2d)', border: '2px solid rgba(168,85,247,.25)', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'inline-block', background: '#f59e0b', color: 'white', borderRadius: 8, padding: '3px 12px', fontSize: 11, fontWeight: 800, marginBottom: 8, alignSelf: 'flex-start' }}>⭐ Más popular</div>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: '#f59e0b', color: '#1e1e1e', borderRadius: 8, padding: '3px 12px', fontSize: 11, fontWeight: 800, marginBottom: 8, alignSelf: 'flex-start' }}><Icono icono={Star} size={13} />Más popular</div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', marginBottom: 8 }}>{yearlyPlan.name}</div>
                 <div style={{ fontSize: 44, fontWeight: 800, color: 'white' }}>{yearlyPlan.price}€<span style={{ fontSize: 15, color: 'rgba(255,255,255,.4)', fontWeight: 500}}>/año</span></div>
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginBottom: 20 }}>{yearlyPlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {yearlyPlan.features.map(f => (
-                    <li key={f} style={{ fontSize: 13, color: 'rgba(255,255,255,.85)', display: 'flex', gap: 8 }}><span style={{ color: '#c084fc', fontWeight: 700 }}>✓</span>{f}</li>
+                    <li key={f} style={{ fontSize: 13, color: 'rgba(255,255,255,.85)', display: 'flex', gap: 8 }}><Icono icono={Check} size={18} color="#c084fc" />{f}</li>
                   ))}
                 </ul>
                 <Link href={`/registro?product=gymstack&plan=${yearlyPlan.id}`} style={{ display: 'block', padding: '13px', background: 'linear-gradient(135deg,#c084fc,#a855f7)', color: 'white', borderRadius: 12, fontSize: 14, fontWeight: 700, textAlign: 'center', textDecoration: 'none' }}>Contratar anual →</Link>

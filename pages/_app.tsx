@@ -2,12 +2,14 @@ import '../styles/checkout.css'
 import type { AppProps } from 'next/app'
 import Head from 'next/head'
 import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 import { Gabarito } from 'next/font/google'
 import '../styles/globals.css'
 import WhatsAppBubble from '../components/WhatsAppBubble'
 import CookieBanner from '../components/CookieBanner'
 import { COMMERCIAL_PHONE, CONTACT_EMAIL, LEGAL_OWNER } from '../lib/constants'
 import { trackContactClicks } from '../lib/track'
+import { iniciarReveal } from '../lib/reveal'
 
 const ORGANIZATION_JSONLD = {
   '@context': 'https://schema.org',
@@ -16,9 +18,10 @@ const ORGANIZATION_JSONLD = {
   legalName: LEGAL_OWNER,
   url: 'https://innovapp.es',
   logo: 'https://innovapp.es/brand/logo.png',
-  image: 'https://innovapp.es/brand/og-image.png',
+  image: 'https://innovapp.es/og-image.png',
+  // COPY: la marca se presenta como estudio de automatización e IA (sin número de empleados ni equipo concreto)
   description:
-    'Empresa española de desarrollo web e inteligencia artificial para e-commerce: IA para PrestaShop y WooCommerce, desarrollo, migración y mantenimiento de tiendas online, agentes de IA por WhatsApp, Servix (TPV para restaurantes) y GymStack (gestión de gimnasios).',
+    'Estudio de automatización e inteligencia artificial: agentes de IA para WhatsApp y teléfono, IA para PrestaShop y WooCommerce, desarrollo, migración y mantenimiento de tiendas online, y productos propios: Servix (TPV para restaurantes) y GymStack (gestión de gimnasios).',
   email: CONTACT_EMAIL,
   telephone: COMMERCIAL_PHONE,
   address: { '@type': 'PostalAddress', addressLocality: 'Oviedo', addressRegion: 'Asturias', addressCountry: 'ES' },
@@ -36,6 +39,10 @@ const gabarito = Gabarito({
 export default function App({ Component, pageProps }: AppProps) {
   // click_whatsapp / click_tel / click_email en cualquier enlace de la web
   useEffect(() => trackContactClicks(), [])
+
+  // Animación de entrada de las secciones al hacer scroll, en cada cambio de página
+  const router = useRouter()
+  useEffect(() => iniciarReveal(router.pathname), [router.asPath, router.pathname])
 
   return (
     <>

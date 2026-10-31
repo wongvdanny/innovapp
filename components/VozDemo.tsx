@@ -1,11 +1,13 @@
 import Link from 'next/link'
+import { CalendarCheck, FileText, NotebookPen, Phone, PhoneForwarded, type LucideIcon } from 'lucide-react'
+import Icono from './Icono'
 import { COMMERCIAL_PHONE, telLink } from '../lib/constants'
 
-const PUNTOS = [
-  ['📲', 'Desvío desde tu móvil cuando no contestas'],
-  ['📅', 'Citas con disponibilidad real'],
-  ['📝', 'Recados y llamadas de vuelta'],
-  ['📄', 'Transcripción y resumen en tu panel'],
+const PUNTOS: [LucideIcon, string][] = [
+  [PhoneForwarded, 'Desvío desde tu móvil cuando no contestas'],
+  [CalendarCheck, 'Citas con disponibilidad real'],
+  [NotebookPen, 'Recados y llamadas de vuelta'],
+  [FileText, 'Transcripción y resumen en tu panel'],
 ]
 
 const TEXTOS = {
@@ -19,7 +21,7 @@ const TEMAS = {
   // Para colocarlo entre secciones claras (landings de Agentes IA).
   oscuro: { fondo: '#12141a', titulo: '#ece9e2', texto: '#97a0ac', tarjeta: '#1c1f27', borde: '#2e333f', punto: 'rgba(255,255,255,.04)' },
   // Para colocarlo entre secciones oscuras (home, hero de /agentes-voz).
-  claro: { fondo: 'white', titulo: '#1a140d', texto: '#8a7a5a', tarjeta: '#12141a', borde: '#f1ece0', punto: '#faf8f4' },
+  claro: { fondo: 'white', titulo: '#1a140d', texto: 'var(--agentes-texto-2)', tarjeta: '#12141a', borde: '#f1ece0', punto: '#faf8f4' },
 }
 
 type VozDemoProps = {
@@ -40,11 +42,11 @@ export default function VozDemo({ variante = 'completa', tema = 'oscuro', enlace
     <section id="agentes-voz" style={{ padding: '90px 24px', background: c.fondo }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 56, flexWrap: 'wrap' }}>
         <div style={{ flex: '1 1 420px', minWidth: 280 }}>
-          <div style={{ display: 'inline-block', background: 'rgba(232,163,61,.12)', border: '1px solid rgba(232,163,61,.3)', borderRadius: 100, padding: '5px 16px', fontSize: 11, fontWeight: 700, color: '#e8a33d', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 18 }}>
+          <div style={{ display: 'inline-block', background: 'rgba(var(--agentes-oro-rgb),.12)', border: '1px solid rgba(var(--agentes-oro-rgb),.3)', borderRadius: 100, padding: '5px 16px', fontSize: 11, fontWeight: 700, color: 'var(--agentes-oro)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 18 }}>
             ✦ Nuevo
           </div>
           <h2 style={{ fontSize: 'clamp(26px,3.8vw,42px)', fontWeight: 600, letterSpacing: -1, lineHeight: 1.15, color: c.titulo, margin: '0 0 18px' }}>
-            Tu negocio coge el teléfono, <span style={{ fontStyle: 'italic', color: '#e8a33d' }}>aunque tú no puedas</span>
+            Tu negocio coge el teléfono, <span style={{ fontStyle: 'italic', color: 'var(--agentes-oro)' }}>aunque tú no puedas</span>
           </h2>
           <p style={{ fontSize: 16, color: c.texto, lineHeight: 1.7, margin: '0 0 28px', maxWidth: 540 }}>
             {TEXTOS[variante]}
@@ -52,7 +54,7 @@ export default function VozDemo({ variante = 'completa', tema = 'oscuro', enlace
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 10 }}>
             {PUNTOS.map(([icono, texto]) => (
               <div key={texto} style={{ display: 'flex', alignItems: 'center', gap: 10, background: c.punto, border: `1px solid ${c.borde}`, borderRadius: 12, padding: '12px 14px' }}>
-                <span style={{ fontSize: 18 }}>{icono}</span>
+                <Icono icono={icono} color="var(--agentes-oro)" />
                 <span style={{ fontSize: 13, fontWeight: 600, color: c.titulo }}>{texto}</span>
               </div>
             ))}
@@ -69,16 +71,16 @@ export default function VozDemo({ variante = 'completa', tema = 'oscuro', enlace
           <a
             href={telLink()}
             data-cta="llamada-voz-demo"
-            style={{ display: 'block', padding: '16px 22px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
+            style={{ display: 'block', padding: '16px 22px', borderRadius: 12, background: 'var(--agentes-oro)', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
           >
-            📞 Llama a nuestro agente: {COMMERCIAL_PHONE}
+            <Icono icono={Phone} size={20} style={{ verticalAlign: '-4px', marginRight: 8 }} />Llama a nuestro agente: {COMMERCIAL_PHONE}
           </a>
           <p style={{ fontSize: 13, color: '#97a0ac', lineHeight: 1.6, margin: '14px 0 0' }}>
             Es nuestro propio agente de voz. Pregúntale lo que quieras sobre Innovapp.
           </p>
           <p style={{ fontSize: 12, color: '#6b7480', margin: '10px 0 0' }}>El agente se presenta como asistente virtual.</p>
           {enlacePlanes && (
-            <Link href="/agentes-voz" style={{ display: 'inline-block', marginTop: 18, fontSize: 14, fontWeight: 700, color: '#e8a33d', textDecoration: 'none' }}>
+            <Link href="/agentes-voz" style={{ display: 'inline-block', marginTop: 18, fontSize: 14, fontWeight: 700, color: 'var(--agentes-oro)', textDecoration: 'none' }}>
               Ver planes de voz →
             </Link>
           )}

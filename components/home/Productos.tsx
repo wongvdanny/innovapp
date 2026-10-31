@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import DeviceFrame from '../DeviceFrame'
 import Link from 'next/link'
 import { SECCIONES_HOME } from './sections'
 
@@ -37,7 +37,7 @@ const PRODUCTOS = [
 export default function Productos() {
   if (!SECCIONES_HOME.productos) return null
   return (
-    <section id="productos" style={{ padding: 'clamp(56px,10vw,90px) 16px', background: '#f8fafb' }}>
+    <section id="productos" style={{ padding: 'clamp(56px,10vw,90px) 16px', background: 'var(--gris-50)' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
           <div className="label">Productos</div>
@@ -45,12 +45,13 @@ export default function Productos() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,300px),1fr))', gap: 20 }}>
           {PRODUCTOS.map(p => (
-            <article key={p.href} style={{ display: 'flex', flexDirection: 'column', background: 'white', border: '1px solid #eef1f4', borderRadius: 20, overflow: 'hidden' }}>
-              <Image src={p.imagen} alt={p.alt} width={p.ancho} height={p.alto} sizes="(max-width: 700px) 100vw, 360px"
-                style={{ width: '100%', height: 'auto', aspectRatio: '16 / 10', objectFit: 'cover', objectPosition: 'top left', display: 'block', borderBottom: '1px solid #eef1f4' }} />
+            <article key={p.href} style={{ display: 'flex', flexDirection: 'column', background: 'white', border: '1px solid var(--gris-200)', borderRadius: 'var(--radio-lg)', overflow: 'hidden', boxShadow: 'var(--sombra-sm)' }}>
+              <div style={{ padding: '20px 20px 0', background: 'var(--gris-100)' }}>
+                <DeviceFrame src={p.imagen} alt={p.alt} width={p.ancho} height={p.alto} />
+              </div>
               <div style={{ padding: 24, display: 'flex', flexDirection: 'column', flex: 1 }}>
                 <h3 style={{ fontSize: 20, fontWeight: 800, color: '#1e1e1e', margin: '0 0 10px' }}>{p.nombre}</h3>
-                <p style={{ fontSize: 15, color: '#4a6572', lineHeight: 1.7, margin: '0 0 18px', flex: 1 }}>{p.texto}</p>
+                <p style={{ fontSize: 15, color: 'var(--gris-600)', lineHeight: 1.7, margin: '0 0 18px', flex: 1 }}>{p.texto}</p>
                 <Link href={p.href} style={{ fontSize: 15, fontWeight: 700, color: '#b2561a' }}>Ver producto →</Link>
               </div>
             </article>

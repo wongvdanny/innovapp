@@ -124,7 +124,7 @@ export default function AgentesIaPrestashopPage() {
           description:
             'Un agente de IA que atiende el WhatsApp de tu tienda PrestaShop: busca productos, arma el carrito y envía el enlace de pago, 24 horas al día.',
           url: 'https://innovapp.es/agentes-ia-prestashop',
-          image: 'https://innovapp.es/brand/og-image.png',
+          image: 'https://innovapp.es/og-image.png',
           provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
           areaServed: 'ES',
           audience: { '@type': 'Audience', audienceType: 'Tiendas online con PrestaShop' },
@@ -150,18 +150,18 @@ export default function AgentesIaPrestashopPage() {
       <section style={{ background: '#12141a', padding: '150px 24px 90px' }}>
         <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 56, flexWrap: 'wrap' }}>
           <div style={{ flex: '1 1 380px', minWidth: 300 }}>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(232,163,61,.12)', border: '1px solid rgba(232,163,61,.25)', borderRadius: 100, padding: '6px 18px', marginBottom: 24 }}>
-              <span style={{ color: '#e8a33d', fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>✦ Integración con PrestaShop</span>
+            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(var(--agentes-oro-rgb),.12)', border: '1px solid rgba(var(--agentes-oro-rgb),.25)', borderRadius: 100, padding: '6px 18px', marginBottom: 24 }}>
+              <span style={{ color: 'var(--agentes-oro)', fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>✦ Integración con PrestaShop</span>
             </div>
             <h1 style={{ fontSize: 'clamp(28px,4.5vw,50px)', fontWeight: 500, letterSpacing: -1, color: '#ece9e2', maxWidth: 580, margin: '0 0 20px', lineHeight: 1.15 }}>
-              IA para PrestaShop: <span style={{ fontStyle: 'italic', color: '#e8a33d' }}>un agente que atiende y vende por WhatsApp</span>
+              IA para PrestaShop: <span style={{ fontStyle: 'italic', color: 'var(--agentes-oro)' }}>un agente que atiende y vende por WhatsApp</span>
             </h1>
             <p style={{ fontSize: 17, color: '#97a0ac', maxWidth: 480, margin: '0 0 12px', lineHeight: 1.7 }}>
               Atención automática 24/7 y ventas por WhatsApp sin que tu cliente tenga que salir de la conversación: el agente conoce tu catálogo real, arma el carrito y manda el enlace de pago.
             </p>
-            <p style={{ fontSize: 13, color: '#8a7a5a', margin: '0 0 36px' }}>
+            <p style={{ fontSize: 13, color: 'var(--agentes-texto-2)', margin: '0 0 36px' }}>
               ¿Tu tienda es WooCommerce en vez de PrestaShop?{' '}
-              <Link href="/agentes-ia-woocommerce" style={{ color: '#e8a33d', fontWeight: 700, textDecoration: 'underline' }}>
+              <Link href="/agentes-ia-woocommerce" style={{ color: 'var(--agentes-oro)', fontWeight: 700, textDecoration: 'underline' }}>
                 Mira la versión para WooCommerce →
               </Link>
             </p>
@@ -170,7 +170,7 @@ export default function AgentesIaPrestashopPage() {
                 href={waLink(mensajeContacto)}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
+                style={{ padding: '15px 32px', borderRadius: 12, background: 'var(--agentes-oro)', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
               >
                 Contáctanos para tu cotización →
               </a>
@@ -192,7 +192,7 @@ export default function AgentesIaPrestashopPage() {
             Consulta tu catálogo real (stock, precio y variantes) y el estado de los pedidos, ayuda a elegir producto,
             prepara el carrito y envía el enlace de pago, todo dentro de la conversación.
           </p>
-          <p style={{ fontSize: 15, color: '#8a7a5a', lineHeight: 1.8, margin: 0 }}>
+          <p style={{ fontSize: 15, color: 'var(--agentes-texto-2)', lineHeight: 1.8, margin: 0 }}>
             No es un chatbot de menús: entiende lo que el cliente escribe con sus propias palabras. Y cuando un caso necesita
             a una persona, como una devolución o una incidencia, pasa la conversación a tu equipo.
           </p>
@@ -209,7 +209,7 @@ export default function AgentesIaPrestashopPage() {
             <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#1a140d' }}>
               Casos de uso de la IA en PrestaShop
             </h2>
-            <p style={{ fontSize: 16, color: '#8a7a5a', maxWidth: 560, margin: '0 auto' }}>
+            <p style={{ fontSize: 16, color: 'var(--agentes-texto-2)', maxWidth: 560, margin: '0 auto' }}>
               Nada de promesas: esto es lo que el agente hace hoy con el catálogo real de tu tienda.
             </p>
           </div>
@@ -218,7 +218,7 @@ export default function AgentesIaPrestashopPage() {
               <div key={title} style={{ background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: 26 }}>
                 <div style={{ fontSize: 28, marginBottom: 12 }}>{icon}</div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#1a140d', marginBottom: 8 }}>{title}</div>
-                <div style={{ fontSize: 13, color: '#8a7a5a', lineHeight: 1.65 }}>{desc}</div>
+                <div style={{ fontSize: 13, color: 'var(--agentes-texto-2)', lineHeight: 1.65 }}>{desc}</div>
               </div>
             ))}
           </div>
@@ -231,16 +231,16 @@ export default function AgentesIaPrestashopPage() {
             <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 16, color: '#1a140d' }}>
               Cómo se instala en tu PrestaShop
             </h2>
-            <p style={{ fontSize: 16, color: '#8a7a5a', maxWidth: 520, margin: '0 auto' }}>
+            <p style={{ fontSize: 16, color: 'var(--agentes-texto-2)', maxWidth: 520, margin: '0 auto' }}>
               Sin tocar código — pensado para el dueño de la tienda, no para su desarrollador.
             </p>
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 20 }}>
             {pasos.map(([n, title, desc]) => (
               <div key={title} style={{ background: 'white', border: '1px solid #f1ece0', borderRadius: 18, padding: 24 }}>
-                <div style={{ width: 34, height: 34, borderRadius: 10, background: '#faf1de', color: '#c98826', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800, marginBottom: 14 }}>{n}</div>
+                <div style={{ width: 34, height: 34, borderRadius: 10, background: '#faf1de', color: 'var(--agentes-oro-texto)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800, marginBottom: 14 }}>{n}</div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#1a140d', marginBottom: 6 }}>{title}</div>
-                <div style={{ fontSize: 13, color: '#8a7a5a', lineHeight: 1.65 }}>{desc}</div>
+                <div style={{ fontSize: 13, color: 'var(--agentes-texto-2)', lineHeight: 1.65 }}>{desc}</div>
               </div>
             ))}
           </div>
@@ -259,7 +259,7 @@ export default function AgentesIaPrestashopPage() {
               <div key={title} style={{ background: '#faf8f4', border: '1px solid #f1ece0', borderRadius: 18, padding: 26 }}>
                 <div style={{ fontSize: 28, marginBottom: 12 }}>{icon}</div>
                 <div style={{ fontSize: 15, fontWeight: 700, color: '#1a140d', marginBottom: 8 }}>{title}</div>
-                <div style={{ fontSize: 13, color: '#8a7a5a', lineHeight: 1.65 }}>{desc}</div>
+                <div style={{ fontSize: 13, color: 'var(--agentes-texto-2)', lineHeight: 1.65 }}>{desc}</div>
               </div>
             ))}
           </div>
@@ -270,11 +270,11 @@ export default function AgentesIaPrestashopPage() {
         <div style={{ maxWidth: 760, margin: '0 auto', display: 'grid', gap: 20 }}>
           <div style={{ background: 'white', border: '1px solid #f1ece0', borderRadius: 18, padding: 30 }}>
             <h2 style={{ fontSize: 22, fontWeight: 700, color: '#1a140d', margin: '0 0 6px' }}>Compatibilidad de versiones</h2>
-            <div style={{ fontSize: 15, fontWeight: 700, color: '#c98826', marginBottom: 12 }}>PrestaShop 1.7, 8 y 9</div>
-            <p style={{ fontSize: 14, color: '#8a7a5a', lineHeight: 1.7, margin: '0 0 16px' }}>El módulo se instala desde el panel de PrestaShop como cualquier otro. Pagos compatibles con Stripe y Redsys.</p>
+            <div style={{ fontSize: 15, fontWeight: 700, color: 'var(--agentes-oro-texto)', marginBottom: 12 }}>PrestaShop 1.7, 8 y 9</div>
+            <p style={{ fontSize: 14, color: 'var(--agentes-texto-2)', lineHeight: 1.7, margin: '0 0 16px' }}>El módulo se instala desde el panel de PrestaShop como cualquier otro. Pagos compatibles con Stripe y Redsys.</p>
             <p style={{ fontSize: 14, color: '#4a3f2e', lineHeight: 1.7, margin: 0 }}>
               ¿Tu tienda sigue en PrestaShop 1.6?{' '}
-              <Link href="/desarrollo-prestashop-woocommerce" style={{ color: '#c98826', fontWeight: 700, textDecoration: 'underline' }}>
+              <Link href="/desarrollo-prestashop-woocommerce" style={{ color: 'var(--agentes-oro-texto)', fontWeight: 700, textDecoration: 'underline' }}>
                 Te la migramos a PrestaShop 8 o 9 →
               </Link>
             </p>
@@ -289,11 +289,11 @@ export default function AgentesIaPrestashopPage() {
           </h2>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 20 }}>
             {PLANES.map((p) => (
-              <div key={p.nombre} style={{ background: 'rgba(255,255,255,.04)', border: `1.5px solid ${p.destacado ? '#e8a33d' : 'rgba(255,255,255,.1)'}`, borderRadius: 18, padding: 30 }}>
+              <div key={p.nombre} style={{ background: 'rgba(255,255,255,.04)', border: `1.5px solid ${p.destacado ? 'var(--agentes-oro)' : 'rgba(255,255,255,.1)'}`, borderRadius: 18, padding: 30 }}>
                 <h3 style={{ fontSize: 20, fontWeight: 700, color: '#ece9e2', margin: '0 0 4px' }}>{p.nombre}</h3>
                 <div style={{ fontSize: 14, color: '#97a0ac', marginBottom: 14 }}>{p.para}</div>
                 <div style={{ fontSize: 14, color: '#97a0ac' }}>desde</div>
-                <div style={{ fontSize: 42, fontWeight: 700, color: '#e8a33d', letterSpacing: -1, lineHeight: 1.1 }}>
+                <div style={{ fontSize: 42, fontWeight: 700, color: 'var(--agentes-oro)', letterSpacing: -1, lineHeight: 1.1 }}>
                   {p.mes} €<span style={{ fontSize: 16, fontWeight: 500, color: '#97a0ac' }}> /mes</span>
                 </div>
                 <div style={{ fontSize: 14, color: '#ece9e2', margin: '6px 0 16px' }}>Alta desde {p.alta} €</div>
@@ -305,7 +305,7 @@ export default function AgentesIaPrestashopPage() {
           </div>
           <div style={{ marginTop: 20, background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 18, padding: '22px 26px' }}>
             <h3 style={{ fontSize: 16, fontWeight: 700, color: '#ece9e2', margin: '0 0 8px' }}>
-              Extra: <Link href="/agentes-voz" style={{ color: '#e8a33d', textDecoration: 'underline' }}>agente de voz</Link> para las llamadas que no coges
+              Extra: <Link href="/agentes-voz" style={{ color: 'var(--agentes-oro)', textDecoration: 'underline' }}>agente de voz</Link> para las llamadas que no coges
             </h3>
             <p style={{ fontSize: 14, color: '#c9cdd4', lineHeight: 1.8, margin: 0 }}>
               Básico 120 min +49 €/mes · Plus 220 min +79 €/mes · Pro 350 min +119 €/mes. Minuto adicional 0,30 €. Alta de voz +119 €.
@@ -331,7 +331,7 @@ export default function AgentesIaPrestashopPage() {
             href={waLink(mensajeDemo)}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
+            style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'var(--agentes-oro)', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
           >
             Habla con nuestro agente y ve la demo →
           </a>
@@ -341,13 +341,13 @@ export default function AgentesIaPrestashopPage() {
         </div>
         <p style={{ fontSize: 13, color: '#97a0ac', marginTop: 20 }}>
           ¿Tu tienda es WooCommerce en vez de PrestaShop?{' '}
-          <Link href="/agentes-ia-woocommerce" style={{ color: '#e8a33d', fontWeight: 700, textDecoration: 'underline' }}>
+          <Link href="/agentes-ia-woocommerce" style={{ color: 'var(--agentes-oro)', fontWeight: 700, textDecoration: 'underline' }}>
             Mira la versión para WooCommerce →
           </Link>
         </p>
         <p style={{ fontSize: 13, color: '#97a0ac', marginTop: 10 }}>
           ¿Necesitas actualizar la tienda o un módulo a medida?{' '}
-          <Link href="/desarrollo-prestashop-woocommerce" style={{ color: '#e8a33d', fontWeight: 700, textDecoration: 'underline' }}>
+          <Link href="/desarrollo-prestashop-woocommerce" style={{ color: 'var(--agentes-oro)', fontWeight: 700, textDecoration: 'underline' }}>
             Desarrollo y actualización de PrestaShop y WooCommerce →
           </Link>
         </p>

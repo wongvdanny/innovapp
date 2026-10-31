@@ -3,6 +3,7 @@ import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import Faq, { faqJsonLd, type FaqItem } from '../components/Faq'
+import Icono from '../components/Icono'
 import { waLink } from '../lib/constants'
 
 // Servicio de desarrollo para tiendas PrestaShop y WooCommerce. Sin testimonios ni logos
@@ -10,16 +11,16 @@ import { waLink } from '../lib/constants'
 
 const NARANJA = '#ee7528'
 const NEGRO = '#1e1e1e'
-const TEXTO = '#4a6572'
+const TEXTO = 'var(--gris-600)'
 const DEGRADADO = 'linear-gradient(135deg,#f4a15c,#ee7528)'
 
 const SERVICIOS: [string, string, string][] = [
-  ['🛍️', 'Desarrollo de tiendas online', 'Creamos tu tienda con PrestaShop o WooCommerce, según lo que vendes y cómo trabajas: catálogo, pagos, envíos, impuestos y el diseño de tu marca.'],
-  ['🧩', 'Módulos y plugins a medida', 'Cuando ningún módulo de PrestaShop o plugin de WooCommerce hace lo que necesitas, lo programamos: integraciones con tu ERP o tu almacén, reglas de precios, procesos propios.'],
-  ['⬆️', 'Migración y actualización de PrestaShop', 'Llevamos tu tienda de PrestaShop 1.6 o 1.7 a PrestaShop 8 o 9, con productos, clientes y pedidos, y resolvemos los módulos y el tema que no sean compatibles.'],
-  ['🔄', 'Actualización de WooCommerce y PHP', 'Ponemos al día WooCommerce, WordPress, los plugins y la versión de PHP del servidor, comprobando antes que todo sigue funcionando.'],
-  ['🛠️', 'Mantenimiento y corrección de errores', 'Errores en el checkout, pedidos que no llegan, conflictos entre módulos o plugins, avisos tras una actualización: los localizamos y los corregimos.'],
-  ['⚡', 'Rendimiento', 'Revisamos qué hace lenta tu tienda (consultas, imágenes, caché, módulos que sobran) y lo optimizamos para que cargue más rápido.'],
+  ['Store', 'Desarrollo de tiendas online', 'Creamos tu tienda con PrestaShop o WooCommerce, según lo que vendes y cómo trabajas: catálogo, pagos, envíos, impuestos y el diseño de tu marca.'],
+  ['Puzzle', 'Módulos y plugins a medida', 'Cuando ningún módulo de PrestaShop o plugin de WooCommerce hace lo que necesitas, lo programamos: integraciones con tu ERP o tu almacén, reglas de precios, procesos propios.'],
+  ['CircleArrowUp', 'Migración y actualización de PrestaShop', 'Llevamos tu tienda de PrestaShop 1.6 o 1.7 a PrestaShop 8 o 9, con productos, clientes y pedidos, y resolvemos los módulos y el tema que no sean compatibles.'],
+  ['RefreshCw', 'Actualización de WooCommerce y PHP', 'Ponemos al día WooCommerce, WordPress, los plugins y la versión de PHP del servidor, comprobando antes que todo sigue funcionando.'],
+  ['Wrench', 'Mantenimiento y corrección de errores', 'Errores en el checkout, pedidos que no llegan, conflictos entre módulos o plugins, avisos tras una actualización: los localizamos y los corregimos.'],
+  ['Gauge', 'Rendimiento', 'Revisamos qué hace lenta tu tienda (consultas, imágenes, caché, módulos que sobran) y lo optimizamos para que cargue más rápido.'],
 ]
 
 const PASOS: [string, string, string][] = [
@@ -91,7 +92,7 @@ export default function DesarrolloPrestashopWoocommercePage() {
             description:
               'Desarrollo de tiendas online, módulos y plugins a medida, migración y actualización de PrestaShop (1.6/1.7 a 8/9), actualización de WooCommerce y PHP, mantenimiento, corrección de errores y rendimiento.',
             url: 'https://innovapp.es/desarrollo-prestashop-woocommerce',
-            image: 'https://innovapp.es/brand/og-image.png',
+            image: 'https://innovapp.es/og-image.png',
             provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
             areaServed: 'ES',
             audience: { '@type': 'Audience', audienceType: 'Tiendas online con PrestaShop o WooCommerce' },
@@ -134,8 +135,8 @@ export default function DesarrolloPrestashopWoocommercePage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 20 }}>
             {SERVICIOS.map(([icono, titulo, texto]) => (
-              <div key={titulo} style={{ background: '#f8fafb', border: '1px solid #eef1f4', borderRadius: 20, padding: 28 }}>
-                <div style={{ fontSize: 30, marginBottom: 14 }}>{icono}</div>
+              <div key={titulo} style={{ background: 'var(--gris-50)', border: '1px solid var(--gris-200)', borderRadius: 20, padding: 28 }}>
+                <div style={{ width: 48, height: 48, borderRadius: 'var(--radio-md)', background: 'var(--color-brand-orange-tint)', color: 'var(--color-brand-orange-dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}><Icono icono={icono} /></div>
                 <h3 style={{ fontSize: 17, fontWeight: 700, color: NEGRO, margin: '0 0 8px' }}>{titulo}</h3>
                 <p style={{ fontSize: 14, color: TEXTO, lineHeight: 1.7, margin: 0 }}>{texto}</p>
               </div>
@@ -170,7 +171,7 @@ export default function DesarrolloPrestashopWoocommercePage() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 20 }}>
             {PASOS.map(([n, titulo, texto]) => (
-              <div key={titulo} style={{ background: '#f8fafb', border: '1px solid #eef1f4', borderRadius: 18, padding: 24 }}>
+              <div key={titulo} style={{ background: 'var(--gris-50)', border: '1px solid var(--gris-200)', borderRadius: 18, padding: 24 }}>
                 <div style={{ width: 34, height: 34, borderRadius: 10, background: DEGRADADO, color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 15, fontWeight: 800, marginBottom: 14 }}>{n}</div>
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: NEGRO, margin: '0 0 6px' }}>{titulo}</h3>
                 <p style={{ fontSize: 14, color: TEXTO, lineHeight: 1.7, margin: 0 }}>{texto}</p>
@@ -180,7 +181,7 @@ export default function DesarrolloPrestashopWoocommercePage() {
         </div>
       </section>
 
-      <section style={{ padding: '80px 24px', background: '#f8fafb' }}>
+      <section style={{ padding: '80px 24px', background: 'var(--gris-50)' }}>
         <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={h2}>Y cuando tu tienda esté al día, ponle IA</h2>
           <p style={{ fontSize: 16, color: TEXTO, maxWidth: 640, margin: '0 auto 32px', lineHeight: 1.75 }}>

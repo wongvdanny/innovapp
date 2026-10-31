@@ -22,10 +22,10 @@ export default function BlogIndexPage({ posts }: Props) {
 
       <Nav />
 
-      <main style={{ background: '#f8fafb', minHeight: '100vh', padding: '140px 24px 90px' }}>
+      <main style={{ background: 'var(--gris-50)', minHeight: '100vh', padding: '140px 24px 90px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 56 }}>
-            <div style={{ display: 'inline-block', background: 'white', border: '1px solid #eef1f4', borderRadius: 100, padding: '5px 16px', fontSize: 11, fontWeight: 700, color: '#ee7528', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 16 }}>
+            <div style={{ display: 'inline-block', background: 'white', border: '1px solid var(--gris-200)', borderRadius: 100, padding: '5px 16px', fontSize: 11, fontWeight: 700, color: '#ee7528', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 16 }}>
               Blog
             </div>
             <h1 style={{ fontSize: 'clamp(28px,4.5vw,44px)', fontWeight: 800, letterSpacing: -1, color: '#1e1e1e', marginBottom: 16 }}>
@@ -46,7 +46,7 @@ export default function BlogIndexPage({ posts }: Props) {
                 <Link
                   key={post.slug}
                   href={`/blog/${post.slug}`}
-                  style={{ background: 'white', border: '1px solid #eef1f4', borderRadius: 18, padding: 26, textDecoration: 'none', display: 'block' }}
+                  style={{ background: 'white', border: '1px solid var(--gris-200)', borderRadius: 18, padding: 26, textDecoration: 'none', display: 'block' }}
                 >
                   <div style={{ fontSize: 12, fontWeight: 600, color: '#8a94a6', marginBottom: 10 }}>
                     {formatearFecha(post.date)}

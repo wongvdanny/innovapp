@@ -31,8 +31,8 @@ export default function BlogPostPage({ post }: Props) {
 
       <Nav />
 
-      <main style={{ background: '#f8fafb', minHeight: '100vh', padding: '140px 24px 90px' }}>
-        <article style={{ maxWidth: 720, margin: '0 auto', background: 'white', border: '1px solid #eef1f4', borderRadius: 20, padding: 'clamp(28px,5vw,56px)' }}>
+      <main style={{ background: 'var(--gris-50)', minHeight: '100vh', padding: '140px 24px 90px' }}>
+        <article style={{ maxWidth: 720, margin: '0 auto', background: 'white', border: '1px solid var(--gris-200)', borderRadius: 20, padding: 'clamp(28px,5vw,56px)' }}>
           <Link href="/blog" style={{ fontSize: 13, fontWeight: 600, color: '#ee7528', textDecoration: 'none' }}>
             ← Volver al blog
           </Link>

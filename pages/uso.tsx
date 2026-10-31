@@ -119,15 +119,15 @@ export default function Uso() {
         description="Términos y condiciones de uso de los servicios de innovapp: Servix, GymStack, Agentes IA, Agentes de voz, News y desarrollo a medida."
         canonical="/uso"
       />
-      <div style={{ minHeight: '100vh', background: '#f8fafb', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
-        <header style={{ background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div style={{ minHeight: '100vh', background: 'var(--gris-50)', fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
+        <header style={{ background: 'white', borderBottom: '1px solid var(--gris-200)', padding: '16px 40px', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <Link href="/"><Logo variant="light" height={26} /></Link>
-          <Link href="/" style={{ fontSize: 13, color: '#88a8b0' }}>← Volver</Link>
+          <Link href="/" style={{ fontSize: 13, color: 'var(--gris-500)' }}>← Volver</Link>
         </header>
         <div style={{ maxWidth: 760, margin: '0 auto', padding: '48px 24px' }}>
           <h1 style={{ fontSize: 32, fontWeight: 800, color: '#1e1e1e', marginBottom: 8 }}>Términos de Uso</h1>
-          <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: octubre 2026</p>
-          <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: '40px 48px', lineHeight: 1.8, color: '#4a6572', fontSize: 15 }}>
+          <p style={{ fontSize: 13, color: 'var(--gris-500)', marginBottom: 40 }}>Última actualización: octubre 2026</p>
+          <div style={{ background: 'white', borderRadius: 20, border: '1px solid var(--gris-200)', padding: '40px 48px', lineHeight: 1.8, color: 'var(--gris-600)', fontSize: 15 }}>
             {SECCIONES.map(([titulo, bloques]) => (
               <div key={titulo} style={{ marginBottom: 28 }}>
                 <h2 style={{ fontSize: 17, fontWeight: 700, color: '#1e1e1e', marginBottom: 10 }}>{titulo}</h2>
@@ -144,9 +144,9 @@ export default function Uso() {
             ))}
           </div>
         </div>
-        <footer style={{ borderTop: '1px solid #eef1f4', padding: '20px 40px', background: 'white', display: 'flex', justifyContent: 'center', gap: 24, marginTop: 40 }}>
+        <footer style={{ borderTop: '1px solid var(--gris-200)', padding: '20px 40px', background: 'white', display: 'flex', justifyContent: 'center', gap: 24, marginTop: 40 }}>
           {[['Aviso Legal','/aviso-legal'],['Privacidad','/privacidad'],['Cookies','/cookies'],['Términos de Uso','/uso']].map(([label, href]) => (
-            <Link key={href} href={href} style={{ fontSize: 12, color: '#88a8b0', textDecoration: 'none' }}>{label}</Link>
+            <Link key={href} href={href} style={{ fontSize: 12, color: 'var(--gris-500)', textDecoration: 'none' }}>{label}</Link>
           ))}
         </footer>
         <LegalIdentity tono="claro" fondo="white" />

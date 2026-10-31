@@ -2,7 +2,7 @@ import Head from 'next/head'
 
 export const SITE_URL = 'https://innovapp.es'
 export const SITE_NAME = 'innovapp'
-export const DEFAULT_OG_IMAGE = '/brand/og-image.png'
+export const DEFAULT_OG_IMAGE = '/og-image.png'
 
 type JsonLd = Record<string, unknown>
 
@@ -12,7 +12,7 @@ export interface SeoProps {
   description: string
   /** Ruta ('/servix') o URL absoluta. Se usa para canonical y og:url. */
   canonical: string
-  /** Ruta o URL absoluta. Default: /brand/og-image.png (1200x630). */
+  /** Ruta o URL absoluta. Default: /og-image.png (1200x630, scripts/gen-og-image.mjs). */
   ogImage?: string
   /** og:type. Default 'website'. */
   ogType?: string
@@ -66,7 +66,9 @@ export default function Seo({
       <meta key="twitter:description" name="twitter:description" content={description} />
       <meta key="twitter:image" name="twitter:image" content={image} />
 
-      <link rel="icon" href="/favicon.ico" />
+      <link rel="icon" href="/favicon.ico" sizes="any" />
+      <link rel="icon" href="/icon.png" type="image/png" />
+      <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
       {schemas.map((schema, i) => (
         <script

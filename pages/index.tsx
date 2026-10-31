@@ -8,10 +8,7 @@ import Demo from '../components/home/Demo'
 import Productos from '../components/home/Productos'
 import Testimonials from '../components/home/Testimonials'
 import Stats from '../components/home/Stats'
-import Proceso from '../components/home/Proceso'
-import SobreMi from '../components/home/SobreMi'
 import Precios from '../components/home/Precios'
-import FaqHome from '../components/home/FaqHome'
 import Contacto from '../components/home/Contacto'
 import Newsletter from '../components/home/Newsletter'
 
@@ -34,10 +31,7 @@ export default function Home() {
         <Demo />
         <Productos />
         <Testimonials />
-        <Proceso />
-        <SobreMi />
         <Precios />
-        <FaqHome />
         <Contacto />
         <Newsletter />
       </main>

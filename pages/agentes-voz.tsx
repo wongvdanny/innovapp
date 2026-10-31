@@ -25,7 +25,7 @@ const PLANES = [
   { nombre: 'Voz Pro', precio: '+119 €', minutos: '350 min/mes' },
 ]
 
-const botonPrincipal = { display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }
+const botonPrincipal = { display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'var(--agentes-oro)', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }
 const botonSecundario = { display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }
 
 export default function AgentesVozPage() {
@@ -43,7 +43,7 @@ export default function AgentesVozPage() {
           description:
             'Un agente de IA que atiende las llamadas que no puedes coger: informa, agenda citas, toma recados y deja la transcripción y un resumen en tu panel.',
           url: 'https://innovapp.es/agentes-voz',
-          image: 'https://innovapp.es/brand/og-image.png',
+          image: 'https://innovapp.es/og-image.png',
           provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
           areaServed: 'ES',
         }}
@@ -55,10 +55,10 @@ export default function AgentesVozPage() {
         <div style={{ maxWidth: 820, margin: '0 auto', textAlign: 'center' }}>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 12, marginBottom: 24 }}>
             <img src="/agentes-ia-logo.svg" alt="Agentes IA" width={40} height={40} />
-            <div style={{ fontSize: 22, fontWeight: 700, color: '#ece9e2' }}>Agentes de <span style={{ color: '#e8a33d' }}>voz</span></div>
+            <div style={{ fontSize: 22, fontWeight: 700, color: '#ece9e2' }}>Agentes de <span style={{ color: 'var(--agentes-oro)' }}>voz</span></div>
           </div>
           <h1 style={{ fontSize: 'clamp(30px,5vw,54px)', fontWeight: 500, letterSpacing: -1, color: '#ece9e2', margin: '0 0 20px', lineHeight: 1.15 }}>
-            Ninguna llamada <span style={{ fontStyle: 'italic', color: '#e8a33d' }}>sin atender</span>
+            Ninguna llamada <span style={{ fontStyle: 'italic', color: 'var(--agentes-oro)' }}>sin atender</span>
           </h1>
           <p style={{ fontSize: 17, color: '#97a0ac', maxWidth: 600, margin: '0 auto 36px', lineHeight: 1.7 }}>
             Cuando no puedes coger el teléfono, tu agente de IA atiende con una voz natural: informa, agenda citas, toma recados y te deja un resumen. Sigues usando tu número de siempre.
@@ -84,7 +84,7 @@ export default function AgentesVozPage() {
             <h2 style={{ fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 700, letterSpacing: -1, marginBottom: 14, color: '#1a140d' }}>
               Planes de voz
             </h2>
-            <p style={{ fontSize: 16, color: '#8a7a5a', maxWidth: 520, margin: '0 auto' }}>
+            <p style={{ fontSize: 16, color: 'var(--agentes-texto-2)', maxWidth: 520, margin: '0 auto' }}>
               Se añade a tu plan de agente de WhatsApp.
             </p>
           </div>
@@ -94,15 +94,15 @@ export default function AgentesVozPage() {
                 key={plan.nombre}
                 style={{ background: plan.destacado ? '#12141a' : '#faf8f4', border: `1px solid ${plan.destacado ? '#12141a' : '#f1ece0'}`, borderRadius: 20, padding: '32px 28px', textAlign: 'center' }}
               >
-                <div style={{ fontSize: 16, fontWeight: 700, color: plan.destacado ? '#e8a33d' : '#1a140d', marginBottom: 14 }}>{plan.nombre}</div>
+                <div style={{ fontSize: 16, fontWeight: 700, color: plan.destacado ? 'var(--agentes-oro)' : '#1a140d', marginBottom: 14 }}>{plan.nombre}</div>
                 <div style={{ fontSize: 40, fontWeight: 700, letterSpacing: -1, color: plan.destacado ? '#ece9e2' : '#1a140d' }}>
-                  {plan.precio}<span style={{ fontSize: 15, fontWeight: 500, color: plan.destacado ? '#97a0ac' : '#8a7a5a' }}>/mes</span>
+                  {plan.precio}<span style={{ fontSize: 15, fontWeight: 500, color: plan.destacado ? '#97a0ac' : 'var(--agentes-texto-2)' }}>/mes</span>
                 </div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: plan.destacado ? '#97a0ac' : '#8a7a5a', marginTop: 8 }}>{plan.minutos}</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: plan.destacado ? '#97a0ac' : 'var(--agentes-texto-2)', marginTop: 8 }}>{plan.minutos}</div>
               </div>
             ))}
           </div>
-          <p style={{ fontSize: 14, color: '#8a7a5a', textAlign: 'center', lineHeight: 1.8, margin: '28px auto 0', maxWidth: 640 }}>
+          <p style={{ fontSize: 14, color: 'var(--agentes-texto-2)', textAlign: 'center', lineHeight: 1.8, margin: '28px auto 0', maxWidth: 640 }}>
             Minuto adicional: 0,30 €. Alta: 119 €. Precios sin IVA, sin permanencia.
           </p>
         </div>

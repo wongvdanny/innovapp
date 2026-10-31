@@ -199,7 +199,7 @@ function FormularioRestaurante() {
         <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 14, color: '#4a3f2e', lineHeight: 1.5, cursor: 'pointer' }}>
           <input type="checkbox" checked={form.consentimiento} onChange={e => set('consentimiento', e.target.checked)}
             disabled={enviando} required
-            style={{ marginTop: 2, width: 20, height: 20, flexShrink: 0, accentColor: '#c98826' }} />
+            style={{ marginTop: 2, width: 20, height: 20, flexShrink: 0, accentColor: 'var(--agentes-oro-texto)' }} />
           <span>
             {CONSENTIMIENTO_RESTAURANTE}{' '}
             <a href="/privacidad" target="_blank" rel="noopener noreferrer" style={{ color: '#8a5a12', fontWeight: 600, textDecoration: 'underline' }}>Política de privacidad</a>. *
@@ -215,7 +215,7 @@ function FormularioRestaurante() {
         )}
 
         <button type="submit" disabled={enviando}
-          style={{ padding: '16px 28px', borderRadius: 12, border: 'none', background: '#12141a', color: '#e8a33d', fontSize: 16, fontWeight: 700, cursor: enviando ? 'default' : 'pointer', opacity: enviando ? 0.75 : 1 }}>
+          style={{ padding: '16px 28px', borderRadius: 12, border: 'none', background: '#12141a', color: 'var(--agentes-oro)', fontSize: 16, fontWeight: 700, cursor: enviando ? 'default' : 'pointer', opacity: enviando ? 0.75 : 1 }}>
           {enviando ? 'Enviando…' : 'Quiero que me llaméis'}
         </button>
       </div>
@@ -228,7 +228,7 @@ function ConversacionWhatsApp() {
     <div className="wa-movil" aria-label="Ejemplo de conversación por WhatsApp con el asistente de un restaurante" role="group">
       <div style={{ background: '#075e54', color: 'white', padding: '12px 14px', display: 'flex', alignItems: 'center', gap: 10 }}>
         <span aria-hidden style={{ fontSize: 18 }}>‹</span>
-        <div aria-hidden style={{ width: 36, height: 36, borderRadius: '50%', background: '#e8a33d', color: '#12141a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 15 }}>RD</div>
+        <div aria-hidden style={{ width: 36, height: 36, borderRadius: '50%', background: 'var(--agentes-oro)', color: '#12141a', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: 15 }}>RD</div>
         <div>
           <div style={{ fontSize: 15, fontWeight: 600 }}>Restaurante Demo</div>
           <div style={{ fontSize: 12, opacity: 0.85 }}>en línea</div>
@@ -275,7 +275,7 @@ export default function AgentesIaRestaurantesPage() {
             '@id': 'https://innovapp.es/#localbusiness',
             name: 'Innovapp',
             url: 'https://innovapp.es',
-            image: 'https://innovapp.es/brand/og-image.png',
+            image: 'https://innovapp.es/og-image.png',
             email: 'contacto@innovapp.es',
             telephone: COMMERCIAL_PHONE,
             address: {
@@ -296,7 +296,7 @@ export default function AgentesIaRestaurantesPage() {
             description:
               'Un asistente en el WhatsApp del restaurante que reserva mesas 24 horas, informa del menú del día con sus 14 alérgenos y registra la jornada del equipo, con paso a una persona cuando hace falta.',
             url: 'https://innovapp.es/agentes-ia-restaurantes',
-            image: 'https://innovapp.es/brand/og-image.png',
+            image: 'https://innovapp.es/og-image.png',
             provider: { '@id': 'https://innovapp.es/#localbusiness' },
             areaServed: 'ES',
             audience: { '@type': 'Audience', audienceType: 'Restaurantes y bares' },
@@ -312,18 +312,18 @@ export default function AgentesIaRestaurantesPage() {
         <section style={{ background: '#12141a', padding: 'clamp(110px,18vw,150px) 16px clamp(56px,10vw,90px)' }}>
           <div className="lr-hero">
             <div>
-              <div style={{ display: 'inline-flex', background: 'rgba(232,163,61,.12)', border: '1px solid rgba(232,163,61,.25)', borderRadius: 100, padding: '6px 16px', marginBottom: 20 }}>
-                <span style={{ color: '#e8a33d', fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>✦ Para restaurantes</span>
+              <div style={{ display: 'inline-flex', background: 'rgba(var(--agentes-oro-rgb),.12)', border: '1px solid rgba(var(--agentes-oro-rgb),.25)', borderRadius: 100, padding: '6px 16px', marginBottom: 20 }}>
+                <span style={{ color: 'var(--agentes-oro)', fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>✦ Para restaurantes</span>
               </div>
               <h1 style={{ fontSize: 'clamp(30px,7vw,50px)', fontWeight: 500, letterSpacing: -1, color: '#ece9e2', margin: '0 0 18px', lineHeight: 1.15 }}>
-                Tu restaurante contesta WhatsApp <span style={{ fontStyle: 'italic', color: '#e8a33d' }}>mientras tú estás en sala.</span>
+                Tu restaurante contesta WhatsApp <span style={{ fontStyle: 'italic', color: 'var(--agentes-oro)' }}>mientras tú estás en sala.</span>
               </h1>
               <p style={{ fontSize: 'clamp(16px,4vw,18px)', color: '#b4bcc6', margin: '0 0 30px', lineHeight: 1.65, maxWidth: 520 }}>
                 Un asistente que reserva mesas, informa del menú del día y registra la jornada del equipo, en el WhatsApp de siempre, 24 h.
               </p>
               <div className="lr-ctas">
                 <a href={DEMO_WHATSAPP} target="_blank" rel="noopener noreferrer" data-cta="demo-restaurante"
-                  style={{ padding: '16px 26px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 16, textAlign: 'center' }}>
+                  style={{ padding: '16px 26px', borderRadius: 12, background: 'var(--agentes-oro)', color: '#12141a', fontWeight: 700, fontSize: 16, textAlign: 'center' }}>
                   Habla con nuestro agente y ve la demo →
                 </a>
                 <a href={`#${ANCLA_FORMULARIO}`}
@@ -410,7 +410,7 @@ export default function AgentesIaRestaurantesPage() {
                 ['Enlace de solo lectura para la Inspección', 'Si os lo piden, compartís un acceso que solo permite consultar.'],
               ].map(([t, d]) => (
                 <li key={t} style={{ background: 'rgba(255,255,255,.04)', border: '1px solid rgba(255,255,255,.1)', borderRadius: 14, padding: '16px 18px' }}>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#e8a33d', marginBottom: 4 }}>{t}</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: 'var(--agentes-oro)', marginBottom: 4 }}>{t}</div>
                   <div style={{ fontSize: 15, color: '#c9cdd4', lineHeight: 1.6 }}>{d}</div>
                 </li>
               ))}
@@ -423,9 +423,9 @@ export default function AgentesIaRestaurantesPage() {
 
         {/* 7. Propuesta (sin precios en esta página) */}
         <section id="propuesta" style={{ padding: 'clamp(56px,10vw,90px) 16px', background: 'white' }}>
-          <div style={{ maxWidth: 620, margin: '0 auto', textAlign: 'center', background: '#faf8f4', border: '1.5px solid #e8a33d', borderRadius: 20, padding: 'clamp(26px,6vw,40px)' }}>
+          <div style={{ maxWidth: 620, margin: '0 auto', textAlign: 'center', background: '#faf8f4', border: '1.5px solid var(--agentes-oro)', borderRadius: 20, padding: 'clamp(26px,6vw,40px)' }}>
             <h2 style={{ ...h2Claro, fontSize: 'clamp(22px,4vw,28px)', marginBottom: 22 }}>Propuesta a medida tras una visita de 15 minutos</h2>
-            <a href={`#${ANCLA_FORMULARIO}`} style={{ display: 'inline-block', padding: '15px 28px', borderRadius: 12, background: '#12141a', color: '#e8a33d', fontWeight: 700, fontSize: 16 }}>
+            <a href={`#${ANCLA_FORMULARIO}`} style={{ display: 'inline-block', padding: '15px 28px', borderRadius: 12, background: '#12141a', color: 'var(--agentes-oro)', fontWeight: 700, fontSize: 16 }}>
               Pide tu visita →
             </a>
           </div>

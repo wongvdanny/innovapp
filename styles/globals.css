@@ -5,6 +5,8 @@
   --color-brand-orange-light: #f4a15c;
   --color-brand-orange-tint: #fdf0e8;
   --color-brand-dark: #1e1e1e;
+  /* Naranja para texto pequeño sobre fondo claro o crema (5,6:1 sobre #fdf0e8, AA) */
+  --color-brand-orange-texto: #9a4a14;
 
   /* Alias legacy: la familia "teal" ahora ES la marca naranja */
   --teal: var(--color-brand-orange);
@@ -14,9 +16,66 @@
   --gold: #f59e0b;
   --ink: var(--color-brand-dark);
   --dark: var(--color-brand-dark);
-  --muted: #88a8b0;
-  --border: #eef1f4;
-  --off: #f8fafb;
+  --muted: var(--gris-500);
+  --border: var(--gris-200);
+  --off: var(--gris-50);
+
+  /* --- Grises neutros (cálidos, para acompañar al naranja). Sustituyen a los fríos
+         #88a8b0 → --gris-500, #5a7a87 y #4a6572 → --gris-600, #f8fafb → --gris-50,
+         #eef1f4 → --gris-200. Contraste sobre blanco: 500 = 4,8:1 · 600 = 7,7:1 (AA). --- */
+  --gris-50: #fafaf9;
+  --gris-100: #f5f5f4;
+  --gris-200: #ebe8e5;
+  --gris-300: #d6d3d1;
+  --gris-500: #6e6862;
+  --gris-600: #57534e;
+  --gris-700: #44403c;
+  --gris-900: var(--color-brand-dark);
+
+  /* --- Acento de Agentes IA: dorado oscurecido (antes #e8a33d) para separarlo del naranja.
+         Sobre #12141a: 6,9:1. Para texto sobre fondo claro, --agentes-oro-texto (7,5:1). --- */
+  --agentes-oro: #c9952e;
+  --agentes-oro-rgb: 201, 149, 46;
+  --agentes-oro-texto: #8a5a12;
+  --agentes-fondo: #12141a;
+  --agentes-crema: #faf8f4;
+  /* Texto secundario cálido de Agentes (antes #8a7a5a, 4,2:1): 6,4:1 sobre blanco */
+  --agentes-texto-2: #6b5d45;
+
+  /* --- Acentos de producto --- */
+  --servix: #1a6478;
+  --gymstack: #7c3aed;
+
+  /* --- Tipografía --- */
+  --fuente: var(--font-gabarito), system-ui, sans-serif;
+  --texto-xs: 12px;
+  --texto-sm: 14px;
+  --texto-base: 16px;
+  --texto-lg: 18px;
+  --titulo-h2: clamp(26px, 4vw, 40px);
+  --titulo-h1: clamp(31px, 6.5vw, 60px);
+
+  /* --- Espaciado, radios y sombras --- */
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 12px;
+  --esp-4: 16px;
+  --esp-6: 24px;
+  --esp-8: 32px;
+  --seccion-y: clamp(56px, 10vw, 90px);
+  --radio-sm: 10px;
+  --radio-md: 14px;
+  --radio-lg: 20px;
+  --sombra-sm: 0 1px 2px rgba(30, 30, 30, .06), 0 1px 3px rgba(30, 30, 30, .08);
+  --sombra-md: 0 4px 12px rgba(30, 30, 30, .08), 0 2px 4px rgba(30, 30, 30, .04);
+  --sombra-lg: 0 18px 40px rgba(30, 30, 30, .14), 0 4px 10px rgba(30, 30, 30, .06);
+}
+
+/* Animación de entrada al hacer scroll (lib/reveal.ts marca las secciones que empiezan
+   fuera de pantalla). Sin JS o con prefers-reduced-motion, todo se ve sin animar. */
+@media (prefers-reduced-motion: no-preference) {
+  .reveal-pendiente { opacity: 0; transform: translateY(18px); }
+  .reveal-hecho { transition: opacity .6s ease, transform .6s ease; }
 }
 
 * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -48,7 +107,7 @@ a { color: inherit; text-decoration: none; }
 
 .label {
   display: inline-block; background: var(--teal-xl);
-  border: 1px solid rgba(238,117,40,0.2); color: var(--teal-d);
+  border: 1px solid rgba(238,117,40,0.2); color: var(--color-brand-orange-texto);
   border-radius: 100px; padding: 5px 16px;
   font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
   margin-bottom: 16px;
@@ -56,3 +115,6 @@ a { color: inherit; text-decoration: none; }
 .section { padding: 100px 64px; }
 .section-sm { padding: 64px; }
 @media(max-width:768px) { .section, .section-sm { padding: 72px 24px; } }
+
+/* Texto solo para lectores de pantalla */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }

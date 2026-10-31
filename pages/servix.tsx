@@ -3,6 +3,8 @@ import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import Link from 'next/link'
+import { Check, Star } from 'lucide-react'
+import Icono from '../components/Icono'
 import { prisma } from '../lib/prisma'
 
 interface PlanData {
@@ -34,7 +36,7 @@ export default function ServixPage({ plans }: { plans: PlanData[] }) {
           description:
             'TPV y sistema de gestión para restaurantes, bares y cafeterías: mesas, carta QR, cocina, reservas y pagos con Redsys.',
           url: 'https://innovapp.es/servix',
-          image: 'https://innovapp.es/brand/og-image.png',
+          image: 'https://innovapp.es/og-image.png',
           offers: {
             '@type': 'AggregateOffer',
             priceCurrency: 'EUR',
@@ -54,10 +56,11 @@ export default function ServixPage({ plans }: { plans: PlanData[] }) {
 
       <section style={{ background: 'linear-gradient(160deg,#1e1e1e 0%,#1e1e1e 55%,#33261c 100%)', padding: '140px 24px 90px', textAlign: 'center' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 14, marginBottom: 24 }}>
-          <div style={{ width: 56, height: 56, borderRadius: 16, background: 'linear-gradient(135deg,#ee7528,#c85f1b)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 28 }}>🍴</div>
+          <div style={{ width: 56, height: 56, borderRadius: 16, background: 'linear-gradient(135deg,#ee7528,#c85f1b)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}><Icono icono="Utensils" size={28} /></div>
           <div style={{ fontSize: 40, fontWeight: 800, color: 'white' }}>serv<span style={{ color: '#f4a15c' }}>ix</span></div>
         </div>
         <h1 style={{ fontSize: 'clamp(28px,5vw,54px)', fontWeight: 800, color: 'white', letterSpacing: -1.5, maxWidth: 720, margin: '0 auto 20px', lineHeight: 1.15 }}>
+          {/* // COPY */}
           El TPV que digitaliza tu restaurante de principio a fin
         </h1>
         <p style={{ fontSize: 17, color: 'rgba(255,255,255,.6)', maxWidth: 560, margin: '0 auto 40px', lineHeight: 1.75 }}>
@@ -69,61 +72,62 @@ export default function ServixPage({ plans }: { plans: PlanData[] }) {
       <section style={{ padding: '90px 24px', background: 'white' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto', display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 20 }}>
           {[
-            ['🪑','Mesas y zonas','Gestión en tiempo real de todas las mesas y zonas de tu local.'],
-            ['📱','Carta digital QR','Tus clientes piden desde el móvil escaneando un código.'],
-            ['🍳','Pantalla de cocina','Los pedidos llegan directos a cocina, sin papel.'],
-            ['💳','Pagos con Redsys','Cobra con tarjeta de forma segura, integrado en el TPV.'],
+            ['Armchair','Mesas y zonas','Gestión en tiempo real de todas las mesas y zonas de tu local.'],
+            ['QrCode','Carta digital QR','Tus clientes piden desde el móvil escaneando un código.'],
+            ['ChefHat','Pantalla de cocina','Los pedidos llegan directos a cocina, sin papel.'],
+            // COPY
+            ['CreditCard','Pagos con Redsys','Cobra con tarjeta de forma segura, integrado en el TPV.'],
           ].map(([icon, title, desc]) => (
-            <div key={String(title)} style={{ background: '#f8fafb', border: '1px solid #eef1f4', borderRadius: 18, padding: 24 }}>
-              <div style={{ fontSize: 28, marginBottom: 10 }}>{icon}</div>
+            <div key={String(title)} style={{ background: 'var(--gris-50)', border: '1px solid var(--gris-200)', borderRadius: 18, padding: 24 }}>
+              <div style={{ marginBottom: 12, color: '#c85f1b' }}><Icono icono={icon} size={28} /></div>
               <div style={{ fontSize: 15, fontWeight: 700, color: '#1e1e1e', marginBottom: 6 }}>{title}</div>
-              <div style={{ fontSize: 13, color: '#5a7a87', lineHeight: 1.65 }}>{desc}</div>
+              <div style={{ fontSize: 13, color: 'var(--gris-600)', lineHeight: 1.65 }}>{desc}</div>
             </div>
           ))}
         </div>
       </section>
 
-      <section style={{ padding: '90px 24px', background: '#f8fafb' }} id="precios">
+      <section style={{ padding: '90px 24px', background: 'var(--gris-50)' }} id="precios">
         <div style={{ maxWidth: 1100, margin: '0 auto', textAlign: 'center' }}>
           <h2 style={{ fontSize: 'clamp(26px,3.5vw,44px)', fontWeight: 800, letterSpacing: -1.5, marginBottom: 16, color: '#1e1e1e' }}>Elige tu plan</h2>
-          <p style={{ fontSize: 16, color: '#5a7a87', maxWidth: 500, margin: '0 auto 50px' }}>Sin tarjeta de crédito. Sin permanencia.</p>
+          <p style={{ fontSize: 16, color: 'var(--gris-600)', maxWidth: 500, margin: '0 auto 50px' }}>Sin tarjeta de crédito. Sin permanencia.</p>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 20, maxWidth: 1000, margin: '0 auto' }}>
             {freePlan && (
-              <div style={{ background: 'white', border: '2px solid #eef1f4', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#88a8b0', textTransform: 'uppercase', marginBottom: 8 }}>{freePlan.name}</div>
+              <div style={{ background: 'white', border: '2px solid var(--gris-200)', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gris-500)', textTransform: 'uppercase', marginBottom: 8 }}>{freePlan.name}</div>
                 <div style={{ fontSize: 44, fontWeight: 800, color: '#1e1e1e' }}>{freePlan.price}€</div>
-                <div style={{ fontSize: 13, color: '#88a8b0', marginBottom: 20 }}>{freePlan.description}</div>
+                <div style={{ fontSize: 13, color: 'var(--gris-500)', marginBottom: 20 }}>{freePlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {freePlan.features.map(f => (
-                    <li key={f} style={{ fontSize: 13, color: '#1e1e1e', display: 'flex', gap: 8 }}><span style={{ color: '#ee7528', fontWeight: 700 }}>✓</span>{f}</li>
+                    <li key={f} style={{ fontSize: 13, color: '#1e1e1e', display: 'flex', gap: 8 }}><Icono icono={Check} size={18} color="#ee7528" />{f}</li>
                   ))}
                 </ul>
                 <Link href={`/registro?product=servix&plan=${freePlan.id}`} style={{ display: 'block', padding: '13px', background: 'linear-gradient(135deg,#ee7528,#c85f1b)', color: 'white', borderRadius: 12, fontSize: 14, fontWeight: 700, textAlign: 'center', textDecoration: 'none' }}>Crear cuenta gratis →</Link>
               </div>
             )}
             {monthlyPlan && (
-              <div style={{ background: 'white', border: '2px solid #eef1f4', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#88a8b0', textTransform: 'uppercase', marginBottom: 8 }}>{monthlyPlan.name}</div>
-                <div style={{ fontSize: 44, fontWeight: 800, color: '#1e1e1e' }}>{monthlyPlan.price}€<span style={{ fontSize: 15, color: '#88a8b0', fontWeight: 500 }}>/mes</span></div>
-                <div style={{ fontSize: 13, color: '#88a8b0', marginBottom: 20 }}>{monthlyPlan.description}</div>
+              <div style={{ background: 'white', border: '2px solid var(--gris-200)', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gris-500)', textTransform: 'uppercase', marginBottom: 8 }}>{monthlyPlan.name}</div>
+                <div style={{ fontSize: 44, fontWeight: 800, color: '#1e1e1e' }}>{monthlyPlan.price}€<span style={{ fontSize: 15, color: 'var(--gris-500)', fontWeight: 500 }}>/mes</span></div>
+                <div style={{ fontSize: 13, color: 'var(--gris-500)', marginBottom: 20 }}>{monthlyPlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {monthlyPlan.features.map(f => (
-                    <li key={f} style={{ fontSize: 13, color: '#1e1e1e', display: 'flex', gap: 8 }}><span style={{ color: '#ee7528', fontWeight: 700 }}>✓</span>{f}</li>
+                    <li key={f} style={{ fontSize: 13, color: '#1e1e1e', display: 'flex', gap: 8 }}><Icono icono={Check} size={18} color="#ee7528" />{f}</li>
                   ))}
                 </ul>
                 <Link href={`/registro?product=servix&plan=${monthlyPlan.id}`} style={{ display: 'block', padding: '13px', background: '#1e1e1e', color: 'white', borderRadius: 12, fontSize: 14, fontWeight: 700, textAlign: 'center', textDecoration: 'none' }}>Contratar mensual →</Link>
               </div>
             )}
             {yearlyPlan && (
-              <div style={{ background: 'linear-gradient(145deg,#1e1e1e,#1e1e1e)', border: '2px solid rgba(238,117,40,.25)', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ display: 'inline-block', background: '#f59e0b', color: 'white', borderRadius: 8, padding: '3px 12px', fontSize: 11, fontWeight: 800, marginBottom: 8, alignSelf: 'flex-start' }}>⭐ Más popular</div>
+              <div style={{ background: 'linear-gradient(145deg,#1e1e1e 0%,#33261c 100%)', border: '2px solid rgba(238,117,40,.25)', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
+                <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: '#f59e0b', color: '#1e1e1e', borderRadius: 8, padding: '3px 12px', fontSize: 11, fontWeight: 800, marginBottom: 8, alignSelf: 'flex-start' }}><Icono icono={Star} size={13} />Más popular</div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', marginBottom: 8 }}>{yearlyPlan.name}</div>
                 <div style={{ fontSize: 44, fontWeight: 800, color: 'white' }}>{yearlyPlan.price}€<span style={{ fontSize: 15, color: 'rgba(255,255,255,.4)', fontWeight: 500 }}>/año</span></div>
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginBottom: 20 }}>{yearlyPlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {yearlyPlan.features.map(f => (
-                    <li key={f} style={{ fontSize: 13, color: 'rgba(255,255,255,.85)', display: 'flex', gap: 8 }}><span style={{ color: '#f4a15c', fontWeight: 700 }}>✓</span>{f}</li>
+                    <li key={f} style={{ fontSize: 13, color: 'rgba(255,255,255,.85)', display: 'flex', gap: 8 }}><Icono icono={Check} size={18} color="#f4a15c" />{f}</li>
                   ))}
                 </ul>
                 <Link href={`/registro?product=servix&plan=${yearlyPlan.id}`} style={{ display: 'block', padding: '13px', background: 'linear-gradient(135deg,#f4a15c,#ee7528)', color: 'white', borderRadius: 12, fontSize: 14, fontWeight: 700, textAlign: 'center', textDecoration: 'none' }}>Contratar anual →</Link>

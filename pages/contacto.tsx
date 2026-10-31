@@ -11,7 +11,7 @@ const PRODUCTS = ['Servix', 'GymStack', 'Agentes IA', 'Otro']
 type Status = 'idle' | 'sending' | 'success' | 'error'
 
 const inputStyle: React.CSSProperties = {
-  width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid #eef1f4',
+  width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid var(--gris-200)',
   fontSize: 14, outline: 'none', fontFamily: 'var(--font-gabarito), system-ui, sans-serif',
   transition: 'border-color .2s', boxSizing: 'border-box', background: 'white',
 }
@@ -91,30 +91,30 @@ export default function Contacto() {
       />
       <Nav />
 
-      <main style={{ background: '#f8fafb', minHeight: '100vh', padding: '140px 24px 90px' }}>
+      <main style={{ background: 'var(--gris-50)', minHeight: '100vh', padding: '140px 24px 90px' }}>
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 56 }}>
             <h1 style={{ fontSize: 'clamp(30px,4.5vw,48px)', fontWeight: 800, letterSpacing: -1.5, color: '#1e1e1e', marginBottom: 14 }}>
               Hablemos de tu <span style={{ color: '#ee7528' }}>negocio</span>
             </h1>
-            <p style={{ fontSize: 17, color: '#5a7a87', maxWidth: 540, margin: '0 auto', lineHeight: 1.7 }}>
+            <p style={{ fontSize: 17, color: 'var(--gris-600)', maxWidth: 540, margin: '0 auto', lineHeight: 1.7 }}>
               Cuéntanos qué necesitas y te respondemos con una propuesta concreta. Sin compromiso.
             </p>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.6fr) minmax(0,1fr)', gap: 32, alignItems: 'start' }} className="contacto-grid">
             {/* --- Formulario --- */}
-            <div style={{ background: 'white', border: '1px solid #eef1f4', borderRadius: 24, padding: 'clamp(24px,4vw,40px)' }}>
+            <div style={{ background: 'white', border: '1px solid var(--gris-200)', borderRadius: 24, padding: 'clamp(24px,4vw,40px)' }}>
               {status === 'success' ? (
                 <div style={{ textAlign: 'center', padding: '32px 8px' }}>
                   <div style={{ fontSize: 52, marginBottom: 16 }}>✅</div>
                   <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1e1e1e', marginBottom: 10 }}>¡Mensaje enviado!</h2>
-                  <p style={{ fontSize: 15, color: '#5a7a87', lineHeight: 1.7, marginBottom: 24 }}>
+                  <p style={{ fontSize: 15, color: 'var(--gris-600)', lineHeight: 1.7, marginBottom: 24 }}>
                     Gracias por escribirnos. Te responderemos al email que nos has indicado lo antes posible.
                   </p>
                   <button
                     onClick={() => setStatus('idle')}
-                    style={{ padding: '12px 24px', borderRadius: 10, border: '1.5px solid #eef1f4', background: 'white', fontSize: 14, fontWeight: 600, color: '#1e1e1e', cursor: 'pointer' }}
+                    style={{ padding: '12px 24px', borderRadius: 10, border: '1.5px solid var(--gris-200)', background: 'white', fontSize: 14, fontWeight: 600, color: '#1e1e1e', cursor: 'pointer' }}
                   >
                     Enviar otro mensaje
                   </button>
@@ -162,7 +162,7 @@ export default function Contacto() {
                         value={form.message} onChange={e => set('message', e.target.value)} required disabled={sending} />
                     </div>
 
-                    <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 13, color: '#5a7a87', lineHeight: 1.5, cursor: 'pointer' }}>
+                    <label style={{ display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 13, color: 'var(--gris-600)', lineHeight: 1.5, cursor: 'pointer' }}>
                       <input type="checkbox" checked={form.privacy}
                         onChange={e => set('privacy', e.target.checked)}
                         disabled={sending}
@@ -201,7 +201,7 @@ export default function Contacto() {
 
             {/* --- Contacto directo --- */}
             <aside style={{ display: 'grid', gap: 16 }}>
-              <div style={{ background: 'white', border: '1px solid #eef1f4', borderRadius: 20, padding: 28 }}>
+              <div style={{ background: 'white', border: '1px solid var(--gris-200)', borderRadius: 20, padding: 28 }}>
                 <div style={{ fontSize: 13, fontWeight: 700, color: '#1e1e1e', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 14 }}>
                   ¿Prefieres directo?
                 </div>
@@ -220,7 +220,7 @@ export default function Contacto() {
                 </a>
               </div>
               <div style={{ background: '#fdf0e8', border: '1px solid #f9dcc7', borderRadius: 20, padding: 28 }}>
-                <p style={{ fontSize: 14, color: '#5a7a87', lineHeight: 1.7, margin: 0 }}>
+                <p style={{ fontSize: 14, color: 'var(--gris-600)', lineHeight: 1.7, margin: 0 }}>
                   Respondemos normalmente en menos de 24&nbsp;horas laborables. Si tu consulta es sobre una
                   suscripción activa, indícalo en el mensaje para priorizarla.
                 </p>

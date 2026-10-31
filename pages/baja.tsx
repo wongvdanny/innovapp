@@ -16,7 +16,7 @@ type Status = 'idle' | 'sending' | 'success' | 'error'
 const RECAPTCHA_SITE_KEY = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
 
 const inputStyle: React.CSSProperties = {
-  width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid #eef1f4',
+  width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid var(--gris-200)',
   fontSize: 14, outline: 'none', fontFamily: 'var(--font-gabarito), system-ui, sans-serif',
   transition: 'border-color .2s', boxSizing: 'border-box', background: 'white',
 }
@@ -88,7 +88,7 @@ export default function Baja() {
 
   const sending = status === 'sending'
   const check: React.CSSProperties = { marginTop: 2, width: 16, height: 16, flexShrink: 0, accentColor: '#ee7528' }
-  const checkLabel: React.CSSProperties = { display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 13, color: '#5a7a87', lineHeight: 1.5, cursor: 'pointer' }
+  const checkLabel: React.CSSProperties = { display: 'flex', gap: 10, alignItems: 'flex-start', fontSize: 13, color: 'var(--gris-600)', lineHeight: 1.5, cursor: 'pointer' }
 
   return (
     <>
@@ -104,23 +104,23 @@ export default function Baja() {
         <Script src="https://www.google.com/recaptcha/api.js" strategy="afterInteractive" async defer />
       )}
 
-      <main style={{ background: '#f8fafb', minHeight: '100vh', padding: '140px 24px 90px' }}>
+      <main style={{ background: 'var(--gris-50)', minHeight: '100vh', padding: '140px 24px 90px' }}>
         <div style={{ maxWidth: 680, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 40 }}>
             <h1 style={{ fontSize: 'clamp(28px,4.5vw,42px)', fontWeight: 800, letterSpacing: -1.2, color: '#1e1e1e', marginBottom: 14 }}>
               Solicitar la <span style={{ color: '#ee7528' }}>baja</span> de un servicio
             </h1>
-            <p style={{ fontSize: 16, color: '#5a7a87', maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
+            <p style={{ fontSize: 16, color: 'var(--gris-600)', maxWidth: 520, margin: '0 auto', lineHeight: 1.7 }}>
               Indícanos qué servicio quieres dar de baja. Te confirmaremos por email cuando esté tramitada.
             </p>
           </div>
 
-          <div style={{ background: 'white', border: '1px solid #eef1f4', borderRadius: 24, padding: 'clamp(24px,4vw,40px)' }}>
+          <div style={{ background: 'white', border: '1px solid var(--gris-200)', borderRadius: 24, padding: 'clamp(24px,4vw,40px)' }}>
             {status === 'success' ? (
               <div style={{ textAlign: 'center', padding: '32px 8px' }}>
                 <div style={{ fontSize: 52, marginBottom: 16 }}>✅</div>
                 <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1e1e1e', marginBottom: 10 }}>Solicitud enviada</h2>
-                <p style={{ fontSize: 15, color: '#5a7a87', lineHeight: 1.7, margin: 0 }}>
+                <p style={{ fontSize: 15, color: 'var(--gris-600)', lineHeight: 1.7, margin: 0 }}>
                   Hemos recibido tu solicitud de baja. Te escribiremos al email que nos has indicado para confirmarla.
                 </p>
               </div>
@@ -212,7 +212,7 @@ export default function Baja() {
             )}
           </div>
 
-          <p style={{ fontSize: 13, color: '#5a7a87', textAlign: 'center', lineHeight: 1.7, margin: '24px 0 0' }}>
+          <p style={{ fontSize: 13, color: 'var(--gris-600)', textAlign: 'center', lineHeight: 1.7, margin: '24px 0 0' }}>
             ¿Prefieres escribirnos? <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: '#ee7528', fontWeight: 600 }}>{CONTACT_EMAIL}</a>
             {' · '}
             <Link href="/contacto" style={{ color: '#ee7528', fontWeight: 600 }}>Contacto</Link>

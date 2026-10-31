@@ -1,5 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
+import { Menu, X } from 'lucide-react'
+import Icono from './Icono'
 import Link from 'next/link'
 import Logo from './Logo'
 export default function Nav() {
@@ -19,9 +21,9 @@ export default function Nav() {
         <Link href="/"><Logo variant="light" height={60} /></Link>
         <div style={{ display: 'flex', alignItems: 'center', gap: 28 }} className="nav-desktop">
           {links.map(([href, label]) => (
-            <a key={href} href={href} style={{ fontSize: 15, fontWeight: 600, color: '#4a6572', transition: 'color .2s' }}
+            <a key={href} href={href} style={{ fontSize: 15, fontWeight: 600, color: 'var(--gris-600)', transition: 'color .2s' }}
               onMouseEnter={e => (e.currentTarget.style.color = '#1e1e1e')}
-              onMouseLeave={e => (e.currentTarget.style.color = '#4a6572')}>{label}</a>
+              onMouseLeave={e => (e.currentTarget.style.color = 'var(--gris-600)')}>{label}</a>
           ))}
           <a href="/servix" style={{ fontSize: 15, fontWeight: 600, color: '#ee7528', transition: 'color .2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = '#c85f1b')}
@@ -34,48 +36,48 @@ export default function Nav() {
             onMouseLeave={() => setAgentesOpen(false)}
             onFocus={() => setAgentesOpen(true)}
             onBlur={e => { if (!e.currentTarget.contains(e.relatedTarget as Node)) setAgentesOpen(false) }}>
-            <a href="/agentes-ia" aria-haspopup="true" aria-expanded={agentesOpen} style={{ fontSize: 15, fontWeight: 600, color: agentesOpen ? '#c98826' : '#e8a33d', transition: 'color .2s' }}>Agentes IA ▾</a>
+            <a href="/agentes-ia" aria-haspopup="true" aria-expanded={agentesOpen} style={{ fontSize: 15, fontWeight: 600, color: agentesOpen ? 'var(--agentes-oro-texto)' : 'var(--agentes-oro)', transition: 'color .2s' }}>Agentes IA ▾</a>
             {agentesOpen && (
               <div style={{ position: 'absolute', top: '100%', left: -16, paddingTop: 14, minWidth: 240 }}>
-                <div style={{ background: 'white', border: '1px solid #eef1f4', borderRadius: 12, padding: 6, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
+                <div style={{ background: 'white', border: '1px solid var(--gris-200)', borderRadius: 12, padding: 6, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
                   {agentesLinks.map(([href, label]) => (
-                    <a key={href} href={href} style={{ display: 'block', padding: '10px 14px', borderRadius: 8, fontSize: 14, fontWeight: 600, color: '#4a6572', textDecoration: 'none', transition: 'background .2s, color .2s' }}
-                      onMouseEnter={e => { e.currentTarget.style.background = '#f8fafb'; e.currentTarget.style.color = '#1e1e1e' }}
-                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#4a6572' }}>{label}</a>
+                    <a key={href} href={href} style={{ display: 'block', padding: '10px 14px', borderRadius: 8, fontSize: 14, fontWeight: 600, color: 'var(--gris-600)', textDecoration: 'none', transition: 'background .2s, color .2s' }}
+                      onMouseEnter={e => { e.currentTarget.style.background = 'var(--gris-50)'; e.currentTarget.style.color = '#1e1e1e' }}
+                      onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--gris-600)' }}>{label}</a>
                   ))}
                 </div>
               </div>
             )}
           </div>
-          <Link href="/blog" style={{ fontSize: 15, fontWeight: 600, color: '#4a6572', transition: 'color .2s' }}
+          <Link href="/blog" style={{ fontSize: 15, fontWeight: 600, color: 'var(--gris-600)', transition: 'color .2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = '#1e1e1e')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#4a6572')}>Blog</Link>
-          <Link href="/contacto" style={{ fontSize: 15, fontWeight: 600, color: '#4a6572', transition: 'color .2s' }}
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--gris-600)')}>Blog</Link>
+          <Link href="/contacto" style={{ fontSize: 15, fontWeight: 600, color: 'var(--gris-600)', transition: 'color .2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = '#1e1e1e')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#4a6572')}>Contacto</Link>
+            onMouseLeave={e => (e.currentTarget.style.color = 'var(--gris-600)')}>Contacto</Link>
         </div>
         <div style={{ display: 'flex', gap: 10 }} className="nav-desktop">
-          <Link href="/login" style={{ padding: '9px 18px', borderRadius: 10, border: '1px solid #eef1f4', fontSize: 14, fontWeight: 600, color: '#1e1e1e', background: '#f8fafb', textDecoration: 'none' }}>Entrar</Link>
+          <Link href="/login" style={{ padding: '9px 18px', borderRadius: 10, border: '1px solid var(--gris-200)', fontSize: 14, fontWeight: 600, color: '#1e1e1e', background: 'var(--gris-50)', textDecoration: 'none' }}>Entrar</Link>
         </div>
-        <button onClick={() => setOpen(!open)} className="nav-mobile" style={{ background: 'none', border: '1px solid #eef1f4', borderRadius: 8, padding: '8px 10px', cursor:'pointer', fontSize: 18 }}>
-          {open ? '✕' : '☰'}
+        <button onClick={() => setOpen(!open)} className="nav-mobile" aria-label={open ? 'Cerrar menú' : 'Abrir menú'} aria-expanded={open} style={{ background: 'none', border: '1px solid var(--gris-200)', borderRadius: 8, padding: '8px 10px', cursor:'pointer', color: '#1e1e1e', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <Icono icono={open ? X : Menu} />
         </button>
       </nav>
       {open && (
-        <div className="nav-mobile" style={{ position: 'fixed', top: 82, left: 0, right: 0, zIndex: 99, background: 'white', borderBottom: '1px solid #eef1f4', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 4, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
+        <div className="nav-mobile" style={{ position: 'fixed', top: 82, left: 0, right: 0, zIndex: 99, background: 'white', borderBottom: '1px solid var(--gris-200)', padding: '16px 24px', display: 'flex', flexDirection: 'column', gap: 4, boxShadow: '0 8px 24px rgba(0,0,0,0.08)' }}>
           {links.map(([href, label]) => (
             <a key={href} href={href} onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1e1e1e', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>{label}</a>
           ))}
           <a href="/servix" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#ee7528', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Servix</a>
           <a href="/gymstack" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#a855f7', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>GymStack</a>
-          <a href="/agentes-ia" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#e8a33d', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Agentes IA</a>
+          <a href="/agentes-ia" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: 'var(--agentes-oro)', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Agentes IA</a>
           {agentesLinks.map(([href, label]) => (
-            <a key={href} href={href} onClick={() => setOpen(false)} style={{ fontSize: 15, fontWeight: 600, color: '#4a6572', padding: '12px 0 12px 20px', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>{label}</a>
+            <a key={href} href={href} onClick={() => setOpen(false)} style={{ fontSize: 15, fontWeight: 600, color: 'var(--gris-600)', padding: '12px 0 12px 20px', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>{label}</a>
           ))}
           <Link href="/blog" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1e1e1e', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Blog</Link>
           <Link href="/contacto" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1e1e1e', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Contacto</Link>
           <div style={{ display: 'flex', gap: 10, marginTop: 12 }}>
-            <Link href="/login" onClick={() => setOpen(false)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1px solid #eef1f4', fontSize: 14, fontWeight: 600, color: '#1e1e1e', background: '#f8fafb', textDecoration: 'none', textAlign: 'center' }}>Entrar</Link>
+            <Link href="/login" onClick={() => setOpen(false)} style={{ flex: 1, padding: '12px', borderRadius: 10, border: '1px solid var(--gris-200)', fontSize: 14, fontWeight: 600, color: '#1e1e1e', background: 'var(--gris-50)', textDecoration: 'none', textAlign: 'center' }}>Entrar</Link>
           </div>
         </div>
       )}

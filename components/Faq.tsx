@@ -19,9 +19,9 @@ type Tema = { fondo: string; tarjeta: string; borde: string; titulo: string; tex
 
 const TEMAS: Record<'agentes' | 'marca', Tema> = {
   // Paleta de las landings de Agentes IA (dorado sobre crema)
-  agentes: { fondo: '#faf8f4', tarjeta: 'white', borde: '#f1ece0', titulo: '#1a140d', texto: '#6b5d45', acento: '#c98826' },
+  agentes: { fondo: '#faf8f4', tarjeta: 'white', borde: '#f1ece0', titulo: '#1a140d', texto: '#6b5d45', acento: 'var(--agentes-oro-texto)' },
   // Paleta de marca innovapp (#EE7528 / #1E1E1E)
-  marca: { fondo: '#f8fafb', tarjeta: 'white', borde: '#eef1f4', titulo: '#1e1e1e', texto: '#4a6572', acento: '#ee7528' },
+  marca: { fondo: 'var(--gris-50)', tarjeta: 'white', borde: 'var(--gris-200)', titulo: '#1e1e1e', texto: 'var(--gris-600)', acento: '#ee7528' },
 }
 
 export default function Faq({ items, titulo = 'Preguntas frecuentes', tema = 'agentes' }: { items: FaqItem[]; titulo?: string; tema?: keyof typeof TEMAS }) {

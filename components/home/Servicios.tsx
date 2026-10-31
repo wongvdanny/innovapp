@@ -1,10 +1,12 @@
 import Link from 'next/link'
+import { Bot, Cloud, Code } from 'lucide-react'
+import Icono from '../Icono'
 
 // Tres líneas de negocio. Recoge lo útil de los bloques que había antes en la home
 // («Desarrollamos aplicaciones…», «Otras soluciones SaaS» y «¿Cuántas horas pierde…?»).
 const SERVICIOS = [
   {
-    icono: '🤖',
+    icono: Bot,
     titulo: 'Agentes IA',
     subtitulo: 'WhatsApp y voz',
     texto:
@@ -16,7 +18,7 @@ const SERVICIOS = [
     ],
   },
   {
-    icono: '🛠️',
+    icono: Code,
     titulo: 'Desarrollo a medida y e-commerce',
     subtitulo: 'PrestaShop y WooCommerce',
     texto:
@@ -28,7 +30,7 @@ const SERVICIOS = [
     ],
   },
   {
-    icono: '☁️',
+    icono: Cloud,
     titulo: 'SaaS propios',
     subtitulo: 'Servix y GymStack',
     texto: 'TPV para restaurantes y gestión para gimnasios, listos para usar.',
@@ -46,11 +48,11 @@ export default function Servicios() {
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(min(100%,300px),1fr))', gap: 20 }}>
           {SERVICIOS.map(s => (
-            <div key={s.titulo} style={{ display: 'flex', flexDirection: 'column', background: '#f8fafb', border: '1px solid #eef1f4', borderRadius: 20, padding: 26 }}>
-              <div aria-hidden style={{ fontSize: 30, marginBottom: 12 }}>{s.icono}</div>
+            <div key={s.titulo} style={{ display: 'flex', flexDirection: 'column', background: 'var(--gris-50)', border: '1px solid var(--gris-200)', borderRadius: 20, padding: 26 }}>
+              <div style={{ width: 48, height: 48, borderRadius: 'var(--radio-md)', background: 'var(--color-brand-orange-tint)', color: 'var(--color-brand-orange-dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}><Icono icono={s.icono} /></div>
               <h3 style={{ fontSize: 20, fontWeight: 800, color: '#1e1e1e', margin: '0 0 4px' }}>{s.titulo}</h3>
               <div style={{ fontSize: 14, fontWeight: 600, color: '#b2561a', marginBottom: 12 }}>{s.subtitulo}</div>
-              <p style={{ fontSize: 15, color: '#4a6572', lineHeight: 1.7, margin: '0 0 18px', flex: 1 }}>{s.texto}</p>
+              <p style={{ fontSize: 15, color: 'var(--gris-600)', lineHeight: 1.7, margin: '0 0 18px', flex: 1 }}>{s.texto}</p>
               <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 8 }}>
                 {s.enlaces.map(([href, texto]) => (
                   <li key={href}>

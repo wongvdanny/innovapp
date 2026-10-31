@@ -6,7 +6,7 @@ import { CONTACT_EMAIL, COMMERCIAL_PHONE, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_N
  * Los datos salen de lib/constants.ts; no repetirlos aquí.
  */
 export default function LegalIdentity({ tono, fondo }: { tono: 'oscuro' | 'claro'; fondo?: string }) {
-  const color = tono === 'oscuro' ? 'rgba(255,255,255,.35)' : '#88a8b0'
+  const color = tono === 'oscuro' ? 'rgba(255,255,255,.62)' : 'var(--gris-500)'
   const enlace: React.CSSProperties = { color: 'inherit', textDecoration: 'none' }
   return (
     <div style={{
