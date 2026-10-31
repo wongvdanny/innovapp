@@ -1,55 +1,19 @@
 import Head from 'next/head'
-import Link from 'next/link'
-import { useState } from 'react'
 import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
-import ChatDemo from '../components/ChatDemo'
-import VozDemo from '../components/VozDemo'
-import { WHATSAPP_NUMBER, WHATSAPP_AGENT_NUMBER } from '../components/WhatsAppBubble'
-
-const MENSAJE_AGENTES_WHATSAPP = encodeURIComponent('Hola! Quiero información sobre Agentes IA para mi negocio.')
-const MENSAJE_PRESUPUESTO_AUTOMATIZACION = encodeURIComponent('Hola, quiero presupuesto para automatizar un proceso.')
-
-// Bloque de servicios destacado: las tres páginas de negocio con anchor text descriptivo
-const SERVICIOS_ECOMMERCE = [
-  {
-    href: '/agentes-ia-prestashop',
-    icono: '🤖',
-    titulo: 'IA para PrestaShop',
-    texto: 'Un agente de IA conectado a tu catálogo que atiende el WhatsApp de tu tienda 24/7, recomienda productos, informa del estado de los pedidos y envía el enlace de pago.',
-    enlace: 'Ver la IA para PrestaShop',
-  },
-  {
-    href: '/agentes-ia-woocommerce',
-    icono: '💬',
-    titulo: 'IA para WooCommerce',
-    texto: 'El mismo agente para tiendas WooCommerce: búsqueda inteligente de productos, consultas de pedidos por WhatsApp y ventas sin salir de la conversación.',
-    enlace: 'Ver la IA para WooCommerce',
-  },
-  {
-    href: '/desarrollo-prestashop-woocommerce',
-    icono: '🛠️',
-    titulo: 'Desarrollo y actualización de tiendas',
-    texto: 'Tiendas nuevas, módulos y plugins a medida, migración de PrestaShop a 8 y 9, actualización de WooCommerce y PHP, mantenimiento y rendimiento.',
-    enlace: 'Ver desarrollo de PrestaShop y WooCommerce',
-  },
-]
+import Hero from '../components/home/Hero'
+import Servicios from '../components/home/Servicios'
+import Demo from '../components/home/Demo'
+import Casos from '../components/home/Casos'
+import Proceso from '../components/home/Proceso'
+import SobreMi from '../components/home/SobreMi'
+import Precios from '../components/home/Precios'
+import FaqHome from '../components/home/FaqHome'
+import Contacto from '../components/home/Contacto'
+import Newsletter from '../components/home/Newsletter'
 
 export default function Home() {
-  const [email, setEmail] = useState('')
-  const [subscribed, setSubscribed] = useState(false)
-  const [subscribing, setSubscribing] = useState(false)
-  const handleNewsletter = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!email) return
-    setSubscribing(true)
-    try {
-      await fetch('/api/newsletter', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email }) })
-      setSubscribed(true)
-    } finally { setSubscribing(false) }
-  }
-
   return (
     <>
       <Seo
@@ -61,197 +25,23 @@ export default function Home() {
 
       <Nav />
 
-      <section style={{ background: '#12141a', padding: '150px 24px 90px', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: -180, right: -180, width: 520, height: 520, borderRadius: '50%', background: 'radial-gradient(circle,rgba(232,163,61,.12) 0%,transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 56, flexWrap: 'wrap', position: 'relative' }}>
-          <div style={{ flex: '1 1 380px', minWidth: 300 }}>
-            <a href="#agentes-voz" style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginBottom: 16, fontSize: 13, fontWeight: 600, color: '#ece9e2', textDecoration: 'none' }}>
-              <span style={{ background: '#e8a33d', color: '#12141a', borderRadius: 100, padding: '2px 10px', fontSize: 11, fontWeight: 800, letterSpacing: 0.5, textTransform: 'uppercase' }}>Nuevo</span>
-              Agentes de voz · Llama y pruébalo →
-            </a>
-            <br />
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(232,163,61,.12)', border: '1px solid rgba(232,163,61,.25)', borderRadius: 100, padding: '6px 18px', marginBottom: 24 }}>
-              <span style={{ color: '#e8a33d', fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>✦ Nuestro producto estrella</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}>
-              <img src="/agentes-ia-logo.svg" alt="Agentes IA" width={36} height={36} />
-              <div style={{ fontSize: 20, fontWeight: 700, color: '#ece9e2' }}>Agentes <span style={{ color: '#e8a33d' }}>IA</span></div>
-            </div>
-            <h1 style={{ fontSize: 'clamp(30px,5vw,54px)', fontWeight: 500, letterSpacing: -1, color: '#ece9e2', maxWidth: 580, margin: '0 0 20px', lineHeight: 1.15 }}>
-              Un agente de IA que atiende tu WhatsApp <span style={{ fontStyle: 'italic', color: '#e8a33d' }}>día y noche</span>
-            </h1>
-            <p style={{ fontSize: 17, color: '#97a0ac', maxWidth: 480, margin: '0 0 32px', lineHeight: 1.7 }}>
-              Para peluquerías, clínicas, inmobiliarias, gimnasios, talleres, veterinarias y cualquier negocio local: responde dudas, gestiona citas sin dobles reservas, vende por catálogo online y atiende 24 horas — sin que tú tengas que estar detrás del móvil.
-            </p>
-            <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
-              <a
-                href={`https://wa.me/${WHATSAPP_AGENT_NUMBER}?text=${MENSAJE_AGENTES_WHATSAPP}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
-              >
-                Habla con nuestro agente →
-              </a>
-              <a href="/agentes-ia" style={{ padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}>
-                Ver cómo funciona
-              </a>
-            </div>
-          </div>
-          <div style={{ flex: '1 1 320px', display: 'flex', justifyContent: 'center' }}>
-            <ChatDemo />
-          </div>
-        </div>
-      </section>
-
-      <section style={{ padding: '80px 24px', background: 'white' }} id="servicios">
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ textAlign: 'center', marginBottom: 44 }}>
-            <div className="label">Servicios para tiendas online</div>
-            <h2 style={{ fontSize: 'clamp(24px,3.5vw,40px)', fontWeight: 800, letterSpacing: -1, color: '#1e1e1e', margin: 0 }}>IA y desarrollo para PrestaShop y WooCommerce</h2>
-          </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 20 }}>
-            {SERVICIOS_ECOMMERCE.map(({ href, icono, titulo, texto, enlace }) => (
-              <Link key={href} href={href} style={{ display: 'flex', flexDirection: 'column', background: '#f8fafb', border: '1px solid #eef1f4', borderRadius: 20, padding: 28, textDecoration: 'none' }}>
-                <div style={{ fontSize: 30, marginBottom: 14 }}>{icono}</div>
-                <h3 style={{ fontSize: 19, fontWeight: 800, color: '#1e1e1e', margin: '0 0 10px' }}>{titulo}</h3>
-                <p style={{ fontSize: 14, color: '#4a6572', lineHeight: 1.7, margin: '0 0 18px', flex: 1 }}>{texto}</p>
-                <span style={{ fontSize: 14, fontWeight: 700, color: '#ee7528' }}>{enlace} →</span>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <VozDemo tema="claro" />
-
-      <section style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1e1e1e 0%,#1e1e1e 55%,#33261c 100%)', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '130px 24px 80px', position: 'relative', overflow: 'hidden' }}>
-        <div style={{ position: 'absolute', top: -200, right: -200, width: 600, height: 600, borderRadius: '50%', background: 'radial-gradient(circle,rgba(238,117,40,.15) 0%,transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ position: 'absolute', bottom: -100, left: -100, width: 400, height: 400, borderRadius: '50%', background: 'radial-gradient(circle,rgba(238,117,40,.08) 0%,transparent 70%)', pointerEvents: 'none' }} />
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, background: 'rgba(238,117,40,.12)', border: '1px solid rgba(238,117,40,.25)', borderRadius: 100, padding: '6px 18px', marginBottom: 28 }}>
-          <span style={{ color: '#f4a15c', fontSize: 12, fontWeight: 700, letterSpacing: 1, textTransform: 'uppercase' }}>✦ Empresa española de tecnología web</span>
-        </div>
-        <h2 style={{ fontSize: 'clamp(34px,6vw,78px)', fontWeight: 800, color: 'white', lineHeight: 1.06, letterSpacing: -2, marginBottom: 24, maxWidth: 860 }}>
-          Desarrollamos aplicaciones<br />que hacen crecer tu <span style={{ background: 'linear-gradient(135deg,#f4a15c,#ee7528)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>negocio</span>
-        </h2>
-        <p style={{ fontSize: 'clamp(15px,2vw,19px)', color: 'rgba(255,255,255,.6)', maxWidth: 580, lineHeight: 1.75, marginBottom: 48 }}>
-          En innovapp creamos software SaaS, aplicaciones web a medida y herramientas digitales para empresas que quieren crecer. Tecnología moderna, soporte en español, sin complicaciones.
-        </p>
-        <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap', marginBottom: 20 }}>
-          <a href="#productos" style={{ padding: '15px 30px', borderRadius: 12, background: 'linear-gradient(135deg,#f4a15c,#ee7528)', color: 'white', fontWeight: 700, fontSize: 15, textDecoration: 'none', boxShadow: '0 6px 24px rgba(238,117,40,.35)' }}>Ver nuestros productos →</a>
-          <a href="#empresa" style={{ padding: '15px 30px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}>Quiénes somos</a>
-        </div>
-        <div style={{ marginTop: 48, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 14 }}>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,.3)', letterSpacing: 1, textTransform: 'uppercase', fontWeight: 600 }}>Sectores en los que trabajamos</p>
-          <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', justifyContent: 'center' }}>
-            {['🍽️ Hostelería','🏪 Comercio','🏥 Salud','🏨 Turismo','🏗️ Servicios'].map(t => (
-              <div key={t} style={{ background: 'rgba(255,255,255,.05)', border: '1px solid rgba(255,255,255,.08)', borderRadius: 100, padding: '7px 16px', fontSize: 12, fontWeight: 500, color: 'rgba(255,255,255,.4)' }}>{t}</div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section style={{ padding: '100px 24px', background: 'white' }} id="empresa">
-        <div style={{ maxWidth: 1100, margin: '0 auto' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(300px,1fr))', gap: 60, alignItems: 'center' }}>
-            <div>
-              <div style={{ display: 'inline-block', background: 'rgba(238,117,40,.1)', border: '1px solid rgba(238,117,40,.2)', borderRadius: 100, padding: '5px 16px', fontSize: 11, fontWeight: 700, color: '#ee7528', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 20 }}>Quiénes somos</div>
-              <h2 style={{ fontSize: 'clamp(26px,3.5vw,46px)', fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.1, marginBottom: 20, color: '#1e1e1e' }}>Tecnología web hecha<br />para el mundo real</h2>
-              <p style={{ fontSize: 16, color: '#5a7a87', lineHeight: 1.85, marginBottom: 16 }}>innovapp es una empresa española de desarrollo de software especializada en aplicaciones web SaaS y soluciones digitales a medida. Creemos que la tecnología debe ser accesible, funcional y rentable para cualquier tipo de negocio.</p>
-              <p style={{ fontSize: 16, color: '#5a7a87', lineHeight: 1.85, marginBottom: 32 }}>Desarrollamos productos propios y colaboramos con empresas que necesitan digitalizar sus procesos. Nuestro enfoque combina diseño moderno, arquitectura escalable y un soporte cercano en español.</p>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-                {[['⚡','Desarrollo ágil'],['🎯','Enfoque en resultados'],['🔒','Seguridad y RGPD'],['🤝','Soporte en español'],['☁️','100% en la nube'],['📱','Multidispositivo']].map(([icon, text]) => (
-                  <div key={text} style={{ display: 'flex', alignItems: 'center', gap: 10, background: '#f8fafb', border: '1px solid #eef1f4', borderRadius: 12, padding: '12px 14px' }}>
-                    <span style={{ fontSize: 18 }}>{icon}</span>
-                    <span style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e' }}>{text}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
-              {[
-                ['💡','Aplicaciones SaaS','Desarrollamos productos en la nube con modelo de suscripción. Escalables desde el primer día, sin infraestructura propia.'],
-                ['🛠️','Software a medida','Analizamos tu negocio y construimos la herramienta exacta que necesitas. Sin funciones que sobren, sin carencias.'],
-                ['📊','Digitalización de procesos','Convertimos procesos manuales en flujos digitales eficientes. Menos errores, más velocidad, más control.'],
-              ].map(([icon, title, desc]) => (
-                <div key={String(title)} style={{ background: 'linear-gradient(145deg,#f8fafb,#fdf0e8)', border: '1px solid #fdf0e8', borderRadius: 20, padding: '24px 28px', display: 'flex', gap: 18, alignItems: 'flex-start' }}>
-                  <div style={{ width: 44, height: 44, borderRadius: 12, background: 'linear-gradient(135deg,rgba(238,117,40,.15),rgba(238,117,40,.1))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>{icon}</div>
-                  <div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: '#1e1e1e', marginBottom: 6 }}>{title}</div>
-                    <div style={{ fontSize: 13, color: '#5a7a87', lineHeight: 1.7 }}>{desc}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section style={{ padding: '56px 24px' }} id="productos">
-        <div style={{ maxWidth: 900, margin: '0 auto', textAlign: 'center' }}>
-          <div style={{ display: 'inline-block', background: '#f8fafb', border: '1px solid #eef1f4', borderRadius: 100, padding: '4px 14px', fontSize: 10, fontWeight: 700, color: '#88a4ac', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 12 }}>También ofrecemos</div>
-          <h2 style={{ fontSize: 'clamp(20px,2.5vw,28px)', fontWeight: 700, letterSpacing: -0.5, marginBottom: 28, color: '#3d5460' }}>Otras soluciones SaaS de innovapp</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(260px,1fr))', gap: 14 }}>
-            <div style={{ background: 'white', border: '1px solid #eef1f4', borderRadius: 16, padding: '18px 20px', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg,#ee7528,#c85f1b)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 19, flexShrink: 0 }}>🍴</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 15, fontWeight: 800, color: '#1e1e1e', lineHeight: 1.2 }}>serv<span style={{ color: '#ee7528' }}>ix</span> <span style={{ fontSize: 12, fontWeight: 500, color: '#88a8b0' }}>· TPV para restaurantes</span></div>
-              </div>
-              <a href="/servix" style={{ flexShrink: 0, fontSize: 12, fontWeight: 700, color: '#ee7528', textDecoration: 'none' }}>Ver →</a>
-            </div>
-            <div style={{ background: 'white', border: '1px solid #eef1f4', borderRadius: 16, padding: '18px 20px', textAlign: 'left', display: 'flex', alignItems: 'center', gap: 14 }}>
-              <div style={{ width: 40, height: 40, borderRadius: 10, background: 'linear-gradient(135deg,#a855f7,#7c3aed)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 19, flexShrink: 0 }}>💪</div>
-              <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 15, fontWeight: 800, color: '#3d1a4f', lineHeight: 1.2 }}>gym<span style={{ color: '#a855f7' }}>stack</span> <span style={{ fontSize: 12, fontWeight: 500, color: '#a88ab0' }}>· Gestión para gimnasios</span></div>
-              </div>
-              <a href="/gymstack" style={{ flexShrink: 0, fontSize: 12, fontWeight: 700, color: '#a855f7', textDecoration: 'none' }}>Ver →</a>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section style={{ padding: '80px 24px', background: 'linear-gradient(135deg,#fdf0e8,#fdf0e8)' }}>
-        <div style={{ maxWidth: 860, margin: '0 auto', textAlign: 'center' }}>
-          <h2 style={{ fontSize: 'clamp(22px,3vw,38px)', fontWeight: 800, letterSpacing: -1, marginBottom: 16, color: '#1e1e1e' }}>¿Cuántas horas pierde tu negocio en tareas repetitivas?</h2>
-          <p style={{ fontSize: 16, color: '#5a7a87', lineHeight: 1.85, maxWidth: 640, margin: '0 auto 40px' }}>Responder siempre las mismas preguntas, pasar datos de un programa a otro, perseguir confirmaciones, preparar presupuestos... Todo eso se puede automatizar. Programamos a medida, con inteligencia artificial, la solución que tu negocio necesita: tú nos cuentas el proceso y nosotros lo convertimos en algo que funciona solo.</p>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 16, marginBottom: 40 }}>
-            {[['⏱️','Recupera tu tiempo','Lo repetitivo lo hace la máquina; tu equipo se dedica a vender y atender.'],['🧩','Hecho a tu medida','Nada de plantillas genéricas: nos adaptamos a tus herramientas y tu forma de trabajar.'],['💶','Presupuesto detallado antes de empezar','Te decimos qué automatizar, cuánto cuesta y en qué plazo, antes de empezar.']].map(([icon, title, desc]) => (
-              <div key={String(title)} style={{ background: 'white', borderRadius: 20, padding: '28px 24px', border: '1px solid rgba(238,117,40,.12)', boxShadow: '0 4px 20px rgba(30,30,30,.05)' }}>
-                <div style={{ fontSize: 32, marginBottom: 12 }}>{icon}</div>
-                <div style={{ fontSize: 15, fontWeight: 700, color: '#1e1e1e', marginBottom: 8 }}>{title}</div>
-                <div style={{ fontSize: 13, color: '#5a7a87', lineHeight: 1.7 }}>{desc}</div>
-              </div>
-            ))}
-          </div>
-          <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${MENSAJE_PRESUPUESTO_AUTOMATIZACION}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'linear-gradient(135deg,#f4a15c,#ee7528)', color: 'white', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
-          >
-            Pide presupuesto sin compromiso →
-          </a>
-        </div>
-      </section>
-
-      <section style={{ background: 'linear-gradient(135deg,#1e1e1e,#33261c)', padding: '80px 24px', textAlign: 'center' }} id="contacto">
-        <h2 style={{ fontSize: 'clamp(24px,3vw,40px)', fontWeight: 800, color: 'white', letterSpacing: -1.5, marginBottom: 12 }}>Mantente al día</h2>
-        <p style={{ fontSize: 15, color: 'rgba(255,255,255,.5)', marginBottom: 32, maxWidth: 420, margin: '0 auto 32px', lineHeight: 1.75 }}>Nuevos productos, funcionalidades y consejos para digitalizar tu negocio. Sin spam.</p>
-        {subscribed ? (
-          <div style={{ background: 'rgba(238,117,40,.15)', border: '1px solid rgba(238,117,40,.3)', borderRadius: 14, padding: '14px 28px', display: 'inline-block', color: '#f4a15c', fontWeight: 700 }}>✅ ¡Suscrito! Gracias por unirte.</div>
-        ) : (
-          <form onSubmit={handleNewsletter} style={{ display: 'flex', gap: 10, maxWidth: 460, margin: '0 auto', flexWrap: 'wrap', justifyContent: 'center' }}>
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="tu@email.com" required
-              style={{ flex: 1, minWidth: 220, padding: '13px 16px', borderRadius: 12, border: '1px solid rgba(255,255,255,.15)', background: 'rgba(255,255,255,.08)', color: 'white', fontSize: 14, outline: 'none' }} />
-            <button type="submit" disabled={subscribing}
-              style={{ padding: '13px 24px', borderRadius: 12, border: 'none', background: 'linear-gradient(135deg,#f4a15c,#ee7528)', color: 'white', fontSize: 14, fontWeight: 700, cursor: 'pointer' }}>
-              {subscribing ? '⏳' : 'Suscribirme →'}
-            </button>
-          </form>
-        )}
-        <p style={{ fontSize: 11, color: 'rgba(255,255,255,.25)', marginTop: 16 }}>Al suscribirte aceptas nuestra <a href="/privacidad" style={{ color: 'rgba(255,255,255,.4)', textDecoration: 'underline' }}>política de privacidad</a>.</p>
-      </section>
+      <main>
+        <Hero />
+        <Servicios />
+        <Demo />
+        <Casos />
+        <Proceso />
+        <SobreMi />
+        <Precios />
+        <FaqHome />
+        <Contacto />
+        <Newsletter />
+      </main>
 
       <Footer />
+
+      {/* Las anclas de la home no quedan debajo del Nav fijo */}
+      <style>{`main section[id] { scroll-margin-top: 80px; }`}</style>
     </>
   )
 }

@@ -11,7 +11,7 @@ export default function Nav() {
     window.addEventListener('scroll', h)
     return () => window.removeEventListener('scroll', h)
   }, [])
-  const links = [['/#empresa','Inicio']]
+  const links = [['/','Inicio']]
   const agentesLinks = [['/agentes-ia-prestashop','Agentes para PrestaShop'],['/agentes-ia-woocommerce','Agentes para WooCommerce'],['/agentes-voz','Agentes de voz']]
   return (
     <>

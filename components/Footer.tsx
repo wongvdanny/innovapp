@@ -2,6 +2,7 @@ import Link from 'next/link'
 import Logo from './Logo'
 import LegalIdentity from './LegalIdentity'
 import { COOKIE_SETTINGS_EVENT } from './CookieBanner'
+import { SECCIONES_HOME } from './home/sections'
 
 const linkStyle: React.CSSProperties = {
   display: 'block', fontSize: 13, color: 'rgba(255,255,255,.35)',
@@ -22,7 +23,7 @@ export default function Footer() {
             </p>
           </div>
           {[
-            { title: 'Empresa', links: [['/#empresa','Quiénes somos'],['/contacto','Contacto'],['/baja','Solicitar baja']] },
+            { title: 'Empresa', links: [...(SECCIONES_HOME.sobreMi ? [['/#sobre-mi','Quiénes somos']] : []),['/contacto','Contacto'],['/baja','Solicitar baja']] },
             { title: 'Servix',  links: [['/servix','Ver producto'],['/servix#precios','Precios'],['https://servix.innovapp.es','Acceder']] },
             { title: 'GymStack', links: [['/gymstack','Ver producto'],['/gymstack#precios','Precios'],['https://gymstack.innovapp.es','Acceder']] },
             { title: 'Agentes IA', links: [['/agentes-ia','Ver producto'],['/agentes-ia-prestashop','Para PrestaShop'],['/agentes-ia-woocommerce','Para WooCommerce']] },
