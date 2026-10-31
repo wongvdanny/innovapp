@@ -6,7 +6,7 @@ import ChatDemo from '../components/ChatDemo'
 import ComoFunciona from '../components/ComoFunciona'
 import VozDemo from '../components/VozDemo'
 import Faq, { faqJsonLd, type FaqItem } from '../components/Faq'
-import { WHATSAPP_NUMBER, WHATSAPP_AGENT_NUMBER } from '../components/WhatsAppBubble'
+import { waLink } from '../lib/constants'
 
 const FAQ: FaqItem[] = [
   {
@@ -85,7 +85,8 @@ const CONVERSACION_PRESTASHOP = [
 ]
 
 export default function AgentesIaPrestashopPage() {
-  const mensajeContacto = encodeURIComponent('Hola! Quiero información sobre Agentes Innovapp para mi tienda PrestaShop.')
+  const mensajeContacto = 'Hola! Quiero información sobre Agentes Innovapp para mi tienda PrestaShop.'
+  const mensajeDemo = 'Hola, quiero ver una demo del agente para PrestaShop'
 
   const pasos = [
     ['1', 'Instala el módulo', 'Se instala en tu panel de PrestaShop como cualquier otro módulo, en unos minutos.'],
@@ -166,7 +167,7 @@ export default function AgentesIaPrestashopPage() {
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeContacto}`}
+                href={waLink(mensajeContacto)}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
@@ -327,12 +328,12 @@ export default function AgentesIaPrestashopPage() {
         </p>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
           <a
-            href={`https://wa.me/${WHATSAPP_AGENT_NUMBER}?text=${mensajeContacto}`}
+            href={waLink(mensajeDemo)}
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
           >
-            Contáctanos para tu cotización →
+            Habla con nuestro agente y ve la demo →
           </a>
           <Link href="/agentes-ia" style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }}>
             Ver Agentes IA para cualquier negocio

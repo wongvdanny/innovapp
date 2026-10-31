@@ -2,8 +2,7 @@ import { useState } from 'react'
 import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
-import { WHATSAPP_NUMBER, formatearWhatsApp } from '../components/WhatsAppBubble'
-import { CONTACT_EMAIL } from '../lib/constants'
+import { CONTACT_EMAIL, formatearWhatsApp, waLink } from '../lib/constants'
 import { track } from '../lib/track'
 import { useRecaptcha } from '../components/Recaptcha'
 
@@ -207,11 +206,11 @@ export default function Contacto() {
                   ¿Prefieres directo?
                 </div>
                 <a
-                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent('Hola, quiero más información sobre Innovapp')}`}
+                  href={waLink('Hola, quiero más información sobre Innovapp')}
                   target="_blank" rel="noopener noreferrer"
                   style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 600, color: '#1e1e1e', textDecoration: 'none', marginBottom: 14 }}
                 >
-                  <span style={{ fontSize: 20 }}>💬</span> WhatsApp: {formatearWhatsApp(WHATSAPP_NUMBER)}
+                  <span style={{ fontSize: 20 }}>💬</span> WhatsApp: {formatearWhatsApp()}
                 </a>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}

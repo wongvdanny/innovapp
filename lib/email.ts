@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
-import { CONTACT_EMAIL } from './constants'
+import { CONTACT_EMAIL, waLink } from './constants'
+import { MENSAJE_DEMO_RESTAURANTE } from './lead-restaurante'
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM ?? 'innovapp <onboarding@resend.dev>'
 
@@ -353,7 +354,7 @@ export async function sendLeadRestauranteAutorespuesta(to: string, nombre: strin
     <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#1e1e1e">
       <h2 style="font-size:20px;margin:0 0 16px">Hola, ${escapeHtml(nombre)}:</h2>
       <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Gracias por tu interés en el asistente de WhatsApp para restaurantes. Te llamaremos en cuanto podamos para concertar una visita de 15 minutos y ver qué necesita tu restaurante.</p>
-      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Mientras tanto, puedes probar la demo escribiendo por WhatsApp: <a href="https://wa.me/34617940994?text=Hola%2C%20quiero%20reservar%20mesa" style="color:#c98826;font-weight:600">reservar una mesa de prueba</a>.</p>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Mientras tanto, si quieres, puedes <a href="${waLink(MENSAJE_DEMO_RESTAURANTE)}" style="color:#c98826;font-weight:600">hablar por WhatsApp con nuestro agente IA</a> y ver la demo del asistente para restaurantes.</p>
       <p style="font-size:15px;line-height:1.7;margin:0 0 24px">Si quieres añadir algo, responde a este correo.</p>
       <p style="font-size:15px;margin:0">El equipo de Innovapp</p>
       <p style="font-size:12px;color:#88a8b0;line-height:1.6;margin:28px 0 0">Recibes este correo porque has rellenado el formulario de innovapp.es/agentes-ia-restaurantes. Si no has sido tú, ignóralo o escríbenos a ${CONTACT_EMAIL}.</p>

@@ -2,7 +2,7 @@ import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 import LegalIdentity from '../components/LegalIdentity'
-import { CONTACT_EMAIL, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_NIF, LEGAL_ADDRESS, LEGAL_PHONE, LEGAL_ACTIVITY } from '../lib/constants'
+import { CONTACT_EMAIL, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_NIF, LEGAL_ADDRESS, COMMERCIAL_PHONE, LEGAL_ACTIVITY } from '../lib/constants'
 
 export default function AvisoLegal() {
   return (
@@ -22,7 +22,7 @@ export default function AvisoLegal() {
           <p style={{ fontSize: 13, color: '#88a8b0', marginBottom: 40 }}>Última actualización: 6 de octubre de 2026</p>
           <div style={{ background: 'white', borderRadius: 20, border: '1px solid #eef1f4', padding: '40px 48px', lineHeight: 1.8, color: '#4a6572', fontSize: 15 }}>
             {[
-              ['Identificación del titular (LSSI-CE, art. 10)', `En cumplimiento del deber de información del artículo 10 de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa de que el titular del sitio web innovapp.es es ${LEGAL_OWNER}, persona física (trabajador autónomo) que opera bajo el nombre comercial "${LEGAL_TRADE_NAME}", con NIF ${LEGAL_NIF} y domicilio en ${LEGAL_ADDRESS}. Teléfono: ${LEGAL_PHONE}. Email de contacto: ${CONTACT_EMAIL}. Actividad: ${LEGAL_ACTIVITY}.`],
+              ['Identificación del titular (LSSI-CE, art. 10)', `En cumplimiento del deber de información del artículo 10 de la Ley 34/2002, de Servicios de la Sociedad de la Información y de Comercio Electrónico (LSSI-CE), se informa de que el titular del sitio web innovapp.es es ${LEGAL_OWNER}, persona física (trabajador autónomo) que opera bajo el nombre comercial "${LEGAL_TRADE_NAME}", con NIF ${LEGAL_NIF} y domicilio en ${LEGAL_ADDRESS}. Teléfono: ${COMMERCIAL_PHONE}. Email de contacto: ${CONTACT_EMAIL}. Actividad: ${LEGAL_ACTIVITY}.`],
               ['Objeto', `El presente Aviso Legal regula el uso del sitio web innovapp.es y de los distintos servicios SaaS operados bajo la plataforma ${LEGAL_TRADE_NAME} (en adelante, los "Servicios"), incluyendo entre otros Agentes IA (agentes de inteligencia artificial para WhatsApp Business, en agentes.innovapp.es), Servix y GymStack, así como cualquier otro producto que se incorpore en el futuro a la plataforma.`],
               ['Condiciones de uso', 'El acceso y uso de este sitio web y de los Servicios implica la aceptación de este Aviso Legal, de la Política de Privacidad, de la Política de Cookies y de los Términos de Uso aplicables a cada Servicio. El usuario se compromete a hacer un uso lícito y diligente del sitio web, sin incurrir en actividades ilícitas, lesivas de derechos de terceros o que puedan dañar, inutilizar o sobrecargar el sitio web o impedir su normal utilización.'],
               ['Propiedad intelectual e industrial', `Todos los contenidos de este sitio web (textos, imágenes, logotipos, diseños, código fuente) son propiedad de ${LEGAL_OWNER} o de sus licenciantes y están protegidos por la legislación española e internacional sobre propiedad intelectual e industrial. Queda prohibida su reproducción, distribución o comunicación pública total o parcial sin autorización expresa del titular.`],

@@ -2,14 +2,14 @@ import Seo from '../components/Seo'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 import LegalIdentity from '../components/LegalIdentity'
-import { CONTACT_EMAIL, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_NIF, LEGAL_ADDRESS, LEGAL_PHONE } from '../lib/constants'
+import { CONTACT_EMAIL, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_NIF, LEGAL_ADDRESS, COMMERCIAL_PHONE } from '../lib/constants'
 
 // Párrafo, lista o párrafo con encabezado en negrita
 type Bloque = string | string[] | { n: string; t: string }
 
 const SECCIONES: Array<[string, Bloque[]]> = [
   ['1. Quién presta los servicios', [
-    `Los servicios de ${LEGAL_TRADE_NAME} los presta ${LEGAL_OWNER}, trabajador autónomo, con NIF ${LEGAL_NIF} y domicilio en ${LEGAL_ADDRESS} ("${LEGAL_TRADE_NAME}", "nosotros"). Contacto: ${CONTACT_EMAIL} · ${LEGAL_PHONE}. ${LEGAL_TRADE_NAME} es un nombre comercial, no una sociedad.`,
+    `Los servicios de ${LEGAL_TRADE_NAME} los presta ${LEGAL_OWNER}, trabajador autónomo, con NIF ${LEGAL_NIF} y domicilio en ${LEGAL_ADDRESS} ("${LEGAL_TRADE_NAME}", "nosotros"). Contacto: ${CONTACT_EMAIL} · ${COMMERCIAL_PHONE}. ${LEGAL_TRADE_NAME} es un nombre comercial, no una sociedad.`,
   ]],
   ['2. Objeto y aceptación', [
     `Estos términos regulan el uso de todos los servicios de ${LEGAL_TRADE_NAME} (los "Servicios"). Al registrarte, contratar o usar cualquiera de ellos los aceptas íntegramente; si actúas en nombre de un negocio, declaras que tienes capacidad para obligarlo. Si no estás de acuerdo, no uses los Servicios.`,
@@ -107,7 +107,7 @@ const SECCIONES: Array<[string, Bloque[]]> = [
     'Estos términos se rigen por la ley española. Las partes se someten a los juzgados y tribunales de Oviedo (Asturias). Si contratas como consumidor, serán competentes los de tu domicilio.',
   ]],
   ['18. Contacto', [
-    `${CONTACT_EMAIL} · ${LEGAL_PHONE}`,
+    `${CONTACT_EMAIL} · ${COMMERCIAL_PHONE}`,
   ]],
 ]
 

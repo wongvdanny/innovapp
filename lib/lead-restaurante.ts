@@ -1,6 +1,9 @@
 // Formulario de /agentes-ia-restaurantes: datos compartidos por la página y por
 // pages/api/lead-restaurante.ts. Sin imports de servidor (se usa en el render).
 
+/** Mensaje prerrellenado de la demo (WhatsApp comercial): en la página y en la respuesta automática. */
+export const MENSAJE_DEMO_RESTAURANTE = 'Hola, quiero ver una demo del agente para restaurantes'
+
 /** Texto exacto de la casilla. Se guarda tal cual con cada envío como prueba del consentimiento. */
 export const CONSENTIMIENTO_RESTAURANTE =
   'Acepto que Innovapp me contacte sobre este servicio por teléfono, WhatsApp o email.'

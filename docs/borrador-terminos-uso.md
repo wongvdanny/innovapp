@@ -7,7 +7,7 @@
 
 ## 1. Quién presta los servicios
 
-Los servicios de Innovapp los presta Danny Gary Wong Vera, trabajador autónomo, con NIF 61348042G y domicilio en Avenida Príncipe de Asturias 141, 33660 Oviedo (Asturias), España ("Innovapp", "nosotros"). Contacto: contacto@innovapp.es · +34 644 80 19 43. Innovapp es un nombre comercial, no una sociedad.
+Los servicios de Innovapp los presta Danny Gary Wong Vera, trabajador autónomo, con NIF 61348042G y domicilio en Avenida Príncipe de Asturias 141, 33660 Oviedo (Asturias), España ("Innovapp", "nosotros"). Contacto: contacto@innovapp.es · +34 984 276 259. Innovapp es un nombre comercial, no una sociedad.
 
 ## 2. Objeto y aceptación
 
@@ -120,4 +120,4 @@ Estos términos se rigen por la ley española. Las partes se someten a los juzga
 
 ## 18. Contacto
 
-contacto@innovapp.es · +34 644 80 19 43
+contacto@innovapp.es · +34 984 276 259

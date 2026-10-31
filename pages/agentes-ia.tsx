@@ -5,8 +5,7 @@ import Footer from '../components/Footer'
 import ChatDemo from '../components/ChatDemo'
 import ComoFunciona from '../components/ComoFunciona'
 import VozDemo from '../components/VozDemo'
-import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
-import { CONTACT_EMAIL } from '../lib/constants'
+import { CONTACT_EMAIL, waLink } from '../lib/constants'
 
 // Sección "¿Qué es un agente de IA?", en lenguaje llano y sin tecnicismos: qué es, en qué
 // se diferencia de un chatbot de menús, y qué procesos (más allá de WhatsApp/voz) se
@@ -81,9 +80,9 @@ const SERVICIO_DATOS = [
 ]
 
 export default function AgentesIaPage() {
-  const mensajeWhatsapp = encodeURIComponent('Hola! Quiero información sobre Agentes Innovapp para mi negocio.')
-  const mensajeInfoMedida = encodeURIComponent('Hola, quiero información a medida sobre Agentes IA para mi negocio.')
-  const mensajeAutomatizar = encodeURIComponent('Hola, quiero automatizar un proceso de mi negocio.')
+  const mensajeWhatsapp = 'Hola! Quiero información sobre Agentes Innovapp para mi negocio.'
+  const mensajeInfoMedida = 'Hola, quiero información a medida sobre Agentes IA para mi negocio.'
+  const mensajeAutomatizar = 'Hola, quiero automatizar un proceso de mi negocio.'
 
   return (
     <>
@@ -122,7 +121,7 @@ export default function AgentesIaPage() {
             </p>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
               <a
-                href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeInfoMedida}`}
+                href={waLink(mensajeInfoMedida)}
                 target="_blank"
                 rel="noopener noreferrer"
                 style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
@@ -176,7 +175,7 @@ export default function AgentesIaPage() {
             automatización de cualquier proceso de tu negocio.
           </p>
           <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeAutomatizar}`}
+            href={waLink(mensajeAutomatizar)}
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
@@ -322,7 +321,7 @@ export default function AgentesIaPage() {
         </p>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
           <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeWhatsapp}`}
+            href={waLink(mensajeWhatsapp)}
             target="_blank"
             rel="noopener noreferrer"
             style={{ display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: '#12141a', color: '#e8a33d', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}

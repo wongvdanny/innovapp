@@ -6,7 +6,7 @@ import { Gabarito } from 'next/font/google'
 import '../styles/globals.css'
 import WhatsAppBubble from '../components/WhatsAppBubble'
 import CookieBanner from '../components/CookieBanner'
-import { CONTACT_EMAIL, LEGAL_OWNER } from '../lib/constants'
+import { COMMERCIAL_PHONE, CONTACT_EMAIL, LEGAL_OWNER } from '../lib/constants'
 import { trackContactClicks } from '../lib/track'
 
 const ORGANIZATION_JSONLD = {
@@ -20,7 +20,7 @@ const ORGANIZATION_JSONLD = {
   description:
     'Empresa española de desarrollo web e inteligencia artificial para e-commerce: IA para PrestaShop y WooCommerce, desarrollo, migración y mantenimiento de tiendas online, agentes de IA por WhatsApp, Servix (TPV para restaurantes) y GymStack (gestión de gimnasios).',
   email: CONTACT_EMAIL,
-  telephone: '+34684902196',
+  telephone: COMMERCIAL_PHONE,
   address: { '@type': 'PostalAddress', addressLocality: 'Oviedo', addressRegion: 'Asturias', addressCountry: 'ES' },
   areaServed: ['ES'],
   // sameAs: añadir aquí las URLs de los perfiles sociales cuando existan (hoy no hay ninguno enlazado en la web)

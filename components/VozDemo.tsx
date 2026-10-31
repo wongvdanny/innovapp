@@ -1,8 +1,5 @@
 import Link from 'next/link'
-
-/** Número de demo del agente de voz de Innovapp (el propio agente, en ElevenLabs). */
-export const VOZ_DEMO_TEL = '+34984276259'
-export const VOZ_DEMO_TEL_VISIBLE = '+34 984 276 259'
+import { COMMERCIAL_PHONE, telLink } from '../lib/constants'
 
 const PUNTOS = [
   ['📲', 'Desvío desde tu móvil cuando no contestas'],
@@ -65,16 +62,16 @@ export default function VozDemo({ variante = 'completa', tema = 'oscuro', enlace
         <div style={{ flex: '1 1 340px', minWidth: 280, background: c.tarjeta, border: `1px solid ${tema === 'oscuro' ? c.borde : '#12141a'}`, borderRadius: 20, padding: '32px 28px', textAlign: 'center' }}>
           <div className="voz-numero-grande" style={{ marginBottom: 20 }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: '#6b7480', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Llama y pruébalo</div>
-            <a href={`tel:${VOZ_DEMO_TEL}`} data-cta="llamada-voz-demo" style={{ fontSize: 'clamp(28px,3vw,38px)', fontWeight: 700, letterSpacing: -0.5, color: '#ece9e2', textDecoration: 'none' }}>
-              {VOZ_DEMO_TEL_VISIBLE}
+            <a href={telLink()} data-cta="llamada-voz-demo" style={{ fontSize: 'clamp(28px,3vw,38px)', fontWeight: 700, letterSpacing: -0.5, color: '#ece9e2', textDecoration: 'none' }}>
+              {COMMERCIAL_PHONE}
             </a>
           </div>
           <a
-            href={`tel:${VOZ_DEMO_TEL}`}
+            href={telLink()}
             data-cta="llamada-voz-demo"
             style={{ display: 'block', padding: '16px 22px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
           >
-            📞 Llama a nuestro agente: {VOZ_DEMO_TEL_VISIBLE}
+            📞 Llama a nuestro agente: {COMMERCIAL_PHONE}
           </a>
           <p style={{ fontSize: 13, color: '#97a0ac', lineHeight: 1.6, margin: '14px 0 0' }}>
             Es nuestro propio agente de voz. Pregúntale lo que quieras sobre Innovapp.

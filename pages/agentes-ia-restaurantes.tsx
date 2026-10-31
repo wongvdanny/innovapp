@@ -5,16 +5,15 @@ import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ComoFunciona from '../components/ComoFunciona'
 import Faq, { faqJsonLd, type FaqItem } from '../components/Faq'
-import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
 import { track } from '../lib/track'
 import { useRecaptcha } from '../components/Recaptcha'
-import { CONSENTIMIENTO_RESTAURANTE, LIMITES_LEAD, TELEFONO_RE } from '../lib/lead-restaurante'
-import { LEGAL_ADDRESS_ES, LEGAL_PHONE } from '../lib/constants'
+import { CONSENTIMIENTO_RESTAURANTE, LIMITES_LEAD, MENSAJE_DEMO_RESTAURANTE, TELEFONO_RE } from '../lib/lead-restaurante'
+import { COMMERCIAL_PHONE, LEGAL_ADDRESS_ES, waLink } from '../lib/constants'
 
-// Demo: número del agente con el mensaje de reserva precargado. URL literal para que el
-// trigger de GTM por Click URL (wa.me) y el listener de lib/track.ts (click_whatsapp) la vean
-// tal cual; data-cta distingue este botón del resto de enlaces de WhatsApp.
-const DEMO_WHATSAPP = 'https://wa.me/34617940994?text=Hola%2C%20quiero%20reservar%20mesa'
+// Demo: WhatsApp comercial (nuestro agente IA) con el mensaje de demo precargado. Es un enlace
+// wa.me normal, así que lo ven el trigger de GTM por Click URL y el listener de lib/track.ts
+// (click_whatsapp); data-cta distingue este botón del resto de enlaces de WhatsApp.
+const DEMO_WHATSAPP = waLink(MENSAJE_DEMO_RESTAURANTE)
 const ANCLA_FORMULARIO = 'contacto-restaurante'
 
 const FAQ: FaqItem[] = [
@@ -261,7 +260,7 @@ function ConversacionWhatsApp() {
 }
 
 export default function AgentesIaRestaurantesPage() {
-  const mensajeContacto = encodeURIComponent('Hola! Quiero información sobre el asistente de WhatsApp para restaurantes.')
+  const mensajeContacto = 'Hola! Quiero información sobre el asistente de WhatsApp para restaurantes.'
 
   return (
     <>
@@ -278,7 +277,7 @@ export default function AgentesIaRestaurantesPage() {
             url: 'https://innovapp.es',
             image: 'https://innovapp.es/brand/og-image.png',
             email: 'contacto@innovapp.es',
-            telephone: LEGAL_PHONE.replace(/\s/g, ''),
+            telephone: COMMERCIAL_PHONE,
             address: {
               '@type': 'PostalAddress',
               streetAddress: LEGAL_ADDRESS_ES.split(',')[0],
@@ -325,14 +324,14 @@ export default function AgentesIaRestaurantesPage() {
               <div className="lr-ctas">
                 <a href={DEMO_WHATSAPP} target="_blank" rel="noopener noreferrer" data-cta="demo-restaurante"
                   style={{ padding: '16px 26px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 16, textAlign: 'center' }}>
-                  Prueba tu demo por WhatsApp →
+                  Habla con nuestro agente y ve la demo →
                 </a>
                 <a href={`#${ANCLA_FORMULARIO}`}
                   style={{ padding: '16px 26px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.18)', color: '#ece9e2', fontWeight: 600, fontSize: 16, textAlign: 'center' }}>
                   Quiero que me llaméis
                 </a>
               </div>
-              <p style={{ fontSize: 13, color: '#97a0ac', margin: '14px 0 0' }}>La demo abre WhatsApp con un mensaje para reservar mesa: escríbele como un cliente.</p>
+              <p style={{ fontSize: 13, color: '#97a0ac', margin: '14px 0 0' }}>Abre WhatsApp y te atiende nuestro agente IA: te enseña cómo funciona el asistente para restaurantes.</p>
             </div>
             <div className="lr-aviso" aria-hidden>
               <div style={{ fontSize: 12, color: '#97a0ac', marginBottom: 8, textTransform: 'uppercase', letterSpacing: 1 }}>Mientras tanto, en tu móvil</div>
@@ -447,7 +446,7 @@ export default function AgentesIaRestaurantesPage() {
             </div>
             <p style={{ fontSize: 14, color: '#4a3f2e', textAlign: 'center', margin: '20px 0 0' }}>
               ¿Prefieres escribir?{' '}
-              <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${mensajeContacto}`} target="_blank" rel="noopener noreferrer" style={{ color: '#8a5a12', fontWeight: 700, textDecoration: 'underline' }}>
+              <a href={waLink(mensajeContacto)} target="_blank" rel="noopener noreferrer" style={{ color: '#8a5a12', fontWeight: 700, textDecoration: 'underline' }}>
                 Háblanos por WhatsApp
               </a>
               {' '}· <Link href="/agentes-ia" style={{ color: '#8a5a12', fontWeight: 700, textDecoration: 'underline' }}>Agentes IA para otros negocios</Link>

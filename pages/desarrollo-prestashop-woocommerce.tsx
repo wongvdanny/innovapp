@@ -3,7 +3,7 @@ import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import Faq, { faqJsonLd, type FaqItem } from '../components/Faq'
-import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
+import { waLink } from '../lib/constants'
 
 // Servicio de desarrollo para tiendas PrestaShop y WooCommerce. Sin testimonios ni logos
 // de clientes (empresa nueva): el contenido se ciñe a qué hacemos y cómo trabajamos.
@@ -69,7 +69,7 @@ const FAQ: FaqItem[] = [
   },
 ]
 
-const MENSAJE_WHATSAPP = encodeURIComponent('Hola, quiero información sobre desarrollo o actualización de mi tienda PrestaShop / WooCommerce.')
+const WHATSAPP_URL = waLink('Hola, quiero información sobre desarrollo o actualización de mi tienda PrestaShop / WooCommerce.')
 
 const h2 = { fontSize: 'clamp(24px,3.5vw,38px)', fontWeight: 800, letterSpacing: -1, marginBottom: 16, color: NEGRO } as const
 const botonPrincipal = { display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: DEGRADADO, color: 'white', fontWeight: 700, fontSize: 15, textDecoration: 'none', boxShadow: '0 6px 24px rgba(238,117,40,.35)' } as const
@@ -117,7 +117,7 @@ export default function DesarrolloPrestashopWoocommercePage() {
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
             <Link href="/contacto" style={botonPrincipal}>Pide presupuesto sin compromiso →</Link>
-            <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${MENSAJE_WHATSAPP}`} target="_blank" rel="noopener noreferrer" style={botonWhatsapp}>
+            <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={botonWhatsapp}>
               Escríbenos por WhatsApp
             </a>
           </div>
@@ -207,7 +207,7 @@ export default function DesarrolloPrestashopWoocommercePage() {
         </p>
         <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href="/contacto" style={botonPrincipal}>Ir al formulario de contacto →</Link>
-          <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${MENSAJE_WHATSAPP}`} target="_blank" rel="noopener noreferrer" style={botonWhatsapp}>
+          <a href={WHATSAPP_URL} target="_blank" rel="noopener noreferrer" style={botonWhatsapp}>
             Escríbenos por WhatsApp
           </a>
         </div>

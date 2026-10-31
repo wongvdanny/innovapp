@@ -1,8 +1,6 @@
 import ChatDemo from '../ChatDemo'
 import VozDemo from '../VozDemo'
-import { WHATSAPP_AGENT_NUMBER } from '../WhatsAppBubble'
-
-const MENSAJE_AGENTES_WHATSAPP = encodeURIComponent('Hola! Quiero información sobre Agentes IA para mi negocio.')
+import { COMMERCIAL_PHONE, telLink, waLink } from '../../lib/constants'
 
 // #demo: los dos bloques de prueba que ya tenía la home (chat de WhatsApp y llamada al
 // agente de voz). VozDemo lleva su propio id="agentes-voz".
@@ -22,13 +20,17 @@ export default function Demo() {
               Para peluquerías, clínicas, inmobiliarias, gimnasios, talleres, veterinarias y cualquier negocio local: responde dudas, gestiona citas sin dobles reservas y atiende 24 horas, sin que tú tengas que estar detrás del móvil.
             </p>
             <a
-              href={`https://wa.me/${WHATSAPP_AGENT_NUMBER}?text=${MENSAJE_AGENTES_WHATSAPP}`}
+              href={waLink('Hola! Quiero información sobre Agentes IA para mi negocio.')}
               target="_blank"
               rel="noopener noreferrer"
               style={{ display: 'inline-block', padding: '15px 28px', borderRadius: 12, background: '#e8a33d', color: '#12141a', fontWeight: 700, fontSize: 16 }}
             >
               Habla con nuestro agente →
             </a>
+            <p style={{ fontSize: 15, color: '#b4bcc6', lineHeight: 1.6, margin: '18px 0 0' }}>
+              Escríbenos o llámanos: te responde nuestro agente IA.{' '}
+              <a href={telLink()} data-cta="llamada-voz-demo" style={{ color: '#e8a33d', fontWeight: 700, whiteSpace: 'nowrap' }}>{COMMERCIAL_PHONE}</a>
+            </p>
           </div>
           <div style={{ flex: '1 1 320px', display: 'flex', justifyContent: 'center' }}>
             <ChatDemo />

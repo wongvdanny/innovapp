@@ -45,8 +45,6 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
   publicados para restaurantes: NO dar importes (ni mensualidad ni alta).
 - Sin permanencia: se puede dar de baja cuando quiera con 30 días de
   preaviso.
-- Demo por WhatsApp (reserva de mesa de prueba):
-  https://wa.me/34617940994?text=Hola%2C%20quiero%20reservar%20mesa
 
 ## Qué puede hacer el agente (e-commerce: PrestaShop y WooCommerce)
 - Consulta el catálogo real en tiempo real: stock, precio, variantes,
@@ -90,7 +88,7 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
   productos, variantes, precios y stock, y el pedido se cierra en la web
   o por WhatsApp.
 - Se presenta como asistente virtual al inicio de la llamada.
-- Número de demo (nuestro propio agente de voz): +34 984 276 259.
+- Teléfono comercial (atendido por nuestro agente de voz IA): +34 984 276 259.
 
 ## Precios oficiales (sin IVA, sin permanencia). NO usar otros importes
 - Negocios locales (/agentes-ia):

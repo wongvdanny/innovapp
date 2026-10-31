@@ -1,8 +1,5 @@
 import Link from 'next/link'
-import { WHATSAPP_NUMBER } from '../WhatsAppBubble'
-import { CONTACT_EMAIL } from '../../lib/constants'
-
-const MENSAJE_PRESUPUESTO = encodeURIComponent('Hola, quiero presupuesto para automatizar un proceso.')
+import { CONTACT_EMAIL, waLink } from '../../lib/constants'
 
 // #contacto: destino del CTA «Pide presupuesto» del hero.
 export default function Contacto() {
@@ -15,7 +12,7 @@ export default function Contacto() {
         </p>
         <div className="home-contacto-ctas">
           <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}?text=${MENSAJE_PRESUPUESTO}`}
+            href={waLink('Hola, quiero presupuesto para automatizar un proceso.')}
             target="_blank"
             rel="noopener noreferrer"
             style={{ padding: '15px 28px', borderRadius: 12, background: 'linear-gradient(135deg,#f4a15c,#ee7528)', color: '#1e1e1e', fontWeight: 700, fontSize: 16 }}

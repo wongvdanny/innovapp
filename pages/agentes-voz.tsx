@@ -2,10 +2,10 @@ import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ComoFunciona from '../components/ComoFunciona'
-import VozDemo, { VOZ_DEMO_TEL, VOZ_DEMO_TEL_VISIBLE } from '../components/VozDemo'
-import { WHATSAPP_NUMBER } from '../components/WhatsAppBubble'
+import VozDemo from '../components/VozDemo'
+import { COMMERCIAL_PHONE, telLink, waLink } from '../lib/constants'
 
-const PROPUESTA_URL = `https://wa.me/${WHATSAPP_NUMBER}`
+const PROPUESTA_URL = waLink()
 const PDF_URL = '/pdf/innovapp-agentes-voz.pdf'
 
 const COMO_FUNCIONA_INTRO =
@@ -33,7 +33,7 @@ export default function AgentesVozPage() {
     <>
       <Seo
         title="Agentes de voz con IA — Tu negocio atiende el teléfono | innovapp"
-        description="Si no puedes coger una llamada, la atiende tu agente de IA con voz natural: informa, agenda citas, toma recados y te deja un resumen. Desde +49 €/mes. Llama y pruébalo: +34 984 276 259."
+        description={`Si no puedes coger una llamada, la atiende tu agente de IA con voz natural: informa, agenda citas, toma recados y te deja un resumen. Desde +49 €/mes. Llama y pruébalo: ${COMMERCIAL_PHONE}.`}
         canonical="/agentes-voz"
         jsonLd={{
           '@context': 'https://schema.org',
@@ -64,8 +64,8 @@ export default function AgentesVozPage() {
             Cuando no puedes coger el teléfono, tu agente de IA atiende con una voz natural: informa, agenda citas, toma recados y te deja un resumen. Sigues usando tu número de siempre.
           </p>
           <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center' }}>
-            <a href={`tel:${VOZ_DEMO_TEL}`} data-cta="llamada-voz-demo" style={botonPrincipal}>
-              📞 Llama a nuestro agente: {VOZ_DEMO_TEL_VISIBLE}
+            <a href={telLink()} data-cta="llamada-voz-demo" style={botonPrincipal}>
+              📞 Llama a nuestro agente: {COMMERCIAL_PHONE}
             </a>
             <a href={PROPUESTA_URL} target="_blank" rel="noopener noreferrer" style={botonSecundario}>
               Pedir propuesta
@@ -116,8 +116,8 @@ export default function AgentesVozPage() {
           Llama a nuestro agente y pregúntale lo que quieras sobre Innovapp. Si te convence, te preparamos una propuesta para tu negocio.
         </p>
         <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap', justifyContent: 'center' }}>
-          <a href={`tel:${VOZ_DEMO_TEL}`} data-cta="llamada-voz-demo" style={botonPrincipal}>
-            📞 Llama a nuestro agente: {VOZ_DEMO_TEL_VISIBLE}
+          <a href={telLink()} data-cta="llamada-voz-demo" style={botonPrincipal}>
+            📞 Llama a nuestro agente: {COMMERCIAL_PHONE}
           </a>
           <a href={PROPUESTA_URL} target="_blank" rel="noopener noreferrer" style={botonSecundario}>
             Pedir propuesta
