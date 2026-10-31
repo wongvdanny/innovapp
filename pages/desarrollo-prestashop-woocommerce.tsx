@@ -10,6 +10,8 @@ import { waLink } from '../lib/constants'
 // de clientes (empresa nueva): el contenido se ciñe a qué hacemos y cómo trabajamos.
 
 const NARANJA = '#ee7528'
+// Para texto sobre fondo claro: #ee7528 se queda en 3:1 (no llega a AA en texto normal)
+const NARANJA_TEXTO = 'var(--color-brand-orange-texto)'
 const NEGRO = '#1e1e1e'
 const TEXTO = 'var(--gris-600)'
 const DEGRADADO = 'linear-gradient(135deg,#f4a15c,#ee7528)'
@@ -156,7 +158,7 @@ export default function DesarrolloPrestashopWoocommercePage() {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: 16 }}>
             {RIESGOS.map(([titulo, texto]) => (
               <div key={titulo} style={{ background: 'white', borderRadius: 18, padding: '24px 22px', border: '1px solid rgba(238,117,40,.12)' }}>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: NARANJA, margin: '0 0 8px' }}>{titulo}</h3>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: NARANJA_TEXTO, margin: '0 0 8px' }}>{titulo}</h3>
                 <p style={{ fontSize: 14, color: TEXTO, lineHeight: 1.7, margin: 0 }}>{texto}</p>
               </div>
             ))}
@@ -189,10 +191,10 @@ export default function DesarrolloPrestashopWoocommercePage() {
             recomienda productos, informa del estado de los pedidos y envía el enlace de pago.
           </p>
           <div style={{ display: 'flex', gap: 14, justifyContent: 'center', flexWrap: 'wrap' }}>
-            <Link href="/agentes-ia-prestashop" style={{ padding: '13px 26px', borderRadius: 12, background: 'white', border: `1.5px solid ${NARANJA}`, color: NARANJA, fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>
+            <Link href="/agentes-ia-prestashop" style={{ padding: '13px 26px', borderRadius: 12, background: 'white', border: `1.5px solid ${NARANJA}`, color: NARANJA_TEXTO, fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>
               IA para PrestaShop →
             </Link>
-            <Link href="/agentes-ia-woocommerce" style={{ padding: '13px 26px', borderRadius: 12, background: 'white', border: `1.5px solid ${NARANJA}`, color: NARANJA, fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>
+            <Link href="/agentes-ia-woocommerce" style={{ padding: '13px 26px', borderRadius: 12, background: 'white', border: `1.5px solid ${NARANJA}`, color: NARANJA_TEXTO, fontWeight: 700, fontSize: 15, textDecoration: 'none' }}>
               IA para WooCommerce →
             </Link>
           </div>

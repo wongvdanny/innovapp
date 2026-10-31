@@ -160,7 +160,7 @@ export default function AgentesIaPrestashopPage() {
             <p style={{ fontSize: 17, color: '#97a0ac', maxWidth: 480, margin: '0 0 12px', lineHeight: 1.7 }}>
               Atención automática 24/7 y ventas por WhatsApp sin que tu cliente tenga que salir de la conversación: el agente conoce tu catálogo real, arma el carrito y manda el enlace de pago.
             </p>
-            <p style={{ fontSize: 13, color: 'var(--agentes-texto-2)', margin: '0 0 36px' }}>
+            <p style={{ fontSize: 13, color: '#b4bcc6', margin: '0 0 36px' }}>
               ¿Tu tienda es WooCommerce en vez de PrestaShop?{' '}
               <Link href="/agentes-ia-woocommerce" style={{ color: 'var(--agentes-oro)', fontWeight: 700, textDecoration: 'underline' }}>
                 Mira la versión para WooCommerce →

@@ -52,7 +52,7 @@ export default function Servicios() {
             <div key={s.titulo} style={{ display: 'flex', flexDirection: 'column', background: 'var(--gris-50)', border: '1px solid var(--gris-200)', borderRadius: 20, padding: 26 }}>
               <div style={{ width: 48, height: 48, borderRadius: 'var(--radio-md)', background: 'var(--color-brand-orange-tint)', color: 'var(--color-brand-orange-dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }}><Icono icono={s.icono} /></div>
               <h3 style={{ fontSize: 20, fontWeight: 800, color: '#1e1e1e', margin: '0 0 4px' }}>{s.titulo}</h3>
-              <div style={{ fontSize: 14, fontWeight: 600, color: '#b2561a', marginBottom: 12 }}>{s.subtitulo}</div>
+              <div style={{ fontSize: 14, fontWeight: 600, color: 'var(--color-brand-orange-texto)', marginBottom: 12 }}>{s.subtitulo}</div>
               <p style={{ fontSize: 15, color: 'var(--gris-600)', lineHeight: 1.7, margin: '0 0 18px', flex: 1 }}>{s.texto}</p>
               {'porSector' in s && s.porSector && (
                 <p style={{ fontSize: 14, color: 'var(--gris-600)', lineHeight: 1.9, margin: '0 0 14px' }}>
@@ -61,9 +61,9 @@ export default function Servicios() {
                     <span key={t.clave}>
                       {i > 0 && ' · '}
                       {t.enlaces.length === 1
-                        ? <Link href={t.enlaces[0][0]} style={{ color: '#b2561a', fontWeight: 600, textDecoration: 'underline' }}>{t.nombreCorto}</Link>
+                        ? <Link href={t.enlaces[0][0]} style={{ color: 'var(--color-brand-orange-texto)', fontWeight: 600, textDecoration: 'underline' }}>{t.nombreCorto}</Link>
                         : <>{t.nombreCorto} ({t.enlaces.map(([href, texto], j) => (
-                            <span key={href}>{j > 0 && ' / '}<Link href={href} style={{ color: '#b2561a', fontWeight: 600, textDecoration: 'underline' }}>{texto}</Link></span>
+                            <span key={href}>{j > 0 && ' / '}<Link href={href} style={{ color: 'var(--color-brand-orange-texto)', fontWeight: 600, textDecoration: 'underline' }}>{texto}</Link></span>
                           ))})</>}
                     </span>
                   ))}
@@ -72,7 +72,7 @@ export default function Servicios() {
               <ul style={{ listStyle: 'none', margin: 0, padding: 0, display: 'grid', gap: 8 }}>
                 {s.enlaces.map(([href, texto]) => (
                   <li key={href}>
-                    <Link href={href} style={{ fontSize: 15, fontWeight: 700, color: '#b2561a' }}>{texto} →</Link>
+                    <Link href={href} style={{ fontSize: 15, fontWeight: 700, color: 'var(--color-brand-orange-texto)' }}>{texto} →</Link>
                   </li>
                 ))}
               </ul>

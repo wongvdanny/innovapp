@@ -24,7 +24,7 @@ export default function Contacto() {
           </Link>
         </div>
         <p style={{ fontSize: 15, color: 'var(--gris-600)', margin: '20px 0 0' }}>
-          O por email: <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: '#b2561a', fontWeight: 700 }}>{CONTACT_EMAIL}</a>
+          O por email: <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: 'var(--color-brand-orange-texto)', fontWeight: 700 }}>{CONTACT_EMAIL}</a>
         </p>
       </div>
       <style>{`

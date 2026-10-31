@@ -19,9 +19,10 @@ const TEXTOS = {
 
 const TEMAS = {
   // Para colocarlo entre secciones claras (landings de Agentes IA).
-  oscuro: { fondo: '#12141a', titulo: '#ece9e2', texto: '#97a0ac', tarjeta: '#1c1f27', borde: '#2e333f', punto: 'rgba(255,255,255,.04)' },
+  oscuro: { fondo: '#12141a', titulo: '#ece9e2', texto: '#97a0ac', tarjeta: '#1c1f27', borde: '#2e333f', punto: 'rgba(255,255,255,.04)', acento: 'var(--agentes-oro)' },
   // Para colocarlo entre secciones oscuras (home, hero de /agentes-voz).
-  claro: { fondo: 'white', titulo: '#1a140d', texto: 'var(--agentes-texto-2)', tarjeta: '#12141a', borde: '#f1ece0', punto: '#faf8f4' },
+  // acento: el dorado claro no llega a AA sobre blanco; en el tema claro, el oscuro
+  claro: { fondo: 'white', titulo: '#1a140d', texto: 'var(--agentes-texto-2)', tarjeta: '#12141a', borde: '#f1ece0', punto: '#faf8f4', acento: 'var(--agentes-oro-texto)' },
 }
 
 type VozDemoProps = {
@@ -42,11 +43,11 @@ export default function VozDemo({ variante = 'completa', tema = 'oscuro', enlace
     <section id="agentes-voz" style={{ padding: '90px 24px', background: c.fondo }}>
       <div style={{ maxWidth: 1100, margin: '0 auto', display: 'flex', alignItems: 'center', gap: 56, flexWrap: 'wrap' }}>
         <div style={{ flex: '1 1 420px', minWidth: 280 }}>
-          <div style={{ display: 'inline-block', background: 'rgba(var(--agentes-oro-rgb),.12)', border: '1px solid rgba(var(--agentes-oro-rgb),.3)', borderRadius: 100, padding: '5px 16px', fontSize: 11, fontWeight: 700, color: 'var(--agentes-oro)', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 18 }}>
+          <div style={{ display: 'inline-block', background: 'rgba(var(--agentes-oro-rgb),.12)', border: '1px solid rgba(var(--agentes-oro-rgb),.3)', borderRadius: 100, padding: '5px 16px', fontSize: 11, fontWeight: 700, color: c.acento, letterSpacing: 1, textTransform: 'uppercase', marginBottom: 18 }}>
             ✦ Nuevo
           </div>
           <h2 style={{ fontSize: 'clamp(26px,3.8vw,42px)', fontWeight: 600, letterSpacing: -1, lineHeight: 1.15, color: c.titulo, margin: '0 0 18px' }}>
-            Tu negocio coge el teléfono, <span style={{ fontStyle: 'italic', color: 'var(--agentes-oro)' }}>aunque tú no puedas</span>
+            Tu negocio coge el teléfono, <span style={{ fontStyle: 'italic', color: c.acento }}>aunque tú no puedas</span>
           </h2>
           <p style={{ fontSize: 16, color: c.texto, lineHeight: 1.7, margin: '0 0 28px', maxWidth: 540 }}>
             {TEXTOS[variante]}
@@ -63,7 +64,7 @@ export default function VozDemo({ variante = 'completa', tema = 'oscuro', enlace
 
         <div style={{ flex: '1 1 340px', minWidth: 280, background: c.tarjeta, border: `1px solid ${tema === 'oscuro' ? c.borde : '#12141a'}`, borderRadius: 20, padding: '32px 28px', textAlign: 'center' }}>
           <div className="voz-numero-grande" style={{ marginBottom: 20 }}>
-            <div style={{ fontSize: 12, fontWeight: 700, color: '#6b7480', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Llama y pruébalo</div>
+            <div style={{ fontSize: 12, fontWeight: 700, color: '#97a0ac', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Llama y pruébalo</div>
             <a href={telLink()} data-cta="llamada-voz-demo" style={{ fontSize: 'clamp(28px,3vw,38px)', fontWeight: 700, letterSpacing: -0.5, color: '#ece9e2', textDecoration: 'none' }}>
               {COMMERCIAL_PHONE}
             </a>
@@ -78,7 +79,7 @@ export default function VozDemo({ variante = 'completa', tema = 'oscuro', enlace
           <p style={{ fontSize: 13, color: '#97a0ac', lineHeight: 1.6, margin: '14px 0 0' }}>
             Es nuestro propio agente de voz. Pregúntale lo que quieras sobre Innovapp.
           </p>
-          <p style={{ fontSize: 12, color: '#6b7480', margin: '10px 0 0' }}>El agente se presenta como asistente virtual.</p>
+          <p style={{ fontSize: 12, color: '#97a0ac', margin: '10px 0 0' }}>El agente se presenta como asistente virtual.</p>
           {enlacePlanes && (
             <Link href="/agentes-voz" style={{ display: 'inline-block', marginTop: 18, fontSize: 14, fontWeight: 700, color: 'var(--agentes-oro)', textDecoration: 'none' }}>
               Ver planes de voz →

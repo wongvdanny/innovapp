@@ -95,9 +95,9 @@ export default function GymstackPage({ plans }: { plans: PlanData[] }) {
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))', gap: 20, maxWidth: 1000, margin: '0 auto' }}>
             {freePlan && (
               <div style={{ background: 'white', border: '2px solid #f1eef4', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#a88ab0', textTransform: 'uppercase', marginBottom: 8 }}>{freePlan.name}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#7a5a87', textTransform: 'uppercase', marginBottom: 8 }}>{freePlan.name}</div>
                 <div style={{ fontSize: 44, fontWeight: 800, color: '#1e1e1e' }}>{freePlan.price}€</div>
-                <div style={{ fontSize: 13, color: '#a88ab0', marginBottom: 20 }}>{freePlan.description}</div>
+                <div style={{ fontSize: 13, color: '#7a5a87', marginBottom: 20 }}>{freePlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {freePlan.features.map(f => (
                     <li key={f} style={{ fontSize: 13, color: '#3d1a4f', display: 'flex', gap: 8 }}><Icono icono={Check} size={18} color="#a855f7" />{f}</li>
@@ -108,9 +108,9 @@ export default function GymstackPage({ plans }: { plans: PlanData[] }) {
             )}
             {monthlyPlan && (
               <div style={{ background: 'white', border: '2px solid #f1eef4', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
-                <div style={{ fontSize: 12, fontWeight: 700, color: '#a88ab0', textTransform: 'uppercase', marginBottom: 8 }}>{monthlyPlan.name}</div>
-                <div style={{ fontSize: 44, fontWeight: 800, color: '#1e1e1e' }}>{monthlyPlan.price}€<span style={{ fontSize: 15, color: '#a88ab0', fontWeight: 500 }}>/mes</span></div>
-                <div style={{ fontSize: 13, color: '#a88ab0', marginBottom: 20 }}>{monthlyPlan.description}</div>
+                <div style={{ fontSize: 12, fontWeight: 700, color: '#7a5a87', textTransform: 'uppercase', marginBottom: 8 }}>{monthlyPlan.name}</div>
+                <div style={{ fontSize: 44, fontWeight: 800, color: '#1e1e1e' }}>{monthlyPlan.price}€<span style={{ fontSize: 15, color: '#7a5a87', fontWeight: 500 }}>/mes</span></div>
+                <div style={{ fontSize: 13, color: '#7a5a87', marginBottom: 20 }}>{monthlyPlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {monthlyPlan.features.map(f => (
                     <li key={f} style={{ fontSize: 13, color: '#3d1a4f', display: 'flex', gap: 8 }}><Icono icono={Check} size={18} color="#a855f7" />{f}</li>

@@ -97,7 +97,7 @@ export default function Contacto() {
         <div style={{ maxWidth: 1000, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: 56 }}>
             <h1 style={{ fontSize: 'clamp(30px,4.5vw,48px)', fontWeight: 800, letterSpacing: -1.5, color: '#1e1e1e', marginBottom: 14 }}>
-              Hablemos de tu <span style={{ color: '#ee7528' }}>negocio</span>
+              Hablemos de tu <span style={{ color: '#c85f1b' }}>negocio</span>
             </h1>
             <p style={{ fontSize: 17, color: 'var(--gris-600)', maxWidth: 540, margin: '0 auto', lineHeight: 1.7 }}>
               Cuéntanos qué necesitas y te respondemos con una propuesta concreta. Sin compromiso.
@@ -171,7 +171,7 @@ export default function Contacto() {
                         style={{ marginTop: 2, width: 16, height: 16, flexShrink: 0, accentColor: '#ee7528' }} />
                       <span>
                         He leído y acepto la{' '}
-                        <a href="/privacidad" target="_blank" rel="noopener noreferrer" style={{ color: '#ee7528', fontWeight: 600 }}>política de privacidad</a>. *
+                        <a href="/privacidad" target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-brand-orange-texto)', fontWeight: 600 }}>política de privacidad</a>. *
                       </span>
                     </label>
 

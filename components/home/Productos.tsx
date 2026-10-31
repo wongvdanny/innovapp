@@ -52,7 +52,7 @@ export default function Productos() {
               <div style={{ padding: 24, display: 'flex', flexDirection: 'column', flex: 1 }}>
                 <h3 style={{ fontSize: 20, fontWeight: 800, color: '#1e1e1e', margin: '0 0 10px' }}>{p.nombre}</h3>
                 <p style={{ fontSize: 15, color: 'var(--gris-600)', lineHeight: 1.7, margin: '0 0 18px', flex: 1 }}>{p.texto}</p>
-                <Link href={p.href} style={{ fontSize: 15, fontWeight: 700, color: '#b2561a' }}>Ver producto →</Link>
+                <Link href={p.href} style={{ fontSize: 15, fontWeight: 700, color: 'var(--color-brand-orange-texto)' }}>Ver producto →</Link>
               </div>
             </article>
           ))}
