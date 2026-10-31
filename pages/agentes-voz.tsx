@@ -6,7 +6,7 @@ import VozDemo from '../components/VozDemo'
 import { COMMERCIAL_PHONE, telLink, waLink } from '../lib/constants'
 
 const PROPUESTA_URL = waLink()
-const PDF_URL = '/pdf/innovapp-agentes-voz.pdf'
+const PDF_URL = '/pdfs/innovapp-agentes-voz.pdf'
 
 const COMO_FUNCIONA_INTRO =
   'Sigues usando tu número de siempre: solo desvías a tu agente las llamadas que no puedes coger.'
