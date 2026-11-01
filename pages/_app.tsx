@@ -44,6 +44,7 @@ export default function App({ Component, pageProps }: AppProps) {
   // Animación de entrada de las secciones al hacer scroll, en cada cambio de página
   const router = useRouter()
   useEffect(() => iniciarReveal(router.pathname), [router.asPath, router.pathname])
+  const enPanel = router.pathname === '/admin' || router.pathname.startsWith('/admin/')
 
   return (
     <>
@@ -60,8 +61,9 @@ export default function App({ Component, pageProps }: AppProps) {
         html, body { font-family: var(--font-gabarito), system-ui, sans-serif; }
       `}</style>
       <Component {...pageProps} />
-      <WhatsAppBubble />
-      <CookieBanner />
+      {/* Ni burbuja ni banner en el panel (/admin): el consentimiento se queda en el default denegado */}
+      {!enPanel && <WhatsAppBubble />}
+      {!enPanel && <CookieBanner />}
     </>
   )
 }
