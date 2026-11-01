@@ -25,7 +25,8 @@ export default function Producto({ producto, subs, planes }: Props) {
     ['suscripciones', `Suscripciones (${subs.length})`],
     ['planes', `Planes (${planes.length})`],
   ]
-  const tab = useTab(pestanas.map(p => p[0]), 'resumen')
+  // Productos que no venden por suscripción de innovapp (p. ej. Agentes IA): se abre en «Uso».
+  const tab = useTab(pestanas.map(p => p[0]), metricas && subs.length === 0 ? 'uso' : 'resumen')
   const r = resumen(subs)
   const { color } = presentacion(producto.slug)
 

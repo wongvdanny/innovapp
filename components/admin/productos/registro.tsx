@@ -1,5 +1,5 @@
 import { ConfigMetricas } from '../secciones/MetricasProducto'
-import { Section, euros, fecha } from '../ui'
+import { Badge, Section, euros, fecha } from '../ui'
 
 // Registro de paneles de métricas por slug de producto. Un producto sin entrada aquí usa el
 // panel genérico (suscripciones y planes de innovapp): añadir un producto a la tabla Product
@@ -8,6 +8,9 @@ import { Section, euros, fecha } from '../ui'
 const propietario = (r: any) => <><div className="adm-fuerte">{r.owner}</div><div className="adm-muted adm-peq">{r.email}</div></>
 const nombreSlug = (r: any) => <><div className="adm-fuerte">{r.name}</div><div className="adm-muted adm-peq">/{r.slug}</div></>
 const suma = (filas: any[], campo: string) => filas.reduce((a, r) => a + (r[campo] || 0), 0)
+
+const ESTADO_SERVICIO: Record<string, 'ok' | 'warn' | 'err' | 'neutro'> = { activo: 'ok', gracia: 'warn', suspendido: 'err', exento: 'neutro' }
+const ofertaReal = (r: any) => r.oferta && !r.oferta.esPrueba && r.oferta.estado === 'activo'
 
 export const METRICAS: Record<string, ConfigMetricas> = {
   servix: {
@@ -83,5 +86,29 @@ export const METRICAS: Record<string, ConfigMetricas> = {
         </Section>
       ),
     },
+  },
+
+  agentes: {
+    endpoint: '/api/admin/agentes',
+    titulo: 'Negocios',
+    vacio: 'No hay negocios en Agentes IA',
+    kpis: f => [
+      ['Negocios', f.length],
+      ['Con oferta activa', f.filter(ofertaReal).length],
+      ['MRR (ofertas activas)', euros(f.filter(ofertaReal).reduce((a, r) => a + r.oferta.mensual, 0))],
+      ['Cobrado en el periodo', euros(suma(f, 'cobradoPeriodo'))],
+    ],
+    columnas: [
+      { key: 'n', header: 'Negocio', render: r => <><div className="adm-fuerte">{r.name}</div><div className="adm-muted adm-peq">{r.vertical}</div></> },
+      { key: 's', header: 'Servicio', render: r => <Badge tone={ESTADO_SERVICIO[r.estadoServicio] ?? 'neutro'}>{r.estadoServicio}</Badge> },
+      {
+        key: 'o', header: 'Oferta', render: r => r.oferta
+          ? <span>{euros(r.oferta.mensual)}/mes · {r.oferta.proveedor} · {r.oferta.estado}{r.oferta.esPrueba ? ' · prueba' : ''}</span>
+          : <span className="adm-faint">Sin oferta</span>,
+      },
+      { key: 'c', header: 'Cobrado', num: true, render: r => euros(r.cobradoPeriodo) },
+      { key: 'p', header: 'Cuotas pendientes', num: true, render: r => r.cuotasPendientes || <span className="adm-faint">0</span> },
+      { key: 'a', header: 'Alta', render: r => <span className="adm-muted" suppressHydrationWarning>{fecha(r.creado)}</span> },
+    ],
   },
 }
