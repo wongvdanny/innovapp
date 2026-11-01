@@ -19,6 +19,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   })
   if (!sub) return res.status(404).json({ error: 'No encontrada' })
 
+  // Sin producto no se sabe qué tenant crear: no se activa ni se aprovisiona nada.
+  const product = (sub.plan as any).Product as { slug: string } | null
+  if (!product) return res.status(400).json({ error: `El plan «${sub.plan.name}» no tiene producto asignado. Asígnale un producto antes de activar.` })
+  const productSlug = product.slug
+
   const startDate = new Date()
   const endDate = new Date()
   if ((sub.plan as any).interval === 'yearly') endDate.setFullYear(endDate.getFullYear() + 1)
@@ -27,8 +32,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   await prisma.subscription.update({ where: { id: subscriptionId }, data: { status: 'active', startDate, endDate } })
 
   let slug = sub.servixSlug
-  const product = (sub.plan as any).Product as { slug: string } | null
-  const productSlug = product?.slug || 'servix'
   const billing = (sub as any).billingData ? JSON.parse((sub as any).billingData) : null
 
   if (!sub.provisioning && !sub.servixRestaurantId) {
@@ -59,7 +62,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             },
           } as any,
         })
-      } else {
+      } else if (productSlug === 'servix') {
         const restaurantName = billing?.entityName || billing?.restaurantName || billing?.company || `Restaurante de ${sub.user.name}`
         const { restaurantId, slug: newSlug } = await createServixTenant({
           name: sub.user.name,
