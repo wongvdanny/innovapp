@@ -40,7 +40,7 @@ export default function BorradorPage({ borrador: b }: Props) {
     <>
       <Head><title>{`Borrador: ${b.title}`}</title><meta name="robots" content="noindex, nofollow" /></Head>
       <div style={{ position: 'sticky', top: 0, zIndex: 10, background: '#1e1e1e', color: 'white', padding: '14px 24px', display: 'flex', gap: 16, alignItems: 'center', flexWrap: 'wrap' }}>
-        <Link href="/admin" style={{ color: 'rgba(255,255,255,.6)', fontSize: 13 }}>← Admin</Link>
+        <Link href="/admin/contenido?tab=blog" style={{ color: 'rgba(255,255,255,.6)', fontSize: 13 }}>← Blog</Link>
         <span style={{ fontSize: 13, color: '#f4a15c', fontWeight: 700 }}>
           BORRADOR · {b.palabras} palabras{b.sustituye ? ` · sustituye a /blog/${b.slug}` : ''}{b.fusion ? ` · fusiona ${b.fusion.length} posts` : ''}
         </span>
