@@ -23,7 +23,8 @@ export default function Login() {
         setInternalBrowser(true)
         // Vuelta a la página de admin de la que venía (p. ej. el enlace del email de un borrador)
         const destino = typeof router.query.callbackUrl === 'string' ? router.query.callbackUrl : ''
-        router.push(/^\/admin(\/|$)/.test(destino) ? destino : '/admin')
+        // Carga completa (no router.push): el panel no lleva GTM y así no hereda el de esta página
+        window.location.assign(/^\/admin(\/|$)/.test(destino) ? destino : '/admin')
       }
       else router.push('/dashboard')
     }
