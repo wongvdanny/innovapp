@@ -84,9 +84,10 @@ const PATRON_SLUG = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 
 /**
  * Publica un borrador aprobado: content/blog/.drafts/{slug}.mdx → content/blog/{slug}.mdx
- * (si es una fusión, sustituye al post con ese slug), git (commit + push en main), sitemap
- * y aviso a Search Console. Devuelve los pasos posteriores que fallaron: el post queda
- * publicado igualmente. La API revalida /blog y /blog/{slug} después.
+ * (si es una fusión, sustituye al post con ese slug), git (commit + push en main) y sitemap.
+ * Devuelve los pasos posteriores que fallaron: el post queda publicado igualmente. La API
+ * revalida /blog y /blog/{slug} después. Google descubre el sitemap por robots.txt; el envío
+ * por API a Search Console está retirado (scripts/_archivo/submit-sitemap.mjs).
  */
 export async function publicarBorrador(slug: string): Promise<{ titulo: string; avisos: string[] }> {
   if (!PATRON_SLUG.test(slug)) throw new Error('Slug no válido')
@@ -107,8 +108,6 @@ export async function publicarBorrador(slug: string): Promise<{ titulo: string; 
   }
   await paso('No se pudo confirmar el post en git', () => confirmarEnGit(titulo))
   await paso('No se pudo añadir al sitemap', () => anadirAlSitemap(slug))
-  await paso('No se pudo avisar a Google Search Console', () =>
-    exec('node', ['scripts/submit-sitemap.mjs'], { cwd: ROOT, timeout: 60_000 }))
   return { titulo, avisos }
 }
 

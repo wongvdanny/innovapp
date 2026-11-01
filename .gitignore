@@ -9,9 +9,6 @@ node_modules/
 tsconfig.tsbuildinfo
 *.bak2
 
-# credenciales (p.ej. cuenta de servicio de Google Search Console)
-secrets/
-
 # facturas, adjuntos de gastos y PDFs (fuera de /public, nunca al repo)
 storage/
 

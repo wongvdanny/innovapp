@@ -2,8 +2,8 @@
 # Pipeline del blog (cron: lunes y jueves a las 6:00). Genera un post con IA como BORRADOR
 # en content/blog/.drafts/ y avisa por email (Resend) a contacto@innovapp.es con el enlace
 # de vista previa. No publica, no commitea y no despliega: el post se publica al aprobarlo
-# en /admin (pestaña Blog), que lo pasa a content/blog, lo confirma en git, lo añade al
-# sitemap y avisa a Search Console. Todo eso lo hace scripts/generate-blog-post.mjs + lib/blog-manual.ts.
+# en /admin (pestaña Blog), que lo pasa a content/blog, lo confirma en git y lo añade al
+# sitemap. Todo eso lo hace scripts/generate-blog-post.mjs + lib/blog-manual.ts.
 set -e
 
 LOG_FILE=/var/log/innovapp-blog-pipeline.log
