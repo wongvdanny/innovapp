@@ -1,3 +1,4 @@
+import { DB } from './bd-test'
 import fs from 'fs'
 import { describe, it, expect, vi, afterAll, beforeEach } from 'vitest'
 
@@ -40,7 +41,6 @@ import { asegurarPdf, leerPdf, pdfVistaPrevia } from '../documentos'
 import { enviarFactura } from '../envio'
 import { FacturacionError } from '../errores'
 
-const DB = process.env.FAC_DB_TESTS === '1'
 const actor = { usuario: 'test@vitest' }
 const real = (prisma as any).__real
 class Rollback extends Error {}

@@ -1,3 +1,4 @@
+import { DB } from './bd-test'
 import { describe, it, expect, afterAll } from 'vitest'
 import { prisma } from '../../prisma'
 import { siguienteNumero } from '../numeracion'
@@ -8,11 +9,10 @@ import { fmt2 } from '../decimal'
 import { verificarRegistros, verificarIntegridad, RegistroCadena } from '../verifactu/integridad'
 import { FacturacionError } from '../errores'
 
-// Tests contra innovapp_db. Solo se ejecutan con FAC_DB_TESTS=1.
+// Tests contra la BD aislada innovapp_test (scripts/test-db.sh). Solo se ejecutan con FAC_DB_TESTS=1.
 // Todo el flujo de facturas va dentro de una transacción que se revierte al final:
 // las facturas emitidas son inmutables y no deben quedar en la BD.
 
-const DB = process.env.FAC_DB_TESTS === '1'
 const ANIO_TEST = 2099
 const actor = { usuario: 'test@vitest' }
 class Rollback extends Error {}

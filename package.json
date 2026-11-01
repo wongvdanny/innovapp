@@ -10,7 +10,7 @@
     "postbuild": "next-sitemap",
     "blog:generate": "node scripts/generate-blog-post.mjs",
     "test": "vitest run",
-    "test:db": "FAC_DB_TESTS=1 vitest run"
+    "test:db": "scripts/test-db.sh"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.123.0",

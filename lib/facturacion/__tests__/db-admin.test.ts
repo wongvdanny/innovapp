@@ -1,3 +1,4 @@
+import { DB } from './bd-test'
 import { describe, it, expect, vi, afterAll } from 'vitest'
 
 // Lógica de las pantallas de admin (clientes, borradores, gastos, dashboard) contra la BD.
@@ -31,7 +32,6 @@ import { detalleFactura } from '../consultas'
 import { fmt2 } from '../decimal'
 import { FacturacionError } from '../errores'
 
-const DB = process.env.FAC_DB_TESTS === '1'
 const actor = { usuario: 'test@vitest' }
 const real = (prisma as any).__real
 class Rollback extends Error {}

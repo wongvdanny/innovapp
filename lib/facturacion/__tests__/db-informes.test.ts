@@ -1,3 +1,4 @@
+import { DB } from './bd-test'
 import ExcelJS from 'exceljs'
 import { describe, it, expect, vi, afterAll } from 'vitest'
 
@@ -28,7 +29,6 @@ import { crearRectificativaEnTx } from '../rectificativas'
 import { guardarGasto } from '../gastos'
 import { filasExpedidas, filasRecibidas, informeTrimestral, informeAnual, librosXlsx, csvExpedidas, nombreFicheroLibros } from '../informes'
 
-const DB = process.env.FAC_DB_TESTS === '1'
 const actor = { usuario: 'test@vitest' }
 const real = (prisma as any).__real
 class Rollback extends Error {}

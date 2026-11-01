@@ -1,3 +1,4 @@
+import { DB } from './bd-test'
 import { describe, it, expect, vi, afterAll } from 'vitest'
 
 // Documento para la gestoría y enlaces de solo lectura, contra la BD en una transacción revertida.
@@ -22,7 +23,6 @@ import { prisma } from '../../prisma'
 import { documentoGestor, crearEnlace, revocarEnlace, accederConToken, DIAS_ENLACE } from '../gestor'
 import { generarPdfGestor } from '../pdf/gestor'
 
-const DB = process.env.FAC_DB_TESTS === '1'
 const actor = { usuario: 'test@vitest' }
 const real = (prisma as any).__real
 class Rollback extends Error {}
