@@ -13,8 +13,8 @@ const NAV = [
   { href: '/admin', label: 'Dashboard', Icono: LayoutDashboard },
   { href: '/admin/productos', label: 'Productos', Icono: Package },
   { href: '/admin/clientes', label: 'Clientes y suscripciones', Icono: Users },
-  { href: '/admin/proyectos', label: 'Proyectos a medida', Icono: Wrench, chip: 'Pronto' },
-  { href: '/admin/contabilidad', label: 'Contabilidad', Icono: Calculator, chip: 'Pronto' },
+  { href: '/admin/proyectos', label: 'Proyectos a medida', Icono: Wrench },
+  { href: '/admin/contabilidad', label: 'Contabilidad', Icono: Calculator },
   { href: '/admin/facturacion', label: 'Facturación', Icono: Receipt },
   { href: '/admin/contenido', label: 'Contenido', Icono: Megaphone },
   { href: '/admin/ajustes', label: 'Ajustes', Icono: Settings },
@@ -62,12 +62,11 @@ export default function AdminLayout({ title, actions, children }: { title: strin
             <span className="adm-marca-logo"><Logo variant="dark" height={22} /></span>
           </div>
           <nav className="adm-nav">
-            {NAV.map(({ href, label, Icono, chip }) => (
+            {NAV.map(({ href, label, Icono }) => (
               <div key={href}>
                 <Link href={href} className={`adm-nav-item${activo(href) ? ' activo' : ''}`} title={label}>
                   <span className="adm-nav-icono"><Icono size={18} /></span>
                   <span className="adm-nav-texto">{label}</span>
-                  {chip && <span className="adm-nav-chip">{chip}</span>}
                 </Link>
                 {href === '/admin/productos' && productos.length > 0 && (
                   <div className="adm-subnav">
