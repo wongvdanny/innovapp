@@ -4,13 +4,13 @@ import { authOptions } from '../../../lib/authOptions'
 import { isAdmin } from '../../../lib/isAdmin'
 import { prisma } from '../../../lib/prisma'
 
+// Borrado lógico: la suscripción y sus Invoice (cobros) se conservan para el histórico y la contabilidad.
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'DELETE') return res.status(405).end()
   const session = await getServerSession(req, res, authOptions)
   if (!isAdmin(session)) return res.status(403).json({ error: 'No autorizado' })
   const { subscriptionId } = req.body
   if (!subscriptionId) return res.status(400).json({ error: 'Falta subscriptionId' })
-  await prisma.invoice.deleteMany({ where: { subscriptionId } })
-  await prisma.subscription.delete({ where: { id: subscriptionId } })
+  await prisma.subscription.update({ where: { id: subscriptionId }, data: { deletedAt: new Date() } })
   return res.json({ ok: true })
 }

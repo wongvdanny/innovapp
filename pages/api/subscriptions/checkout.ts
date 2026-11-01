@@ -64,6 +64,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         userId: user.id,
         productId: plan.productId,
         status: { in: ['active', 'pending'] },
+        deletedAt: null,
       }
     })
     if (existingSub) {

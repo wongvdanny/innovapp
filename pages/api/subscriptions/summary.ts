@@ -8,7 +8,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     where: { id: String(id) },
     include: { plan: { include: { Product: true } as any }, provisioning: true } as any,
   })
-  if (!sub) return res.status(404).json({ error: 'Suscripción no encontrada' })
+  if (!sub || sub.deletedAt) return res.status(404).json({ error: 'Suscripción no encontrada' })
   const product = ((sub as any).plan?.Product) as { slug: string; name: string } | null
   const slug = (sub as any).servixSlug || (sub as any).provisioning?.slug || null
   return res.json({

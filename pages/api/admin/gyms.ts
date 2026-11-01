@@ -19,6 +19,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const subs = await prisma.subscription.findMany({
     where: {
       status: 'active',
+      deletedAt: null,
       plan: { Product: { slug: 'gymstack' } },
       provisioning: { isNot: null },
     } as any,

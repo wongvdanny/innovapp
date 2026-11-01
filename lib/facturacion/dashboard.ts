@@ -69,7 +69,7 @@ export async function cobrosSinFactura() {
     FROM "Invoice" i
     JOIN "User" u ON u.id = i."userId"
     LEFT JOIN fac_facturas f ON f.invoice_id = i.id
-    WHERE i.status = 'paid' AND i."paidAt" >= ${inicio} AND i.amount > 0
+    WHERE i.status = 'paid' AND NOT i."isTest" AND i."paidAt" >= ${inicio} AND i.amount > 0
       AND (f.id IS NULL OR f.estado = 'borrador')
     ORDER BY i."paidAt" DESC`
 }

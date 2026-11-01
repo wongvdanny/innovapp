@@ -26,7 +26,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       user = await prisma.user.create({ data: { name, email, password: hash } })
     } else {
       const existingSub = await prisma.subscription.findFirst({
-        where: { userId: user.id, productId: plan.productId, status: { in: ['active', 'pending'] } }
+        where: { userId: user.id, productId: plan.productId, status: { in: ['active', 'pending'] }, deletedAt: null }
       })
       if (existingSub) {
         return res.status(400).json({ error: 'Ya tienes una cuenta de News con este email. Inicia sesión.' })

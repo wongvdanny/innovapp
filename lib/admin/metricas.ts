@@ -6,6 +6,7 @@ export interface SuscripcionAdmin {
   startDate: string | null
   endDate: string | null
   createdAt: string
+  isTest: boolean
   servixSlug: string | null
   servixRestaurantId: string | null
   user: { name: string; email: string }
@@ -25,7 +26,9 @@ export function cuotaMensual(plan: { price: number; interval: string }) {
 export const tieneTenant = (s: SuscripcionAdmin) => !!(s.provisioning?.externalId || s.servixRestaurantId)
 export const slugTenant = (s: SuscripcionAdmin) => s.provisioning?.slug || s.servixSlug
 
-export function resumen(subs: SuscripcionAdmin[]) {
+/** KPIs de suscripciones. Las de prueba (isTest) no cuentan: solo se informa cuántas hay. */
+export function resumen(todas: SuscripcionAdmin[]) {
+  const subs = todas.filter(s => !s.isTest)
   const activas = subs.filter(s => s.status === 'active')
   return {
     activas: activas.length,
@@ -33,6 +36,7 @@ export function resumen(subs: SuscripcionAdmin[]) {
     canceladas: subs.filter(s => s.status === 'cancelled' || s.status === 'expired').length,
     mrr: activas.reduce((a, s) => a + cuotaMensual(s.plan), 0),
     pagando: activas.filter(s => cuotaMensual(s.plan) > 0).length,
+    pruebas: todas.length - subs.length,
   }
 }
 

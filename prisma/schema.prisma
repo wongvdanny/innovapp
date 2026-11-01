@@ -49,6 +49,8 @@ model Subscription {
   billingData        String?
   type               String        @default("PRO_MONTHLY")
   productId          String?
+  deletedAt          DateTime?
+  isTest             Boolean       @default(false)
   invoices           Invoice[]
   provisioning       Provisioning?
   plan               Plan          @relation(fields: [planId], references: [id])
@@ -67,6 +69,7 @@ model Invoice {
   createdAt      DateTime     @default(now())
   provider       String       @default("redsys")
   providerRef    String?
+  isTest         Boolean      @default(false)
   subscription   Subscription @relation(fields: [subscriptionId], references: [id])
   user           User         @relation(fields: [userId], references: [id])
 }

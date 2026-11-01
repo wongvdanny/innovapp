@@ -60,12 +60,12 @@ export default function Suscripciones({ inicial, productos, titulo = 'Suscripcio
   }
 
   const borrarRegistro = async (s: SuscripcionAdmin) => {
-    // Aviso si hay facturas emitidas vinculadas a sus cobros (se conservan igualmente).
+    // Borrado lógico (deletedAt): se avisa de las facturas emitidas, que siguen enlazadas a sus cobros.
     const fr = await fetch(`/api/admin/facturacion/suscripcion-facturas?subscriptionId=${s.id}`).then(r => (r.ok ? r.json() : [])).catch(() => [])
     const avisoFacturas = fr.length
-      ? `\n\n⚠️ Tiene ${fr.length} factura(s) emitida(s): ${fr.map((f: any) => f.num_serie_factura).join(', ')}. Las facturas se conservan en Facturación (no se pueden borrar), pero perderán el enlace con este cobro.`
+      ? `\n\nTiene ${fr.length} factura(s) emitida(s): ${fr.map((f: any) => f.num_serie_factura).join(', ')}. Se conservan en Facturación.`
       : ''
-    if (!confirm(`¿Eliminar completamente el registro de ${s.user.name}? Se borrará la suscripción de la BD.${avisoFacturas}`)) return
+    if (!confirm(`¿Borrar el registro de ${s.user.name}? Desaparece del panel y de su cuenta; sus cobros se conservan para la contabilidad.${avisoFacturas}`)) return
     const r = await llamar(s, '/api/admin/delete-subscription', 'DELETE')
     if (r.ok) { setLista(l => l.filter(x => x.id !== s.id)); show(true, 'Registro eliminado') }
     else show(false, 'Error al eliminar')
@@ -101,7 +101,12 @@ export default function Suscripciones({ inicial, productos, titulo = 'Suscripcio
       },
     }] : []),
     { key: 'plan', header: 'Plan', render: s => <span className="adm-fuerte" style={{ whiteSpace: 'nowrap' }}>{s.plan.price > 0 ? `${s.plan.name} · ${s.plan.price}€/${INTERVALO_TEXTO[s.plan.interval] ?? s.plan.interval}` : `${s.plan.name} (sin coste)`}</span> },
-    { key: 'estado', header: 'Estado', render: s => { const e = ESTADOS_SUSCRIPCION[s.status]; return <Badge tone={e?.tono ?? 'neutro'}>{e?.label ?? s.status}</Badge> } },
+    {
+      key: 'estado', header: 'Estado', render: s => {
+        const e = ESTADOS_SUSCRIPCION[s.status]
+        return <div className="adm-fila" style={{ gap: 4 }}><Badge tone={e?.tono ?? 'neutro'}>{e?.label ?? s.status}</Badge>{s.isTest && <Badge tone="info">Prueba</Badge>}</div>
+      },
+    },
     { key: 'inicio', header: 'Inicio', render: s => <span className="adm-muted" suppressHydrationWarning>{fecha(s.startDate)}</span> },
     { key: 'vence', header: 'Vence', render: s => <span className="adm-muted" suppressHydrationWarning>{fecha(s.endDate)}</span> },
     {

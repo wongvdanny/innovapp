@@ -6,15 +6,16 @@ import type { SuscripcionAdmin } from './metricas'
 // completo (password) ni las configuraciones de pago (secretos).
 
 const SELECT_SUSCRIPCION = {
-  id: true, status: true, startDate: true, endDate: true, createdAt: true,
+  id: true, status: true, startDate: true, endDate: true, createdAt: true, isTest: true,
   servixSlug: true, servixRestaurantId: true,
   user: { select: { name: true, email: true } },
   plan: { select: { id: true, name: true, price: true, interval: true, Product: { select: { slug: true, name: true } } } },
   provisioning: { select: { slug: true, externalId: true } },
 } satisfies Prisma.SubscriptionSelect
 
+/** Suscripciones no borradas (deletedAt). Las de prueba (isTest) se incluyen: los cálculos las excluyen. */
 export async function suscripcionesAdmin(where: Prisma.SubscriptionWhereInput = {}): Promise<SuscripcionAdmin[]> {
-  const subs = await prisma.subscription.findMany({ where, select: SELECT_SUSCRIPCION, orderBy: { createdAt: 'desc' } })
+  const subs = await prisma.subscription.findMany({ where: { ...where, deletedAt: null }, select: SELECT_SUSCRIPCION, orderBy: { createdAt: 'desc' } })
   return JSON.parse(JSON.stringify(subs))
 }
 

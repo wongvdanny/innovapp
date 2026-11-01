@@ -30,7 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const dateTo   = to   ? new Date(String(to))   : new Date()
 
   const subs = await prisma.subscription.findMany({
-    where: { status: 'active', servixRestaurantId: { not: null } } as any,
+    where: { status: 'active', servixRestaurantId: { not: null }, deletedAt: null },
     include: { user: true, plan: true },
   })
 

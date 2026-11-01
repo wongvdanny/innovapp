@@ -108,7 +108,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
     include: {
-      subscriptions: { include: { plan: true }, orderBy: { createdAt: 'desc' } },
+      subscriptions: { where: { deletedAt: null }, include: { plan: true }, orderBy: { createdAt: 'desc' } },
       invoices: { orderBy: { createdAt: 'desc' } }
     }
   })

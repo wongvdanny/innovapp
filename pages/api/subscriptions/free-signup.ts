@@ -33,7 +33,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })
     } else {
       const existingSub = await prisma.subscription.findFirst({
-        where: { userId: user.id, productId: plan.productId, status: { in: ['active', 'pending'] } }
+        where: { userId: user.id, productId: plan.productId, status: { in: ['active', 'pending'] }, deletedAt: null }
       })
       if (existingSub) {
         const productLabel = productSlug === 'gymstack' ? 'GymStack' : productSlug === 'servix' ? 'Servix' : 'este producto'

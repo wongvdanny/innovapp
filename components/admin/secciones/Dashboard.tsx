@@ -16,12 +16,13 @@ export default function Dashboard({ subs, productos, facturacion }: DatosDashboa
   const total = resumen(subs)
   const porProducto = resumenPorProducto(subs)
   const filas = [
-    ...productos.map(p => ({ slug: p.slug as string | null, name: p.name, ...(porProducto.find(x => x.slug === p.slug) ?? { activas: 0, pendientes: 0, canceladas: 0, mrr: 0, pagando: 0 }) })),
+    ...productos.map(p => ({ slug: p.slug as string | null, name: p.name, ...(porProducto.find(x => x.slug === p.slug) ?? { activas: 0, pendientes: 0, canceladas: 0, mrr: 0, pagando: 0, pruebas: 0 }) })),
     ...porProducto.filter(x => x.slug === null).map(x => ({ ...x, name: 'Sin producto' })),
   ]
 
-  const pendientes = subs.filter(s => s.status === 'pending')
-  const sinTenant = subs.filter(s => s.status === 'active' && CON_TENANT.includes(productoDe(s) ?? '') && !tieneTenant(s))
+  const reales = subs.filter(s => !s.isTest)
+  const pendientes = reales.filter(s => s.status === 'pending')
+  const sinTenant = reales.filter(s => s.status === 'active' && CON_TENANT.includes(productoDe(s) ?? '') && !tieneTenant(s))
 
   const columnas: Column<(typeof filas)[number]>[] = [
     {
@@ -39,7 +40,7 @@ export default function Dashboard({ subs, productos, facturacion }: DatosDashboa
   return (
     <div className="adm-stack">
       <Notice tone="info">
-        MRR estimado con el precio actual de los planes (IVA incluido; los anuales cuentan /12). Las cifras de ingresos reales, gastos y beneficio llegan con Contabilidad.
+        MRR estimado con el precio actual de los planes (IVA incluido; los anuales cuentan /12), sin las suscripciones de prueba{total.pruebas ? ` (${total.pruebas})` : ''}. Ingresos reales, gastos y beneficio: en Contabilidad.
       </Notice>
 
       <KpiGrid>
