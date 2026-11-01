@@ -42,7 +42,7 @@ export async function documentoGestor(): Promise<DocumentoGestor> {
     prisma.fac_series.findMany({ where: { anio }, orderBy: { codigo: 'asc' } }),
     prisma.fac_facturas.groupBy({ by: ['estado'], _count: true }),
     prisma.fac_recurrentes.count({ where: { activo: true } }),
-    prisma.fac_gastos.count({ where: { fecha: { gte: new Date(`${anio}-01-01T00:00:00Z`) } } }),
+    prisma.fac_gastos.count({ where: { estado: 'registrado', fecha: { gte: new Date(`${anio}-01-01T00:00:00Z`) } } }),
     prisma.fac_dudas_gestor.findMany({ orderBy: [{ estado: 'asc' }, { orden: 'asc' }] }),
     verificarIntegridad(prisma),
   ])

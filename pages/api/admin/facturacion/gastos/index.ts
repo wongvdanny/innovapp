@@ -20,7 +20,8 @@ export default adminApi({
     ]
     const [gastos, sumas] = await Promise.all([
       prisma.fac_gastos.findMany({ where, orderBy: [{ fecha: 'desc' }, { created_at: 'desc' }], take: 500 }),
-      prisma.fac_gastos.aggregate({ where, _sum: { base_imponible: true, cuota_iva: true, cuota_retencion: true, total: true } }),
+      // Totales solo de gastos registrados (los previstos aún no tienen factura)
+      prisma.fac_gastos.aggregate({ where: { ...where, estado: 'registrado' }, _sum: { base_imponible: true, cuota_iva: true, cuota_retencion: true, total: true } }),
     ])
     return { gastos, sumas: sumas._sum }
   },

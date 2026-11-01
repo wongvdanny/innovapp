@@ -1,6 +1,6 @@
 import { prisma } from '../prisma'
-import { fmt2 } from './decimal'
-import { calcularTotales } from './calculos'
+import { D, fmt2 } from './decimal'
+import { calcularLinea, calcularTotales } from './calculos'
 import { hoyMadrid, isoFecha, fechaDb } from './fechas'
 import { prepararLineas, LineaInput } from './borradores'
 import { emitirFactura } from './emision'
@@ -11,6 +11,7 @@ import { FacturacionError, esFacturacionError } from './errores'
 import { texto } from './api'
 
 // Facturas recurrentes (igualas mensuales). Las genera el cron el día indicado de cada mes.
+// Las recurrentes de tipo 'gasto' no emiten nada: generan gastos «previstos» (procesarGastosRecurrentes).
 // En la descripción de las líneas se pueden usar {mes} y {año} del periodo facturado.
 
 const MESES = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre']
@@ -68,14 +69,14 @@ export interface ResultadoRecurrente { recurrenteId: string; periodo: string; fa
  */
 export async function procesarRecurrentes(actor: Actor = { usuario: 'cron' }, ahora = new Date()): Promise<ResultadoRecurrente[]> {
   const hoy = hoyMadrid(ahora)
-  const pendientes = await prisma.fac_recurrentes.findMany({ where: { activo: true, proxima_fecha: { lte: fechaDb(hoy) } }, select: { id: true } })
+  const pendientes = await prisma.fac_recurrentes.findMany({ where: { tipo: 'factura', activo: true, proxima_fecha: { lte: fechaDb(hoy) } }, select: { id: true } })
   const res: ResultadoRecurrente[] = []
   for (const { id } of pendientes) {
     for (let vuelta = 0; vuelta < 12; vuelta++) { // pone al día como mucho 12 periodos atrasados
       const paso1 = await prisma.$transaction(async tx => {
         await identificarActor(tx, actor)
         const [r] = await tx.$queryRaw<any[]>`SELECT * FROM fac_recurrentes WHERE id = ${id} FOR UPDATE`
-        if (!r?.activo || isoFecha(r.proxima_fecha) > hoy) return null
+        if (!r?.activo || r.tipo !== 'factura' || isoFecha(r.proxima_fecha) > hoy) return null
         const periodo = isoFecha(r.proxima_fecha)
         const cliente = await tx.fac_clientes.findUniqueOrThrow({ where: { id: r.cliente_id } })
         const ajustes = await tx.fac_ajustes.findUniqueOrThrow({ where: { id: 1 } })
@@ -114,6 +115,59 @@ export async function procesarRecurrentes(actor: Actor = { usuario: 'cron' }, ah
       }
       await registrarEvento(prisma, actor, 'recurrente.generada', 'recurrente', id, { ...r })
       res.push(r)
+    }
+  }
+  return res
+}
+
+/** El mismo día del año siguiente. */
+export const anioSiguiente = (fecha: string) => `${+fecha.slice(0, 4) + 1}${fecha.slice(4)}`
+
+export interface ResultadoGastoRecurrente { recurrenteId: string; periodo?: string; gastoId?: string; error?: string }
+
+/**
+ * Gastos de las recurrentes de tipo 'gasto' con proxima_fecha <= hoy: crea el gasto «previsto»
+ * (no entra en libros ni en 303/130 hasta que se adjunta la factura real) y avanza la fecha.
+ * Misma transacción con bloqueo que las facturas; además, el índice único (recurrente_id, fecha)
+ * impide duplicar un periodo.
+ */
+export async function procesarGastosRecurrentes(actor: Actor = { usuario: 'cron' }, ahora = new Date()): Promise<ResultadoGastoRecurrente[]> {
+  const hoy = hoyMadrid(ahora)
+  const pendientes = await prisma.fac_recurrentes.findMany({ where: { tipo: 'gasto', activo: true, proxima_fecha: { lte: fechaDb(hoy) } }, select: { id: true } })
+  const res: ResultadoGastoRecurrente[] = []
+  for (const { id } of pendientes) {
+    for (let vuelta = 0; vuelta < 12; vuelta++) {
+      // Una recurrente con datos malos no bloquea a las demás: queda el error en el resultado del cron
+      let hecho: ResultadoGastoRecurrente | null
+      try { hecho = await prisma.$transaction(async tx => {
+        await identificarActor(tx, actor)
+        const [r] = await tx.$queryRaw<any[]>`SELECT * FROM fac_recurrentes WHERE id = ${id} FOR UPDATE`
+        if (!r?.activo || r.tipo !== 'gasto' || isoFecha(r.proxima_fecha) > hoy) return null
+        const periodo = isoFecha(r.proxima_fecha)
+        // Líneas de gasto: solo importes (prepararLineas es la validación de las facturas emitidas)
+        const lineas = (r.lineas as LineaInput[]).map(l => ({ ...l, descripcion: sustituirPeriodo(l.descripcion, periodo) }))
+        const calc = lineas.map(l => calcularLinea({ cantidad: l.cantidad ?? '1', precio_unitario: l.precio_unitario, descuento_pct: l.descuento_pct ?? '0', tipo_iva: l.tipo_iva ?? '21' }))
+        const base = calc.reduce((a, c) => a.plus(c.base), D(0)), cuota = calc.reduce((a, c) => a.plus(c.cuota), D(0))
+        const tipos = Array.from(new Set(lineas.map(l => String(l.tipo_iva ?? '21'))))
+        const g = await tx.fac_gastos.create({
+          data: {
+            proveedor: r.proveedor, proveedor_nif: r.proveedor_nif, proveedor_pais: r.proveedor_pais, fecha: fechaDb(periodo),
+            concepto: lineas.map(l => l.descripcion).join(' · ').slice(0, 500), categoria: r.categoria || 'otros',
+            base_imponible: fmt2(base), tipo_iva: tipos.length === 1 ? tipos[0] : '21', cuota_iva: fmt2(cuota),
+            total: fmt2(base.plus(cuota)), estado: 'previsto', producto_slug: r.producto_slug, recurrente_id: r.id,
+          },
+        })
+        const siguiente = r.periodicidad === 'anual' ? anioSiguiente(periodo) : mesSiguiente(periodo, r.dia_mes)
+        await tx.fac_recurrentes.update({ where: { id: r.id }, data: { proxima_fecha: fechaDb(siguiente), updated_at: new Date() } })
+        return { recurrenteId: r.id, periodo, gastoId: g.id }
+      }) } catch (e: any) {
+        if (!esFacturacionError(e) && e?.code !== 'P2002') throw e
+        res.push({ recurrenteId: id, error: e.message })
+        break
+      }
+      if (!hecho) break
+      await registrarEvento(prisma, actor, 'recurrente.gasto_previsto', 'recurrente', id, { ...hecho })
+      res.push(hecho)
     }
   }
   return res

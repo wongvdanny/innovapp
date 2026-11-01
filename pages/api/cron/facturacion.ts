@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { timingSafeEqual } from 'crypto'
 import { prisma } from '../../../lib/prisma'
 import { reintentarCobrosPendientes } from '../../../lib/facturacion/pagos'
-import { procesarRecurrentes } from '../../../lib/facturacion/recurrentes'
+import { procesarRecurrentes, procesarGastosRecurrentes } from '../../../lib/facturacion/recurrentes'
 import { enviarRecordatorios } from '../../../lib/facturacion/recordatorios'
 import { registrarEvento } from '../../../lib/facturacion/eventos'
 import { aJson } from '../../../lib/facturacion/api'
@@ -30,6 +30,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const tareas: [string, () => Promise<unknown[]>][] = [
     ['cobros', () => reintentarCobrosPendientes(actor)],
     ['recurrentes', () => procesarRecurrentes(actor)],
+    ['gastos_recurrentes', () => procesarGastosRecurrentes(actor)],
     ['recordatorios', async () => (hora >= 9 && hora < 20 ? enviarRecordatorios(actor) : [])],
   ]
   for (const [nombre, tarea] of tareas) {
@@ -37,7 +38,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     catch (e: any) { resumen[nombre] = { error: e.message }; console.error(`Cron facturación (${nombre}):`, e) }
   }
   // Solo deja rastro en el log inalterable cuando ha habido actividad
-  const actividad = ['cobros', 'recurrentes', 'recordatorios'].some(k => Array.isArray(resumen[k]) ? (resumen[k] as unknown[]).length : true)
+  const actividad = ['cobros', 'recurrentes', 'gastos_recurrentes', 'recordatorios'].some(k => Array.isArray(resumen[k]) ? (resumen[k] as unknown[]).length : true)
   if (actividad) await registrarEvento(prisma, actor, 'cron.facturacion', 'cron', null, aJson(resumen) as any)
   return res.json(aJson(resumen))
 }

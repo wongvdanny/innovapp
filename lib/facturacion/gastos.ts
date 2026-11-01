@@ -48,11 +48,15 @@ export function normalizarGasto(b: Record<string, any>) {
     total: fmt2(base.plus(cuota_iva).minus(cuota_retencion)),
     deducible_pct: deducible_pct.toString(),
     iva_deducible: b.iva_deducible === undefined ? true : b.iva_deducible === true || b.iva_deducible === 'true',
+    // Atribución interna (Contabilidad): solo si el formulario la envía
+    ...(b.producto_slug !== undefined ? { producto_slug: textoONull(b.producto_slug) } : {}),
+    ...(b.proyecto_id !== undefined ? { proyecto_id: textoONull(b.proyecto_id) } : {}),
   }
 }
 
 export async function guardarGasto(id: string | null, b: Record<string, any>, adjunto: { path: string; mime: string } | null, actor: Actor) {
-  const data = { ...normalizarGasto(b), ...(adjunto ? { adjunto_path: adjunto.path, adjunto_mime: adjunto.mime } : {}) }
+  // Adjuntar la factura real registra el gasto (un «previsto» de recurrente pasa a libros y 303/130)
+  const data = { ...normalizarGasto(b), ...(adjunto ? { adjunto_path: adjunto.path, adjunto_mime: adjunto.mime, estado: 'registrado' } : {}) }
   const g = id
     ? await prisma.fac_gastos.update({ where: { id }, data: { ...data, updated_at: new Date() } })
     : await prisma.fac_gastos.create({ data })

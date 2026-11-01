@@ -36,7 +36,7 @@ export async function resumenDashboard(p: Periodo = periodoActual()) {
       coalesce(sum(cuota_iva * deducible_pct / 100) FILTER (WHERE iva_deducible AND fecha BETWEEN ${p.desdeAnio}::date AND ${p.hastaAnio}::date), 0)::numeric(12,2)::text AS iva_sop_anio,
       coalesce(sum(base_imponible * deducible_pct / 100) FILTER (WHERE fecha BETWEEN ${p.desde}::date AND ${p.hasta}::date), 0)::numeric(12,2)::text AS gastos_trim,
       coalesce(sum(base_imponible * deducible_pct / 100) FILTER (WHERE fecha BETWEEN ${p.desdeAnio}::date AND ${p.hastaAnio}::date), 0)::numeric(12,2)::text AS gastos_anio
-    FROM fac_gastos`
+    FROM fac_gastos WHERE estado = 'registrado'`
   const [otros] = await prisma.$queryRaw<any[]>`
     SELECT
       (SELECT count(*) FROM fac_facturas WHERE estado = 'borrador')::int AS borradores,

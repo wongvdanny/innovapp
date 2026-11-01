@@ -97,6 +97,7 @@ const ESTADOS: Record<string, [string, string]> = {
   vencida:  ['Vencida', 'err'],
   pagada:   ['Pagada', 'ok'],
   anulada:  ['Anulada', 'neutro'],
+  previsto: ['Previsto', 'warn'],
 }
 
 export function estadoVisible(f: { estado: string; fecha_vencimiento?: string | null }, hoy: string) {

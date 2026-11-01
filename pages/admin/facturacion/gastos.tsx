@@ -6,7 +6,7 @@ import { periodoActual } from '../../../lib/facturacion/dashboard'
 import { D, r2 } from '../../../lib/facturacion/decimal'
 import { validarNifEspanol } from '../../../lib/facturacion/validacion'
 import { ETIQUETAS_CATEGORIA } from '../../../lib/facturacion/categorias'
-import { Layout, Card, Btn, Campo, Modal, Euros, ErrorApi, Interruptor, api, estiloInput, fechaCorta, useMensaje, RespuestaApi, C } from '../../../components/admin/facturacion/ui'
+import { Layout, Card, Btn, Campo, Modal, Euros, ErrorApi, Interruptor, Aviso, Estado, api, estiloInput, fechaCorta, useMensaje, RespuestaApi, C } from '../../../components/admin/facturacion/ui'
 
 const CATEGORIAS = ETIQUETAS_CATEGORIA
 const VACIO = { proveedor: '', proveedor_nif: '', proveedor_pais: 'ES', numero: '', fecha: '', concepto: '', categoria: 'software', base_imponible: '', tipo_iva: '21', cuota_iva: '',
@@ -24,6 +24,8 @@ function FormGasto({ gasto, hoy, onCerrar, onGuardado }: { gasto: any | null; ho
     ? { ...VACIO, ...Object.fromEntries(Object.entries(gasto).map(([k, v]) => [k, v === null ? '' : typeof v === 'boolean' ? v : String(v)])), fecha: gasto.fecha.slice(0, 10), cuota_iva: String(gasto.cuota_iva) }
     : { ...VACIO, fecha: hoy })
   const [cuotaManual, setCuotaManual] = useState(false)
+  const [productos, setProductos] = useState<{ slug: string; name: string }[]>([])
+  useEffect(() => { api('/api/admin/productos').then(r => r.ok && setProductos(r.data)) }, [])
   const [archivo, setArchivo] = useState<File | null>(null)
   const [res, setRes] = useState<RespuestaApi | null>(null)
   const [guardando, setGuardando] = useState(false)
@@ -48,6 +50,9 @@ function FormGasto({ gasto, hoy, onCerrar, onGuardado }: { gasto: any | null; ho
   return (
     <Modal titulo={gasto ? 'Editar gasto' : 'Nuevo gasto'} onCerrar={onCerrar} ancho={640}>
       <ErrorApi r={res} />
+      {gasto?.estado === 'previsto' && (
+        <Aviso tipo="aviso">Gasto <strong>previsto</strong> (generado por un recurrente). Adjunta la factura real y revisa importes e IVA: al guardarlo queda registrado y entra en los libros y en el 303/130.</Aviso>
+      )}
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
         <label style={{ border: '2px dashed var(--adm-accent-border)', background: 'var(--adm-accent-soft)', borderRadius: 14, padding: 18, textAlign: 'center', cursor: 'pointer', display: 'block' }}>
           <input type="file" accept="application/pdf,image/*" capture="environment" style={{ display: 'none' }} onChange={e => setArchivo(e.target.files?.[0] ?? null)} />
@@ -78,6 +83,12 @@ function FormGasto({ gasto, hoy, onCerrar, onGuardado }: { gasto: any | null; ho
           <Campo label="Total factura"><div style={{ ...estiloInput, background: C.fondo, textAlign: 'right', fontWeight: 800 }}><Euros v={total} /></div></Campo>
         </div>
         <Interruptor valor={f.iva_deducible === true || f.iva_deducible === 'true'} onChange={v => set('iva_deducible', v)} label="IVA deducible" ayuda="Desactívalo si la factura no permite deducir el IVA (p. ej., simplificada sin tus datos)" />
+        <Campo label="Línea de negocio (Contabilidad)">
+          <select style={estiloInput} value={f.producto_slug || ''} onChange={e => set('producto_slug', e.target.value)}>
+            <option value="">General (sin línea)</option>
+            {productos.map(p => <option key={p.slug} value={p.slug}>{p.name}</option>)}
+          </select>
+        </Campo>
         <Campo label="Notas"><textarea style={{ ...estiloInput, minHeight: 50 }} value={f.notas} onChange={e => set('notas', e.target.value)} /></Campo>
       </div>
       <div style={{ display: 'flex', gap: 10, marginTop: 20, justifyContent: 'flex-end' }}>
@@ -121,7 +132,7 @@ export default function Gastos({ hoy, anio, trimestre }: { hoy: string; anio: nu
       </Card>
       {datos && (
         <div className="fac-g4" style={{ marginBottom: 16 }}>
-          {[['Base', datos.sumas.base_imponible], ['IVA soportado', datos.sumas.cuota_iva], ['Retenciones', datos.sumas.cuota_retencion], ['Total', datos.sumas.total]].map(([l, v]) => (
+          {[['Base (registrados)', datos.sumas.base_imponible], ['IVA soportado', datos.sumas.cuota_iva], ['Retenciones', datos.sumas.cuota_retencion], ['Total (registrados)', datos.sumas.total]].map(([l, v]) => (
             <div key={l} style={{ background: 'var(--adm-surface)', border: `1px solid ${C.borde}`, borderRadius: 14, padding: '14px 18px' }}>
               <div style={{ fontSize: 12, color: C.gris }}>{l}</div><div style={{ fontSize: 20, fontWeight: 800 }}><Euros v={v ?? 0} /></div>
             </div>
@@ -134,7 +145,7 @@ export default function Gastos({ hoy, anio, trimestre }: { hoy: string; anio: nu
             <thead><tr><th>Fecha</th><th>Proveedor</th><th>Nº</th><th>Categoría</th><th className="fac-num">Base</th><th className="fac-num">IVA</th><th className="fac-num">Total</th><th>Adjunto</th><th></th></tr></thead>
             <tbody>{(datos?.gastos || []).map((g: any) => (
               <tr key={g.id} className="fac-click" onClick={() => setEditando(g)}>
-                <td>{fechaCorta(g.fecha)}</td>
+                <td>{fechaCorta(g.fecha)}{g.estado === 'previsto' && <div><Estado estado="previsto" /></div>}</td>
                 <td style={{ fontWeight: 700 }}>{g.proveedor}{g.concepto && <div style={{ fontSize: 11, color: C.gris, fontWeight: 400 }}>{g.concepto}</div>}</td>
                 <td>{g.numero || '—'}</td>
                 <td>{CATEGORIAS[g.categoria] || g.categoria}{Number(g.deducible_pct) < 100 && <span style={{ color: C.gris }}> · {Number(g.deducible_pct)} %</span>}</td>

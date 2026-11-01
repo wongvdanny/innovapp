@@ -137,7 +137,8 @@ export async function filasRecibidas(anio: number, trimestre?: number | null): P
   const epigrafe = ajustes.iae.replace(/\D/g, '').slice(0, 4)
   // El número de recepción es correlativo en el ejercicio: se calcula sobre todo el año
   const delAnio = await prisma.fac_gastos.findMany({
-    where: { fecha: { gte: new Date(`${anio}-01-01T00:00:00Z`), lte: new Date(`${anio}-12-31T00:00:00Z`) } },
+    // Solo gastos registrados (con factura): los «previstos» de recurrentes no entran en libros ni modelos
+    where: { estado: 'registrado', fecha: { gte: new Date(`${anio}-01-01T00:00:00Z`), lte: new Date(`${anio}-12-31T00:00:00Z`) } },
     orderBy: [{ fecha: 'asc' }, { created_at: 'asc' }],
   })
   const { desde, hasta } = limitesPeriodo(anio, trimestre)
