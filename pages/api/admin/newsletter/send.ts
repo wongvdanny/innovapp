@@ -2,6 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { getServerSession } from 'next-auth/next'
 import { prisma } from '../../../../lib/prisma'
 import { authOptions } from '../../../../lib/authOptions'
+import { isAdmin } from '../../../../lib/isAdmin'
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
@@ -9,7 +10,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
   const session = await getServerSession(req, res, authOptions)
-  if ((session?.user as any)?.role !== 'admin') return res.status(403).end()
+  if (!isAdmin(session)) return res.status(403).end()
   const { subject, body } = req.body
   const subs = await prisma.newsletterSubscriber.findMany({ where: { active: true } })
   let sent = 0

@@ -7,6 +7,19 @@ import { Pool } from 'pg'
 
 const servixPool = new Pool({ connectionString: process.env.SERVIX_DB_URL })
 
+// Nombre real de la columna de fecha de "Order" (updatedAt si existe; si no, createdAt). Se detecta una vez.
+let fechaOrder: Promise<string> | null = null
+function columnaFechaOrder() {
+  fechaOrder ??= servixPool.query(`
+    SELECT column_name FROM information_schema.columns
+    WHERE table_name = 'Order' AND column_name IN ('updatedAt', 'createdAt')
+  `).then(r => {
+    const cols = r.rows.map((x: any) => x.column_name)
+    return cols.includes('updatedAt') ? '"updatedAt"' : cols.includes('createdAt') ? '"createdAt"' : 'CURRENT_TIMESTAMP'
+  }).catch(e => { fechaOrder = null; throw e })
+  return fechaOrder
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') return res.status(405).end()
   const session = await getServerSession(req, res, authOptions)
@@ -23,19 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   if (subs.length === 0) return res.json([])
 
-  // Detectar nombre real de columna de fecha en Order
-  const colRes = await servixPool.query(`
-    SELECT column_name FROM information_schema.columns
-    WHERE table_name = 'Order' AND column_name ILIKE '%at%'
-    ORDER BY column_name
-  `)
-  const dateCols = colRes.rows.map((r: any) => r.column_name)
-  console.log('Order date columns:', dateCols)
-
-  // Usar createdAt si updatedAt no existe
-  const dateCol = dateCols.includes('updatedAt') ? '"updatedAt"'
-                : dateCols.includes('createdAt') ? '"createdAt"'
-                : 'CURRENT_TIMESTAMP'
+  const dateCol = await columnaFechaOrder()
 
   const results = await Promise.all(subs.map(async (sub: any) => {
     const restaurantId = sub.servixRestaurantId
