@@ -4,7 +4,9 @@ import { cuotasPagadasAgentes, ofertasAgentes } from '../admin/agentes'
 import { Contrato, DatosContables, Gasto, Ingreso, Linea, r2 } from './calculos'
 
 // Carga de datos de Contabilidad (solo servidor). Reglas para no contar nada dos veces:
-//   · Una factura emitida/pagada es el ingreso; su cobro (Invoice o cuota de Agentes) ya no cuenta.
+//   · Una factura emitida/pagada es el ingreso, por su base (ni borradores ni anuladas), en el mes de
+//     su devengo: fecha de operación o, si no hay, de expedición — el mismo criterio que el 303.
+//     Su cobro (Invoice o cuota de Agentes) ya no cuenta aparte.
 //   · Cobros sin factura emitida (incluye los que solo tienen borrador) cuentan aparte como «sin factura».
 //   · Nunca cuentan pruebas: Invoice/Subscription.isTest, cuotas u ofertas esPrueba, suscripciones borradas.
 
@@ -13,6 +15,19 @@ const n = (v: unknown) => Number(v ?? 0)
 
 /** Base de un importe con IVA incluido (los precios de los planes y cuotas lo incluyen). */
 const baseDe = (total: number, iva: number) => r2(total / (1 + iva / 100))
+
+export interface PendienteCobro { id: string; num: string; cliente: string; fecha: string; vencimiento: string | null; importe: number }
+
+/** Facturas emitidas aún no pagadas (importe = líquido a cobrar). */
+export async function pendientesDeCobro(): Promise<PendienteCobro[]> {
+  const filas = await prisma.$queryRaw<any[]>`
+    SELECT f.id, f.num_serie_factura AS num, f.fecha_expedicion AS fecha, f.fecha_vencimiento AS vence, f.liquido_a_cobrar AS importe,
+           coalesce(fc.razon_social, f.cliente_snapshot->>'razon_social', '—') AS cliente
+    FROM fac_facturas f LEFT JOIN fac_clientes fc ON fc.id = f.cliente_id
+    WHERE f.estado = 'emitida' AND f.liquido_a_cobrar > 0
+    ORDER BY f.fecha_vencimiento NULLS LAST, f.fecha_expedicion`
+  return filas.map(f => ({ id: f.id, num: f.num, cliente: f.cliente, fecha: dia(f.fecha), vencimiento: f.vence ? dia(f.vence) : null, importe: n(f.importe) }))
+}
 
 export async function cargarDatosContables(): Promise<DatosContables & { lineas: { slug: Linea; nombre: string }[]; avisos: string[] }> {
   const avisos: string[] = []

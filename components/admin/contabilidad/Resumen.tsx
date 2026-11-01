@@ -11,8 +11,9 @@ export interface MetaProgreso {
   id: string; metrica: string; objetivo: number; periodo: string; desde: string; hasta: string; producto_slug: string | null
   actual: number; pct: number; proyeccion: number | null; proyeccionPct: number | null; diasRestantes: number; terminada: boolean
 }
+export interface PendienteCobro { id: string; num: string; cliente: string; fecha: string; vencimiento: string | null; importe: number }
 export interface DatosResumen {
-  mes: string; hoy: string; lineas: LineaInfo[]; avisos: string[]
+  mes: string; hoy: string; mesAutomatico: boolean; pendientes: PendienteCobro[]; lineas: LineaInfo[]; avisos: string[]
   kpis: KpisMes; kpisAnterior: KpisMes; evolucion: PuntoEvolucion[]; desglose: FilaLinea[]
   enfoque: { ranking: (FilaLinea & { puntuacion: number })[]; alertas: Alerta[] }
   metas: MetaProgreso[]
@@ -59,6 +60,8 @@ export default function Resumen({ d }: { d: DatosResumen }) {
   const k = d.kpis, a = d.kpisAnterior
   const nombre = (s: string) => d.lineas.find(l => l.slug === s)?.nombre ?? s
   const punto = (s: string) => <span className="adm-punto" style={{ background: `var(--adm-c-${s}, var(--adm-c-otros))` }} />
+  const pendiente = d.pendientes.reduce((a, p) => a + p.importe, 0)
+  const vencido = d.pendientes.filter(p => p.vencimiento && p.vencimiento < d.hoy).reduce((a, p) => a + p.importe, 0)
   const desglose = d.desglose.filter(f => f.ingresos > 0 || f.ingresosAnterior > 0 || f.clientes > 0 || f.gastos > 0)
 
   const columnas: Column<FilaLinea>[] = [
@@ -74,8 +77,11 @@ export default function Resumen({ d }: { d: DatosResumen }) {
   return (
     <div className="adm-stack">
       {d.avisos.map(t => <Notice key={t} tone="aviso">⚠️ {t}</Notice>)}
+      {d.mesAutomatico && (
+        <Notice tone="info">Este mes ({d.hoy.slice(0, 7)}) aún no tiene ingresos ni gastos: se muestra <strong>{d.mes}</strong>, el último con movimientos. Cambia de mes arriba a la derecha.</Notice>
+      )}
 
-      <KpiGrid min={165}>
+      <KpiGrid min={240}>
         <KpiCard label="Ingresos del mes" value={euros(k.ingresos)} color="var(--adm-chart-ingresos)"
           note={<><Delta actual={k.ingresos} anterior={a.ingresos} />{k.ingresosSinFactura > 0 && <div>de ellos {euros(k.ingresosSinFactura)} sin factura</div>}</>} />
         <KpiCard label="Gastos del mes" value={euros(k.gastos)} color="var(--adm-chart-gastos)"
@@ -84,6 +90,8 @@ export default function Resumen({ d }: { d: DatosResumen }) {
           note={<Delta actual={k.beneficio} anterior={a.beneficio} />} />
         <KpiCard label="MRR" value={euros(k.mrr, 0)} note={<>ARR {euros(k.arr, 0)}<div><Delta actual={k.mrr} anterior={a.mrr} /></div></>} />
         <KpiCard label="Clientes de pago" value={k.clientes} note={<>ARPU {k.arpu === null ? '—' : euros(k.arpu)}</>} />
+        <KpiCard label="Pendiente de cobro" value={euros(pendiente)} color={vencido > 0 ? 'var(--adm-err)' : undefined}
+          note={d.pendientes.length === 0 ? 'Todas las facturas cobradas' : <>{d.pendientes.length} factura(s) emitida(s){vencido > 0 && <div style={{ color: 'var(--adm-err)' }}>{euros(vencido)} vencido</div>}</>} />
         <KpiCard label="Altas / bajas" value={<>{k.altas} <span className="adm-muted">/</span> {k.bajas}</>}
           note={k.churn === null ? 'Churn: sin clientes al inicio del mes' : <>Churn {k.churn.toLocaleString('es-ES')} % mensual</>} />
       </KpiGrid>

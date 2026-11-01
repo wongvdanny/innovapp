@@ -45,19 +45,21 @@ function Exportar({ hoy, onCerrar }: { hoy: string; onCerrar: () => void }) {
 export default function Contabilidad({ hoy }: { hoy: string }) {
   const router = useRouter()
   const tab = useTab(PESTANAS.map(p => p[0]), 'resumen')
-  const mesUrl = typeof router.query.mes === 'string' && /^\d{4}-\d{2}$/.test(router.query.mes) ? router.query.mes : hoy.slice(0, 7)
+  // Sin ?mes la API elige: el actual o, si está vacío, el último con movimientos
+  const mesQuery = typeof router.query.mes === 'string' && /^\d{4}-\d{2}$/.test(router.query.mes) ? router.query.mes : null
   const [d, setD] = useState<Datos | null>(null)
   const [proyectos, setProyectos] = useState<ProyectoMin[]>([])
   const [error, setError] = useState('')
   const [exportando, setExportando] = useState(false)
+  const mesUrl = mesQuery ?? d?.mes ?? hoy.slice(0, 7)
 
   const cargar = useCallback(() => {
     setError('')
-    fetch(`/api/admin/accounting/resumen?mes=${mesUrl}`)
+    fetch(`/api/admin/accounting/resumen${mesQuery ? `?mes=${mesQuery}` : ''}`)
       .then(r => (r.ok ? r.json() : r.json().then(x => Promise.reject(new Error(x.error || `Error ${r.status}`)))))
       .then(setD).catch(e => setError(e.message))
     fetch('/api/admin/proyectos').then(r => (r.ok ? r.json() : [])).then(ps => setProyectos(ps.map((p: any) => ({ id: p.id, nombre: p.nombre }))))
-  }, [mesUrl])
+  }, [mesQuery])
   useEffect(() => { cargar() }, [cargar])
 
   const cambiarMes = (mes: string) => router.replace({ pathname: router.pathname, query: { ...router.query, mes } }, undefined, { shallow: true, scroll: false })
@@ -74,7 +76,7 @@ export default function Contabilidad({ hoy }: { hoy: string }) {
       {tab === 'fiscal' ? <Fiscal hoy={hoy} /> : !d ? (!error && <EmptyState title="Calculando…" />) : (
         <>
           {tab === 'resumen' && <Resumen d={d} />}
-          {tab === 'ingresos' && <Ingresos mes={d.mes} ingresos={d.ingresos} sinFactura={d.sinFactura} lineas={d.lineas} proyectos={proyectos} recargar={cargar} />}
+          {tab === 'ingresos' && <Ingresos mes={d.mes} hoy={hoy} ingresos={d.ingresos} sinFactura={d.sinFactura} pendientes={d.pendientes} lineas={d.lineas} proyectos={proyectos} recargar={cargar} />}
           {tab === 'gastos' && <Gastos mes={d.mes} gastos={d.gastos} lineas={d.lineas} proyectos={proyectos} recargar={cargar} />}
           {tab === 'metas' && <Metas metas={d.metas} lineas={d.lineas} hoy={hoy} recargar={cargar} />}
         </>

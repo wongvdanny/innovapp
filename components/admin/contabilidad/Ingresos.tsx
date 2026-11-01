@@ -2,7 +2,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { Badge, Button, Column, DataTable, EmptyState, Notice, Section, euros, fecha, useFlash } from '../ui'
 import type { Ingreso } from '../../../lib/accounting/calculos'
-import type { LineaInfo } from './Resumen'
+import type { LineaInfo, PendienteCobro } from './Resumen'
 
 export interface ProyectoMin { id: string; nombre: string }
 
@@ -37,8 +37,8 @@ export function Atribucion({ tipo, id, linea, proyectoId, lineas, proyectos, onC
   )
 }
 
-export default function Ingresos({ mes, ingresos, sinFactura, lineas, proyectos, recargar }: {
-  mes: string; ingresos: Ingreso[]; sinFactura: Ingreso[]; lineas: LineaInfo[]; proyectos: ProyectoMin[]; recargar: () => void
+export default function Ingresos({ mes, hoy, ingresos, sinFactura, pendientes, lineas, proyectos, recargar }: {
+  mes: string; hoy: string; ingresos: Ingreso[]; sinFactura: Ingreso[]; pendientes: PendienteCobro[]; lineas: LineaInfo[]; proyectos: ProyectoMin[]; recargar: () => void
 }) {
   const { show, Flash } = useFlash()
   const [facturando, setFacturando] = useState<string | null>(null)
@@ -70,8 +70,26 @@ export default function Ingresos({ mes, ingresos, sinFactura, lineas, proyectos,
   return (
     <div className="adm-stack">
       <Flash />
-      <Section padded={false} title={`Ingresos de ${mes}`} subtitle="Facturas emitidas o pagadas (por fecha de operación) y cobros online aún sin factura. La línea de una factura se puede cambiar: es un dato interno.">
+      <Section padded={false} title={`Ingresos de ${mes}`} subtitle="Facturas emitidas o pagadas (base, por fecha de operación o, si no hay, de expedición, como el 303; ni borradores ni anuladas) y cobros online aún sin factura. La línea de una factura se puede cambiar: es un dato interno.">
         <DataTable columns={columnas} rows={ingresos} rowKey={i => i.facturaId ?? i.invoiceId ?? i.cuotaId ?? i.ref} empty={<EmptyState icon="💶" title="Sin ingresos este mes" />} />
+      </Section>
+
+      <Section padded={false} title={`Pendiente de cobro (${pendientes.length})`}
+        subtitle="Facturas emitidas aún no pagadas, de cualquier mes. Ya cuentan como ingreso en su mes de devengo; aquí se sigue el cobro."
+        actions={pendientes.length > 0 ? <strong>{euros(pendientes.reduce((a, p) => a + p.importe, 0))}</strong> : undefined}>
+        {pendientes.length === 0 ? <EmptyState icon="✅" title="Todas las facturas emitidas están cobradas" /> : (
+          <DataTable rows={pendientes} rowKey={p => p.id} columns={[
+            { key: 'n', header: 'Factura', render: p => <Link href={`/admin/facturacion/facturas/${p.id}`} style={{ color: 'var(--adm-accent)', fontWeight: 700 }}>{p.num}</Link> },
+            { key: 'c', header: 'Cliente', render: p => <span className="adm-fuerte">{p.cliente}</span> },
+            { key: 'f', header: 'Expedida', render: p => <span suppressHydrationWarning>{fecha(p.fecha)}</span> },
+            {
+              key: 'v', header: 'Vence', render: p => p.vencimiento && p.vencimiento < hoy
+                ? <Badge tone="err">Vencida · {fecha(p.vencimiento)}</Badge>
+                : <span className="adm-muted" suppressHydrationWarning>{fecha(p.vencimiento)}</span>,
+            },
+            { key: 'i', header: 'A cobrar', num: true, render: p => <span className="adm-fuerte">{euros(p.importe)}</span> },
+          ]} />
+        )}
       </Section>
 
       <Section padded={false} title={`Cobros sin factura (${sinFactura.length})`}

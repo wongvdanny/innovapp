@@ -26,3 +26,10 @@ describe('validación de Contabilidad', () => {
     expect(() => normalizarRecurrenteGasto({ proveedor: 'X', base: '10', proxima_fecha: '2026-10-01', dia_mes: 31 }, [])).toThrow()
   })
 })
+
+describe('cuota de autónomo', () => {
+  it('siempre sin IVA, aunque se envíe 21', () => {
+    const r = normalizarRecurrenteGasto({ proveedor: 'Seguridad Social', base: '72.75', tipo_iva: '21', proxima_fecha: '2026-11-30', categoria: 'cuota_autonomo' }, ['cuota_autonomo'])
+    expect([r.categoria, r.lineas[0].tipo_iva]).toEqual(['cuota_autonomo', '0'])
+  })
+})

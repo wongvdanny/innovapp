@@ -36,7 +36,7 @@ function FormRecurrente({ r, lineas, onCerrar, onGuardado }: { r: any | null; li
         <Field label="NIF / VAT del proveedor"><input className="adm-input" value={f.proveedor_nif} onChange={e => set('proveedor_nif', e.target.value)} /></Field>
         <Field label="País (2 letras)"><input className="adm-input" value={f.proveedor_pais} maxLength={2} onChange={e => set('proveedor_pais', e.target.value.toUpperCase())} /></Field>
         <Field label="Categoría">
-          <select className="adm-input" value={f.categoria} onChange={e => set('categoria', e.target.value)}>
+          <select className="adm-input" value={f.categoria} onChange={e => { set('categoria', e.target.value); if (e.target.value === 'cuota_autonomo') set('tipo_iva', '0') }}>
             {Object.entries(ETIQUETAS_CATEGORIA).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
           </select>
         </Field>
@@ -47,8 +47,8 @@ function FormRecurrente({ r, lineas, onCerrar, onGuardado }: { r: any | null; li
           </select>
         </Field>
         <Field label="Base imponible (€) *" help="Sin IVA"><input className="adm-input" inputMode="decimal" value={f.base} onChange={e => set('base', e.target.value)} /></Field>
-        <Field label="IVA">
-          <select className="adm-input" value={f.tipo_iva} onChange={e => set('tipo_iva', e.target.value)}>
+        <Field label="IVA" help={f.categoria === 'cuota_autonomo' ? 'La cuota de autónomos no lleva IVA' : undefined}>
+          <select className="adm-input" value={f.tipo_iva} disabled={f.categoria === 'cuota_autonomo'} onChange={e => set('tipo_iva', e.target.value)}>
             {['21', '10', '4', '0'].map(t => <option key={t} value={t}>{t} %</option>)}
           </select>
         </Field>

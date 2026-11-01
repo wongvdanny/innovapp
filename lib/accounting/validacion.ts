@@ -65,13 +65,15 @@ export function normalizarRecurrenteGasto(b: any, categorias: readonly string[])
   if (!(dia >= 1 && dia <= 28)) throw err('El día del mes debe estar entre 1 y 28')
   const proxima = fecha(b.proxima_fecha, 'la fecha del próximo gasto', true)!
   const base = importe(b.base, 'Base imponible', true)!
-  const tipoIva = String(b.tipo_iva ?? '21')
+  const categoria = categorias.includes(b.categoria) ? b.categoria : 'otros'
+  // La cuota de autónomos (Seguridad Social) no lleva IVA: en los libros va como F6 sin cuota
+  const tipoIva = categoria === 'cuota_autonomo' ? '0' : String(b.tipo_iva ?? '21')
   if (!['21', '10', '4', '0'].includes(tipoIva)) throw err('Tipo de IVA no válido')
   const pais = (txt(b.proveedor_pais) || 'ES').toUpperCase()
   if (!/^[A-Z]{2}$/.test(pais)) throw err('País no válido (código de 2 letras)')
   return {
     tipo: 'gasto', periodicidad, descripcion, proveedor, proveedor_nif: txtONull(b.proveedor_nif), proveedor_pais: pais,
-    categoria: categorias.includes(b.categoria) ? b.categoria : 'otros', producto_slug: txtONull(b.producto_slug),
+    categoria, producto_slug: txtONull(b.producto_slug),
     dia_mes: dia, proxima_fecha: new Date(proxima), activo: b.activo !== false, emitir_auto: false, enviar_email: false,
     lineas: [{ descripcion: txt(b.concepto) || `${descripcion} {mes} {año}`, cantidad: '1', precio_unitario: base, descuento_pct: '0', tipo_iva: tipoIva }],
   }

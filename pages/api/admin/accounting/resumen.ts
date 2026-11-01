@@ -1,19 +1,23 @@
 import { adminApi, texto } from '../../../../lib/facturacion/api'
 import { hoyMadrid } from '../../../../lib/facturacion/fechas'
 import { prisma } from '../../../../lib/prisma'
-import { cargarDatosContables } from '../../../../lib/accounting/datos'
-import { desglosePorLinea, enfoque, evolucion, kpisMes, mesAnterior, mesDe, progresoMeta, Meta } from '../../../../lib/accounting/calculos'
+import { cargarDatosContables, pendientesDeCobro } from '../../../../lib/accounting/datos'
+import { desglosePorLinea, enfoque, evolucion, kpisMes, mesAnterior, mesDe, mesPorDefecto, progresoMeta, Meta } from '../../../../lib/accounting/calculos'
 
-// Todo lo de la pestaña Resumen de Contabilidad para un mes (?mes=YYYY-MM; por defecto el actual).
+// Todo lo de Contabilidad para un mes (?mes=YYYY-MM). Sin mes: el actual, o el último con
+// movimientos si el actual aún está vacío (se indica con mesAutomatico).
 export default adminApi({
   GET: async req => {
     const hoy = hoyMadrid()
-    const mes = /^\d{4}-\d{2}$/.test(texto(req.query.mes)) ? texto(req.query.mes) : mesDe(hoy)
-    const [d, metas] = await Promise.all([cargarDatosContables(), prisma.metas.findMany({ where: { activa: true }, orderBy: { hasta: 'asc' } })])
+    const [d, metas, pendientes] = await Promise.all([
+      cargarDatosContables(), prisma.metas.findMany({ where: { activa: true }, orderBy: { hasta: 'asc' } }), pendientesDeCobro(),
+    ])
+    const pedido = /^\d{4}-\d{2}$/.test(texto(req.query.mes)) ? texto(req.query.mes) : null
+    const mes = pedido ?? mesPorDefecto(d, mesDe(hoy))
     const slugs = d.lineas.map(l => l.slug)
     const nombre = (s: string) => d.lineas.find(l => l.slug === s)?.nombre ?? s
     return {
-      mes, hoy, lineas: d.lineas, avisos: d.avisos,
+      mes, hoy, mesAutomatico: !pedido && mes !== mesDe(hoy), lineas: d.lineas, avisos: d.avisos, pendientes,
       kpis: kpisMes(d, mes, hoy),
       kpisAnterior: kpisMes(d, mesAnterior(mes), hoy),
       evolucion: evolucion(d, mes, hoy, 12, slugs.filter(s => d.contratos.some(c => c.linea === s))),

@@ -125,15 +125,23 @@ export const anioSiguiente = (fecha: string) => `${+fecha.slice(0, 4) + 1}${fech
 
 export interface ResultadoGastoRecurrente { recurrenteId: string; periodo?: string; gastoId?: string; error?: string }
 
+/** Último día del mes de `fecha` (YYYY-MM-DD). */
+export function finDeMesDe(fecha: string) {
+  const [y, m] = fecha.split('-').map(Number)
+  return new Date(Date.UTC(y, m, 0)).toISOString().slice(0, 10)
+}
+
 /**
- * Gastos de las recurrentes de tipo 'gasto' con proxima_fecha <= hoy: crea el gasto «previsto»
+ * Gastos de las recurrentes de tipo 'gasto' cuyo periodo cae en el mes en curso o antes
+ * (proxima_fecha <= fin de este mes, para que Contabilidad los vea desde el día 1): crea el gasto «previsto»
  * (no entra en libros ni en 303/130 hasta que se adjunta la factura real) y avanza la fecha.
  * Misma transacción con bloqueo que las facturas; además, el índice único (recurrente_id, fecha)
  * impide duplicar un periodo.
  */
 export async function procesarGastosRecurrentes(actor: Actor = { usuario: 'cron' }, ahora = new Date()): Promise<ResultadoGastoRecurrente[]> {
   const hoy = hoyMadrid(ahora)
-  const pendientes = await prisma.fac_recurrentes.findMany({ where: { tipo: 'gasto', activo: true, proxima_fecha: { lte: fechaDb(hoy) } }, select: { id: true } })
+  const limite = finDeMesDe(hoy)
+  const pendientes = await prisma.fac_recurrentes.findMany({ where: { tipo: 'gasto', activo: true, proxima_fecha: { lte: fechaDb(limite) } }, select: { id: true } })
   const res: ResultadoGastoRecurrente[] = []
   for (const { id } of pendientes) {
     for (let vuelta = 0; vuelta < 12; vuelta++) {
@@ -142,7 +150,7 @@ export async function procesarGastosRecurrentes(actor: Actor = { usuario: 'cron'
       try { hecho = await prisma.$transaction(async tx => {
         await identificarActor(tx, actor)
         const [r] = await tx.$queryRaw<any[]>`SELECT * FROM fac_recurrentes WHERE id = ${id} FOR UPDATE`
-        if (!r?.activo || r.tipo !== 'gasto' || isoFecha(r.proxima_fecha) > hoy) return null
+        if (!r?.activo || r.tipo !== 'gasto' || isoFecha(r.proxima_fecha) > limite) return null
         const periodo = isoFecha(r.proxima_fecha)
         // Líneas de gasto: solo importes (prepararLineas es la validación de las facturas emitidas)
         const lineas = (r.lineas as LineaInput[]).map(l => ({ ...l, descripcion: sustituirPeriodo(l.descripcion, periodo) }))

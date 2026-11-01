@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import {
   DatosContables, Contrato, Ingreso, Gasto, mesAnterior, ultimosMeses, finDeMes, corte, mrrEn, clientesEn,
-  kpisMes, evolucion, desglosePorLinea, progresoMeta, enfoque, csvIngresos, crecimiento,
+  kpisMes, evolucion, desglosePorLinea, progresoMeta, enfoque, csvIngresos, crecimiento, mesPorDefecto,
 } from '../calculos'
 
 const ing = (fecha: string, base: number, linea = 'servix', origen: Ingreso['origen'] = 'factura'): Ingreso =>
@@ -123,4 +123,12 @@ describe('CSV', () => {
     expect(t.charCodeAt(0)).toBe(0xfeff)
     expect(t).toContain('05/10/2026;Factura;F-2026-10-05;Cliente;"Iguala; octubre";servix;100,00;21,00;121,00')
   })
+})
+
+describe('mes por defecto del Resumen', () => {
+  const d: DatosContables = { ingresos: [ing('2026-10-24', 50)], gastos: [], contratos: [] }
+  it('mes actual vacío → último mes con movimientos', () => expect(mesPorDefecto(d, '2026-11')).toBe('2026-10'))
+  it('mes actual con datos → el actual', () => expect(mesPorDefecto({ ...d, gastos: [gas('2026-11-30', 72.75)] }, '2026-11')).toBe('2026-11'))
+  it('sin ningún dato → el actual', () => expect(mesPorDefecto({ ingresos: [], gastos: [], contratos: [] }, '2026-11')).toBe('2026-11'))
+  it('no salta a meses futuros', () => expect(mesPorDefecto({ ...d, ingresos: [ing('2026-12-01', 1)] }, '2026-11')).toBe('2026-11'))
 })

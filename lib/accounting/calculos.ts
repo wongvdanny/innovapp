@@ -134,6 +134,13 @@ export function kpisMes(d: DatosContables, mes: string, hoy: string) {
 }
 export type KpisMes = ReturnType<typeof kpisMes>
 
+/** Mes que abre el Resumen: el actual si tiene ingresos o gastos; si no, el último con movimientos (o el actual). */
+export function mesPorDefecto(d: DatosContables, mesActual: string) {
+  const con = [...d.ingresos.map(i => mesDe(i.fecha)), ...d.gastos.map(g => mesDe(g.fecha))].filter(m => m <= mesActual)
+  if (con.includes(mesActual) || con.length === 0) return mesActual
+  return con.sort().reverse()[0]
+}
+
 // ─────────────────────────────── Evolución ───────────────────────────────
 
 export function evolucion(d: DatosContables, mes: string, hoy: string, n = 12, lineas: Linea[] = []) {
