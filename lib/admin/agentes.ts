@@ -42,3 +42,42 @@ export async function negociosAgentes(desde: Date, hasta: Date): Promise<Negocio
     cuotasPendientes: r.pendientes,
   }))
 }
+
+export interface OfertaAgentes { id: string; negocio: string; mensual: number; estado: string; pagadoAt: string | null; canceladoAt: string | null }
+
+/** Ofertas reales (sin pruebas) con su alta y baja, para MRR/altas/bajas de Contabilidad. */
+export async function ofertasAgentes(): Promise<OfertaAgentes[]> {
+  const { rows } = await pool.query(`
+    SELECT o.id, n.nombre AS negocio, o."importeMensualCent" AS mensual_cent, o.estado, o."pagadoAt" AS pagado, o."canceladoAt" AS cancelado
+    FROM "OfertaPago" o JOIN "Negocio" n ON n.id = o."negocioId"
+    WHERE NOT o."esPrueba"`)
+  return rows.map(r => ({
+    id: r.id, negocio: r.negocio, mensual: r.mensual_cent / 100, estado: r.estado,
+    pagadoAt: r.pagado ? new Date(r.pagado).toISOString().slice(0, 10) : null,
+    canceladoAt: r.cancelado ? new Date(r.cancelado).toISOString().slice(0, 10) : null,
+  }))
+}
+
+export interface CuotaAgentes {
+  id: string; negocioId: string; negocio: string; importe: number; pagadaEn: string; periodoDesde: string; periodoHasta: string
+  razonSocial: string | null; cif: string | null; direccion: string | null; codigoPostal: string | null; ciudad: string | null; provincia: string | null
+  email: string | null
+}
+
+/** Cuotas cobradas reales (sin pruebas). Si `ids`, solo esas. */
+export async function cuotasPagadasAgentes(ids?: string[]): Promise<CuotaAgentes[]> {
+  const { rows } = await pool.query(`
+    SELECT c.id, n.id AS negocio_id, n.nombre, c."importeCent" AS importe_cent, c."pagadaEn" AS pagada, c."periodoDesde" AS desde, c."periodoHasta" AS hasta,
+           n."razonSocial" AS razon_social, n.cif, n.direccion, n."codigoPostal" AS cp, n.ciudad, n.provincia,
+           coalesce(o."emailCliente", n."notificacionEmail") AS email
+    FROM "CuotaPago" c JOIN "OfertaPago" o ON o.id = c."ofertaPagoId" JOIN "Negocio" n ON n.id = o."negocioId"
+    WHERE c.estado = 'pagada' AND NOT c."esPrueba" AND NOT o."esPrueba" AND c."pagadaEn" IS NOT NULL
+      AND ($1::text[] IS NULL OR c.id = ANY($1))
+    ORDER BY c."pagadaEn"`, [ids ?? null])
+  const dia = (d: Date) => new Date(d).toISOString().slice(0, 10)
+  return rows.map(r => ({
+    id: r.id, negocioId: r.negocio_id, negocio: r.nombre, importe: r.importe_cent / 100, pagadaEn: dia(r.pagada),
+    periodoDesde: dia(r.desde), periodoHasta: dia(r.hasta), razonSocial: r.razon_social, cif: r.cif, direccion: r.direccion,
+    codigoPostal: r.cp, ciudad: r.ciudad, provincia: r.provincia, email: r.email,
+  }))
+}

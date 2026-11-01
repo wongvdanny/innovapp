@@ -36,6 +36,18 @@
   --adm-p-news: #E6672A;
   --adm-p-iglesias: #A3A3A3;
 
+  /* Gráficas: pasos validados para la superficie oscura (dataviz validate_palette, banda L 0.48–0.67).
+     Por producto solo en miniaturas de una serie: varios juntos no se distinguen bien. */
+  --adm-chart-ingresos: #3B82F6;
+  --adm-chart-gastos: #D0601A;
+  --adm-chart-grid: #2E2E2E;
+  --adm-c-servix: #D0601A;
+  --adm-c-gymstack: #A855F7;
+  --adm-c-agentes: #B8801C;
+  --adm-c-news: #3B82F6;
+  --adm-c-iglesias: #14A394;
+  --adm-c-otros: #8A8A8A;
+
   --adm-sidebar-w: 264px;
   --adm-radius: 14px;
 
@@ -59,8 +71,7 @@ html:has(.adm), html:has(.adm) body { background: #121212; }
   display: flex; flex-direction: column; overflow-y: auto; overflow-x: hidden; transition: width .15s;
 }
 .adm-shell.colapsada .adm-sidebar { width: 64px; }
-.adm-shell.colapsada .adm-nav-texto, .adm-shell.colapsada .adm-subnav, .adm-shell.colapsada .adm-marca-logo,
-.adm-shell.colapsada .adm-nav-chip { display: none; }
+.adm-shell.colapsada .adm-nav-texto, .adm-shell.colapsada .adm-subnav, .adm-shell.colapsada .adm-marca-logo { display: none; }
 .adm-marca { display: flex; align-items: center; gap: 10px; padding: 18px 16px; min-height: 64px; border-bottom: 1px solid var(--adm-border); }
 .adm-nav { display: flex; flex-direction: column; gap: 2px; padding: 12px 8px; flex: 1; }
 .adm-nav-item {
@@ -72,7 +83,6 @@ html:has(.adm), html:has(.adm) body { background: #121212; }
 .adm-nav-item.activo .adm-nav-icono { color: var(--adm-accent); }
 .adm-nav-texto { overflow: hidden; text-overflow: ellipsis; }
 .adm-nav-icono { width: 20px; text-align: center; flex-shrink: 0; font-size: 16px; }
-.adm-nav-chip { margin-left: auto; font-size: 10px; font-weight: 700; color: var(--adm-faint); border: 1px solid var(--adm-border); border-radius: 6px; padding: 1px 6px; }
 .adm-subnav { display: flex; flex-direction: column; gap: 1px; margin: 2px 0 6px 30px; padding-left: 10px; border-left: 1px solid var(--adm-border); }
 .adm-subnav a { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 8px; font-size: 13px; color: var(--adm-muted); text-decoration: none; }
 .adm-subnav a:hover { color: var(--adm-text); background: var(--adm-hover); }
@@ -201,6 +211,20 @@ html:has(.adm), html:has(.adm) body { background: #121212; }
 .adm-fila { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
 .adm-lista-item { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 12px; background: var(--adm-surface-2); border-radius: 10px; font-size: 13px; text-decoration: none; }
 
+/* Barras de progreso (metas) */
+.adm-progreso { position: relative; height: 10px; border-radius: 999px; background: var(--adm-surface-2); overflow: hidden; }
+.adm-progreso > span { position: absolute; inset: 0 auto 0 0; border-radius: 999px; background: var(--adm-accent); }
+.adm-progreso > i { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--adm-text); opacity: .7; }
+.adm-delta { font-size: 12px; font-weight: 700; }
+.adm-delta.sube { color: var(--adm-ok); }
+.adm-delta.baja { color: var(--adm-err); }
+.adm-grafica { width: 100%; height: 280px; }
+.adm-leyenda { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--adm-muted); margin-bottom: 8px; }
+.adm-leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+.adm-leyenda b { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+.adm-tooltip { background: var(--adm-surface-2); border: 1px solid var(--adm-border); border-radius: 10px; padding: 10px 12px; font-size: 12px; color: var(--adm-text); }
+.adm-tooltip div { display: flex; justify-content: space-between; gap: 16px; }
+
 /* Clases heredadas de facturación (antes en un <style jsx global> de su Layout) */
 .fac-g4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .fac-g3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
@@ -216,8 +240,7 @@ html:has(.adm), html:has(.adm) body { background: #121212; }
 @media (max-width: 860px) {
   .adm-sidebar { position: fixed; left: 0; top: 0; z-index: 100; width: 264px; transform: translateX(-100%); transition: transform .2s; }
   .adm-shell.colapsada .adm-sidebar { width: 264px; }
-  .adm-shell.colapsada .adm-nav-texto, .adm-shell.colapsada .adm-marca-logo, .adm-shell.colapsada .adm-nav-chip { display: initial; }
-  .adm-shell.colapsada .adm-subnav { display: flex; }
+  .adm-shell.colapsada .adm-nav-texto, .adm-shell.colapsada .adm-marca-logo, .adm-shell.colapsada   .adm-shell.colapsada .adm-subnav { display: flex; }
   .adm-shell.drawer .adm-sidebar { transform: none; }
   .adm-shell.drawer .adm-velo { display: block; position: fixed; inset: 0; z-index: 90; background: rgba(0, 0, 0, .55); }
   .adm-solo-escritorio { display: none; }
