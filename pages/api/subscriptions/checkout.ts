@@ -48,6 +48,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
     if (provider === 'redsys' && !redsysEnabled) return res.status(400).json({ error: 'Redsys no está disponible actualmente.' })
     if (provider === 'stripe' && !stripeEnabled) return res.status(400).json({ error: 'Stripe no está disponible actualmente.' })
+    // Pasarela en modo test: la suscripción y el cobro se marcan como prueba (fuera de KPIs y contabilidad)
+    const esPrueba = (provider === 'stripe' ? stripeConfig?.environment : redsysConfig?.environment) === 'test'
 
     // Crear o recuperar usuario
     let user = await prisma.user.findUnique({ where: { email } })
@@ -88,13 +90,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         planId,
         productId: plan.productId,
         status: 'pending',
+        isTest: esPrueba,
         billingData: JSON.stringify({ ...fiscal, entityName }) as any,
       }
     })
 
     // Crear factura pendiente
     const invoice = await prisma.invoice.create({
-      data: { userId: user.id, subscriptionId: sub.id, amount: plan.price, status: 'pending', provider }
+      data: { userId: user.id, subscriptionId: sub.id, amount: plan.price, status: 'pending', provider, isTest: esPrueba }
     })
 
     const baseUrl = process.env.NEXTAUTH_URL || 'https://innovapp.es'
