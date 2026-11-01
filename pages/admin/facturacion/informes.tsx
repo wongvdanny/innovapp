@@ -8,7 +8,7 @@ function TablaCasillas({ filas, destacar }: { filas: { c: string; d: string; v: 
   return (
     <table className="fac-tabla">
       <tbody>{filas.map(f => (
-        <tr key={f.c + f.d} style={destacar?.includes(f.c) ? { background: '#fdf8f4' } : undefined}>
+        <tr key={f.c + f.d} style={destacar?.includes(f.c) ? { background: 'var(--adm-accent-soft)' } : undefined}>
           <td style={{ width: 56, color: C.gris, fontWeight: 700 }}>[{f.c}]</td>
           <td style={{ fontWeight: destacar?.includes(f.c) ? 700 : 400 }}>{f.d}</td>
           <td className="fac-num" style={{ fontWeight: destacar?.includes(f.c) ? 800 : 500 }}><Euros v={f.v} /></td>

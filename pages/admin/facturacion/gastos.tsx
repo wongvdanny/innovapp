@@ -49,7 +49,7 @@ function FormGasto({ gasto, hoy, onCerrar, onGuardado }: { gasto: any | null; ho
     <Modal titulo={gasto ? 'Editar gasto' : 'Nuevo gasto'} onCerrar={onCerrar} ancho={640}>
       <ErrorApi r={res} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
-        <label style={{ border: `2px dashed #f9dcc7`, background: '#fdf0e8', borderRadius: 14, padding: 18, textAlign: 'center', cursor: 'pointer', display: 'block' }}>
+        <label style={{ border: '2px dashed var(--adm-accent-border)', background: 'var(--adm-accent-soft)', borderRadius: 14, padding: 18, textAlign: 'center', cursor: 'pointer', display: 'block' }}>
           <input type="file" accept="application/pdf,image/*" capture="environment" style={{ display: 'none' }} onChange={e => setArchivo(e.target.files?.[0] ?? null)} />
           <div style={{ fontSize: 14, fontWeight: 700, color: C.naranjaOsc }}>{archivo ? `📎 ${archivo.name}` : gasto?.adjunto_path ? '📎 Adjunto guardado · clic para sustituir' : '📷 Subir PDF o foto de la factura'}</div>
           <div style={{ fontSize: 12, color: C.gris, marginTop: 4 }}>PDF, JPG, PNG, WEBP o HEIC · máx. 10 MB</div>
@@ -122,7 +122,7 @@ export default function Gastos({ hoy, anio, trimestre }: { hoy: string; anio: nu
       {datos && (
         <div className="fac-g4" style={{ marginBottom: 16 }}>
           {[['Base', datos.sumas.base_imponible], ['IVA soportado', datos.sumas.cuota_iva], ['Retenciones', datos.sumas.cuota_retencion], ['Total', datos.sumas.total]].map(([l, v]) => (
-            <div key={l} style={{ background: 'white', border: `1px solid ${C.borde}`, borderRadius: 14, padding: '14px 18px' }}>
+            <div key={l} style={{ background: 'var(--adm-surface)', border: `1px solid ${C.borde}`, borderRadius: 14, padding: '14px 18px' }}>
               <div style={{ fontSize: 12, color: C.gris }}>{l}</div><div style={{ fontSize: 20, fontWeight: 800 }}><Euros v={v ?? 0} /></div>
             </div>
           ))}

@@ -55,7 +55,7 @@ export function ClienteForm({ cliente, inicial, onGuardado, onCerrar }: { client
         <div className="fac-g2">
           <Campo label={f.pais === 'ES' ? 'NIF / NIE / CIF' : 'NIF-IVA o identificador fiscal'} error={nifError}
             ayuda={f.pais !== 'ES' ? 'UE: con o sin prefijo de país (p. ej. DE123456789)' : 'Obligatorio para factura completa (F1)'}>
-            <input style={{ ...estiloInput, textTransform: 'uppercase', borderColor: nifError ? '#fca5a5' : C.borde }} value={f.nif} onChange={e => set('nif', e.target.value)} />
+            <input style={{ ...estiloInput, textTransform: 'uppercase', borderColor: nifError ? C.rojo : C.borde }} value={f.nif} onChange={e => set('nif', e.target.value)} />
           </Campo>
           <Campo label="Nombre comercial">
             <input style={estiloInput} value={f.nombre_comercial} onChange={e => set('nombre_comercial', e.target.value)} />
@@ -135,11 +135,11 @@ export function SelectorCliente({ valor, onChange }: { valor: any | null; onChan
         <Btn onClick={() => setNuevo(true)}>+ Nuevo</Btn>
       </div>
       {abierto && (
-        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, background: 'white', border: `1px solid ${C.borde}`, borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,.08)', zIndex: 50, overflow: 'hidden' }}>
+        <div style={{ position: 'absolute', top: '100%', left: 0, right: 0, marginTop: 4, background: 'var(--adm-surface-2)', border: `1px solid ${C.borde}`, borderRadius: 12, boxShadow: '0 8px 24px rgba(0,0,0,.4)', zIndex: 50, overflow: 'hidden' }}>
           {res.map(c => (
             <div key={c.id} onMouseDown={() => { onChange(c); setAbierto(false) }}
               style={{ padding: '10px 14px', cursor: 'pointer', borderBottom: `1px solid ${C.borde}`, fontSize: 13 }}
-              onMouseOver={e => (e.currentTarget.style.background = '#fdf8f4')} onMouseOut={e => (e.currentTarget.style.background = 'white')}>
+              onMouseOver={e => (e.currentTarget.style.background = 'var(--adm-hover)')} onMouseOut={e => (e.currentTarget.style.background = 'transparent')}>
               <strong>{c.razon_social}</strong> <span style={{ color: C.gris }}>{c.nif || 'sin NIF'}{c.email ? ` · ${c.email}` : ''}</span>
             </div>
           ))}

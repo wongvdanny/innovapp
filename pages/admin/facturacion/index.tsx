@@ -61,7 +61,7 @@ export default function Dashboard({ r, cobros, ultimas, emisorError, verifactuAc
       </div>
 
       {cobros.length > 0 && (
-        <Card titulo={`⚠️ Cobros sin factura (${cobros.length})`} style={{ marginBottom: 24, borderColor: '#fcd34d' }}>
+        <Card titulo={`⚠️ Cobros sin factura (${cobros.length})`} style={{ marginBottom: 24, borderColor: 'var(--adm-warn-border)' }}>
           <div style={{ overflowX: 'auto' }}>
             <table className="fac-tabla">
               <thead><tr><th>Fecha cobro</th><th>Cliente</th><th>Pasarela</th><th className="fac-num">Importe</th><th>Motivo</th><th></th></tr></thead>

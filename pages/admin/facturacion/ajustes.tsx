@@ -75,7 +75,7 @@ export default function Ajustes({ ajustes, conceptos: iniciales }: any) {
           <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 12 }}>
             {texto('emisor_nombre', 'Nombre y apellidos *')}
             <div className="fac-g2">
-              <Campo label="NIF *" error={nifError}><input style={{ ...estiloInput, textTransform: 'uppercase', borderColor: nifError ? '#fca5a5' : C.borde }} value={f.nif} onChange={e => set('nif', e.target.value)} /></Campo>
+              <Campo label="NIF *" error={nifError}><input style={{ ...estiloInput, textTransform: 'uppercase', borderColor: nifError ? C.rojo : C.borde }} value={f.nif} onChange={e => set('nif', e.target.value)} /></Campo>
               {texto('nombre_comercial', 'Nombre comercial')}
             </div>
             {texto('direccion', 'Dirección *')}
