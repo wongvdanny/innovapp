@@ -30,14 +30,18 @@ gtag('consent', 'default', {
 try { if (localStorage.getItem('ia_internal') === '1') dataLayer.push({ traffic_type: 'internal' }); } catch (e) {}`,
           }}
         />
-        {/* Google Tag Manager */}
+        {/* Google Tag Manager, retrasado hasta la primera interacción (toque, clic, tecla,
+            scroll) o 4 s, lo que ocurra antes, para no ocupar el hilo principal en la carga.
+            Lo que se envía antes (consent default, click_whatsapp, click_tel, generate_lead)
+            queda en dataLayer y GTM lo procesa al cargar: por eso las conversiones de Ads
+            van con disparadores de evento del dataLayer, no de Click URL. */}
         {conGtm && <script
           dangerouslySetInnerHTML={{
-            __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-W97PXTN9');`,
+            __html: `(function(w,d,i){var hecho=false,ev=['pointerdown','touchstart','keydown','scroll','wheel'],op={passive:true,capture:true};
+function cargar(){if(hecho)return;hecho=true;ev.forEach(function(e){w.removeEventListener(e,cargar,op)});
+w.dataLayer=w.dataLayer||[];w.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
+var j=d.createElement('script');j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i;d.head.appendChild(j)}
+ev.forEach(function(e){w.addEventListener(e,cargar,op)});setTimeout(cargar,4000)})(window,document,'GTM-W97PXTN9');`,
           }}
         />}
         {/* End Google Tag Manager */}
