@@ -25,12 +25,13 @@ export default function Nav() {
               onMouseEnter={e => (e.currentTarget.style.color = '#1e1e1e')}
               onMouseLeave={e => (e.currentTarget.style.color = 'var(--gris-600)')}>{label}</a>
           ))}
-          <a href="/servix" style={{ fontSize: 15, fontWeight: 600, color: '#ee7528', transition: 'color .2s' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#c85f1b')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#ee7528')}>Servix</a>
-          <a href="/gymstack" style={{ fontSize: 15, fontWeight: 600, color: '#a855f7', transition: 'color .2s' }}
-            onMouseEnter={e => (e.currentTarget.style.color = '#7c3aed')}
-            onMouseLeave={e => (e.currentTarget.style.color = '#a855f7')}>GymStack</a>
+          {/* Naranja y violeta de marca oscurecidos para contraste AA sobre blanco (solo en el header) */}
+          <a href="/servix" style={{ fontSize: 15, fontWeight: 600, color: '#b4561a', transition: 'color .2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#9a4a14')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#b4561a')}>Servix</a>
+          <a href="/gymstack" style={{ fontSize: 15, fontWeight: 600, color: '#7c3aed', transition: 'color .2s' }}
+            onMouseEnter={e => (e.currentTarget.style.color = '#5b21b6')}
+            onMouseLeave={e => (e.currentTarget.style.color = '#7c3aed')}>GymStack</a>
           {MENUS.map(m => <Desplegable key={m.clave} menu={m} />)}
           <Link href="/blog" style={{ fontSize: 15, fontWeight: 600, color: 'var(--gris-600)', transition: 'color .2s' }}
             onMouseEnter={e => (e.currentTarget.style.color = '#1e1e1e')}
@@ -51,8 +52,8 @@ export default function Nav() {
           {links.map(([href, label]) => (
             <a key={href} href={href} onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#1e1e1e', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>{label}</a>
           ))}
-          <a href="/servix" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#ee7528', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Servix</a>
-          <a href="/gymstack" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#a855f7', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>GymStack</a>
+          <a href="/servix" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#b4561a', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>Servix</a>
+          <a href="/gymstack" onClick={() => setOpen(false)} style={{ fontSize: 16, fontWeight: 600, color: '#7c3aed', padding: '12px 0', borderBottom: '1px solid #f0f4f6', textDecoration: 'none' }}>GymStack</a>
           {MENUS.map(m => {
             const abierto = movilAbierto === m.clave
             return (
