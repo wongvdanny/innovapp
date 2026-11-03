@@ -93,14 +93,15 @@ const intro: React.CSSProperties = { fontSize: 16, color: 'var(--gris-600)', lin
 const tarjeta: React.CSSProperties = { background: 'white', border: '1px solid var(--gris-200)', borderRadius: 'var(--radio-lg)', padding: 24 }
 const icono: React.CSSProperties = { width: 46, height: 46, borderRadius: 'var(--radio-md)', background: 'var(--color-brand-orange-tint)', color: 'var(--color-brand-orange-dark)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 14 }
 
-function Ctas() {
+// cta: lo recoge lib/track.ts en click_whatsapp / click_tel (parámetro «cta») para medir cada bloque
+function Ctas({ cta }: { cta: 'desarrollo_web_hero' | 'desarrollo_web_cta_final' }) {
   return (
     <div className="dw-ctas">
-      <a href={waLink(MENSAJE_WHATSAPP)} target="_blank" rel="noopener noreferrer"
+      <a href={waLink(MENSAJE_WHATSAPP)} target="_blank" rel="noopener noreferrer" data-cta={cta}
         style={{ padding: '15px 26px', borderRadius: 12, background: 'linear-gradient(135deg,#f4a15c,#ee7528)', color: '#1e1e1e', fontWeight: 700, fontSize: 16, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
         <Icono icono={MessageCircle} size={20} />Hablar por WhatsApp
       </a>
-      <a href={telLink()}
+      <a href={telLink()} data-cta={cta}
         style={{ padding: '15px 26px', borderRadius: 12, background: 'rgba(255,255,255,.08)', border: '1.5px solid rgba(255,255,255,.22)', color: 'white', fontWeight: 600, fontSize: 16, display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
         <Icono icono={Phone} size={20} />Llamar ahora <span style={{ whiteSpace: 'nowrap', fontWeight: 500 }}>({COMMERCIAL_PHONE})</span>
       </a>
@@ -158,7 +159,7 @@ export default function DesarrolloWeb() {
             <p style={{ fontSize: 'clamp(16px,2.2vw,19px)', color: 'rgba(255,255,255,.78)', lineHeight: 1.6, maxWidth: 680, margin: '0 0 28px' }}>
               Diseñamos y desarrollamos webs, tiendas online y aplicaciones para negocios de Asturias y de toda España. Desarrollamos con IA para acortar plazos y ajustar el coste, sin renunciar a una web rápida, bien posicionada y fácil de gestionar.
             </p>
-            <Ctas />
+            <Ctas cta="desarrollo_web_hero" />
             <p style={{ fontSize: 15, color: 'rgba(255,255,255,.75)', margin: '18px 0 0' }}>
               <strong style={{ color: '#f4a15c' }}>+10 años</strong> desarrollando webs y aplicaciones, ahora con IA.
             </p>
@@ -303,7 +304,7 @@ export default function DesarrolloWeb() {
             <p style={{ fontSize: 16, color: 'rgba(255,255,255,.78)', lineHeight: 1.7, margin: '0 0 28px' }}>
               Cuéntanos qué necesitas y te preparamos una propuesta a medida, con plazo y presupuesto cerrados.
             </p>
-            <div style={{ display: 'flex', justifyContent: 'center' }}><Ctas /></div>
+            <div style={{ display: 'flex', justifyContent: 'center' }}><Ctas cta="desarrollo_web_cta_final" /></div>
             <p style={{ fontSize: 15, color: 'rgba(255,255,255,.75)', margin: '20px 0 0' }}>
               ¿Prefieres escribirnos con calma?{' '}
               <Link href="/contacto" style={{ color: '#f4a15c', fontWeight: 700, textDecoration: 'underline' }}>Usa el formulario de contacto</Link>

@@ -16,6 +16,8 @@ const mensajesPorRuta: Record<string, string> = {
   "/agentes-ia-prestashop": "Hola! Quiero información sobre la IA para PrestaShop.",
   "/agentes-ia-woocommerce": "Hola! Quiero información sobre la IA para WooCommerce.",
   "/agentes-ia-restaurantes": "Hola! Quiero información sobre el asistente de WhatsApp para restaurantes.",
+  "/desarrollo": "Hola, me interesa una web o un desarrollo a medida para mi negocio",
+  "/desarrollo/web": "Hola, me interesa una web o un desarrollo a medida para mi negocio",
 };
 
 export default function WhatsAppBubble() {
