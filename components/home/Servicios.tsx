@@ -25,6 +25,7 @@ const SERVICIOS = [
     texto:
       'Automatizamos lo repetitivo (presupuestos, seguimientos, pasar datos de un programa a otro) y desarrollamos tiendas, módulos y plugins a medida, migraciones y mantenimiento. Presupuesto detallado antes de empezar.',
     enlaces: [
+      ['/desarrollo/web', 'Desarrollo web a medida'],
       ['/desarrollo-prestashop-woocommerce', 'Desarrollo PrestaShop y WooCommerce'],
       ['/agentes-ia-prestashop', 'IA para PrestaShop'],
       ['/agentes-ia-woocommerce', 'IA para WooCommerce'],

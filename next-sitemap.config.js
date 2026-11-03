@@ -39,7 +39,8 @@ module.exports = {
       path === '/agentes-ia-peluquerias' ||
       path === '/agentes-ia-clinicas' ||
       path === '/agentes-ia-talleres' ||
-      path === '/desarrollo-prestashop-woocommerce'
+      path === '/desarrollo-prestashop-woocommerce' ||
+      path === '/desarrollo/web'
     ) priority = 0.9;
     if (path === '/servix' || path === '/gymstack') priority = 0.8;
 

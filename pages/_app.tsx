@@ -15,6 +15,7 @@ import { iniciarReveal } from '../lib/reveal'
 const ORGANIZATION_JSONLD = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
+  '@id': 'https://innovapp.es/#organization',
   name: 'innovapp',
   legalName: LEGAL_OWNER,
   url: 'https://innovapp.es',

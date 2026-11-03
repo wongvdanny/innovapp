@@ -27,6 +27,7 @@ export default function Footer() {
             { title: 'Empresa', links: [['/contacto','Contacto'],['/baja','Solicitar baja']] },
             { title: 'Servix',  links: [['/servix','Ver producto'],['/servix#precios','Precios'],['https://servix.innovapp.es','Acceder']] },
             { title: 'GymStack', links: [['/gymstack','Ver producto'],['/gymstack#precios','Precios'],['https://gymstack.innovapp.es','Acceder']] },
+            { title: 'Desarrollo', links: [['/desarrollo/web','Desarrollo web'],['/desarrollo-prestashop-woocommerce','PrestaShop y WooCommerce']] },
             { title: 'Agentes IA', links: [['/agentes-ia','Ver producto'],['/agentes-ia-prestashop','Para PrestaShop'],['/agentes-ia-woocommerce','Para WooCommerce']] },
             { title: 'Legal',   links: [['/aviso-legal','Aviso legal'],['/privacidad','Política de privacidad'],['/cookies','Cookies'],['/uso','Términos de Uso']] },
           ].map(col => (
@@ -61,7 +62,7 @@ export default function Footer() {
       <style>{`
         .footer-grid {
           display: grid;
-          grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+          grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr 1fr;
           gap: 40px;
         }
         @media(max-width: 768px) {
