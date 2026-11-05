@@ -1,0 +1,139 @@
+---
+title: "Migración de PrestaShop: cómo planificar sin quebrar tu tienda ni perder clientes"
+slug: "migracion-prestashop-planificacion-sin-quebrantos"
+date: "2026-11-05"
+description: "Guía práctica para migrar PrestaShop sin caídas, pérdida de datos ni clientela. Checklist antes, durante y después."
+topic: "Migración de PrestaShop: cómo planificar sin quebrar tu tienda ni perder clientes"
+---
+Cambiar de versión en PrestaShop no es opcional si quieres mantener tu tienda segura, rápida y compatible con lo que viene. Pero muchos dueños de tiendas lo evitan precisamente porque suena riesgoso: el miedo a que algo se rompa, a perder clientes durante la migración, a que los módulos dejen de funcionar. Ese miedo es legítimo, pero manejable si lo planificas bien.
+
+En este artículo te mostramos cómo pensar una migración de PrestaShop de verdad, paso a paso, para que sea tranquila y no afecte a tu negocio.
+
+## Por qué no puedes quedarte en versiones antiguas
+
+### El riesgo de seguridad real
+
+Si tu tienda corre en PrestaShop 1.6 o 1.7, te expones a vulnerabilidades que ya no reciben actualizaciones de seguridad. Eso no significa que mañana te hackeen, pero significa que cualquier vulnerabilidad conocida en tu versión es un blanco abierto. Los cibercriminales conocen esas vulnerabilidades y atacan tiendas antiguas porque saben que nadie está vigilando la seguridad de esas versiones.
+
+Además, si algún día necesitas integrar un nuevo módulo, cambiar tu pasarela de pagos o simplemente actualizar PHP (que tu hosting cada vez más te obligará a hacer), descubrirás que tu versión antigua no es compatible. Te quedas atrapado.
+
+### El impacto en velocidad y conversión
+
+Las versiones nuevas de PrestaShop están optimizadas para ser más rápidas. Eso importa porque un sitio lento asusta a clientes. Además, una tienda antigua es más complicada de mantener: cada cambio se vuelve más caro o requiere más tiempo.
+
+### Compatibilidad con nuevas herramientas
+
+Si algún día quieres añadir un [agente de IA conectado a tu catálogo en tiempo real para atender consultas por WhatsApp](/agentes-ia-prestashop), necesitarás estar al menos en PrestaShop 1.7 o superior. Las herramientas modernas, módulos nuevos, integraciones que te puedan acelerar el negocio: todas exigen versiones recientes.
+
+## Antes de la migración: investiga y prepárate
+
+### Auditoría de módulos y temas
+
+Haz un listado de todos los módulos y el tema que tienes activos. Después, revisa en la tienda de PrestaShop (o contactando a los desarrolladores) si son compatibles con la versión a la que vas a migrar. Algunos desaparecerán, otros necesitarán actualización, y unos pocos funcionarán igual.
+
+No asumas nada: un módulo que te funciona hoy en PrestaShop 1.7 puede no funcionar en PrestaShop 9. Habla con sus desarrolladores o haz una prueba en un entorno de prueba (ver abajo).
+
+### Copia de seguridad completa
+
+Antes de nada, descarga una copia de seguridad completa de tu tienda: archivos, base de datos, todo. Guárdala en un lugar seguro fuera de tu hosting. Si algo sale mal, al menos tendrás el respaldo.
+
+### Entorno de prueba
+
+No migres en directo. Pide a tu hosting que te cree un entorno de prueba (una copia de tu tienda en un dominio distinto o carpeta diferente) donde puedas hacer la migración sin que nadie la vea. Aquí es donde descubrirás si tus módulos se rompen, si tu tema tiene problemas o si algo importante no funciona como esperabas.
+
+El tiempo que inviertas aquí te ahorra un caos después.
+
+### Revisar dependencias técnicas
+
+Verifica qué versión de PHP necesita tu nueva versión de PrestaShop. Si tu hosting aún corre en una versión antigua de PHP, ese es el primer cambio que hay que hacer. La mayoría de hosts actuales te lo permiten desde el panel de control, pero algunos migran todo a la vez.
+
+## Durante la migración: pasos en orden
+
+### Modo mantenimiento
+
+Antes de empezar, activa el modo mantenimiento de PrestaShop. Tu tienda seguirá funcionando, pero los clientes verán una página que dice "en mantenimiento, vuelve en poco". Eso te da un plazo (idealmente fuera de horas de venta) para hacer los cambios sin que la gente esté navegando mientras cambia todo.
+
+### Migración del hosting (PHP, MySQL)
+
+Si necesitas actualizar PHP o la versión de MySQL, hazlo primero. Estas son las capas más profundas. Después, espera a que todo se estabilice unos minutos.
+
+### Actualización de PrestaShop
+
+Sigue la ruta oficial de actualización de PrestaShop. Si saltas de 1.6 a 9, no se hace de un salto: pasarás por 1.7, después 8, después 9. Cada paso elimina archivos antiguos, actualiza la base de datos y registra qué ha funcionado. No intentes saltarte versiones: la herramienta no te lo permitirá, pero si lo hicieras a mano, romperías la base de datos.
+
+### Actualización de módulos
+
+Una vez PrestaShop esté en la versión nueva, actualiza cada módulo a su versión compatible. Algunos se desactivarán si no existen en la versión nueva: ahí decide si buscas un sustituto o si prescindes de esa funcionalidad.
+
+### Pruebas básicas
+
+Antes de quitarle el modo mantenimiento, camina por tu tienda: abre productos, añade cosas al carrito, haz una compra de prueba (o al menos llega hasta el resumen). Revisa que el correo de confirmación funciona, que los categorías se ven bien, que el buscador funciona.
+
+## Después de la migración: vigilancia
+
+### Saca del modo mantenimiento
+
+Una vez todo esté verde en tus pruebas, desactiva el modo mantenimiento. Tu tienda vuelve a estar abierta.
+
+### Monitoreo durante las primeras horas
+
+En las primeras horas después de la migración, revisa regularmente:
+- ¿Los clientes pueden navegar sin errores?
+- ¿Se procesan las compras bien?
+- ¿Las notificaciones de correo funcionan?
+- ¿Los módulos de pago están operativos?
+
+Ten tu teléfono cerca por si algo falla.
+
+### Limpiar y optimizar
+
+Una vez que todo funciona, haz mantenimiento: elimina módulos que no uses (mejora la velocidad), revisa la velocidad de la tienda, asegúrate de que las imágenes están optimizadas, que los cachés están activados.
+
+### Actualización de seguridad
+
+Después de la migración, asegúrate de que todas las extensiones de seguridad (certificado SSL, firewall de aplicación) estén activas y configuradas para tu nueva versión.
+
+## Ejemplo práctico
+
+Una tienda de ropa corre en PrestaShop 1.7 desde hace años. Tiene un tema personalizado, módulos de cupones, una extensión de wishlist y otra de reseñas de clientes. El dueño decide migrar a PrestaShop 9 porque necesita mejor velocidad y porque quiere añadir [un asistente de IA para responder consultas de clientes en WhatsApp](/agentes-ia-prestashop).
+
+Pasos:
+
+1. El dueño pide una copia de seguridad y un entorno de prueba a su hosting.
+2. Audita cada módulo: el de cupones está descontinuado, pero el de reseñas tiene versión compatible; el wishlist necesita actualización.
+3. En el entorno de prueba, actualiza PHP a la versión que exige PrestaShop 9.
+4. Ejecuta la migración a PrestaShop 8, después a PrestaShop 9.
+5. Actualiza los módulos compatibles, desactiva el cupones (buscará un sustituto después), prueba el carrito y el pago.
+6. Activa el modo mantenimiento en la tienda en directo, ejecuta la migración en directo, desactiva el modo mantenimiento.
+7. Durante las primeras horas, el dueño refuerza el monitoreo. Todo va bien.
+8. Al día siguiente, instala el módulo del agente de IA para PrestaShop, que ahora sí es compatible.
+
+## Preguntas frecuentes
+
+### ¿Puedo migrar sin ayuda de un desarrollador?
+
+Depende de tu tienda. Si tienes solo el tema estándar y módulos estándar de PrestaShop, sí: la herramienta de actualización de PrestaShop está diseñada para hacerlo sola. Si tienes módulos a medida, tema personalizado o dependencias complicadas, es mejor que un desarrollador te acompañe. El riesgo de romper algo sin darte cuenta es demasiado alto.
+
+### ¿Cuánto tiempo de caída va a haber?
+
+En modo mantenimiento, tu tienda estará "caída" para los clientes una cierta cantidad de tiempo (más corto si la tienda es simple, más largo si es grande o tiene mucho historial). Pero eso es controlado: los clientes ven una página clara de "en mantenimiento". Lo peor es migrar sin modo mantenimiento, porque la gente puede intentar comprar mientras estás actualizando y los datos se corrompen.
+
+### ¿Qué pasa si algo se rompe después de la migración?
+
+Por eso hiciste copia de seguridad y entorno de prueba. Si algo falla de verdad en directo, reviertes la copia de seguridad e intentas de nuevo. No es ideal, pero al menos no pierdes datos ni acceso. Luego investigas qué salió mal (generalmente, un módulo incompatible) y lo corriges antes de reintentar.
+
+### ¿Es mejor migrar poco a poco o de una vez?
+
+De una vez, en un bloque de tiempo controlado (idealmente fuera de horario pico). Así evitas que la tienda esté en estado intermedio durante un período, con módulos de dos versiones diferentes compitiendo entre sí. El riesgo de inconsistencias de datos es mayor si lo estiras.
+
+### ¿Después de migrar necesito actualizar más cosas?
+
+Sí. Una vez que estés en PrestaShop 9, seguirán saliendo parches de seguridad y mejoras. El objetivo es actualizarse periódicamente a la última versión dentro de tu rama (p. ej., PrestaShop 9.x a versiones posteriores), no esperar a que haya una nueva versión mayor. Eso mantiene tu tienda segura sin riesgos grandes de compatibilidad.
+
+## Resumen
+
+Una migración de PrestaShop no es una aventura, es un procedimiento. Requiere preparación (auditoría, copia de seguridad, pruebas), ejecución ordenada (modo mantenimiento, pasos en orden) y vigilancia después. Si lo haces bien, tu tienda sale más rápida, más segura y lista para crecer con nuevas herramientas.
+
+Si tu tienda es compleja o tienes dudas en algún punto, [habla con nosotros sobre migración y mantenimiento de PrestaShop](/desarrollo-prestashop-woocommerce): podemos revisar tu tienda y ayudarte a planificar sin sorpresas.
+
+[Cuéntanos cómo es tu tienda](/contacto) y qué versión de PrestaShop corre actualmente.
