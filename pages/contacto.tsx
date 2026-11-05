@@ -2,10 +2,10 @@ import { useState } from 'react'
 import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
-import { CONTACT_EMAIL, formatearWhatsApp, waLink } from '../lib/constants'
+import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL, formatearWhatsApp, waLink } from '../lib/constants'
 import { track } from '../lib/track'
 import { useRecaptcha } from '../components/Recaptcha'
-import { CircleCheck, Mail, MessageCircle } from 'lucide-react'
+import { CircleCheck, Mail, MessageCircle, Phone } from 'lucide-react'
 import Icono from '../components/Icono'
 
 const PRODUCTS = ['Servix', 'GymStack', 'Agentes IA', 'Otro']
@@ -213,6 +213,12 @@ export default function Contacto() {
                   style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 600, color: '#1e1e1e', textDecoration: 'none', marginBottom: 14 }}
                 >
                   <Icono icono={MessageCircle} color="#c85f1b" /> WhatsApp: {formatearWhatsApp()}
+                </a>
+                <a
+                  href={`tel:${CONTACT_PHONE_TEL}`}
+                  style={{ display: 'flex', alignItems: 'center', gap: 10, fontSize: 15, fontWeight: 600, color: '#1e1e1e', textDecoration: 'none', marginBottom: 14 }}
+                >
+                  <Icono icono={Phone} color="#c85f1b" /> Teléfono: {CONTACT_PHONE}
                 </a>
                 <a
                   href={`mailto:${CONTACT_EMAIL}`}

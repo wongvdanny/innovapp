@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { CONTACT_EMAIL, waLink } from '../../lib/constants'
+import { CONTACT_EMAIL, CONTACT_PHONE, CONTACT_PHONE_TEL, waLink } from '../../lib/constants'
 
 // #contacto: destino del CTA «Pide presupuesto» del hero.
 export default function Contacto() {
@@ -24,7 +24,7 @@ export default function Contacto() {
           </Link>
         </div>
         <p style={{ fontSize: 15, color: 'var(--gris-600)', margin: '20px 0 0' }}>
-          O por email: <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: 'var(--color-brand-orange-texto)', fontWeight: 700 }}>{CONTACT_EMAIL}</a>
+          O llámanos: <a href={`tel:${CONTACT_PHONE_TEL}`} style={{ color: 'var(--color-brand-orange-texto)', fontWeight: 700 }}>{CONTACT_PHONE}</a> · Email: <a href={`mailto:${CONTACT_EMAIL}`} style={{ color: 'var(--color-brand-orange-texto)', fontWeight: 700 }}>{CONTACT_EMAIL}</a>
         </p>
       </div>
       <style>{`

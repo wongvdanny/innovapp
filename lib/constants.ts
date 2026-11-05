@@ -37,3 +37,6 @@ export const LEGAL_NIF = '61348042G'
 export const LEGAL_ADDRESS_ES = 'Avenida Príncipe de Asturias 141, 33660 Oviedo (Asturias)'
 export const LEGAL_ADDRESS = `${LEGAL_ADDRESS_ES}, España`
 export const LEGAL_ACTIVITY = 'programación informática (epígrafe 763 del IAE, programadores y analistas de informática)'
+
+export const CONTACT_PHONE = '+34 984 276 259'
+export const CONTACT_PHONE_TEL = '+34984276259'
