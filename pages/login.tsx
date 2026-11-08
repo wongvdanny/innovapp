@@ -1,71 +1,66 @@
-import Seo from '../components/Seo'
 import { useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useRouter } from 'next/router'
-import { setInternalBrowser } from '../lib/track'
 import Link from 'next/link'
-import Logo from '../components/Logo'
+import { setInternalBrowser } from '../lib/track'
+import AuthCard, { BotonPrincipal, Mensaje, estiloEnlace, estiloInput, estiloLabel } from '../components/AuthCard'
+import PasswordInput from '../components/PasswordInput'
 
 export default function Login() {
   const router = useRouter()
-  const [form, setForm]     = useState({ email: '', password: '' })
+  const [form, setForm]       = useState({ email: '', password: '', remember: false })
   const [loading, setLoading] = useState(false)
-  const [error, setError]   = useState('')
+  const [error, setError]     = useState('')
+  const aviso = router.query.restablecida === '1' ? 'Contraseña actualizada. Ya puedes iniciar sesión con la nueva.'
+    : router.query.sesion === 'cerrada' ? 'Tu sesión se ha cerrado. Vuelve a iniciar sesión.' : ''
 
+  // Submit real del <form> (no un onClick): así el gestor de contraseñas ofrece guardarla
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true); setError('')
-    const res = await signIn('credentials', { ...form, redirect: false })
-    if (res?.error) { setError('Email o contraseña incorrectos'); setLoading(false) }
-    else {
-      const session = await fetch('/api/auth/session').then(r => r.json())
-      if (session?.user?.role === 'admin') {
-        setInternalBrowser(true)
-        // Vuelta a la página de admin de la que venía (p. ej. el enlace del email de un borrador)
-        const destino = typeof router.query.callbackUrl === 'string' ? router.query.callbackUrl : ''
-        // Carga completa (no router.push): el panel no lleva GTM y así no hereda el de esta página
-        window.location.assign(/^\/admin(\/|$)/.test(destino) ? destino : '/admin')
-      }
-      else router.push('/dashboard')
+    const res = await signIn('credentials', {
+      email: form.email.trim().toLowerCase(), password: form.password, remember: String(form.remember), redirect: false,
+    })
+    if (res?.error) { setError('Email o contraseña incorrectos'); setLoading(false); return }
+    const session = await fetch('/api/auth/session').then(r => r.json())
+    if (session?.user?.role === 'admin') {
+      setInternalBrowser(true)
+      // Vuelta a la página de admin de la que venía (p. ej. el enlace del email de un borrador)
+      const destino = typeof router.query.callbackUrl === 'string' ? router.query.callbackUrl : ''
+      // Carga completa (no router.push): el panel no lleva GTM y así no hereda el de esta página
+      window.location.assign(/^\/admin(\/|$)/.test(destino) ? destino : '/admin')
     }
+    else router.push('/dashboard')
   }
 
-  const inputStyle = { width: '100%', padding: '12px 16px', borderRadius: 10, border: '1.5px solid #eef1f4', fontSize: 14, outline: 'none', fontFamily: 'var(--font-gabarito), system-ui, sans-serif', boxSizing: 'border-box' as const }
-
   return (
-    <>
-      <Seo
-        title="Iniciar sesión — innovapp"
-        description="Accede a tu panel de suscripción de innovapp."
-        canonical="/login"
-        noindex
-      />
-      <div style={{ minHeight: '100vh', background: 'linear-gradient(160deg,#1e1e1e,#1e1e1e)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, fontFamily: 'var(--font-gabarito), system-ui, sans-serif' }}>
-        <div style={{ background: 'white', borderRadius: 24, padding: '48px 40px', maxWidth: 420, width: '100%', boxShadow: '0 40px 100px rgba(0,0,0,0.3)' }}>
-          <Link href="/"><Logo variant="light" height={36} style={{ marginBottom: 32 }} /></Link>
-          <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1e1e1e' }}>Bienvenido de vuelta</h2>
-          <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Accede a tu panel de suscripción</p>
-          <form onSubmit={handleSubmit}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 20 }}>
-              <div>
-                <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>Email</label>
-                <input style={inputStyle} type="email" value={form.email} onChange={e=>setForm(f=>({...f,email:e.target.value}))} placeholder="tu@email.com" required />
-              </div>
-              <div>
-                <label style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', display: 'block', marginBottom: 6 }}>Contraseña</label>
-                <input style={inputStyle} type="password" value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} placeholder="••••••••" required />
-              </div>
+    <AuthCard titulo="Bienvenido de vuelta" subtitulo="Accede a tu panel de suscripción" seoTitulo="Iniciar sesión — innovapp" canonical="/login"
+      pie={<>¿No tienes cuenta? <Link href="/registro" style={estiloEnlace}>Regístrate</Link></>}>
+      <form onSubmit={handleSubmit} method="post" action="/login">
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 16 }}>
+          <div>
+            <label htmlFor="email" style={estiloLabel}>Email</label>
+            <input id="email" name="email" type="email" autoComplete="username" inputMode="email" autoCapitalize="none" spellCheck={false}
+              style={estiloInput} value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} placeholder="tu@email.com" required />
+          </div>
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
+              <label htmlFor="password" style={estiloLabel}>Contraseña</label>
+              <Link href="/recuperar" style={{ ...estiloEnlace, fontSize: 13 }}>¿Olvidaste tu contraseña?</Link>
             </div>
-            {error && <div style={{ background: '#fff1f2', border: '1px solid #fca5a5', borderRadius: 10, padding: '10px 14px', fontSize: 13, color: '#991b1b', fontWeight: 600, marginBottom: 16 }}>⚠️ {error}</div>}
-            <button type="submit" disabled={loading} style={{ width: '100%', padding: 14, background: loading ? '#ccc' : 'linear-gradient(135deg,#ee7528,#c85f1b)', color: 'white', border: 'none', borderRadius: 12, fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer' }}>
-              {loading ? '⏳ Entrando...' : 'Iniciar sesión →'}
-            </button>
-          </form>
-          <p style={{ textAlign: 'center', marginTop: 20, fontSize: 13, color: '#88a8b0' }}>
-            ¿No tienes cuenta? <Link href="/registro" style={{ color: '#c85f1b', fontWeight: 600 }}>Regístrate</Link>
-          </p>
+            <PasswordInput id="password" name="password" autoComplete="current-password" style={estiloInput}
+              value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} placeholder="••••••••" required />
+          </div>
+          <label htmlFor="remember" style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: '#1e1e1e', cursor: 'pointer' }}>
+            <input id="remember" name="remember" type="checkbox" checked={form.remember} onChange={e => setForm(f => ({ ...f, remember: e.target.checked }))}
+              style={{ width: 16, height: 16, accentColor: '#c85f1b' }} />
+            Recordarme durante 30 días
+          </label>
         </div>
-      </div>
-    </>
+        {aviso && !error && <Mensaje tipo="ok">{aviso}</Mensaje>}
+        {error && <Mensaje tipo="error">⚠️ {error}</Mensaje>}
+        <BotonPrincipal cargando={loading}>{loading ? '⏳ Entrando...' : 'Iniciar sesión →'}</BotonPrincipal>
+      </form>
+    </AuthCard>
   )
 }

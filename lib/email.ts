@@ -399,3 +399,23 @@ export async function sendFacturaEmail(m: FacturaEmail): Promise<string | null> 
   if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
   return data?.id ?? null
 }
+
+/** Enlace para restablecer la contraseña (caduca en 1 hora). */
+export async function sendPasswordResetEmail(to: string, name: string, url: string) {
+  const { data, error } = await resend.emails.send({
+    from: FROM, to,
+    subject: 'Restablece tu contraseña de innovapp',
+    html: `
+    <div style="font-family:'Segoe UI',Arial,sans-serif;max-width:520px;margin:0 auto;padding:32px;color:#1e1e1e">
+      <div style="font-size:24px;font-weight:800;margin-bottom:24px">innov<span style="color:#ee7528">app</span></div>
+      <p style="font-size:15px">Hola${name ? ` ${name}` : ''},</p>
+      <p style="font-size:15px;line-height:1.6">Hemos recibido una solicitud para restablecer tu contraseña. Pulsa el botón para crear una nueva. El enlace caduca en 1 hora y solo se puede usar una vez.</p>
+      <p style="margin:28px 0"><a href="${url}" style="background:#ee7528;color:#1e1e1e;padding:14px 24px;border-radius:12px;text-decoration:none;font-weight:700;display:inline-block">Restablecer contraseña</a></p>
+      <p style="font-size:13px;color:#5f6b7a;line-height:1.6">Si el botón no funciona, copia este enlace en el navegador:<br>${url}</p>
+      <p style="font-size:13px;color:#5f6b7a">Si no lo has pedido tú, ignora este correo: tu contraseña no cambiará.</p>
+    </div>`,
+  })
+  // El SDK de Resend no lanza en errores de API: hay que mirar `error`
+  if (error) throw new Error(`Resend: ${error.message}`)
+  return data?.id
+}

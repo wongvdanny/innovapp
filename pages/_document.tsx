@@ -1,11 +1,12 @@
 import { Html, Head, Main, NextScript, DocumentProps } from "next/document";
 
-// El panel (/admin) no carga GTM: ni analítica ni balizas de Ads. El stub de consentimiento
+// Sin GTM: el panel (/admin), ni analítica ni balizas de Ads; y /restablecer, cuya URL lleva el token
+// de recuperación de contraseña (GA4 la enviaría entera a Google). El stub de consentimiento
 // (dataLayer/gtag) se mantiene en todas las páginas para que lib/track.ts nunca falle.
-const esPanel = (pagina: string) => pagina === "/admin" || pagina.startsWith("/admin/");
+const sinGtm = (pagina: string) => pagina === "/admin" || pagina.startsWith("/admin/") || pagina === "/restablecer";
 
 export default function Document({ __NEXT_DATA__ }: DocumentProps) {
-  const conGtm = !esPanel(__NEXT_DATA__.page);
+  const conGtm = !sinGtm(__NEXT_DATA__.page);
   return (
     <Html lang="es">
       <Head>
