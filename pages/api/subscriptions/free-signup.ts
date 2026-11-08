@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { normalizarEmail } from '../../../lib/authOptions'
 import { prisma } from '../../../lib/prisma'
 import bcrypt from 'bcryptjs'
 import { createServixTenant } from '../../../lib/provisioning/servix'
@@ -7,7 +8,8 @@ import { createGymstackTenant } from '../../../lib/provisioning/gymstack'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
   try {
-    const { name, restaurantName, entityName, email, password, phone, planId } = req.body
+    const { name, restaurantName, entityName, email: emailRaw, password, phone, planId } = req.body
+    const email = normalizarEmail(emailRaw)
     const finalEntityName = entityName || restaurantName
     if (!name || !finalEntityName || !email || !password) {
       return res.status(400).json({ error: 'Faltan datos obligatorios' })

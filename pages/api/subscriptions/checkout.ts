@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { normalizarEmail } from '../../../lib/authOptions'
 import { prisma } from '../../../lib/prisma'
 import bcrypt from 'bcryptjs'
 import { createRedsysAPI, SANDBOX_URLS, PRODUCTION_URLS, randomTransactionId } from 'redsys-easy'
@@ -8,7 +9,8 @@ import { validarNifEspanol } from '../../../lib/facturacion/validacion'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
   try {
-    const { name, entityName, email, password, phone, planId, billing, provider: requestedProvider } = req.body
+    const { name, entityName, email: emailRaw, password, phone, planId, billing, provider: requestedProvider } = req.body
+    const email = normalizarEmail(emailRaw)
     if (!name || !entityName || !email || !password || !planId) return res.status(400).json({ error: 'Faltan datos obligatorios' })
 
     const plan = await prisma.plan.findUnique({ where: { id: planId }, include: { Product: true } as any })

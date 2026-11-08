@@ -1,4 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next'
+import { normalizarEmail } from '../../../lib/authOptions'
 import { prisma } from '../../../lib/prisma'
 import bcrypt from 'bcryptjs'
 import { createNewsTenant } from '../../../lib/provisioning/news'
@@ -6,7 +7,8 @@ import { createNewsTenant } from '../../../lib/provisioning/news'
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
   try {
-    const { name, email, password, country } = req.body
+    const { name, email: emailRaw, password, country } = req.body
+    const email = normalizarEmail(emailRaw)
     if (!name || !email || !password || !country) {
       return res.status(400).json({ error: 'Faltan datos obligatorios' })
     }
