@@ -38,6 +38,7 @@ const nextConfig = {
       noindex('/pdfs/:path*'),
       noindex('/admin', 'noindex, nofollow'),
       noindex('/admin/:path*', 'noindex, nofollow'),
+      noindex('/licitaciones', 'noindex, nofollow'),
       noindex('/gestor/:path*', 'noindex, nofollow, noarchive'),
       noindex('/dashboard', 'noindex, nofollow'),
       noindex('/dashboard/:path*', 'noindex, nofollow'),
