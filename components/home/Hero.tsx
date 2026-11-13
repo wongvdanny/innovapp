@@ -1,3 +1,5 @@
+import BannerPromo from './BannerPromo'
+
 // Hero de la home: el único h1 de la página. Pensado para verse entero sin scroll a 390 px
 // de ancho (iPhone), por eso sin imagen ni demo: la demo está en #demo.
 export default function Hero() {
@@ -5,6 +7,7 @@ export default function Hero() {
     <section className="home-hero" style={{ position: 'relative', overflow: 'hidden', backgroundColor: '#1e1e1e', backgroundImage: "linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.5)), url('/brand/hero.png')", backgroundSize: 'cover', backgroundPosition: 'center' }}>
       <div aria-hidden style={{ position: 'absolute', top: -180, right: -180, width: 520, height: 520, borderRadius: '50%', background: 'radial-gradient(circle,rgba(238,117,40,.14) 0%,transparent 70%)', pointerEvents: 'none' }} />
       <div style={{ maxWidth: 900, margin: '0 auto', position: 'relative' }}>
+        <BannerPromo />
         <h1 style={{ fontSize: 'clamp(31px,6.5vw,60px)', fontWeight: 800, letterSpacing: -1.5, lineHeight: 1.1, color: 'white', margin: '0 0 18px' }}>
           Software y automatización con IA <span style={{ color: '#f4a15c' }}>a medida para tu negocio</span>
         </h1>

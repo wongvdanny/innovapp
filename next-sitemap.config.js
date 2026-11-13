@@ -25,6 +25,7 @@ module.exports = {
     '/gestor*',
     '/hoja*.html',
     '/pdfs/*',
+    '/webgratis/gracias',
   ],
   changefreq: 'weekly',
   priority: 0.7,

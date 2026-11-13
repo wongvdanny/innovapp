@@ -1,5 +1,6 @@
 import { Resend } from 'resend'
-import { CONTACT_EMAIL, waLink } from './constants'
+import { CONTACT_EMAIL, LEGAL_OWNER, LEGAL_TRADE_NAME, waLink } from './constants'
+import { CUOTA_MANTENIMIENTO, DIAS_ACEPTAR, DIAS_MATERIAL, INSTAGRAM_HANDLE, INSTAGRAM_URL, MAX_WEBS, PERMANENCIA_MESES, REMITENTE_PROMO } from './promo/config'
 import type { FuenteLead } from '../data/sectores'
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM ?? 'innovapp <onboarding@resend.dev>'
@@ -418,4 +419,125 @@ export async function sendPasswordResetEmail(to: string, name: string, url: stri
   // El SDK de Resend no lanza en errores de API: hay que mirar `error`
   if (error) throw new Error(`Resend: ${error.message}`)
   return data?.id
+}
+
+// --- Promoción «4 webs gratis + IA» (/webgratis) ---
+export interface PromoEmail {
+  email: string
+  name: string
+  businessName: string
+  confirmToken: string
+  marketingConsent: boolean
+}
+
+const URL_SITIO = 'https://innovapp.es'
+
+function piePromo(e: PromoEmail): string {
+  const baja = e.marketingConsent
+    ? `<br>Si ya no quieres recibir novedades y ofertas de Innovapp, <a href="${URL_SITIO}/api/promo/unsubscribe?token=${encodeURIComponent(e.confirmToken)}" style="color:#6e6862">date de baja aquí</a>.`
+    : ''
+  return `<p style="font-size:12px;color:#6e6862;line-height:1.6;margin:28px 0 0;border-top:1px solid #ebe8e5;padding-top:16px">
+    Responsable: ${escapeHtml(LEGAL_OWNER)} (${escapeHtml(LEGAL_TRADE_NAME)}). Finalidad: gestionar tu inscripción en la promoción${e.marketingConsent ? ' y enviarte comunicaciones comerciales, que aceptaste' : ''}. Derechos: acceso, rectificación, supresión y otros en ${CONTACT_EMAIL}. <a href="${URL_SITIO}/privacidad" style="color:#6e6862">Política de privacidad</a> · <a href="${URL_SITIO}/webgratis#bases" style="color:#6e6862">Bases de la promoción</a>.${baja}
+    <br>Esta promoción no está patrocinada, avalada ni administrada por Instagram, Facebook ni Meta, ni asociada a ellas.</p>`
+}
+
+const botonPromo = (href: string, texto: string) =>
+  `<p style="margin:24px 0"><a href="${href}" style="display:inline-block;background:#ee7528;color:#1e1e1e;font-weight:700;text-decoration:none;padding:14px 26px;border-radius:12px">${texto}</a></p>`
+
+/** Doble opt-in: el participante confirma su inscripción desde este email. */
+export async function sendPromoConfirmacion(e: PromoEmail) {
+  const enlace = `${URL_SITIO}/api/promo/confirm?token=${encodeURIComponent(e.confirmToken)}`
+  const { error } = await resend.emails.send({
+    from: REMITENTE_PROMO,
+    to: e.email,
+    replyTo: CONTACT_EMAIL,
+    subject: `Confirma tu inscripción en «${MAX_WEBS} webs gratis + IA»`,
+    html: `
+    <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#1e1e1e">
+      <h2 style="font-size:20px;margin:0 0 16px">Hola, ${escapeHtml(e.name)}:</h2>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 8px">Hemos recibido la inscripción de <strong>${escapeHtml(e.businessName)}</strong> en la promoción «${MAX_WEBS} webs gratis + IA». Para que cuente, confírmala con este botón:</p>
+      ${botonPromo(enlace, 'Confirmar mi inscripción')}
+      <p style="font-size:15px;line-height:1.7;margin:0 0 6px"><strong>Recuerda los requisitos:</strong></p>
+      <ul style="font-size:15px;line-height:1.7;margin:0 0 14px;padding-left:20px">
+        <li>Seguir a <a href="${INSTAGRAM_URL}" style="color:#9a4a14">@${INSTAGRAM_HANDLE}</a> en Instagram durante toda la promoción.</li>
+        <li>Una inscripción por negocio, presentada por el titular o representante legal, mayor de edad.</li>
+        <li>Inscripción antes del 15 de diciembre de 2026 a las 12:00 (hora peninsular).</li>
+      </ul>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">El <strong>15 de diciembre de 2026</strong> elegiremos ${MAX_WEBS} negocios entre todos los participantes y les avisaremos por email.</p>
+      <p style="font-size:15px;line-height:1.7;margin:0">Puedes leer las bases completas en <a href="${URL_SITIO}/webgratis#bases" style="color:#9a4a14">innovapp.es/webgratis</a>.</p>
+      <p style="font-size:13px;color:#6e6862;line-height:1.6;margin:18px 0 0">Si no te has inscrito tú, ignora este email: sin confirmar, la inscripción no cuenta.</p>
+      ${piePromo(e)}
+    </div>`,
+  })
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
+}
+
+/** Tras confirmar: «Ya estás dentro». */
+export async function sendPromoDentro(e: PromoEmail) {
+  const { error } = await resend.emails.send({
+    from: REMITENTE_PROMO,
+    to: e.email,
+    replyTo: CONTACT_EMAIL,
+    subject: `Ya estás dentro de «${MAX_WEBS} webs gratis + IA»`,
+    html: `
+    <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#1e1e1e">
+      <h2 style="font-size:20px;margin:0 0 16px">¡Ya estás dentro, ${escapeHtml(e.name)}!</h2>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">La inscripción de <strong>${escapeHtml(e.businessName)}</strong> está confirmada. El 15 de diciembre de 2026 elegiremos ${MAX_WEBS} negocios y les avisaremos por email.</p>
+      <p style="font-size:15px;line-height:1.7;margin:0">Recuerda seguir a <strong>@${INSTAGRAM_HANDLE}</strong> en Instagram durante toda la promoción: es uno de los requisitos y lo comprobamos antes de elegir.</p>
+      ${botonPromo(INSTAGRAM_URL, `Seguir a @${INSTAGRAM_HANDLE}`)}
+      ${piePromo(e)}
+    </div>`,
+  })
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
+}
+
+/** Aviso a un ganador (se envía a mano desde /admin/promo-webgratis). Acepta respondiendo al email. */
+export async function sendPromoSeleccionado(e: PromoEmail) {
+  const { error } = await resend.emails.send({
+    from: REMITENTE_PROMO,
+    to: e.email,
+    replyTo: CONTACT_EMAIL,
+    subject: `¡${e.businessName} ha sido seleccionado en «${MAX_WEBS} webs gratis + IA»!`,
+    html: `
+    <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#1e1e1e">
+      <h2 style="font-size:20px;margin:0 0 16px">¡Enhorabuena, ${escapeHtml(e.name)}!</h2>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px"><strong>${escapeHtml(e.businessName)}</strong> es uno de los ${MAX_WEBS} negocios seleccionados en la promoción «${MAX_WEBS} webs gratis + IA».</p>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 6px"><strong>Plazos:</strong></p>
+      <ol style="font-size:15px;line-height:1.7;margin:0 0 14px;padding-left:20px">
+        <li><strong>${DIAS_ACEPTAR} días naturales</strong> desde este aviso para aceptar la selección y las condiciones: basta con <strong>responder a este email</strong> diciendo que aceptas.</li>
+        <li><strong>${DIAS_MATERIAL} días naturales</strong> desde tu aceptación para enviarnos el dominio y la información de tu negocio.</li>
+      </ol>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 6px"><strong>Lo que necesitamos:</strong></p>
+      <ul style="font-size:15px;line-height:1.7;margin:0 0 14px;padding-left:20px">
+        <li>El dominio, registrado a tu nombre, o los datos de acceso para que gestionemos el alta.</li>
+        <li>Tu logo.</li>
+        <li>Los textos de la web (presentación, servicios, horario, ubicación…).</li>
+        <li>Fotos de tu negocio, tus productos o tus trabajos.</li>
+        <li>La lista de servicios o productos con sus precios.</li>
+      </ul>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Recuerda las condiciones: el diseño y desarrollo de la web son gratis; el dominio y el alojamiento y mantenimiento con Innovapp (${CUOTA_MANTENIMIENTO} €/mes + IVA, permanencia mínima de ${PERMANENCIA_MESES} meses) corren de tu cuenta. Tienes todos los detalles en las <a href="${URL_SITIO}/webgratis#bases" style="color:#9a4a14">bases de la promoción</a>.</p>
+      <p style="font-size:15px;line-height:1.7;margin:0">Si no aceptas o no cumples los plazos, la plaza pasará a un suplente.</p>
+      ${piePromo(e)}
+    </div>`,
+  })
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
+}
+
+/** Aviso a un suplente (se envía a mano desde /admin/promo-webgratis). */
+export async function sendPromoSuplente(e: PromoEmail, orden: number) {
+  const { error } = await resend.emails.send({
+    from: REMITENTE_PROMO,
+    to: e.email,
+    replyTo: CONTACT_EMAIL,
+    subject: `Eres suplente nº ${orden} en «${MAX_WEBS} webs gratis + IA»`,
+    html: `
+    <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#1e1e1e">
+      <h2 style="font-size:20px;margin:0 0 16px">Hola, ${escapeHtml(e.name)}:</h2>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px"><strong>${escapeHtml(e.businessName)}</strong> ha quedado como <strong>suplente nº ${orden}</strong> en la promoción «${MAX_WEBS} webs gratis + IA».</p>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Si alguno de los ganadores renuncia, no responde o no cumple los plazos, su plaza pasa al primer suplente disponible, por orden. Si te llega el turno, te avisaremos por email y tendrás ${DIAS_ACEPTAR} días para aceptar y ${DIAS_MATERIAL} para enviarnos el dominio y la información de tu negocio.</p>
+      <p style="font-size:15px;line-height:1.7;margin:0">Gracias por participar. Puedes consultar las <a href="${URL_SITIO}/webgratis#bases" style="color:#9a4a14">bases de la promoción</a>.</p>
+      ${piePromo(e)}
+    </div>`,
+  })
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }

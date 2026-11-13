@@ -476,3 +476,38 @@ model PasswordResetToken {
 
   @@index([userId])
 }
+
+// Promoción «4 webs gratis + IA» (/webgratis). Tabla creada con sql/2026-11-13_promo_webgratis.sql.
+model PromoEntry {
+  id               String    @id @default(cuid())
+  promo            String    @default("webgratis-2026")
+  name             String
+  businessName     String
+  sector           String
+  city             String
+  province         String
+  email            String
+  phone            String
+  instagram        String
+  currentWeb       String?
+  contactChannel   String
+  description      String    @db.Text
+  acceptedTerms    Boolean
+  marketingConsent Boolean   @default(false)
+  consentText      String    @db.Text // texto exacto de las casillas aceptadas
+  ip               String?
+  userAgent        String?
+  confirmToken     String    @unique
+  confirmedAt      DateTime?
+  unsubscribedAt   DateTime?
+  followsInstagram Boolean? // lo marca el admin a mano
+  status           String    @default("pending") // pending | shortlisted | selected | substitute | rejected
+  substituteOrder  Int? // 1-4, solo para suplentes (sql/2026-11-13_promo_seleccion.sql)
+  notifiedAt       DateTime? // aviso al seleccionado: 3 días para aceptar
+  acceptedAt       DateTime? // aceptación: 15 días para dominio e información
+  materialDeliveredAt DateTime? // material entregado: apaga «Material vencido»
+  adminNotes       String?   @db.Text
+  createdAt        DateTime  @default(now())
+
+  @@unique([promo, email])
+}

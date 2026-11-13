@@ -3,7 +3,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { ReactNode, useEffect, useState } from 'react'
 import {
-  LayoutDashboard, Package, Users, Wrench, Calculator, Receipt, Megaphone, Settings,
+  LayoutDashboard, Package, Users, Wrench, Calculator, Receipt, Megaphone, Settings, Gift,
   ArrowLeft, Menu, PanelLeftClose, PanelLeftOpen,
 } from 'lucide-react'
 import Logo from '../Logo'
@@ -17,6 +17,7 @@ const NAV = [
   { href: '/admin/contabilidad', label: 'Contabilidad', Icono: Calculator },
   { href: '/admin/facturacion', label: 'Facturación', Icono: Receipt },
   { href: '/admin/contenido', label: 'Contenido', Icono: Megaphone },
+  { href: '/admin/promo-webgratis', label: 'Promo webgratis', Icono: Gift },
   { href: '/admin/ajustes', label: 'Ajustes', Icono: Settings },
 ]
 
