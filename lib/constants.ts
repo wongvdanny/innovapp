@@ -7,6 +7,9 @@ export const CONTACT_EMAIL = 'contacto@innovapp.es'
 /** WhatsApp comercial de Innovapp, atendido por nuestro agente comercial de IA. Formato wa.me. */
 export const COMMERCIAL_WHATSAPP = '34684902196'
 
+/** WhatsApp de la demo de inmobiliarias (agente de una inmobiliaria de ejemplo). Formato wa.me. */
+export const DEMO_INMOBILIARIA_WHATSAPP = '34617940994'
+
 /** Teléfono fijo comercial, atendido por nuestro agente de voz IA. */
 export const COMMERCIAL_PHONE = '+34 984 276 259'
 
@@ -15,9 +18,9 @@ export function formatearWhatsApp(numero: string = COMMERCIAL_WHATSAPP): string 
   return `+${numero.slice(0, 2)} ${numero.slice(2, 5)} ${numero.slice(5, 8)} ${numero.slice(8)}`
 }
 
-/** Enlace wa.me al WhatsApp comercial, con el mensaje prerrellenado si se pasa (texto sin codificar). */
-export function waLink(text?: string): string {
-  return `https://wa.me/${COMMERCIAL_WHATSAPP}${text ? `?text=${encodeURIComponent(text)}` : ''}`
+/** Enlace wa.me (por defecto al WhatsApp comercial), con el mensaje prerrellenado si se pasa (texto sin codificar). */
+export function waLink(text?: string, numero: string = COMMERCIAL_WHATSAPP): string {
+  return `https://wa.me/${numero}${text ? `?text=${encodeURIComponent(text)}` : ''}`
 }
 
 /** Enlace tel: al teléfono comercial. */

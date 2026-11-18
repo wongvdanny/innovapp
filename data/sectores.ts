@@ -5,11 +5,12 @@
 // recordatorios por WhatsApp, paso a una persona, agente de voz como extra).
 import type { FaqItem } from '../components/Faq'
 import type { NombreIcono } from '../components/Icono'
+import { DEMO_INMOBILIARIA_WHATSAPP } from '../lib/constants'
 
 export type MensajeChat = { de: 'cliente' | 'asistente'; texto: string; hora: string }
 
 export type Sector = {
-  slug: 'peluquerias' | 'clinicas' | 'talleres'
+  slug: 'peluquerias' | 'clinicas' | 'talleres' | 'inmobiliarias'
   /** Nombre del sector en títulos y tarjetas («Peluquerías y estética»). */
   nombre: string
   tituloSeo: string
@@ -36,6 +37,18 @@ export type Sector = {
   etiquetaNegocio: string
   /** Para el email de respuesta automática y el JSON-LD Service. */
   servicio: string
+  /**
+   * Demo con número propio (inmobiliarias): el CTA principal abre ese WhatsApp con
+   * mensajeWhatsApp y el secundario lleva al formulario, en lugar de «Pide una demo» al
+   * comercial y «Llámanos».
+   */
+  demo?: { numero: string; textoBoton: string; textoFormulario: string }
+  /** Sección opcional tras las funciones (inmobiliarias: «Tu cartera conectada»). */
+  cartera?: { titulo: string; texto: string; puntos: { titulo: string; texto: string }[]; enlace?: { href: string; texto: string } }
+  /** Textos propios de las secciones comunes; si faltan, los genéricos de la plantilla. */
+  ejemplo?: { titulo: string; texto: string }
+  pasos?: { intro: string; items: { title: string; description: string }[] }
+  cierre?: { titulo: string; texto: string }
 }
 
 const SIN_CAMBIAR_NUMERO: FaqItem = {
@@ -214,13 +227,95 @@ export const SECTORES: Record<Sector['slug'], Sector> = {
     etiquetaNegocio: 'Taller',
     servicio: 'el agente de WhatsApp para talleres',
   },
+  // Lo que se afirma sale de agentes (módulo inmobiliaria): buscar_inmuebles y ficha_inmueble
+  // solo con inmuebles disponibles de la cartera y sin dirección; visitas en la agenda del
+  // negocio (no por comercial); cartera por plugin de WordPress o CSV. Sin avisos de inmuebles
+  // nuevos, sin recordatorios de visita y sin integración con portales.
+  inmobiliarias: {
+    slug: 'inmobiliarias',
+    nombre: 'Inmobiliarias',
+    tituloSeo: 'Agente IA para inmobiliarias en WhatsApp | Innovapp',
+    metaDescription:
+      'Agente IA para inmobiliarias en WhatsApp: responde a todos los leads al momento, busca en tu cartera real y agenda visitas, también en fin de semana.',
+    h1: 'Agente IA para inmobiliarias: responde a cada lead al momento y agenda visitas',
+    subtitulo:
+      'Un chatbot de WhatsApp para inmobiliarias que atiende a cada interesado en segundos y a cualquier hora: le pregunta qué busca, le enseña los inmuebles de tu cartera que encajan y le da cita para la visita.',
+    problemas: [
+      { titulo: 'Leads que llegan a deshora', texto: 'Los contactos de los portales y de tu web entran por la noche y en fin de semana. Si contestas el lunes, ese interesado ya ha hablado con otra agencia.' },
+      { titulo: 'Siempre las mismas preguntas', texto: '¿Sigue disponible? ¿Cuántas habitaciones tiene? ¿Tiene garaje? Atender leads inmobiliarios uno a uno se come la mañana.' },
+      { titulo: 'Visitas que cuesta cuadrar', texto: 'Mensajes de ida y vuelta para encontrar una hora que le vaya bien al cliente y a tu equipo.' },
+      { titulo: 'Comerciales en la calle', texto: 'Mientras enseñan un piso no pueden contestar el móvil, y el interesado se enfría.' },
+    ],
+    funciones: [
+      { icono: 'Search', titulo: 'Cualifica a cada interesado', texto: 'Pregunta si quiere comprar o alquilar, la zona, el presupuesto, las habitaciones y si necesita financiación, con una conversación natural y sin interrogatorios.' },
+      { icono: 'Store', titulo: 'Busca en tu cartera real', texto: 'Enseña solo los inmuebles disponibles que encajan, con su referencia, sus datos y el enlace a la ficha. Nunca se inventa un inmueble ni un precio.' },
+      { icono: 'CalendarCheck', titulo: 'Agenda visitas automáticamente', texto: 'Propone horas libres y deja la visita en la agenda de tu inmobiliaria, sin dobles reservas. La dirección exacta la envía tu comercial cuando la visita está confirmada.' },
+      { icono: 'KeyRound', titulo: 'Captación de propietarios', texto: 'Si escribe alguien que quiere vender o alquilar su vivienda, recoge sus datos y le da cita para la valoración.' },
+      { icono: 'Hand', titulo: 'Pasa a una persona cuando hace falta', texto: 'Negociaciones, dudas que no puede resolver o un cliente que prefiere hablar con alguien: te pasa la conversación con un aviso en el móvil. Todas quedan en tu panel.' },
+      { icono: 'PhoneIncoming', titulo: 'También por teléfono (opcional)', texto: 'Con el agente de voz, las llamadas que no puedes coger también se atienden: pregunta qué busca el cliente y le informa de los inmuebles de tu cartera.' },
+    ],
+    cartera: {
+      titulo: 'Tu cartera, conectada al agente',
+      texto: 'El agente solo habla de los inmuebles que tú tienes. Así se los damos:',
+      puntos: [
+        { titulo: 'Plugin para WordPress', texto: 'Gestionas los inmuebles en tu web, con su ficha, galería de fotos, filtros y botón de WhatsApp, y el agente recibe cada cambio al momento: lo que vendes, alquilas o retiras deja de ofrecerlo.' },
+        { titulo: 'Importación desde CSV', texto: '¿Tu web no es WordPress? Subes tu cartera desde una hoja de cálculo en tu panel y la actualizas cuando quieras.' },
+        { titulo: 'Otros programas, a medida', texto: 'Si trabajas con un CRM inmobiliario, estudiamos cómo conectarlo a tu caso.' },
+      ],
+      enlace: { href: '/contacto', texto: 'Cuéntanos qué programa usas' },
+    },
+    nombreChat: 'Inmobiliaria Demo',
+    conversacion: [
+      { de: 'cliente', texto: 'Hola, busco un piso de 3 habitaciones en Oviedo para comprar, hasta unos 250.000 €', hora: '22:14' },
+      { de: 'asistente', texto: '¡Hola! Te ayudo encantado. ¿Tienes alguna zona preferida de Oviedo? ¿Y necesitarás financiación?', hora: '22:14' },
+      { de: 'cliente', texto: 'Mejor por el centro. Sí, con hipoteca', hora: '22:15' },
+      { de: 'asistente', texto: 'Tengo dos que encajan: 🏠 Ref. OV-112, piso de 3 hab. y 2 baños, 95 m², 235.000 €. 🏠 Ref. OV-087, piso de 3 hab. con terraza, 88 m², 248.000 €. ¿Te paso las fichas o quieres verlos?', hora: '22:15' },
+      { de: 'cliente', texto: 'Me gustaría ver el OV-112', hora: '22:16' },
+      { de: 'asistente', texto: 'Perfecto. Puedo darte visita el jueves a las 17:00 o a las 18:30. ¿Cuál te viene mejor?', hora: '22:16' },
+      { de: 'cliente', texto: 'Jueves a las 18:30', hora: '22:17' },
+      { de: 'asistente', texto: '✅ Visita confirmada: jueves a las 18:30 para la Ref. OV-112. Nuestro comercial te enviará la dirección exacta.', hora: '22:17' },
+    ],
+    ejemplo: {
+      titulo: 'Así atiende a un interesado a las diez de la noche',
+      texto: 'Pregunta lo justo para entender qué busca, le enseña los inmuebles de tu cartera que encajan y deja la visita en tu agenda. Tú lo ves todo en tu panel a la mañana siguiente.',
+    },
+    pasos: {
+      intro: 'Cómo funciona: en tres pasos, tu inmobiliaria atiende a todos los leads.',
+      items: [
+        { title: 'Nos cuentas cómo trabajas', description: 'Qué operaciones llevas, cómo organizas las visitas y qué debe pasar siempre a una persona.' },
+        { title: 'Lo configuramos con tu cartera y tu WhatsApp', description: 'Cargamos tus inmuebles y conectamos el WhatsApp Business de tu inmobiliaria. Puedes seguir usando la app de WhatsApp Business.' },
+        { title: 'Empieza a atender', description: 'El agente contesta a cada lead, busca en tu cartera y agenda las visitas. Tú entras en cualquier conversación cuando quieras.' },
+      ],
+    },
+    cierre: {
+      titulo: 'Prueba la demo: escribe a nuestra inmobiliaria de ejemplo',
+      texto: 'Es un agente real con una cartera de ejemplo. Escríbele como lo haría un cliente y mira cómo cualifica, busca en la cartera y te propone una visita.',
+    },
+    faq: [
+      { pregunta: '¿El agente se inventa inmuebles?', respuesta: 'No. Solo ofrece inmuebles disponibles de tu cartera, con su referencia. Si nada encaja, lo dice y propone ampliar la zona, el presupuesto o las habitaciones.' },
+      { pregunta: '¿Da la dirección exacta del inmueble?', respuesta: 'No. Habla de la zona, pero nunca da la calle ni el número. La dirección exacta la envía tu comercial cuando la visita está confirmada.' },
+      { pregunta: '¿Puedo seguir usando mi WhatsApp?', respuesta: 'Sí. Conectamos el WhatsApp Business de tu inmobiliaria y puedes seguir usando la app como siempre: tus clientes escriben al número de siempre y el agente contesta desde él.' },
+      { pregunta: '¿Qué pasa si el cliente quiere hablar con una persona?', respuesta: 'El agente te pasa la conversación con un aviso en el móvil y deja de contestar en ella hasta que lo hagas tú. Todas las conversaciones quedan en tu panel.' },
+      { pregunta: '¿Funciona con mi web?', respuesta: 'Si tu web es WordPress, instalamos un plugin que publica tu cartera con fichas, galería, filtros y botón de WhatsApp, y la mantiene sincronizada con el agente. Si no, cargamos la cartera desde un CSV o estudiamos cómo conectar tu programa.' },
+      { pregunta: '¿Cuánto tarda la puesta en marcha?', respuesta: 'Depende sobre todo de cómo tengas la cartera. Cuando vemos cómo trabajas te damos una fecha concreta.' },
+      { pregunta: '¿Cuánto cuesta?', respuesta: 'Te hacemos un presupuesto personalizado según tu volumen de contactos y cómo tengas la cartera. Sin permanencia: puedes darte de baja cuando quieras con 30 días de preaviso.' },
+    ],
+    mensajeWhatsApp: 'Hola, busco un piso de 3 habitaciones en Oviedo para comprar, hasta unos 250.000 €',
+    imagen: '/sectores/inmobiliarias.webp',
+    // Placeholder (ilustración) hasta tener foto: storage/originales/sectores/inmobiliarias.jpg + scripts/gen-sector-images.mjs, y cambiar este alt.
+    imagenAlt: 'Ilustración de un chat de WhatsApp en el que un agente IA de una inmobiliaria envía la ficha de un piso',
+    etiquetaNegocio: 'Inmobiliaria',
+    servicio: 'el agente de WhatsApp para inmobiliarias',
+    demo: { numero: DEMO_INMOBILIARIA_WHATSAPP, textoBoton: 'Prueba tu demo por WhatsApp', textoFormulario: 'Pide tu presupuesto' },
+  },
 }
 
 /** Mensaje prerrellenado de la demo de restaurantes (página propia, /agentes-ia-restaurantes). */
 export const MENSAJE_DEMO_RESTAURANTE = 'Hola, quiero ver una demo del agente para restaurantes'
 
 /** Orígenes de lead que acepta /api/lead: restaurantes y las landings sectoriales. */
-export type FuenteLead = { ruta: string; servicio: string; etiquetaNegocio: string; mensajeDemo: string }
+/** numeroDemo: WhatsApp de la demo si no es el comercial (inmobiliarias). */
+export type FuenteLead = { ruta: string; servicio: string; etiquetaNegocio: string; mensajeDemo: string; numeroDemo?: string }
 
 export const FUENTES_LEAD: Record<string, FuenteLead> = {
   restaurantes: {
@@ -235,6 +330,7 @@ export const FUENTES_LEAD: Record<string, FuenteLead> = {
       servicio: s.servicio,
       etiquetaNegocio: s.etiquetaNegocio,
       mensajeDemo: s.mensajeWhatsApp,
+      numeroDemo: s.demo?.numero,
     }]),
   ),
 }
@@ -245,5 +341,6 @@ export const TARJETAS_SECTOR: { clave: string; nombre: string; nombreCorto: stri
   { clave: 'peluquerias', nombre: 'Peluquerías y estética', nombreCorto: 'Peluquerías', icono: 'Scissors', texto: 'Citas, cambios y cancelaciones a cualquier hora, recordatorios y los huecos libres ofrecidos al momento.', enlaces: [['/agentes-ia-peluquerias', 'Agente para peluquerías']] },
   { clave: 'clinicas', nombre: 'Clínicas', nombreCorto: 'Clínicas', icono: 'Stethoscope', texto: 'Dentales, de fisioterapia y veterinarias: citas, recordatorios y preguntas frecuentes; lo clínico, a una persona.', enlaces: [['/agentes-ia-clinicas', 'Agente para clínicas']] },
   { clave: 'talleres', nombre: 'Talleres', nombreCorto: 'Talleres', icono: 'Wrench', texto: 'Citas de revisión, pre-ITV, neumáticos o diagnosis, y los presupuestos, a una persona.', enlaces: [['/agentes-ia-talleres', 'Agente para talleres']] },
+  { clave: 'inmobiliarias', nombre: 'Inmobiliarias', nombreCorto: 'Inmobiliarias', icono: 'KeyRound', texto: 'Responde a cada lead al momento, busca en tu cartera real, envía fichas y agenda las visitas.', enlaces: [['/agentes-ia-inmobiliarias', 'Agente para inmobiliarias']] },
   { clave: 'ecommerce', nombre: 'Tiendas online', nombreCorto: 'E-commerce', icono: 'ShoppingCart', texto: 'Catálogo real, estado de los pedidos y enlace de pago por WhatsApp, conectado a tu tienda.', enlaces: [['/agentes-ia-prestashop', 'PrestaShop'], ['/agentes-ia-woocommerce', 'WooCommerce']] },
 ]

@@ -74,6 +74,35 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
   PrestaShop 1.7. Si una tienda va en una versión anterior, primero se
   actualiza.
 
+## Qué puede hacer el agente para inmobiliarias (/agentes-ia-inmobiliarias)
+- Se conecta al WhatsApp Business de la inmobiliaria: puede seguir usando la
+  app de WhatsApp Business y sus clientes escriben al número de siempre.
+- Cualifica al interesado: compra o alquiler, zona, presupuesto,
+  habitaciones y, si compra, financiación.
+- Busca SOLO en la cartera real de la inmobiliaria y SOLO inmuebles
+  disponibles (como mucho 5 por búsqueda), con referencia, datos y enlace a
+  la ficha. NO se inventa inmuebles, precios ni características.
+- NO da la dirección exacta: habla de la zona y la dirección la envía el
+  comercial cuando la visita está confirmada.
+- Agenda las visitas en la agenda del panel de la inmobiliaria, sin dobles
+  reservas. NO las reparte en la agenda de cada comercial.
+- Captación de propietarios: recoge los datos de quien quiere vender o
+  alquilar y le da cita para la valoración (cita de la agenda).
+- Pasa la conversación a una persona con aviso en el móvil.
+- Cartera: plugin de WordPress de Innovapp (web de inmuebles con ficha,
+  galería, filtros y botón de WhatsApp, sincronizada al momento con el
+  agente) o importación CSV desde el panel. Otros CRM: solo a medida, tras
+  estudiarlo. NO afirmar integraciones con Inmovilla, Witei ni otros CRM, ni
+  con portales (Idealista, Fotocasa, etc.).
+- NO existe y NO se debe mencionar: avisos automáticos de inmuebles nuevos,
+  recordatorios de visita, publicación en portales.
+- Con el agente de voz (extra), por teléfono también informa de los
+  inmuebles de la cartera.
+- Demo: WhatsApp +34 617 94 09 94 (agente de una inmobiliaria de ejemplo
+  con una cartera de ejemplo).
+- En esta landing no se publican precios: presupuesto personalizado, sin
+  permanencia.
+
 ## Qué puede hacer el agente de voz (por teléfono)
 - Atiende las llamadas que el negocio no coge: el negocio desvía las
   llamadas desde su móvil (cuando no contesta) al agente, y sigue
@@ -122,6 +151,10 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
 - /agentes-ia-talleres → talleres mecánicos: cita para revisión, pre-ITV,
   neumáticos o diagnosis, servicios y horarios, recordatorio de la cita; los
   presupuestos pasan a una persona. El agente NO da precios de reparaciones.
+- /agentes-ia-inmobiliarias → inmobiliarias: atender leads inmobiliarios al
+  momento por WhatsApp, cualificar, buscar en la cartera real, enviar fichas,
+  agendar visitas y captación de propietarios; cartera por plugin de
+  WordPress o CSV. Sin precios (presupuesto personalizado)
 - /agentes-ia#por-sector → tarjetas de todos los sectores
 - /desarrollo-prestashop-woocommerce → desarrollo, migración, actualización y
   mantenimiento de tiendas PrestaShop y WooCommerce

@@ -32,7 +32,20 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
   const ruta = `/agentes-ia-${s.slug}`
   const demo = waLink(s.mensajeWhatsApp)
 
-  const ctas = (
+  // Con demo propia (inmobiliarias): WhatsApp de la demo + formulario. Si no, demo con el
+  // comercial + llamada al agente de voz.
+  const ctas = s.demo ? (
+    <div className="sl-ctas">
+      <a href={waLink(s.mensajeWhatsApp, s.demo.numero)} target="_blank" rel="noopener noreferrer" data-cta={`demo-${s.slug}`}
+        style={{ padding: '16px 26px', borderRadius: 12, background: 'var(--agentes-oro)', color: '#12141a', fontWeight: 700, fontSize: 16, textAlign: 'center' }}>
+        {s.demo.textoBoton} →
+      </a>
+      <a href={`#${ANCLA_FORMULARIO}`}
+        style={{ padding: '16px 26px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.18)', color: '#ece9e2', fontWeight: 600, fontSize: 16, textAlign: 'center' }}>
+        {s.demo.textoFormulario}
+      </a>
+    </div>
+  ) : (
     <div className="sl-ctas">
       <a href={demo} target="_blank" rel="noopener noreferrer" data-cta={`demo-${s.slug}`}
         style={{ padding: '16px 26px', borderRadius: 12, background: 'var(--agentes-oro)', color: '#12141a', fontWeight: 700, fontSize: 16, textAlign: 'center' }}>
@@ -65,6 +78,15 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
             areaServed: { '@type': 'Country', name: 'España' },
           },
           faqJsonLd(s.faq),
+          {
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://innovapp.es' },
+              { '@type': 'ListItem', position: 2, name: 'Agentes IA', item: 'https://innovapp.es/agentes-ia' },
+              { '@type': 'ListItem', position: 3, name: s.nombre, item: `https://innovapp.es${ruta}` },
+            ],
+          },
         ]}
       />
 
@@ -138,13 +160,36 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
           </div>
         </section>
 
+        {/* Cartera conectada (opcional) */}
+        {s.cartera && (
+          <section style={{ padding: 'var(--seccion-y) 16px', background: 'white' }}>
+            <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+              <h2 style={{ ...h2Claro, textAlign: 'center' }}>{s.cartera.titulo}</h2>
+              <p style={{ fontSize: 16, color: '#4a3f2e', lineHeight: 1.7, textAlign: 'center', margin: '0 auto 32px', maxWidth: 640 }}>{s.cartera.texto}</p>
+              <div className="sl-grid sl-grid-3">
+                {s.cartera.puntos.map(p => (
+                  <div key={p.titulo} style={{ background: 'var(--agentes-crema)', border: '1px solid #f1ece0', borderRadius: 18, padding: 24 }}>
+                    <h3 style={{ fontSize: 18, fontWeight: 700, color: '#1a140d', margin: '0 0 8px' }}>{p.titulo}</h3>
+                    <p style={{ fontSize: 15, color: '#4a3f2e', lineHeight: 1.65, margin: 0 }}>{p.texto}</p>
+                  </div>
+                ))}
+              </div>
+              {s.cartera.enlace && (
+                <p style={{ textAlign: 'center', margin: '24px 0 0' }}>
+                  <Link href={s.cartera.enlace.href} style={{ fontSize: 16, color: 'var(--agentes-oro-texto)', fontWeight: 700, textDecoration: 'underline' }}>{s.cartera.enlace.texto} →</Link>
+                </p>
+              )}
+            </div>
+          </section>
+        )}
+
         {/* Conversación de ejemplo */}
         <section style={{ padding: 'var(--seccion-y) 16px', background: 'white' }}>
           <div className="sl-ejemplo">
             <div>
-              <h2 style={h2Claro}>Así atiende a un cliente</h2>
+              <h2 style={h2Claro}>{s.ejemplo?.titulo ?? 'Así atiende a un cliente'}</h2>
               <p style={{ fontSize: 16, color: '#4a3f2e', lineHeight: 1.7, margin: 0 }}>
-                Un ejemplo de conversación por WhatsApp: el agente pregunta lo necesario, comprueba tu agenda y deja la cita apuntada. Tú no has tenido que tocar el móvil.
+                {s.ejemplo?.texto ?? 'Un ejemplo de conversación por WhatsApp: el agente pregunta lo necesario, comprueba tu agenda y deja la cita apuntada. Tú no has tenido que tocar el móvil.'}
               </p>
             </div>
             <ConversacionWhatsApp nombre={s.nombreChat} mensajes={s.conversacion} etiqueta={`Ejemplo de conversación por WhatsApp con el agente de ${s.nombreChat}`} />
@@ -152,7 +197,7 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
         </section>
 
         {/* Cómo funciona */}
-        <ComoFunciona intro="Cómo funciona: en tres pasos, tu negocio contesta solo." steps={PASOS} />
+        <ComoFunciona intro={s.pasos?.intro ?? 'Cómo funciona: en tres pasos, tu negocio contesta solo.'} steps={s.pasos?.items ?? PASOS} />
 
         {/* FAQ */}
         <Faq items={s.faq} titulo="Preguntas frecuentes" />
@@ -173,9 +218,9 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
         {/* CTA final */}
         <section style={{ padding: 'var(--seccion-y) 16px', background: 'var(--agentes-fondo)' }}>
           <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
-            <h2 style={{ ...h2Claro, color: '#ece9e2' }}>Pruébalo tú mismo</h2>
+            <h2 style={{ ...h2Claro, color: '#ece9e2' }}>{s.cierre?.titulo ?? 'Pruébalo tú mismo'}</h2>
             <p style={{ fontSize: 16, color: '#b4bcc6', lineHeight: 1.7, margin: '0 0 28px' }}>
-              Escríbenos por WhatsApp o llámanos: te atiende nuestro propio agente IA y te enseña cómo funcionaría en tu negocio.
+              {s.cierre?.texto ?? 'Escríbenos por WhatsApp o llámanos: te atiende nuestro propio agente IA y te enseña cómo funcionaría en tu negocio.'}
             </p>
             <div style={{ display: 'flex', justifyContent: 'center' }}>{ctas}</div>
             <p style={{ fontSize: 14, color: '#b4bcc6', margin: '24px 0 0' }}>
@@ -199,6 +244,9 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
         @media (min-width: 600px) {
           .sl-ctas { flex-direction: row; flex-wrap: wrap; }
           .sl-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+        }
+        @media (min-width: 900px) {
+          .sl-grid-3 { grid-template-columns: repeat(3, 1fr); }
         }
         @media (min-width: 900px) {
           .sl-hero { grid-template-columns: minmax(0,1.3fr) minmax(0,1fr); align-items: center; gap: 56px; }

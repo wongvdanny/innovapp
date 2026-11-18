@@ -25,6 +25,7 @@ export const MENUS: MenuSeccion[] = [
     items: [
       { href: '/agentes-ia-prestashop', texto: 'Agentes para PrestaShop', descripcion: 'Atención y ventas por WhatsApp con el catálogo de tu tienda PrestaShop.' },
       { href: '/agentes-ia-woocommerce', texto: 'Agentes para WooCommerce', descripcion: 'Atención y ventas por WhatsApp con el catálogo de tu tienda WooCommerce.' },
+      { href: '/agentes-ia-inmobiliarias', texto: 'Inmobiliarias', descripcion: 'Responde a cada lead al momento, busca en tu cartera y agenda visitas por WhatsApp.' },
       { href: '/agentes-voz', texto: 'Agentes de voz', descripcion: 'Las llamadas que no coges, atendidas por un agente de voz.' },
     ],
   },

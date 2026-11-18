@@ -40,6 +40,7 @@ module.exports = {
       path === '/agentes-ia-peluquerias' ||
       path === '/agentes-ia-clinicas' ||
       path === '/agentes-ia-talleres' ||
+      path === '/agentes-ia-inmobiliarias' ||
       path === '/desarrollo-prestashop-woocommerce' ||
       path === '/desarrollo/web'
     ) priority = 0.9;

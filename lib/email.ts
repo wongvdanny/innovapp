@@ -357,7 +357,10 @@ export async function sendLeadAutorespuesta(to: string, nombre: string, fuente: 
     <div style="font-family:system-ui,sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#1e1e1e">
       <h2 style="font-size:20px;margin:0 0 16px">Hola, ${escapeHtml(nombre)}:</h2>
       <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Gracias por tu interés en ${escapeHtml(fuente.servicio)}. Te llamaremos en cuanto podamos para concertar una visita de 15 minutos y ver qué necesita tu ${escapeHtml(fuente.etiquetaNegocio.toLowerCase())}.</p>
-      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Mientras tanto, si quieres, puedes <a href="${waLink(fuente.mensajeDemo)}" style="color:#8a5a12;font-weight:600">hablar por WhatsApp con nuestro agente IA</a> y ver la demo.</p>
+      ${fuente.numeroDemo
+        ? `<p style="font-size:15px;line-height:1.7;margin:0 0 14px">Si quieres hablar antes con nosotros, <a href="${waLink(`Hola, quiero información sobre ${fuente.servicio}`)}" style="color:#8a5a12;font-weight:600">escríbenos por WhatsApp</a>.</p>
+      <p style="font-size:15px;line-height:1.7;margin:0 0 14px">Mientras tanto, <a href="${waLink(fuente.mensajeDemo, fuente.numeroDemo)}" style="color:#8a5a12;font-weight:600">prueba la demo</a>: escríbele como lo haría un cliente.</p>`
+        : `<p style="font-size:15px;line-height:1.7;margin:0 0 14px">Mientras tanto, si quieres, puedes <a href="${waLink(fuente.mensajeDemo)}" style="color:#8a5a12;font-weight:600">hablar por WhatsApp con nuestro agente IA</a> y ver la demo.</p>`}
       <p style="font-size:15px;line-height:1.7;margin:0 0 24px">Si quieres añadir algo, responde a este correo.</p>
       <p style="font-size:15px;margin:0">El equipo de Innovapp</p>
       <p style="font-size:12px;color:#6e6862;line-height:1.6;margin:28px 0 0">Recibes este correo porque has rellenado el formulario de innovapp.es${escapeHtml(fuente.ruta)}. Si no has sido tú, ignóralo o escríbenos a ${CONTACT_EMAIL}.</p>

@@ -18,6 +18,8 @@ const MAX_BYTES = 200 * 1024
 // recorte 4:5 (fracción de la altura sobrante que se quita por arriba: 0 = arriba, 1 = abajo).
 const SECTORES = {
   peluquerias: { zonas: [], arriba: 0.3 },
+  // Sin foto todavía: se mantiene el placeholder (ilustración) de public/sectores/inmobiliarias.webp
+  inmobiliarias: { zonas: [], arriba: 0.5 },
   clinicas: {
     // Placa con el nombre y el número de colegiado del dentista, su logotipo y el termo «ODONTOLOGIA»
     zonas: [[1600, 1150, 1024, 430], [2010, 1540, 614, 250], [2180, 60, 444, 1140], [0, 2560, 120, 620]],
