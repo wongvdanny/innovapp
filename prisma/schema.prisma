@@ -511,3 +511,117 @@ model PromoEntry {
 
   @@unique([promo, email])
 }
+
+// Newsletter con doble opt-in (sql/2026-11-19_newsletter.sql y 2026-11-19_newsletter_archivos.sql)
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model newsletter_campanas {
+  id                  String               @id @default(dbgenerated("(gen_random_uuid())::text"))
+  asunto              String
+  cuerpo_md           String               @default("")
+  sectores            String[]             @default([])
+  estado              String               @default("borrador")
+  programada_para     DateTime?            @db.Timestamptz(6)
+  iniciada_at         DateTime?            @db.Timestamptz(6)
+  terminada_at        DateTime?            @db.Timestamptz(6)
+  pausada_hasta       DateTime?            @db.Timestamptz(6)
+  ultimo_error        String?
+  created_by          String?
+  created_at          DateTime             @default(now()) @db.Timestamptz(6)
+  updated_at          DateTime             @default(now()) @db.Timestamptz(6)
+  newsletter_archivos newsletter_archivos?
+  newsletter_envios   newsletter_envios[]
+
+  @@index([estado, programada_para], map: "newsletter_campanas_estado_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model newsletter_envios {
+  id                      String                  @id @default(dbgenerated("(gen_random_uuid())::text"))
+  campana_id              String
+  suscriptor_id           String
+  email                   String
+  estado                  String                  @default("pendiente")
+  resend_id               String?                 @unique
+  error                   String?
+  enviado_at              DateTime?               @db.Timestamptz(6)
+  entregado_at            DateTime?               @db.Timestamptz(6)
+  rebotado_at             DateTime?               @db.Timestamptz(6)
+  queja_at                DateTime?               @db.Timestamptz(6)
+  created_at              DateTime                @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime                @default(now()) @db.Timestamptz(6)
+  newsletter_descargas    newsletter_descargas[]
+  newsletter_campanas     newsletter_campanas     @relation(fields: [campana_id], references: [id], onUpdate: NoAction)
+  newsletter_suscriptores newsletter_suscriptores @relation(fields: [suscriptor_id], references: [id], onUpdate: NoAction)
+
+  @@unique([campana_id, suscriptor_id])
+  @@index([campana_id, estado], map: "newsletter_envios_campana_estado_idx")
+}
+
+model newsletter_historial {
+  id                      BigInt                  @id @default(autoincrement())
+  suscriptor_id           String
+  accion                  String
+  detalle                 Json?
+  ip                      String?
+  usuario                 String?
+  created_at              DateTime                @default(now()) @db.Timestamptz(6)
+  newsletter_suscriptores newsletter_suscriptores @relation(fields: [suscriptor_id], references: [id], onUpdate: NoAction)
+
+  @@index([suscriptor_id, created_at], map: "newsletter_historial_suscriptor_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model newsletter_suscriptores {
+  id                      String                 @id @default(dbgenerated("(gen_random_uuid())::text"))
+  email                   String                 @unique
+  nombre                  String?
+  empresa                 String?
+  sector                  String                 @default("otro")
+  estado                  String                 @default("pendiente")
+  origen                  String
+  consentimiento_texto    String
+  consentimiento_fecha    DateTime               @db.Timestamptz(6)
+  consentimiento_ip       String?
+  consentimiento_medio    String?
+  consentimiento_nota     String?
+  token_confirmacion_hash String?                @unique
+  confirmacion_enviada_at DateTime?              @db.Timestamptz(6)
+  confirmado_at           DateTime?              @db.Timestamptz(6)
+  token_baja              String                 @unique
+  baja_at                 DateTime?              @db.Timestamptz(6)
+  baja_motivo             String?
+  rebotado_at             DateTime?              @db.Timestamptz(6)
+  created_at              DateTime               @default(now()) @db.Timestamptz(6)
+  updated_at              DateTime               @default(now()) @db.Timestamptz(6)
+  newsletter_envios       newsletter_envios[]
+  newsletter_historial    newsletter_historial[]
+
+  @@index([estado, sector], map: "newsletter_suscriptores_estado_idx")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model newsletter_archivos {
+  id                   String                 @id @default(dbgenerated("(gen_random_uuid())::text"))
+  campana_id           String                 @unique
+  nombre               String
+  ruta                 String                 @unique
+  bytes                Int
+  mime                 String
+  sha256               String
+  created_by           String?
+  created_at           DateTime               @default(now()) @db.Timestamptz(6)
+  newsletter_campanas  newsletter_campanas    @relation(fields: [campana_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  newsletter_descargas newsletter_descargas[]
+}
+
+model newsletter_descargas {
+  id                  BigInt              @id @default(autoincrement())
+  archivo_id          String
+  envio_id            String?
+  created_at          DateTime            @default(now()) @db.Timestamptz(6)
+  newsletter_archivos newsletter_archivos @relation(fields: [archivo_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
+  newsletter_envios   newsletter_envios?  @relation(fields: [envio_id], references: [id], onUpdate: NoAction)
+
+  @@index([archivo_id, created_at], map: "newsletter_descargas_archivo_idx")
+  @@index([envio_id], map: "newsletter_descargas_envio_idx")
+}
