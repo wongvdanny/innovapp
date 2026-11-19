@@ -4,6 +4,8 @@ import Icono from './Icono'
 import Logo from './Logo'
 import LegalIdentity from './LegalIdentity'
 import { COOKIE_SETTINGS_EVENT } from './CookieBanner'
+import { useRouter } from 'next/router'
+import NewsletterForm from './NewsletterForm'
 
 const linkStyle: React.CSSProperties = {
   display: 'block', fontSize: 13, color: 'rgba(255,255,255,.62)',
@@ -13,9 +15,20 @@ const hoverIn = (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.co
 const hoverOut = (e: React.MouseEvent<HTMLElement>) => { e.currentTarget.style.color = 'rgba(255,255,255,.62)' }
 
 export default function Footer() {
+  // En la home ya está el bloque grande de la newsletter: aquí no se repite
+  const { pathname } = useRouter()
   return (
     <footer style={{ background: '#161616', padding: '48px 24px', borderTop: '1px solid rgba(255,255,255,0.05)' }}>
       <div style={{ maxWidth: 1100, margin: '0 auto' }}>
+        {pathname !== '/' && (
+          <div style={{ display: 'flex', gap: 24, flexWrap: 'wrap', alignItems: 'flex-start', paddingBottom: 32, marginBottom: 32, borderBottom: '1px solid rgba(255,255,255,.08)' }}>
+            <div style={{ flex: '1 1 240px' }}>
+              <div style={{ fontSize: 16, fontWeight: 800, color: '#fff', marginBottom: 6 }}>Novedades de Innovapp</div>
+              <p style={{ fontSize: 13, color: 'rgba(255,255,255,.62)', lineHeight: 1.6, margin: 0 }}>Consejos y novedades sobre webs, apps y automatización con IA. Sin spam; te das de baja con un clic.</p>
+            </div>
+            <div style={{ flex: '2 1 320px' }}><NewsletterForm compacto idBase="nl-footer" /></div>
+          </div>
+        )}
         <div className="footer-grid" style={{ marginBottom: 40 }}>
           <div>
             <Logo variant="dark" height={36} style={{ marginBottom: 14, opacity: 0.6 }} />
