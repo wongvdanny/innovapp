@@ -1,15 +1,18 @@
 import { prisma } from '../prisma'
 import { historial } from './suscriptores'
+import { reenviarRecibido } from './recepcion'
 
 // Eventos de Resend (webhook). Llegan los de TODOS los correos de la cuenta: solo se tienen en
 // cuenta los que corresponden a un envío de campaña (por su resend_id); el resto se ignora.
 //   delivered → entregado · bounced → rebotado (y el suscriptor «rebotado» si es permanente)
 //   complained → queja (y el suscriptor pasa a «baja») · failed → error
+//   received → reenvío a contacto@ (respuestas al boletín; ver recepcion.ts)
 // Sin aperturas ni clics: no hay píxel ni enlaces de seguimiento.
 
 export interface EventoResend { type: string; created_at?: string; data?: { email_id?: string; bounce?: { type?: string; subType?: string; message?: string } } }
 
 export async function procesarEvento(evt: EventoResend): Promise<string> {
+  if (evt.type === 'email.received') return reenviarRecibido(evt as any)
   const id = evt.data?.email_id
   if (!id) return 'ignorado'
   const envio = await prisma.newsletter_envios.findUnique({ where: { resend_id: id } })
