@@ -46,4 +46,20 @@ const nextConfig = {
     ]
   },
 }
-module.exports = nextConfig
+// En producción, ninguna URL pública puede apuntar a localhost ni ir sin https (lib/urls-produccion.js).
+// Al compilar se aborta (deploy.sh no publica y la web sigue con la versión anterior). Al arrancar solo
+// se avisa: fallar aquí impediría también la vuelta atrás, que usa este mismo archivo.
+const { PHASE_PRODUCTION_BUILD, PHASE_PRODUCTION_SERVER } = require('next/constants')
+const { comprobarUrlsProduccion } = require('./lib/urls-produccion')
+
+module.exports = phase => {
+  if (phase === PHASE_PRODUCTION_BUILD || phase === PHASE_PRODUCTION_SERVER) {
+    const problemas = comprobarUrlsProduccion({ ...process.env, NODE_ENV: 'production' })
+    if (problemas.length) {
+      const msg = `URLs no válidas para producción:\n  - ${problemas.join('\n  - ')}`
+      if (phase === PHASE_PRODUCTION_BUILD) throw new Error(msg)
+      console.error(`[urls] ${msg}`)
+    }
+  }
+  return nextConfig
+}

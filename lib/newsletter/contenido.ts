@@ -22,6 +22,15 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
  * «{{nombre}}, te escribo…» al principio de línea → «te escribo…».
  * Con texto alternativo, «como {{empresa|la tuya}}» → «como la tuya» si falta la empresa.
  */
+/** Variables admitidas en asunto y cuerpo (con o sin texto alternativo: {{empresa|la tuya}}). */
+export const VARIABLES = ['nombre', 'empresa'] as const
+
+/** Variables desconocidas o mal escritas ({{apellido}}, {{nombr}}…): se quedarían tal cual en el correo. */
+export function variablesDesconocidas(texto: string) {
+  return Array.from(texto.matchAll(/\{\{\s*([^}|]*?)\s*(?:\|[^}]*)?\}\}/g))
+    .map(m => m[0]).filter((m, i, a) => !VARIABLES.some(v => new RegExp(`^\\{\\{\\s*${v}\\s*(\\|[^}]*)?\\}\\}$`).test(m)) && a.indexOf(m) === i)
+}
+
 export function sustituirVariables(texto: string, d: Pick<Destinatario, 'nombre' | 'empresa'>, html: boolean) {
   let t = texto
   for (const [clave, valor] of [['nombre', d.nombre], ['empresa', d.empresa]] as const) {
@@ -99,10 +108,12 @@ export const firmaTexto = (urlBaja: string) => [
 
 /** Correo completo de una campaña para un destinatario. `firmaHtml` = contenido de firma-newsletter.html. */
 export function componerCorreo(c: { asunto: string; cuerpoMd: string }, d: Destinatario, firmaHtml: string, archivo?: ArchivoCorreo | null) {
+  // Asunto con las variables ya sustituidas: se usa en la cabecera Subject y en el <title> del HTML
+  const asunto = sustituirVariables(c.asunto, d, false)
   const cuerpo = sustituirVariables(c.cuerpoMd, d, false)
   const firma = firmaHtml.replace(/<!--[\s\S]*?-->\s*/g, '').replace(/\{\{\s*url_baja\s*\}\}/g, esc(d.urlBaja))
   const html = `<!doctype html>
-<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(c.asunto)}</title></head>
+<html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(asunto)}</title></head>
 <body style="margin:0;padding:0;background:#f4f4f5;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f4f4f5;"><tr><td align="center" style="padding:24px 12px;">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:600px;background:#ffffff;border-radius:12px;"><tr><td style="padding:32px 32px 24px;font-family:Arial,Helvetica,sans-serif;">
@@ -114,5 +125,5 @@ ${firma}
 </body></html>`
   const descarga = archivo ? `\n\nDescargar «${archivo.nombre}» (PDF, ${tamano(archivo.bytes)}): ${archivo.url}` : ''
   const text = `${markdownATexto(cuerpo)}${descarga}\n\n${firmaTexto(d.urlBaja)}\n`
-  return { asunto: sustituirVariables(c.asunto, d, false), html, text }
+  return { asunto, html, text }
 }

@@ -144,3 +144,31 @@ describe('texto alternativo {{variable|alternativa}}', () => {
     expect(sustituirVariables('Hola, {{ nombre | amigo }}:', { nombre: '' }, false)).toBe('Hola, amigo:')
   })
 })
+
+describe('ninguna {{...}} en el correo final', () => {
+  const asunto = 'Novedades para {{empresa|tu inmobiliaria}}, {{nombre}}'
+  const cuerpo = 'Hola, {{nombre}}:\n\nPara inmobiliarias como {{empresa|la tuya}}. Saludos a {{ empresa }}.'
+  const casos = [
+    { nombre: 'Laura', empresa: 'Inmo Norte' },
+    { nombre: null, empresa: null },
+    { nombre: '', empresa: 'Inmo Norte' },
+  ]
+  for (const d of casos) {
+    it(`HTML (incluido <title>) y texto plano limpios · ${JSON.stringify(d)}`, () => {
+      const m = componerCorreo({ asunto, cuerpoMd: cuerpo }, { ...d, urlBaja: URL_BAJA }, firma, { nombre: 'Guía.pdf', url: 'https://innovapp.es/api/newsletter/archivo/a?e=b', bytes: 2048 })
+      expect(m.html).not.toMatch(/\{\{|\}\}/)
+      expect(m.text).not.toMatch(/\{\{|\}\}/)
+      expect(m.asunto).not.toMatch(/\{\{|\}\}/)
+      expect(m.html).toContain(`<title>${m.asunto.replace(/&/g, '&amp;')}</title>`)
+    })
+  }
+  it('el <title> lleva el asunto sustituido (con alternativa)', () => {
+    const m = componerCorreo({ asunto: 'Para {{empresa|tu inmobiliaria}}', cuerpoMd: 'x' }, { urlBaja: URL_BAJA }, firma)
+    expect(m.html).toContain('<title>Para tu inmobiliaria</title>')
+  })
+  it('las variables mal escritas se rechazan al guardar la campaña', () => {
+    expect(() => normalizarCampana({ asunto: 'Hola {{apellido}}', cuerpo_md: 'x' })).toThrow(/\{\{apellido\}\}/)
+    expect(() => normalizarCampana({ asunto: 'A', cuerpo_md: 'Hola {{nombr}}' })).toThrow(/\{\{nombr\}\}/)
+    expect(() => normalizarCampana({ asunto: 'A {{ empresa | la tuya }}', cuerpo_md: 'Hola, {{nombre}}' })).not.toThrow()
+  })
+})

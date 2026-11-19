@@ -5,6 +5,7 @@ import { Resend } from 'resend'
 import { prisma } from '../prisma'
 import { FacturacionError } from '../facturacion/errores'
 import { componerCorreo, ArchivoCorreo } from './contenido'
+import { comprobarUrlsProduccion } from '../urls-produccion'
 
 // Envío de la newsletter con Resend desde el subdominio de marketing (separado del transaccional).
 // Lotes de 100 con la API batch, como mucho uno por segundo (el límite de Resend se comparte
@@ -18,6 +19,12 @@ const LOTE = 100
 const MS_ENTRE_LOTES = 1000
 // Opcional: tope diario propio (además del que devuelva Resend). Al llegar, el envío se pausa hasta mañana.
 const LIMITE_DIARIO = Number(process.env.NEWSLETTER_LIMITE_DIARIO) || 0
+
+// Nunca se envía un correo con enlaces a localhost en producción (además del control del build)
+function comprobarBaseUrl() {
+  const p = comprobarUrlsProduccion({ ...process.env, NEWSLETTER_BASE_URL: BASE_URL })
+  if (p.length) throw new FacturacionError('DATOS_INVALIDOS', `No se envía: ${p.join('; ')}`)
+}
 
 export const urlBaja = (token: string) => `${BASE_URL}/newsletter/baja?t=${token}`
 export const urlBajaOneClick = (token: string) => `${BASE_URL}/api/newsletter/baja?t=${token}`
@@ -47,6 +54,7 @@ const fallo = (e: { message: string }) => new FacturacionError('DATOS_INVALIDOS'
 
 /** Correo del doble opt-in. Sin él confirmado, la persona no recibe ninguna campaña. */
 export async function enviarConfirmacion(s: { email: string; nombre: string | null }, token: string) {
+  comprobarBaseUrl()
   const url = urlConfirmar(token)
   const { error } = await resend.emails.send({
     from: FROM, to: s.email, replyTo: REPLY_TO,
@@ -64,6 +72,7 @@ export async function enviarConfirmacion(s: { email: string; nombre: string | nu
 
 /** Envío de prueba (no cuenta en el historial de la campaña). */
 export async function enviarPrueba(c: { id?: string; asunto: string; cuerpo_md: string }, to: string) {
+  comprobarBaseUrl()
   const token = 'prueba'
   const archivo = await archivoDeCampana(c.id)
   const m = componerCorreo({ asunto: c.asunto, cuerpoMd: c.cuerpo_md }, { nombre: 'Nombre de prueba', empresa: 'Empresa de prueba', urlBaja: urlBaja(token) }, firmaHtml(), archivo?.(null))
@@ -159,6 +168,7 @@ export async function procesarCampanas(opts: { ahora?: Date; presupuestoMs?: num
 interface Lote { enviados: number; omitidos: number; errores: number; vacio: boolean; pausa?: { hasta: Date; motivo: string } }
 
 async function enviarLote(c: { id: string; asunto: string; cuerpo_md: string }): Promise<Lote> {
+  comprobarBaseUrl()
   const out: Lote = { enviados: 0, omitidos: 0, errores: 0, vacio: false }
   await prisma.$transaction(async tx => {
     const filas = await tx.$queryRaw<{ id: string; email: string; estado_s: string; nombre: string | null; empresa: string | null; token_baja: string }[]>`
