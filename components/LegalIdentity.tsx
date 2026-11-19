@@ -1,4 +1,4 @@
-import { CONTACT_EMAIL, COMMERCIAL_PHONE, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_NIF, LEGAL_ADDRESS, formatearWhatsApp, telLink, waLink } from '../lib/constants'
+import { CONTACT_EMAIL, COMMERCIAL_PHONE, LEGAL_OWNER, LEGAL_TRADE_NAME, LEGAL_NIF, LEGAL_ADDRESS, telLink } from '../lib/constants'
 
 /**
  * Identificación del titular (LSSI-CE art. 10), visible en el pie de las páginas públicas.
@@ -16,12 +16,13 @@ export default function LegalIdentity({ tono, fondo }: { tono: 'oscuro' | 'claro
     }}>
       <p style={{ margin: 0 }}>{`${LEGAL_TRADE_NAME} — nombre comercial de ${LEGAL_OWNER} · NIF ${LEGAL_NIF}`}</p>
       <p style={{ margin: 0 }}>
-        {`${LEGAL_ADDRESS} · Tel. `}
-        <a href={telLink()} style={enlace}>{COMMERCIAL_PHONE}</a>
-        {' · WhatsApp '}
-        <a href={waLink()} style={enlace}>{formatearWhatsApp()}</a>
-        {' · '}
+        {`${LEGAL_ADDRESS} · `}
         <a href={`mailto:${CONTACT_EMAIL}`} style={enlace}>{CONTACT_EMAIL}</a>
+      </p>
+      {/* El teléfono comercial es el mismo móvil que el WhatsApp: un solo número. */}
+      <p style={{ margin: 0 }}>
+        {'Teléfono y WhatsApp: '}
+        <a href={telLink()} style={enlace}>{COMMERCIAL_PHONE}</a>
       </p>
     </div>
   )
