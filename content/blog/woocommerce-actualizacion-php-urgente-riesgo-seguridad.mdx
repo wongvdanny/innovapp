@@ -1,0 +1,131 @@
+---
+title: "WooCommerce y PHP: por qué actualizar es urgente (y qué riesgo corre tu tienda si no lo haces)"
+slug: "woocommerce-actualizacion-php-urgente-riesgo-seguridad"
+date: "2026-11-12"
+description: "Tu tienda WooCommerce funciona, pero PHP envejece. Descubre por qué actualizar PHP es urgente, qué rompe, y cómo evitar que tu tienda caiga mientras vendes."
+topic: "WooCommerce y PHP: por qué actualizar tu versión de PHP es urgente (y qué puede salir mal si no lo haces)"
+---
+WooCommerce es ágil, pero tiene una sombra que muchos ignoramos: la versión de PHP en la que corre. Mientras tú ves tu tienda vendiendo sin problemas, esa versión antigua de PHP se convierte en una bomba de relojería. No es drama: es que las versiones antiguas dejan de recibir parches de seguridad, los plugins empiezan a fallar de forma impredecible, y los hosting serios avisan que van a deshabilitar esa versión sin más remedio.
+
+Este artículo te explica por qué actualizar PHP no es un capricho técnico, sino una decisión que afecta directamente a tus ventas, la seguridad de tus clientes y el costo de tu hosting.
+
+## Por qué PHP sigue envejeciendo en tu tienda (y por qué tú no lo ves)
+
+### El problema invisible del "funciona, no lo toques"
+
+Tu tienda corre en PHP porque WooCommerce, como plugin de WordPress, es código PHP. Pero PHP también es un lenguaje que evoluciona: cada año salen versiones nuevas, y cada versión antigua deja de recibir correcciones de seguridad pasado un tiempo. Las versiones muy antiguas ya no se actualizan. Sin actualizaciones, los hackers descubren agujeros y nadie los cierra.
+
+Lo que ves es que todo funciona. Lo que no ves es que:
+
+- Tu hosting está sirviendo código en una versión que ningún especialista en seguridad revisó desde hace mucho tiempo.
+- Los plugins que instalas asumen que corres una versión moderna, así que pueden fallar sin aviso.
+- Si algún plugin tiene una vulnerabilidad, no hay parche porque ese plugin también espera una versión más nueva.
+
+### El hosting te lo dirá cuando es demasiado tarde
+
+Todos los hosting tienen una política: dejar que una versión de PHP envejezca durante un tiempo, avisar con meses de anticipación, y luego deshabilitarla sin opción. Algunos avisan por correo (que acaba en spam), otros lo publican en el panel (que nadie mira), y cuando llega la fecha, tu tienda deja de funcionar.
+
+Esta sorpresa es peor si tu tienda vende mucho en ese momento, porque entonces tienes que tomar una decisión bajo presión: pagar a alguien para que actualice de forma urgente, o quedarte sin tienda.
+
+## Qué puede romper cuando actualizas PHP
+
+### Plugins que dejan de funcionar
+
+No todos los plugins son iguales. Los que se mantienen activos suelen funcionar sin problemas, pero si tienes un plugin que nadie ha actualizado en mucho tiempo, es muy probable que deje de funcionar en una versión nueva de PHP. Algunos simplemente desaparecen (la extensión que usaban cambió y ahora no existe), otros lanzan errores silenciosos que rompen la caja o la búsqueda.
+
+Es importante revisar antes:
+
+- **Plugins de pago**: Stripe, Redsys, PayPal. Estos son prioritarios porque, si fallan, no vendes. Comprueba en la web del plugin qué versión de PHP necesita como mínimo.
+- **Plugins de SEO, caché y rendimiento**: A menudo asumen detalles internos de WordPress que cambian entre versiones.
+- **Plugins que tocas una vez y olvidas**: Los campos personalizados, las integraciones viejas, los reportes. Estos son los que fallan sin aviso.
+
+### Errores silenciosos que rompen la experiencia
+
+Algunos errores no cierran la tienda: simplemente rompen algo que el cliente ve. Por ejemplo:
+
+- La búsqueda de productos no devuelve resultados.
+- El carrito suma mal.
+- El formulario de contacto no envía mails.
+- Los filtros de categoría no funcionan.
+
+Estos fallos son devastadores porque el cliente no ve un error (que le alertaría), ve un sitio que "no funciona como esperaba" y se va a la competencia.
+
+## Cómo actualizar PHP sin que tu tienda caiga
+
+### Paso 1: Hacer una copia de seguridad completa
+
+Antes de tocar nada, necesitas una copia de toda tu tienda: base de datos, archivos, configuración. Si algo sale mal, vuelves atrás en lugar de perder tiempo o dinero.
+
+### Paso 2: Revisar la compatibilidad de tus plugins
+
+Entra en el panel de WordPress, ve a Plugins, y abre cada uno en una pestaña nueva. En la web del plugin, busca qué versión de PHP necesita. Haz una lista de los que no son compatibles. Para cada uno:
+
+- ¿Tiene actualizaciones disponibles? Actualízalo primero.
+- ¿No se actualiza desde hace mucho tiempo? Considera sustituirlo por uno mantenido o prescindir de él.
+- ¿No hay alternativa? Consulta con [alguien que haga desarrollo y mantenimiento a medida](/desarrollo-prestashop-woocommerce) antes de actualizar PHP, porque puede que necesites una solución personalizada.
+
+### Paso 3: Actualizar en un entorno de prueba primero
+
+La mayoría de host permite crear una copia de tu tienda en una rama de prueba sin que los clientes la vean. Actualiza PHP allí primero, prueba:
+
+- Que los productos se vean.
+- Que puedas añadir al carrito.
+- Que el checkout funciona de principio a fin.
+- Que la búsqueda devuelve resultados.
+- Que los mails se envían (de contacto, de cambios de contraseña, notificaciones de pedido).
+
+Si algo falla, tienes tiempo de arreglarlo sin afectar a tus clientes.
+
+### Paso 4: Actualizar en producción en un momento tranquilo
+
+Una vez que todo funciona en prueba, cambia la versión de PHP en tu hosting (desde el panel de control) durante un momento en el que tu tienda no tenga mucho tráfico. Si tienes un problema, vuelves a la versión anterior de forma rápida.
+
+## Qué versiones de PHP debes apuntar
+
+Cada versión de PHP tiene un ciclo de vida: durante un tiempo recibe actualizaciones de seguridad, y después se cierra. Apunta siempre a una versión que todavía reciba actualizaciones de seguridad. Las versiones modernas (PHP 8.0, 8.1, 8.2 y 8.3) son las más seguras porque tienen más años de soporte por delante.
+
+WooCommerce y WordPress soportan varias versiones de PHP, pero cuanto más moderna, mejor: tienes más años de actualizaciones de seguridad por delante, y además tu tienda funciona con más eficiencia.
+
+## Ejemplo práctico
+
+Toma una tienda WooCommerce que corre en una versión antigua de PHP. El dueño vende accesorios online, tiene un plugin de rebajas viejito que instaló hace tiempo, Stripe para pagos, y WooCommerce SEO.
+
+Un día, el hosting avisa: "Deshabilitaremos la versión antigua de PHP. Actualiza a una versión moderna o superior."
+
+El dueño entra en pánico porque no sabe qué pasará. Sigue estos pasos:
+
+**Primera semana**: Copia toda la tienda a un entorno de prueba.
+
+**Segunda semana**: Revisa cada plugin. El plugin de rebajas no ha recibido actualizaciones desde hace mucho tiempo y, en la web, no aparece compatible con las versiones modernas de PHP. Stripe y WooCommerce SEO sí son compatibles. Decide sustituir el plugin de rebajas por otro mantenido o hacer la funcionalidad de otra forma.
+
+**Tercera semana**: En el entorno de prueba, cambia a una versión moderna de PHP y prueba a fondo. Descubre que el plugin de rebajas viejito efectivamente falla: los descuentos no se aplican. Lo desactiva y usa WooCommerce nativo para las rebajas temporales. Todo lo demás funciona.
+
+**Cuarta semana**: En un momento tranquilo, actualiza a la versión moderna de PHP en la tienda real. Todo funciona. Problema solucionado antes de que sea obligatorio.
+
+## Preguntas frecuentes
+
+### ¿Actualizar PHP hace que mi tienda sea más rápida?
+
+Cada versión nueva de PHP suele ser más eficiente que la anterior, así que ejecuta el mismo código con más velocidad. Sin embargo, la ganancia verdadera también depende de tu hosting, el caché que uses y si tu código es eficiente. Dicho esto: actualizar a una versión moderna típicamente mejora el rendimiento de forma visible.
+
+### ¿Puedo actualizar PHP sin tocar nada más de la tienda?
+
+En teoría sí, en práctica casi nunca. Actualizar PHP es una buena oportunidad para revisar también WordPress, WooCommerce y plugins, porque las tres cosas evolucionan juntas. Una [revisión de mantenimiento completa](/desarrollo-prestashop-woocommerce) es mucho más segura que solo tocar PHP.
+
+### ¿Qué pasa si la actualización sale mal y tengo clientes esperando?
+
+Por eso existe la copia de seguridad completa: vuelves a la versión anterior de forma rápida, tu tienda funciona como antes, y luego resuelves el problema sin prisa. Los clientes no se enteran. La clave es hacer la actualización en un momento tranquilo, no cuando hay gente comprando.
+
+### ¿Y si tengo un plugin que no es compatible y no sé cómo reemplazarlo?
+
+Antes de actualizar PHP, consulta con alguien que sepa de desarrollo. A veces el plugin se puede actualizar, a veces hay un substituto moderno que funciona mejor, y a veces necesitas una solución a medida. Mejor resolver eso antes que actualizar a oscuras.
+
+### ¿Cada cuánto tiempo debo actualizar PHP?
+
+No hay un plazo fijo. Lo importante es no dejar que tu versión envejezca mucho. Tu hosting te lo dirá cuando sea obligatorio, pero no esperes a eso: hazlo de forma controlada antes.
+
+---
+
+Actualizar PHP es una de esas tareas que parece técnica pero es, en realidad, un acto de protección del negocio. Mantener tu tienda WooCommerce actualizada —PHP, WordPress, plugins, todo— es lo que separa una tienda estable que vende de un sitio que un día explota sin aviso. Para eso existe el [mantenimiento y la actualización de tiendas WooCommerce](/desarrollo-prestashop-woocommerce).
+
+Si no sabes por dónde empezar o tienes dudas sobre si tu tienda está lista para actualizar, [cuéntanos cómo es tu tienda](/contacto). Podemos ayudarte a revisar qué necesitas y planificar el cambio sin sorpresas.
