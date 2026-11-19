@@ -119,7 +119,7 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
   productos, variantes, precios y stock, y el pedido se cierra en la web
   o por WhatsApp.
 - Se presenta como asistente virtual al inicio de la llamada.
-- Teléfono comercial (atendido por nuestro agente de voz IA): +34 984 276 259.
+- Teléfono y WhatsApp comercial: 684 90 21 96.
 
 ## Precios oficiales (sin IVA, sin permanencia). NO usar otros importes
 - Negocios locales (/agentes-ia):

@@ -7,7 +7,7 @@ import Faq, { faqJsonLd, type FaqItem } from '../components/Faq'
 import LeadForm from '../components/sector/LeadForm'
 import Icono from '../components/Icono'
 import { MENSAJE_DEMO_RESTAURANTE } from '../data/sectores'
-import { COMMERCIAL_PHONE, LEGAL_ADDRESS_ES, waLink } from '../lib/constants'
+import { COMMERCIAL_PHONE_TEL, LEGAL_ADDRESS_ES, waLink } from '../lib/constants'
 
 // Demo: WhatsApp comercial (nuestro agente IA) con el mensaje de demo precargado. Es un enlace
 // wa.me normal, así que lo ven el trigger de GTM por Click URL y el listener de lib/track.ts
@@ -142,7 +142,7 @@ export default function AgentesIaRestaurantesPage() {
             url: 'https://innovapp.es',
             image: 'https://innovapp.es/og-image.png',
             email: 'contacto@innovapp.es',
-            telephone: COMMERCIAL_PHONE,
+            telephone: COMMERCIAL_PHONE_TEL,
             address: {
               '@type': 'PostalAddress',
               streetAddress: LEGAL_ADDRESS_ES.split(',')[0],

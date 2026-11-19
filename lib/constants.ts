@@ -10,8 +10,17 @@ export const COMMERCIAL_WHATSAPP = '34684902196'
 /** WhatsApp de la demo de inmobiliarias (agente de una inmobiliaria de ejemplo). Formato wa.me. */
 export const DEMO_INMOBILIARIA_WHATSAPP = '34617940994'
 
-/** Teléfono fijo comercial, atendido por nuestro agente de voz IA. */
-export const COMMERCIAL_PHONE = '+34 984 276 259'
+/** Teléfono comercial (el mismo móvil que el WhatsApp comercial), tal como se muestra. */
+export const COMMERCIAL_PHONE = '684 90 21 96'
+/** El mismo, en formato E.164: enlaces tel: y JSON-LD. */
+export const COMMERCIAL_PHONE_TEL = '+34684902196'
+
+/**
+ * Número de la demo de voz (fijo de Netelip). Hoy lo atiende «Sofía», el agente de voz de
+ * Innovapp en agentes; pasará a ser la demo de voz de la inmobiliaria. Solo para las demos
+ * de voz (/agentes-voz y VozDemo), nunca como contacto comercial.
+ */
+export const VOICE_DEMO_PHONE = '+34 984 276 259'
 
 /** "34684902196" -> "+34 684 902 196" */
 export function formatearWhatsApp(numero: string = COMMERCIAL_WHATSAPP): string {
@@ -25,7 +34,12 @@ export function waLink(text?: string, numero: string = COMMERCIAL_WHATSAPP): str
 
 /** Enlace tel: al teléfono comercial. */
 export function telLink(): string {
-  return `tel:${COMMERCIAL_PHONE.replace(/\s/g, '')}`
+  return `tel:${COMMERCIAL_PHONE_TEL}`
+}
+
+/** Enlace tel: a la demo de voz. */
+export function voiceDemoTelLink(): string {
+  return `tel:${VOICE_DEMO_PHONE.replace(/\s/g, '')}`
 }
 
 /**
@@ -41,5 +55,5 @@ export const LEGAL_ADDRESS_ES = 'Avenida Príncipe de Asturias 141, 33660 Oviedo
 export const LEGAL_ADDRESS = `${LEGAL_ADDRESS_ES}, España`
 export const LEGAL_ACTIVITY = 'programación informática (epígrafe 763 del IAE, programadores y analistas de informática)'
 
-export const CONTACT_PHONE = '+34 984 276 259'
-export const CONTACT_PHONE_TEL = '+34984276259'
+export const CONTACT_PHONE = COMMERCIAL_PHONE
+export const CONTACT_PHONE_TEL = COMMERCIAL_PHONE_TEL

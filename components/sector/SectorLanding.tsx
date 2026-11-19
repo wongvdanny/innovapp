@@ -33,7 +33,7 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
   const demo = waLink(s.mensajeWhatsApp)
 
   // Con demo propia (inmobiliarias): WhatsApp de la demo + formulario. Si no, demo con el
-  // comercial + llamada al agente de voz.
+  // comercial + llamada al teléfono comercial.
   const ctas = s.demo ? (
     <div className="sl-ctas">
       <a href={waLink(s.mensajeWhatsApp, s.demo.numero)} target="_blank" rel="noopener noreferrer" data-cta={`demo-${s.slug}`}
@@ -51,10 +51,10 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
         style={{ padding: '16px 26px', borderRadius: 12, background: 'var(--agentes-oro)', color: '#12141a', fontWeight: 700, fontSize: 16, textAlign: 'center' }}>
         Pide una demo →
       </a>
-      <a href={telLink()} data-cta="llamada-voz-demo"
+      <a href={telLink()} data-cta="llamada-comercial"
         style={{ padding: '14px 22px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.18)', color: '#ece9e2', fontWeight: 600, fontSize: 15, textAlign: 'center', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: 8 }}>
         <Icono icono={Phone} size={18} />
-        <span>Llámanos: te atiende nuestro agente de voz <span style={{ whiteSpace: 'nowrap' }}>({COMMERCIAL_PHONE})</span></span>
+        <span>Llámanos: <span style={{ whiteSpace: 'nowrap' }}>{COMMERCIAL_PHONE}</span></span>
       </a>
     </div>
   )
@@ -220,7 +220,7 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
           <div style={{ maxWidth: 720, margin: '0 auto', textAlign: 'center' }}>
             <h2 style={{ ...h2Claro, color: '#ece9e2' }}>{s.cierre?.titulo ?? 'Pruébalo tú mismo'}</h2>
             <p style={{ fontSize: 16, color: '#b4bcc6', lineHeight: 1.7, margin: '0 0 28px' }}>
-              {s.cierre?.texto ?? 'Escríbenos por WhatsApp o llámanos: te atiende nuestro propio agente IA y te enseña cómo funcionaría en tu negocio.'}
+              {s.cierre?.texto ?? 'Escríbenos por WhatsApp a nuestro agente IA y te enseña cómo funcionaría en tu negocio, o llámanos.'}
             </p>
             <div style={{ display: 'flex', justifyContent: 'center' }}>{ctas}</div>
             <p style={{ fontSize: 14, color: '#b4bcc6', margin: '24px 0 0' }}>

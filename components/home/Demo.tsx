@@ -28,8 +28,8 @@ export default function Demo() {
               Habla con nuestro agente →
             </a>
             <p style={{ fontSize: 15, color: '#b4bcc6', lineHeight: 1.6, margin: '18px 0 0' }}>
-              Escríbenos o llámanos: te responde nuestro agente IA.{' '}
-              <a href={telLink()} data-cta="llamada-voz-demo" style={{ color: 'var(--agentes-oro)', fontWeight: 700, whiteSpace: 'nowrap' }}>{COMMERCIAL_PHONE}</a>
+              Escríbenos por WhatsApp o llámanos:{' '}
+              <a href={telLink()} data-cta="llamada-comercial" style={{ color: 'var(--agentes-oro)', fontWeight: 700, whiteSpace: 'nowrap' }}>{COMMERCIAL_PHONE}</a>
             </p>
           </div>
           <div style={{ flex: '1 1 320px', display: 'flex', justifyContent: 'center' }}>

@@ -8,7 +8,7 @@ import '../styles/globals.css'
 import '../styles/admin.css'
 import WhatsAppBubble from '../components/WhatsAppBubble'
 import CookieBanner from '../components/CookieBanner'
-import { COMMERCIAL_PHONE, CONTACT_EMAIL, LEGAL_OWNER } from '../lib/constants'
+import { COMMERCIAL_PHONE_TEL, CONTACT_EMAIL, LEGAL_OWNER } from '../lib/constants'
 import { trackContactClicks } from '../lib/track'
 import { iniciarReveal } from '../lib/reveal'
 
@@ -25,7 +25,7 @@ const ORGANIZATION_JSONLD = {
   description:
     'Estudio de automatización e inteligencia artificial: agentes de IA para WhatsApp y teléfono, IA para PrestaShop y WooCommerce, desarrollo, migración y mantenimiento de tiendas online, y productos propios: Servix (TPV para restaurantes) y GymStack (gestión de gimnasios).',
   email: CONTACT_EMAIL,
-  telephone: COMMERCIAL_PHONE,
+  telephone: COMMERCIAL_PHONE_TEL,
   address: { '@type': 'PostalAddress', addressLocality: 'Oviedo', addressRegion: 'Asturias', addressCountry: 'ES' },
   areaServed: ['ES'],
   // sameAs: añadir aquí las URLs de los perfiles sociales cuando existan (hoy no hay ninguno enlazado en la web)

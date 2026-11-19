@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { CalendarCheck, FileText, NotebookPen, Phone, PhoneForwarded, type LucideIcon } from 'lucide-react'
 import Icono from './Icono'
-import { COMMERCIAL_PHONE, telLink } from '../lib/constants'
+import { VOICE_DEMO_PHONE, voiceDemoTelLink } from '../lib/constants'
 
 const PUNTOS: [LucideIcon, string][] = [
   [PhoneForwarded, 'Desvío desde tu móvil cuando no contestas'],
@@ -65,16 +65,16 @@ export default function VozDemo({ variante = 'completa', tema = 'oscuro', enlace
         <div style={{ flex: '1 1 340px', minWidth: 280, background: c.tarjeta, border: `1px solid ${tema === 'oscuro' ? c.borde : '#12141a'}`, borderRadius: 20, padding: '32px 28px', textAlign: 'center' }}>
           <div className="voz-numero-grande" style={{ marginBottom: 20 }}>
             <div style={{ fontSize: 12, fontWeight: 700, color: '#97a0ac', letterSpacing: 1, textTransform: 'uppercase', marginBottom: 8 }}>Llama y pruébalo</div>
-            <a href={telLink()} data-cta="llamada-voz-demo" style={{ fontSize: 'clamp(28px,3vw,38px)', fontWeight: 700, letterSpacing: -0.5, color: '#ece9e2', textDecoration: 'none' }}>
-              {COMMERCIAL_PHONE}
+            <a href={voiceDemoTelLink()} data-cta="llamada-voz-demo" style={{ fontSize: 'clamp(28px,3vw,38px)', fontWeight: 700, letterSpacing: -0.5, color: '#ece9e2', textDecoration: 'none' }}>
+              {VOICE_DEMO_PHONE}
             </a>
           </div>
           <a
-            href={telLink()}
+            href={voiceDemoTelLink()}
             data-cta="llamada-voz-demo"
             style={{ display: 'block', padding: '16px 22px', borderRadius: 12, background: 'var(--agentes-oro)', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }}
           >
-            <Icono icono={Phone} size={20} style={{ verticalAlign: '-4px', marginRight: 8 }} />Llama a nuestro agente: {COMMERCIAL_PHONE}
+            <Icono icono={Phone} size={20} style={{ verticalAlign: '-4px', marginRight: 8 }} />Llama a nuestro agente: {VOICE_DEMO_PHONE}
           </a>
           <p style={{ fontSize: 13, color: '#97a0ac', lineHeight: 1.6, margin: '14px 0 0' }}>
             Es nuestro propio agente de voz. Pregúntale lo que quieras sobre Innovapp.
