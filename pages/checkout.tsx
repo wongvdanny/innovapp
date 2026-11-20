@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Logo from '../components/Logo'
+import PasswordInput from '../components/PasswordInput'
 import LegalIdentity from '../components/LegalIdentity'
 import { validarNifEspanol } from '../lib/facturacion/validacion'
 import { track } from '../lib/track'
@@ -241,7 +242,7 @@ export default function Checkout() {
                   </div>
                   <div>
                     <label style={lbl}>Contraseña *</label>
-                    <input style={inp} type="password" placeholder="Mínimo 6 caracteres" value={form.password} onChange={e => set('password', e.target.value)} />
+                    <PasswordInput style={inp} placeholder="Mínimo 6 caracteres" value={form.password} onChange={e => set('password', e.target.value)} />
                     <p style={{ fontSize: 12, color: '#88a8b0', marginTop: 6 }}>Esta será también la contraseña de tu cuenta.</p>
                   </div>
                   <div>

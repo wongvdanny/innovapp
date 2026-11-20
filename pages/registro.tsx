@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Logo from '../components/Logo'
+import PasswordInput from '../components/PasswordInput'
 import { track, trackSignUpOnce } from '../lib/track'
 
 interface PlanData {
@@ -254,7 +255,7 @@ export default function Registro() {
                 </div>
                 <div>
                   <label style={lblStyle}>Contraseña</label>
-                  <input style={inputStyle} type="password" value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} placeholder="Mínimo 8 caracteres" required minLength={8}
+                  <PasswordInput style={inputStyle} value={form.password} onChange={e=>setForm(f=>({...f,password:e.target.value}))} placeholder="Mínimo 8 caracteres" required minLength={8}
                     onFocus={e=>(e.target.style.borderColor='#ee7528')} onBlur={e=>(e.target.style.borderColor='#eef1f4')} />
                 </div>
               </div>

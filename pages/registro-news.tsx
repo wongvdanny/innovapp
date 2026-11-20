@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Seo from '../components/Seo'
+import PasswordInput from '../components/PasswordInput'
 import { track } from '../lib/track'
 
 const COUNTRIES = [
@@ -177,7 +178,7 @@ export default function RegistroNews() {
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
               <input style={inputStyle} placeholder="Tu nombre" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} required />
               <input style={inputStyle} type="email" placeholder="tu@email.com" value={form.email} onChange={e => setForm(f => ({ ...f, email: e.target.value }))} required />
-              <input style={inputStyle} type="password" placeholder="Contraseña (mín. 8 caracteres)" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} required />
+              <PasswordInput style={inputStyle} placeholder="Contraseña (mín. 8 caracteres)" value={form.password} onChange={e => setForm(f => ({ ...f, password: e.target.value }))} required />
               <select style={inputStyle} value={form.country} onChange={e => setForm(f => ({ ...f, country: e.target.value }))}>
                 {COUNTRIES.map(c => <option key={c.code} value={c.code}>{c.name}</option>)}
               </select>
