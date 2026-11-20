@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import { Badge, Column, DataTable, EmptyState, KpiCard, KpiGrid, Notice, Section, euros } from '../ui'
 import { ProductoMenu, presentacion } from '../../../lib/admin/productos'
+import { priceText } from '../../../lib/pricing'
 import { SuscripcionAdmin, cuotaMensual, productoDe, resumen, resumenPorProducto, tieneTenant } from '../../../lib/admin/metricas'
 
 export interface DatosDashboard {
@@ -40,7 +41,7 @@ export default function Dashboard({ subs, productos, facturacion }: DatosDashboa
   return (
     <div className="adm-stack">
       <Notice tone="info">
-        MRR estimado con el precio actual de los planes (IVA incluido; los anuales cuentan /12), sin las suscripciones de prueba{total.pruebas ? ` (${total.pruebas})` : ''}. Ingresos reales, gastos y beneficio: en Contabilidad.
+        MRR estimado con el precio actual de los planes (base sin IVA; los anuales cuentan /12), sin las suscripciones de prueba{total.pruebas ? ` (${total.pruebas})` : ''}. Ingresos reales, gastos y beneficio: en Contabilidad.
       </Notice>
 
       <KpiGrid>
@@ -75,7 +76,7 @@ export default function Dashboard({ subs, productos, facturacion }: DatosDashboa
                 <div key={s.id} className="adm-lista-item"><span><strong>{s.user.name}</strong> · activa sin tenant ({productoDe(s)})</span><Badge tone="warn">Provisionar</Badge></div>
               ))}
               {pendientes.map(s => (
-                <div key={s.id} className="adm-lista-item"><span><strong>{s.user.name}</strong> · {s.plan.name} {cuotaMensual(s.plan) > 0 ? `· ${s.plan.price}€` : ''}</span><Badge tone="warn">Pendiente de pago</Badge></div>
+                <div key={s.id} className="adm-lista-item"><span><strong>{s.user.name}</strong> · {s.plan.name} {cuotaMensual(s.plan) > 0 ? `· ${priceText(s.plan.price, s.plan.interval)}` : ''}</span><Badge tone="warn">Pendiente de pago</Badge></div>
               ))}
             </div>
           )}

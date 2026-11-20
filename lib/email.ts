@@ -2,6 +2,7 @@ import { Resend } from 'resend'
 import { CONTACT_EMAIL, LEGAL_OWNER, LEGAL_TRADE_NAME, waLink } from './constants'
 import { CUOTA_MANTENIMIENTO, DIAS_ACEPTAR, DIAS_MATERIAL, INSTAGRAM_HANDLE, INSTAGRAM_URL, MAX_WEBS, PERMANENCIA_MESES, REMITENTE_PROMO } from './promo/config'
 import type { FuenteLead } from '../data/sectores'
+import { VAT_RATE, formatEUR, splitVatIncluded } from './pricing'
 const resend = new Resend(process.env.RESEND_API_KEY)
 const FROM = process.env.RESEND_FROM ?? 'innovapp <onboarding@resend.dev>'
 
@@ -85,11 +86,21 @@ const DEFAULT_CONFIG: ProductEmailConfig = {
 }
 
 export async function sendWelcomeEmail(
-  to: string, name: string, planName: string, planPrice: number,
+  to: string, name: string, planName: string, importe: number,
   planInterval: string, slug: string, billing?: any, productSlug: string = 'servix'
 ) {
   const cfg = CONFIG_BY_PRODUCT[productSlug] || DEFAULT_CONFIG
   const periodLabel = planInterval === 'yearly' ? 'año' : 'mes'
+  // `importe` es lo cobrado (IVA incluido): mismo desglose que la factura del cobro
+  const d = splitVatIncluded(importe)
+  const filaImporte = (k: string, v: string, fuerte = false) => `
+            <tr style="border-top:1px solid #d0eeec">
+              <td style="padding:8px 0;font-size:13px;color:#4a6572">${k}</td>
+              <td style="font-size:${fuerte ? 15 : 14}px;font-weight:${fuerte ? 800 : 600};color:#1a6478">${v}</td>
+            </tr>`
+  const filasImporte = d.total > 0
+    ? filaImporte('Base imponible', `${formatEUR(d.base)} / ${periodLabel}`) + filaImporte(`IVA (${VAT_RATE} %)`, formatEUR(d.vat)) + filaImporte('Total pagado', `${formatEUR(d.total)} / ${periodLabel}`, true)
+    : filaImporte('Importe', 'Gratis', true)
   const billingBlock = billing ? `
     <div style="background:#f8fafb;border:1px solid #eef1f4;border-radius:14px;padding:24px;margin-bottom:20px">
       <div style="font-size:12px;font-weight:700;color:#88a8b0;letter-spacing:1px;text-transform:uppercase;margin-bottom:16px">🧾 Datos de facturación</div>
@@ -122,10 +133,7 @@ export async function sendWelcomeEmail(
               <td style="padding:8px 0;font-size:13px;color:#4a6572;width:160px">Plan contratado</td>
               <td style="font-size:15px;font-weight:800;color:#1a2533">${planName}</td>
             </tr>
-            <tr style="border-top:1px solid #d0eeec">
-              <td style="padding:8px 0;font-size:13px;color:#4a6572">Importe</td>
-              <td style="font-size:15px;font-weight:800;color:#1a6478">${planPrice}€ / ${periodLabel}</td>
-            </tr>
+            ${filasImporte}
             <tr style="border-top:1px solid #d0eeec">
               <td style="padding:8px 0;font-size:13px;color:#4a6572">Estado</td>
               <td><span style="background:#f0fdf4;color:#166534;border-radius:8px;padding:4px 12px;font-size:13px;font-weight:700">✓ Activa</span></td>
@@ -582,7 +590,7 @@ export async function sendTransferenciaEmail(m: TransferenciaEmail) {
   const fila = (k: string, v: string) => v
     ? `<tr><td style="padding:8px 0;color:#5f6b7a;font-size:13px">${k}</td><td style="padding:8px 0;font-weight:700;font-size:14px;text-align:right">${escapeHtml(v)}</td></tr>`
     : ''
-  const importe = m.importe.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })
+  const d = splitVatIncluded(m.importe)
   const { data, error } = await resend.emails.send({
     from: FROM, to: m.to,
     subject: `Datos para tu transferencia · ${m.producto}`,
@@ -592,7 +600,7 @@ export async function sendTransferenciaEmail(m: TransferenciaEmail) {
       <p style="font-size:15px">Hola ${escapeHtml(m.name)},</p>
       <p style="font-size:15px;line-height:1.6">Hemos registrado tu alta en <b>${escapeHtml(m.producto)}</b>. Para completarla, haz una transferencia con estos datos en un plazo de ${m.datos.diasPlazo} días:</p>
       <table style="width:100%;border-collapse:collapse;background:#fdf0e8;border-radius:12px;padding:8px 16px;margin:20px 0">
-        ${fila('Importe', importe)}${fila('Titular', m.datos.titular)}${fila('IBAN', m.datos.iban)}${fila('BIC', m.datos.bic)}${fila('Banco', m.datos.banco)}${fila('Concepto', m.referencia)}
+        ${fila('Base imponible', formatEUR(d.base))}${fila(`IVA (${VAT_RATE} %)`, formatEUR(d.vat))}${fila('Importe a transferir', formatEUR(d.total))}${fila('Titular', m.datos.titular)}${fila('IBAN', m.datos.iban)}${fila('BIC', m.datos.bic)}${fila('Banco', m.datos.banco)}${fila('Concepto', m.referencia)}
       </table>
       <p style="font-size:14px;line-height:1.6"><b>Indica el concepto ${escapeHtml(m.referencia)}</b> para que podamos identificar tu pago. Activaremos tu cuenta en cuanto lo recibamos y te avisaremos por email.</p>
       ${m.datos.instrucciones ? `<p style="font-size:14px;line-height:1.6">${escapeHtml(m.datos.instrucciones)}</p>` : ''}

@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { Badge, Button, Column, DataTable, EmptyState, Section, fecha, useFlash } from '../ui'
-import { ESTADOS_SUSCRIPCION, INTERVALO_TEXTO, ProductoMenu, presentacion } from '../../../lib/admin/productos'
+import { ESTADOS_SUSCRIPCION, ProductoMenu, presentacion } from '../../../lib/admin/productos'
 import { SuscripcionAdmin, productoDe, slugTenant, tieneTenant } from '../../../lib/admin/metricas'
+import { formatEUR, isFree, priceText } from '../../../lib/pricing'
 
 /** Concepto de la transferencia pendiente de confirmar, si la hay. */
 const transferenciaPendiente = (s: SuscripcionAdmin) => s.invoices?.[0] ? s.invoices[0].providerRef || 'Transferencia' : null
@@ -51,7 +52,7 @@ export default function Suscripciones({ inicial, productos, titulo = 'Suscripcio
   const activar = async (s: SuscripcionAdmin) => {
     const ref = transferenciaPendiente(s)
     const pregunta = ref
-      ? `¿Has recibido la transferencia de ${s.user.name} (concepto ${ref}, ${s.plan.price} €)? Se activará, se emitirá la factura y se enviará el email de bienvenida.`
+      ? `¿Has recibido la transferencia de ${s.user.name} (concepto ${ref}, ${formatEUR(s.invoices?.[0]?.amount ?? 0)} IVA incluido)? Se activará, se emitirá la factura y se enviará el email de bienvenida.`
       : `¿Activar manualmente la suscripción de ${s.user.name}?`
     if (!confirm(pregunta)) return
     const r = await llamar(s, '/api/admin/activate-subscription', 'POST')
@@ -107,7 +108,7 @@ export default function Suscripciones({ inicial, productos, titulo = 'Suscripcio
         return slug ? <Badge color={presentacion(slug).color}>{nombreProducto(slug)}</Badge> : <Badge tone="warn">Sin producto</Badge>
       },
     }] : []),
-    { key: 'plan', header: 'Plan', render: s => <span className="adm-fuerte" style={{ whiteSpace: 'nowrap' }}>{s.plan.price > 0 ? `${s.plan.name} · ${s.plan.price}€/${INTERVALO_TEXTO[s.plan.interval] ?? s.plan.interval}` : `${s.plan.name} (sin coste)`}</span> },
+    { key: 'plan', header: 'Plan', render: s => <span className="adm-fuerte" style={{ whiteSpace: 'nowrap' }}>{!isFree(s.plan.price, s.plan.interval) ? `${s.plan.name} · ${priceText(s.plan.price, s.plan.interval)}` : `${s.plan.name} (sin coste)`}</span> },
     {
       key: 'estado', header: 'Estado', render: s => {
         const e = ESTADOS_SUSCRIPCION[s.status]

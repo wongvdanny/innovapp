@@ -6,6 +6,8 @@ import Link from 'next/link'
 import { Check, Star } from 'lucide-react'
 import Icono from '../components/Icono'
 import { prisma } from '../lib/prisma'
+import PlanPrice from '../components/PlanPrice'
+import { priceWithVat } from '../lib/pricing'
 
 interface PlanData {
   id: string
@@ -20,6 +22,7 @@ export default function ServixPage({ plans }: { plans: PlanData[] }) {
   const freePlan    = plans.find(p => p.interval === 'free')
   const monthlyPlan = plans.find(p => p.interval === 'monthly')
   const yearlyPlan  = plans.find(p => p.interval === 'yearly')
+  const totales = plans.map(p => priceWithVat(p.price))
 
   return (
     <>
@@ -37,13 +40,14 @@ export default function ServixPage({ plans }: { plans: PlanData[] }) {
             'TPV y sistema de gestión para restaurantes, bares y cafeterías: mesas, carta QR, cocina, reservas y pagos con Redsys.',
           url: 'https://innovapp.es/servix',
           image: 'https://innovapp.es/og-image.png',
-          offers: {
+          // Rango con los planes activos reales, IVA incluido (lo que paga el cliente)
+          ...(totales.length ? { offers: {
             '@type': 'AggregateOffer',
             priceCurrency: 'EUR',
-            lowPrice: '0',
-            highPrice: '990',
-            offerCount: '3',
-          },
+            lowPrice: Math.min(...totales).toFixed(2),
+            highPrice: Math.max(...totales).toFixed(2),
+            offerCount: String(totales.length),
+          } } : {}),
           provider: {
             '@type': 'Organization',
             name: 'innovapp',
@@ -96,7 +100,7 @@ export default function ServixPage({ plans }: { plans: PlanData[] }) {
             {freePlan && (
               <div style={{ background: 'white', border: '2px solid var(--gris-200)', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gris-500)', textTransform: 'uppercase', marginBottom: 8 }}>{freePlan.name}</div>
-                <div style={{ fontSize: 44, fontWeight: 800, color: '#1e1e1e' }}>{freePlan.price}€</div>
+                <PlanPrice base={freePlan.price} period={freePlan.interval} color="#1e1e1e" muted="var(--gris-500)" style={{ marginBottom: 4 }} />
                 <div style={{ fontSize: 13, color: 'var(--gris-500)', marginBottom: 20 }}>{freePlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {freePlan.features.map(f => (
@@ -109,7 +113,7 @@ export default function ServixPage({ plans }: { plans: PlanData[] }) {
             {monthlyPlan && (
               <div style={{ background: 'white', border: '2px solid var(--gris-200)', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'var(--gris-500)', textTransform: 'uppercase', marginBottom: 8 }}>{monthlyPlan.name}</div>
-                <div style={{ fontSize: 44, fontWeight: 800, color: '#1e1e1e' }}>{monthlyPlan.price}€<span style={{ fontSize: 15, color: 'var(--gris-500)', fontWeight: 500 }}>/mes</span></div>
+                <PlanPrice base={monthlyPlan.price} period={monthlyPlan.interval} color="#1e1e1e" muted="var(--gris-500)" style={{ marginBottom: 4 }} />
                 <div style={{ fontSize: 13, color: 'var(--gris-500)', marginBottom: 20 }}>{monthlyPlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {monthlyPlan.features.map(f => (
@@ -123,7 +127,7 @@ export default function ServixPage({ plans }: { plans: PlanData[] }) {
               <div style={{ background: 'linear-gradient(145deg,#1e1e1e 0%,#33261c 100%)', border: '2px solid rgba(238,117,40,.25)', borderRadius: 24, padding: '32px 28px', textAlign: 'left', display: 'flex', flexDirection: 'column' }}>
                 <div style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: '#f59e0b', color: '#1e1e1e', borderRadius: 8, padding: '3px 12px', fontSize: 11, fontWeight: 800, marginBottom: 8, alignSelf: 'flex-start' }}><Icono icono={Star} size={13} />Más popular</div>
                 <div style={{ fontSize: 12, fontWeight: 700, color: 'rgba(255,255,255,.5)', textTransform: 'uppercase', marginBottom: 8 }}>{yearlyPlan.name}</div>
-                <div style={{ fontSize: 44, fontWeight: 800, color: 'white' }}>{yearlyPlan.price}€<span style={{ fontSize: 15, color: 'rgba(255,255,255,.4)', fontWeight: 500 }}>/año</span></div>
+                <PlanPrice base={yearlyPlan.price} period={yearlyPlan.interval} color="white" muted="rgba(255,255,255,.55)" style={{ marginBottom: 4 }} />
                 <div style={{ fontSize: 13, color: 'rgba(255,255,255,.45)', marginBottom: 20 }}>{yearlyPlan.description}</div>
                 <ul style={{ listStyle: 'none', padding: 0, display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 24, flex: 1 }}>
                   {yearlyPlan.features.map(f => (

@@ -4,6 +4,8 @@ import { getSession, signOut } from 'next-auth/react'
 import { prisma } from '../lib/prisma'
 import Link from 'next/link'
 import Logo from '../components/Logo'
+import PlanPrice from '../components/PlanPrice'
+import { formatEUR } from '../lib/pricing'
 
 export default function Dashboard({ user, subscription, invoices }: any) {
   const statusColor: Record<string,string> = { active:'#166534', pending:'#92400e', cancelled:'#991b1b', expired:'#991b1b' }
@@ -35,7 +37,7 @@ export default function Dashboard({ user, subscription, invoices }: any) {
                   <div>
                     <div style={{ fontSize: 13, color: '#88a8b0', marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1, fontWeight: 600 }}>Plan actual</div>
                     <div style={{ fontSize: 24, fontWeight: 800, color: '#1e1e1e' }}>{subscription.plan.name}</div>
-                    <div style={{ fontSize: 15, color: '#c85f1b', fontWeight: 600 }}>{subscription.plan.price}€{subscription.plan.interval === 'monthly' ? '/mes' : '/año'}</div>
+                    <PlanPrice consumer={subscription.plan.Product?.slug === 'news'} base={subscription.plan.price} period={subscription.plan.interval} size="sm" color="#c85f1b" muted="#88a8b0" style={{ marginTop: 2 }} />
                   </div>
                   <div style={{ background: statusBg[subscription.status], color: statusColor[subscription.status], borderRadius: 20, padding: '6px 16px', fontSize: 13, fontWeight: 700 }}>
                     {statusLabel[subscription.status]}
@@ -66,9 +68,9 @@ export default function Dashboard({ user, subscription, invoices }: any) {
                   <div key={inv.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderBottom: '1px solid #f0f4f6' }}>
                     <div>
                       <div suppressHydrationWarning style={{ fontSize: 14, fontWeight: 600, color: '#1e1e1e' }}>{new Date(inv.createdAt).toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' })}</div>
-                      <div style={{ fontSize: 12, color: '#88a8b0' }}>{inv.amount}€ · {inv.status === 'paid' ? '✅ Pagado' : '⏳ Pendiente'}</div>
+                      <div style={{ fontSize: 12, color: '#88a8b0' }}>IVA incluido · {inv.status === 'paid' ? '✅ Pagado' : '⏳ Pendiente'}</div>
                     </div>
-                    <div style={{ fontSize: 16, fontWeight: 800, color: '#c85f1b' }}>{inv.amount}€</div>
+                    <div style={{ fontSize: 16, fontWeight: 800, color: '#c85f1b' }}>{formatEUR(inv.amount)}</div>
                   </div>
                 ))}
               </div>
@@ -108,7 +110,7 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const user = await prisma.user.findUnique({
     where: { email: session.user.email },
     include: {
-      subscriptions: { where: { deletedAt: null }, include: { plan: true }, orderBy: { createdAt: 'desc' } },
+      subscriptions: { where: { deletedAt: null }, include: { plan: { include: { Product: { select: { slug: true } } } } }, orderBy: { createdAt: 'desc' } },
       invoices: { orderBy: { createdAt: 'desc' } }
     }
   })

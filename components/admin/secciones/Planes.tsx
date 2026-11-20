@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Badge, Button, EmptyState, Field, Modal, Notice, Section } from '../ui'
-import { INTERVALO_TEXTO } from '../../../lib/admin/productos'
+import PlanPrice from '../../PlanPrice'
+import { formatEUR, priceWithVat } from '../../../lib/pricing'
 
 interface Plan { id: string; name: string; description: string; price: number; interval: string; active: boolean; features: string[]; productId: string | null }
 
@@ -40,8 +41,6 @@ export default function Planes({ planes, producto }: { planes: Plan[]; producto:
     if (res.ok) setLista(l => l.map(x => (x.id === p.id ? { ...x, active: !x.active } : x)))
   }
 
-  const precio = (p: Plan) => (p.interval === 'free' ? 'Gratis' : `${p.price}€/${INTERVALO_TEXTO[p.interval] ?? p.interval}`)
-
   return (
     <Section title={`Planes de ${producto.name}`} subtitle={`${lista.length} planes`} actions={<Button variant="primario" onClick={abrirNuevo}>+ Nuevo plan</Button>}>
       {lista.length === 0 ? <EmptyState icon="📦" title="Este producto aún no tiene planes" /> : (
@@ -51,7 +50,7 @@ export default function Planes({ planes, producto }: { planes: Plan[]; producto:
               <div className="adm-fila" style={{ justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
                 <div>
                   <div style={{ fontSize: 17, fontWeight: 800 }}>{p.name}</div>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--adm-accent)' }}>{precio(p)}</div>
+                  <PlanPrice base={p.price} period={p.interval} size="md" color="var(--adm-accent)" muted="var(--adm-muted)" />
                 </div>
                 <Badge tone={p.active ? 'ok' : 'neutro'}>{p.active ? 'Activo' : 'Pausado'}</Badge>
               </div>
@@ -73,7 +72,7 @@ export default function Planes({ planes, producto }: { planes: Plan[]; producto:
           <div className="adm-stack" style={{ gap: 14 }}>
             <Field label="Nombre"><input className="adm-input" value={form.name} onChange={e => setForm(f => ({ ...f, name: e.target.value }))} placeholder="Ej: Mensual" /></Field>
             <Field label="Descripción"><input className="adm-input" value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Sin permanencia" /></Field>
-            <Field label="Precio (€, IVA incluido)"><input className="adm-input" type="number" min={0} step="0.01" value={form.price} onChange={e => setForm(f => ({ ...f, price: parseFloat(e.target.value) || 0 }))} /></Field>
+            <Field label="Precio base (€, sin IVA)" help={form.price > 0 ? `El cliente paga ${formatEUR(priceWithVat(form.price))} IVA incluido` : 'Con 0 € el plan se muestra como «Gratis»'}><input className="adm-input" type="number" min={0} step="0.01" value={form.price} onChange={e => setForm(f => ({ ...f, price: parseFloat(e.target.value) || 0 }))} /></Field>
             <Field label="Intervalo">
               <select className="adm-input" value={form.interval} onChange={e => setForm(f => ({ ...f, interval: e.target.value }))}>
                 <option value="monthly">Mensual</option>

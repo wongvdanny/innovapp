@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Seo from '../components/Seo'
 import PasswordInput from '../components/PasswordInput'
+import PlanPrice from '../components/PlanPrice'
 import { track } from '../lib/track'
 import { ETIQUETA_METODO, irAlPago, useMetodosPago } from '../lib/metodosPago'
 
@@ -139,7 +140,7 @@ export default function RegistroNews() {
                     style={{ textAlign: 'left', padding: '18px 20px', borderRadius: 16, border: '2px solid #eef1f4', background: 'white', cursor: 'pointer' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 6 }}>
                       <span style={{ fontWeight: 800, color: '#1a1a2e' }}>{p.name}</span>
-                      <span style={{ fontWeight: 800, color: '#e6672a' }}>{p.price === 0 ? 'Gratis' : `${p.price}€/mes`}</span>
+                      <PlanPrice consumer base={p.price} period={p.interval} size="sm" color="#e6672a" muted="#8a8aa3" style={{ textAlign: 'right' }} />
                     </div>
                     <p style={{ fontSize: 13, color: '#8a8aa3', margin: 0 }}>{p.description}</p>
                   </button>
@@ -150,8 +151,9 @@ export default function RegistroNews() {
         ) : (
           <>
             <h2 style={{ fontSize: 22, fontWeight: 800, color: '#1a1a2e', margin: '0 0 6px' }}>
-              {selectedPlan.price === 0 ? 'Crea tu cuenta gratis' : `Suscripción — ${selectedPlan.price}€/mes`}
+              {selectedPlan.price === 0 ? 'Crea tu cuenta gratis' : 'Suscripción'}
             </h2>
+            {selectedPlan.price > 0 && <PlanPrice consumer base={selectedPlan.price} period={selectedPlan.interval} size="sm" color="#e6672a" muted="#8a8aa3" style={{ marginBottom: 6 }} />}
             <p style={{ fontSize: 14, color: '#8a8aa3', margin: '0 0 24px' }}>
               <button onClick={() => setSelectedPlan(null)} style={{ background: 'none', border: 'none', color: '#e6672a', cursor: 'pointer', fontSize: 13, fontWeight: 600, padding: 0 }}>← Cambiar plan</button>
             </p>

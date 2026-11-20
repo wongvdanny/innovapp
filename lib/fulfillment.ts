@@ -121,7 +121,7 @@ export async function fulfillInvoice(invoiceId: string) {
   }
 
   try {
-    await sendWelcomeEmail(user.email, emailName, (plan as any).name, (plan as any).price, (plan as any).interval, slug, billing, product?.slug || 'servix')
+    await sendWelcomeEmail(user.email, emailName, (plan as any).name, invoice.amount, (plan as any).interval, slug, billing, product?.slug || 'servix')
   } catch (e: any) {
     console.error('Error email:', e.message)
   }

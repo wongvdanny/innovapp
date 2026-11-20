@@ -7,6 +7,7 @@ import Stripe from 'stripe'
 import { validarNifEspanol } from '../../../lib/facturacion/validacion'
 import { datosTransferencia, referenciaTransferencia } from '../../../lib/transferencia'
 import { sendTransferenciaEmail } from '../../../lib/email'
+import { priceWithVat, totalCents } from '../../../lib/pricing'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
@@ -18,6 +19,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const plan = await prisma.plan.findUnique({ where: { id: planId }, include: { Product: true } as any })
     if (!plan) return res.status(400).json({ error: 'Plan no encontrado' })
     const product = (plan as any).Product as { slug: string; name: string } | null
+    // Plan.price es la base sin IVA: se cobra el total con IVA (en céntimos para la pasarela)
+    const importe = priceWithVat(plan.price)
+    const importeCents = totalCents(plan.price)
 
     // Datos fiscales: con NIF válido y dirección completa se emite factura completa (F1); por encima
     // del límite de la simplificada (400 €) son obligatorios, porque no cabe emitir una F2.
@@ -30,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       if (!r.valido) return res.status(400).json({ error: `NIF/CIF no válido: ${r.error}` })
       fiscal.nif = r.normalizado
     }
-    if (plan.price > limite) {
+    if (importe > limite) {
       if (!fiscal.nif?.trim()) return res.status(400).json({ error: `Para importes superiores a ${limite} € necesitamos tu NIF/CIF para emitir la factura` })
       if (!fiscal.address?.trim() || !fiscal.city?.trim() || !fiscal.zip?.trim()) return res.status(400).json({ error: 'Completa la dirección de facturación (dirección, ciudad y código postal)' })
     }
@@ -108,7 +112,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     // Crear factura pendiente
     const invoice = await prisma.invoice.create({
-      data: { userId: user.id, subscriptionId: sub.id, amount: plan.price, status: 'pending', provider, isTest: esPrueba }
+      data: { userId: user.id, subscriptionId: sub.id, amount: importe, status: 'pending', provider, isTest: esPrueba }
     })
 
     const baseUrl = process.env.NEXTAUTH_URL || 'https://innovapp.es'
@@ -120,7 +124,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await prisma.invoice.update({ where: { id: invoice.id }, data: { providerRef: referencia } })
       try {
         await sendTransferenciaEmail({
-          to: email, name, producto: `${productLabel} — ${plan.name}`, importe: plan.price,
+          to: email, name, producto: `${productLabel} — ${plan.name}`, importe,
           referencia, datos: transferencia!, url: `${baseUrl}/transferencia?sub=${sub.id}`,
         })
       } catch (e: any) {
@@ -140,7 +144,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           price_data: {
             currency: 'eur',
             product_data: { name: `${productLabel} — ${plan.name}` },
-            unit_amount: Math.round(plan.price * 100),
+            unit_amount: importeCents,
           },
           quantity: 1,
         }],
@@ -168,7 +172,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       DS_MERCHANT_MERCHANTCODE:       config.merchantCode,
       DS_MERCHANT_TERMINAL:           String(config.terminal).padStart(3,'0'),
       DS_MERCHANT_TRANSACTIONTYPE:    '0',
-      DS_MERCHANT_AMOUNT:             String(Math.round(plan.price * 100)),
+      DS_MERCHANT_AMOUNT:             String(importeCents),
       DS_MERCHANT_CURRENCY:           (config.currency || '978') as any,
       DS_MERCHANT_ORDER:              redsysOrderId,
       DS_MERCHANT_MERCHANTURL:        `${baseUrl}/api/redsys/notify`,

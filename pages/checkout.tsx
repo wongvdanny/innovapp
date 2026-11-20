@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 import PasswordInput from '../components/PasswordInput'
+import PlanPrice from '../components/PlanPrice'
+import { VAT_RATE, formatEUR, priceWithVat, vatAmount } from '../lib/pricing'
 import LegalIdentity from '../components/LegalIdentity'
 import { validarNifEspanol } from '../lib/facturacion/validacion'
 import { track } from '../lib/track'
@@ -94,7 +96,7 @@ export default function Checkout() {
     if (form.password.length < 6) return 'La contraseña debe tener al menos 6 caracteres'
     return ''
   }
-  const nifObligatorio = !!plan && plan.price > LIMITE_SIMPLIFICADA
+  const nifObligatorio = !!plan && priceWithVat(plan.price) > LIMITE_SIMPLIFICADA
   const validateStep1 = () => {
     if (nifObligatorio && !form.nif.trim()) return `Para importes superiores a ${LIMITE_SIMPLIFICADA} € necesitamos tu NIF/CIF para emitir la factura`
     if (form.nif.trim() && form.country === 'España') {
@@ -157,7 +159,6 @@ export default function Checkout() {
   }
 
   const productName = product?.name || 'innovapp'
-  const intervalLabel = plan.interval === 'monthly' ? 'mes' : plan.interval === 'yearly' ? 'año' : plan.interval
 
   return (
     <>
@@ -363,7 +364,7 @@ export default function Checkout() {
                   background: loading ? '#ccc' : 'linear-gradient(135deg,#c85f1b,#ee7528)',
                   color: 'white', fontSize: 15, fontWeight: 700, cursor: loading ? 'not-allowed' : 'pointer',
                 }}>
-                  {loading ? '⏳ Redirigiendo al pago...' : `💳 Pagar ${plan.price}€ — ${plan.name}`}
+                  {loading ? '⏳ Redirigiendo al pago...' : `💳 Pagar ${formatEUR(priceWithVat(plan.price))} — ${plan.name}`}
                 </button>
               )}
             </div>
@@ -375,9 +376,7 @@ export default function Checkout() {
               <div style={{ fontSize: 12, fontWeight: 700, color: '#88a8b0', textTransform: 'uppercase', letterSpacing: 1, marginBottom: 16 }}>Resumen del pedido</div>
               <div style={{ fontSize: 13, fontWeight: 700, color: '#ee7528', marginBottom: 2 }}>{productName}</div>
               <div style={{ fontSize: 18, fontWeight: 800, color: '#1e1e1e', marginBottom: 4 }}>{plan.name}</div>
-              <div style={{ fontSize: 32, fontWeight: 800, color: '#c85f1b', marginBottom: 4 }}>
-                {plan.price}€ <span style={{ fontSize: 14, fontWeight: 500, color: '#88a8b0' }}>/ {intervalLabel}</span>
-              </div>
+              <PlanPrice base={plan.price} period={plan.interval} size="md" color="#c85f1b" muted="#88a8b0" style={{ marginBottom: 4 }} />
               <div style={{ borderTop: '1px solid #eef1f4', paddingTop: 16, marginTop: 16 }}>
                 {labels.features.map(f => (
                   <div key={f} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '5px 0', fontSize: 13, color: '#4a6572' }}>
@@ -385,10 +384,14 @@ export default function Checkout() {
                   </div>
                 ))}
               </div>
-              <div style={{ borderTop: '1px solid #eef1f4', marginTop: 16, paddingTop: 16, display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 800, color: '#1e1e1e' }}>
-                <span>Total</span><span>{plan.price}€</span>
+              <div style={{ borderTop: '1px solid #eef1f4', marginTop: 16, paddingTop: 12 }}>
+                {([['Base imponible', formatEUR(plan.price)], [`IVA (${VAT_RATE} %)`, formatEUR(vatAmount(plan.price))]] as [string, string][]).map(([k, v]) => (
+                  <div key={k} style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, color: '#4a6572', padding: '3px 0' }}><span>{k}</span><span>{v}</span></div>
+                ))}
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 15, fontWeight: 800, color: '#1e1e1e', paddingTop: 8, marginTop: 6, borderTop: '1px solid #eef1f4' }}>
+                  <span>Total a pagar</span><span>{formatEUR(priceWithVat(plan.price))}</span>
+                </div>
               </div>
-              <div style={{ fontSize: 11, color: '#88a8b0', marginTop: 6, textAlign: 'right' }}>IVA incluido</div>
             </div>
 
             <div style={{ background: '#fdf0e8', borderRadius: 16, border: '1px solid #f9dcc7', padding: 20 }}>

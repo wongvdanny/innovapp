@@ -2,6 +2,7 @@ import Seo from '../components/Seo'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { VAT_RATE, formatEUR, splitVatIncluded } from '../lib/pricing'
 
 interface Pedido {
   status: string
@@ -35,7 +36,9 @@ export default function Transferencia() {
 
   const activo = pedido?.status === 'active' || pedido?.pagado
   const filas: [string, string][] = pedido?.datos ? ([
-    ['Importe', pedido.importe.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })],
+    ['Base imponible', formatEUR(splitVatIncluded(pedido.importe).base)],
+    [`IVA (${VAT_RATE} %)`, formatEUR(splitVatIncluded(pedido.importe).vat)],
+    ['Importe a transferir', formatEUR(pedido.importe)],
     ['Titular', pedido.datos.titular], ['IBAN', pedido.datos.iban], ['BIC', pedido.datos.bic], ['Banco', pedido.datos.banco],
     ['Concepto', pedido.referencia || ''],
   ] as [string, string][]).filter(([, v]) => v) : []

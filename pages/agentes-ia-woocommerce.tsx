@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import PlanPrice from '../components/PlanPrice'
 import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
@@ -294,10 +295,8 @@ export default function AgentesIaWoocommercePage() {
                 <h3 style={{ fontSize: 20, fontWeight: 700, color: '#ece9e2', margin: '0 0 4px' }}>{p.nombre}</h3>
                 <div style={{ fontSize: 14, color: '#97a0ac', marginBottom: 14 }}>{p.para}</div>
                 <div style={{ fontSize: 14, color: '#97a0ac' }}>desde</div>
-                <div style={{ fontSize: 42, fontWeight: 700, color: 'var(--agentes-oro)', letterSpacing: -1, lineHeight: 1.1 }}>
-                  {p.mes} €<span style={{ fontSize: 16, fontWeight: 500, color: '#97a0ac' }}> /mes</span>
-                </div>
-                <div style={{ fontSize: 14, color: '#ece9e2', margin: '6px 0 16px' }}>Alta desde {p.alta} €</div>
+                <PlanPrice base={p.mes} period="monthly" color="var(--agentes-oro)" muted="#97a0ac" style={{ letterSpacing: -1 }} />
+                <div style={{ fontSize: 14, color: '#ece9e2', margin: '6px 0 16px' }}>Alta desde {p.alta} € + IVA</div>
                 <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14, color: '#c9cdd4', lineHeight: 1.8 }}>
                   {p.incluye.map((i) => <li key={i}>{i}</li>)}
                 </ul>
@@ -309,7 +308,7 @@ export default function AgentesIaWoocommercePage() {
               Extra: <Link href="/agentes-voz" style={{ color: 'var(--agentes-oro)', textDecoration: 'underline' }}>agente de voz</Link> para las llamadas que no coges
             </h3>
             <p style={{ fontSize: 14, color: '#c9cdd4', lineHeight: 1.8, margin: 0 }}>
-              Básico 120 min +49 €/mes · Plus 220 min +79 €/mes · Pro 350 min +119 €/mes. Minuto adicional 0,30 €. Alta de voz +119 €.
+              Básico 120 min +49 € + IVA/mes · Plus 220 min +79 € + IVA/mes · Pro 350 min +119 € + IVA/mes. Minuto adicional 0,30 €. Alta de voz +119 €.
             </p>
           </div>
           <p style={{ fontSize: 12, color: '#97a0ac', lineHeight: 1.7, margin: '20px 0 0', textAlign: 'center' }}>

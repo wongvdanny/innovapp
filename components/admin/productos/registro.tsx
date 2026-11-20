@@ -1,6 +1,7 @@
 import { ConfigMetricas } from '../secciones/MetricasProducto'
 import { Badge, Section, euros, fecha } from '../ui'
 import GymUsuarios from './GymUsuarios'
+import { priceText } from '../../../lib/pricing'
 
 // Registro de paneles de métricas por slug de producto. Un producto sin entrada aquí usa el
 // panel genérico (suscripciones y planes de innovapp): añadir un producto a la tabla Product
@@ -67,7 +68,7 @@ export const METRICAS: Record<string, ConfigMetricas> = {
       { key: 'pais', header: 'País', render: r => r.country },
       { key: 'zona', header: 'Provincia / ciudad', render: r => [r.city, r.province].filter(Boolean).join(', ') || '—' },
       { key: 'temas', header: 'Temas', render: r => (r.topics || []).join(', ') || '—' },
-      { key: 'plan', header: 'Plan', render: r => `${r.plan} · ${r.planPrice}€` },
+      { key: 'plan', header: 'Plan', render: r => `${r.plan} · ${priceText(r.planPrice, 'month')}` },
       { key: 'audios', header: 'Audios', num: true, render: r => r.digestsGenerated },
       { key: 'ultima', header: 'Última generación', render: r => <span className="adm-muted" suppressHydrationWarning>{fecha(r.lastDigestDate)}</span> },
     ],

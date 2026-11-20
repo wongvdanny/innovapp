@@ -98,7 +98,7 @@ export default function AgentesVozPage() {
               >
                 <div style={{ fontSize: 16, fontWeight: 700, color: plan.destacado ? 'var(--agentes-oro)' : '#1a140d', marginBottom: 14 }}>{plan.nombre}</div>
                 <div style={{ fontSize: 40, fontWeight: 700, letterSpacing: -1, color: plan.destacado ? '#ece9e2' : '#1a140d' }}>
-                  {plan.precio}<span style={{ fontSize: 15, fontWeight: 500, color: plan.destacado ? '#97a0ac' : 'var(--agentes-texto-2)' }}>/mes</span>
+                  {plan.precio}<span style={{ fontSize: 15, fontWeight: 500, color: plan.destacado ? '#97a0ac' : 'var(--agentes-texto-2)' }}> + IVA/mes</span>
                 </div>
                 <div style={{ fontSize: 14, fontWeight: 600, color: plan.destacado ? '#97a0ac' : 'var(--agentes-texto-2)', marginTop: 8 }}>{plan.minutos}</div>
               </div>

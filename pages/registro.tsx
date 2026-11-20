@@ -4,6 +4,8 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 import PasswordInput from '../components/PasswordInput'
+import PlanPrice from '../components/PlanPrice'
+import { priceText } from '../lib/pricing'
 import { track, trackSignUpOnce } from '../lib/track'
 import { ETIQUETA_METODO, irAlPago, useMetodosPago } from '../lib/metodosPago'
 
@@ -174,7 +176,6 @@ export default function Registro() {
               <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>Empieza gratis o elige un plan Pro. Puedes cambiar cuando quieras.</p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 28 }}>
                 {plans.map(p => {
-                  const period = p.interval === 'monthly' ? '/mes' : p.interval === 'yearly' ? '/año' : ''
                   const badge = p.interval === 'free' ? '✦ Empieza ya' : p.interval === 'yearly' ? '⭐ Ahorra' : ''
                   return (
                     <div key={p.id} onClick={() => setPlan(p.id)}
@@ -185,10 +186,7 @@ export default function Registro() {
                           <div style={{ fontSize: 16, fontWeight: 700, color: '#1e1e1e', marginBottom: 2 }}>{p.name}</div>
                           {p.description && <div style={{ fontSize: 12, color: '#88a8b0' }}>{p.description}</div>}
                         </div>
-                        <div style={{ textAlign: 'right' }}>
-                          <span style={{ fontSize: 32, fontWeight: 800, color: plan === p.id ? '#c85f1b' : '#1e1e1e' }}>{p.price}€</span>
-                          <span style={{ fontSize: 13, color: '#88a8b0' }}>{period}</span>
-                        </div>
+                        <PlanPrice base={p.price} period={p.interval} size="md" color={plan === p.id ? '#c85f1b' : '#1e1e1e'} muted="#88a8b0" style={{ textAlign: 'right' }} />
                       </div>
                     </div>
                   )
@@ -208,7 +206,7 @@ export default function Registro() {
               <h2 style={{ fontSize: 24, fontWeight: 800, marginBottom: 6, color: '#1e1e1e' }}>Crea tu cuenta</h2>
               <p style={{ fontSize: 14, color: '#88a8b0', marginBottom: 28 }}>
                 Plan <strong style={{ color: '#c85f1b' }}>{selectedPlan?.name}</strong>
-                {selectedPlan && selectedPlan.price > 0 ? ` · ${selectedPlan.price}€${selectedPlan.interval === 'monthly' ? '/mes' : selectedPlan.interval === 'yearly' ? '/año' : ''}` : ' · gratis para siempre'}
+                {selectedPlan && selectedPlan.price > 0 ? ` · ${priceText(selectedPlan.price, selectedPlan.interval)}` : ' · gratis para siempre'}
               </p>
               <div style={{ display: 'flex', flexDirection: 'column', gap: 14, marginBottom: 24 }}>
                 <div>
