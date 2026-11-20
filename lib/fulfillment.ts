@@ -28,7 +28,8 @@ export async function fulfillInvoice(invoiceId: string) {
 
   const startDate = new Date()
   const endDate = new Date()
-  if ((plan as any).interval === 'monthly') endDate.setMonth(endDate.getMonth() + 1)
+  // News usa «month»; GymStack y Servix, «monthly»
+  if ((plan as any).interval === 'monthly' || (plan as any).interval === 'month') endDate.setMonth(endDate.getMonth() + 1)
   else endDate.setFullYear(endDate.getFullYear() + 1)
 
   let restaurantId: string | null = null
