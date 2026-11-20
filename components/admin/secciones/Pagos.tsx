@@ -4,6 +4,8 @@ import { Button, Field, Notice, Section, Toggle } from '../ui'
 // Las configuraciones llegan sin secretos: solo hasSecretKey / hasWebhookSecret.
 export interface RedsysPublico { merchantCode: string; terminal: string; currency: string; environment: string; enabled: boolean; hasSecretKey: boolean }
 export interface StripePublico { publishableKey: string; environment: string; enabled: boolean; hasSecretKey: boolean; hasWebhookSecret: boolean }
+// Transferencia: sin secretos (los datos bancarios se muestran al cliente)
+export interface TransferenciaConfig { enabled: boolean; titular: string; iban: string; bic: string; banco: string; instrucciones: string; diasPlazo: number }
 
 function Entorno({ valor, onChange }: { valor: string; onChange: (v: string) => void }) {
   return (
@@ -110,11 +112,53 @@ function Stripe({ config }: { config: StripePublico | null }) {
   )
 }
 
-export default function Pagos({ redsys, stripe }: { redsys: RedsysPublico | null; stripe: StripePublico | null }) {
+function Transferencia({ config }: { config: TransferenciaConfig | null }) {
+  const [form, setForm] = useState({
+    enabled: config?.enabled ?? false, titular: config?.titular || '', iban: config?.iban || '', bic: config?.bic || '',
+    banco: config?.banco || '', instrucciones: config?.instrucciones || '', diasPlazo: config?.diasPlazo ?? 5,
+  })
+  const [estado, setEstado] = useState<'' | 'guardando' | 'ok' | 'error'>('')
+  const [error, setError] = useState('')
+
+  // Mismo patrón que useGuardar, pero mostrando el error de validación del servidor (IBAN…)
+  const enviar = async () => {
+    setEstado('guardando'); setError('')
+    const res = await fetch('/api/admin/transferencia', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
+    const d = await res.json().catch(() => ({}))
+    if (res.ok) setForm(f => ({ ...f, iban: d.iban, bic: d.bic }))
+    else setError(d.error || '')
+    setEstado(res.ok ? 'ok' : 'error')
+    setTimeout(() => setEstado(''), 3000)
+  }
+
+  return (
+    <Section title="Transferencia bancaria" subtitle="El cliente recibe los datos bancarios; la suscripción se activa cuando confirmas el ingreso."
+      actions={<Toggle value={form.enabled} onChange={v => setForm(f => ({ ...f, enabled: v }))} label={form.enabled ? 'Activo' : 'Inactivo'} />}>
+      <div className="adm-stack" style={{ gap: 14 }}>
+        {([['Titular de la cuenta', 'titular', 'Nombre del titular'], ['IBAN', 'iban', 'ES00 0000 0000 0000 0000 0000'], ['BIC / SWIFT (opcional)', 'bic', 'XXXXESMMXXX'], ['Banco (opcional)', 'banco', 'Nombre del banco']] as const).map(([label, clave, ph]) => (
+          <Field key={clave} label={label}><input className="adm-input" value={form[clave]} onChange={e => setForm(f => ({ ...f, [clave]: e.target.value }))} placeholder={ph} /></Field>
+        ))}
+        <Field label="Plazo para pagar (días)">
+          <input className="adm-input" type="number" min={1} max={60} value={form.diasPlazo} onChange={e => setForm(f => ({ ...f, diasPlazo: Number(e.target.value) }))} />
+        </Field>
+        <Field label="Instrucciones adicionales (opcional)">
+          <textarea className="adm-input" rows={3} value={form.instrucciones} onChange={e => setForm(f => ({ ...f, instrucciones: e.target.value }))}
+            placeholder="Ej.: envía el justificante a contacto@innovapp.es para agilizar el alta." />
+        </Field>
+        <Notice tone="aviso">ℹ️ Los pedidos por transferencia quedan como <b>Pendientes</b> en Clientes. Al pulsar <b>Activar</b> se marca el cobro como pagado, se crea el tenant, se emite la factura y se envía el email de bienvenida.</Notice>
+        {estado === 'error' && error ? <Notice tone="error">⚠️ {error}</Notice> : <Resultado estado={estado} />}
+        <Button variant="primario" onClick={enviar} disabled={estado === 'guardando'}>{estado === 'guardando' ? 'Guardando…' : 'Guardar transferencia'}</Button>
+      </div>
+    </Section>
+  )
+}
+
+export default function Pagos({ redsys, stripe, transferencia }: { redsys: RedsysPublico | null; stripe: StripePublico | null; transferencia: TransferenciaConfig | null }) {
   return (
     <div className="adm-grid" style={{ ['--min' as any]: '360px', alignItems: 'start' }}>
       <Redsys config={redsys} />
       <Stripe config={stripe} />
+      <Transferencia config={transferencia} />
     </div>
   )
 }
