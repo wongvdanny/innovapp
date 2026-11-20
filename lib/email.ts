@@ -544,3 +544,42 @@ export async function sendPromoSuplente(e: PromoEmail, orden: number) {
   })
   if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }
+
+// --- Pago por transferencia bancaria ---
+export interface TransferenciaEmail {
+  to: string
+  name: string
+  producto: string
+  importe: number
+  referencia: string
+  url: string
+  datos: { titular: string; iban: string; bic: string; banco: string; instrucciones: string; diasPlazo: number }
+}
+
+/** Datos bancarios y concepto para completar un alta pagada por transferencia. */
+export async function sendTransferenciaEmail(m: TransferenciaEmail) {
+  const fila = (k: string, v: string) => v
+    ? `<tr><td style="padding:8px 0;color:#5f6b7a;font-size:13px">${k}</td><td style="padding:8px 0;font-weight:700;font-size:14px;text-align:right">${escapeHtml(v)}</td></tr>`
+    : ''
+  const importe = m.importe.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })
+  const { data, error } = await resend.emails.send({
+    from: FROM, to: m.to,
+    subject: `Datos para tu transferencia · ${m.producto}`,
+    html: `
+    <div style="font-family:'Segoe UI',Arial,sans-serif;max-width:520px;margin:0 auto;padding:32px;color:#1e1e1e">
+      <div style="font-size:24px;font-weight:800;margin-bottom:24px">innov<span style="color:#ee7528">app</span></div>
+      <p style="font-size:15px">Hola ${escapeHtml(m.name)},</p>
+      <p style="font-size:15px;line-height:1.6">Hemos registrado tu alta en <b>${escapeHtml(m.producto)}</b>. Para completarla, haz una transferencia con estos datos en un plazo de ${m.datos.diasPlazo} días:</p>
+      <table style="width:100%;border-collapse:collapse;background:#fdf0e8;border-radius:12px;padding:8px 16px;margin:20px 0">
+        ${fila('Importe', importe)}${fila('Titular', m.datos.titular)}${fila('IBAN', m.datos.iban)}${fila('BIC', m.datos.bic)}${fila('Banco', m.datos.banco)}${fila('Concepto', m.referencia)}
+      </table>
+      <p style="font-size:14px;line-height:1.6"><b>Indica el concepto ${escapeHtml(m.referencia)}</b> para que podamos identificar tu pago. Activaremos tu cuenta en cuanto lo recibamos y te avisaremos por email.</p>
+      ${m.datos.instrucciones ? `<p style="font-size:14px;line-height:1.6">${escapeHtml(m.datos.instrucciones)}</p>` : ''}
+      <p style="margin:24px 0"><a href="${m.url}" style="background:#ee7528;color:#1e1e1e;padding:14px 24px;border-radius:12px;text-decoration:none;font-weight:700;display:inline-block">Ver datos de pago</a></p>
+      <p style="font-size:13px;color:#5f6b7a">¿Dudas? Escríbenos a ${CONTACT_EMAIL}.</p>
+    </div>`,
+  })
+  // El SDK de Resend no lanza en errores de API: hay que mirar `error`
+  if (error) throw new Error(`Resend: ${error.message}`)
+  return data?.id
+}

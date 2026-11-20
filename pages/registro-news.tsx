@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import Seo from '../components/Seo'
 import { track } from '../lib/track'
+import { ETIQUETA_METODO, irAlPago, useMetodosPago } from '../lib/metodosPago'
 
 const COUNTRIES = [
   { code: 'ES', name: 'España' },
@@ -28,8 +29,7 @@ export default function RegistroNews() {
   const [plansLoading, setPlansLoading] = useState(true)
   const [selectedPlan, setSelectedPlan] = useState<PlanData | null>(null)
 
-  const [providers, setProviders] = useState<{ redsys: boolean; stripe: boolean }>({ redsys: false, stripe: false })
-  const [payProvider, setPayProvider] = useState<'redsys' | 'stripe' | ''>('')
+  const { disponibles, metodo: payProvider, setMetodo: setPayProvider, elegir } = useMetodosPago()
 
   const [form, setForm] = useState({ name: '', email: '', password: '', country: 'ES', province: '', city: '' })
   const [topics, setTopics] = useState<string[]>([])
@@ -44,15 +44,6 @@ export default function RegistroNews() {
         setPlansLoading(false)
       })
       .catch(() => setPlansLoading(false))
-
-    fetch('/api/payment-providers')
-      .then(r => r.json())
-      .then(d => {
-        setProviders(d)
-        if (d.redsys && !d.stripe) setPayProvider('redsys')
-        else if (d.stripe && !d.redsys) setPayProvider('stripe')
-      })
-      .catch(() => {})
   }, [])
 
   const toggleTopic = (t: string) => {
@@ -63,7 +54,7 @@ export default function RegistroNews() {
     if (!form.name.trim()) return 'Introduce tu nombre'
     if (!form.email.trim() || !form.email.includes('@')) return 'Email no válido'
     if (form.password.length < 8) return 'La contraseña debe tener al menos 8 caracteres'
-    if (selectedPlan && selectedPlan.price > 0 && providers.redsys && providers.stripe && !payProvider) return 'Selecciona un método de pago'
+    if (selectedPlan && selectedPlan.price > 0 && elegir && !payProvider) return 'Selecciona un método de pago'
     return ''
   }
 
@@ -105,17 +96,7 @@ export default function RegistroNews() {
       const data = await res.json()
       if (!res.ok) { setError(data.error || 'Error al procesar el pago'); setLoading(false); return }
 
-      if (data.provider === 'stripe') {
-        window.location.href = data.url
-        return
-      }
-
-      const frm = document.createElement('form')
-      frm.method = 'POST'; frm.action = data.url
-      Object.entries(data.body as Record<string, string>).forEach(([k, v]) => {
-        const i = document.createElement('input'); i.type = 'hidden'; i.name = k; i.value = v; frm.appendChild(i)
-      })
-      document.body.appendChild(frm); frm.submit()
+      irAlPago(data)
     } catch (e) {
       setError('Error de conexión. Inténtalo de nuevo.')
       setLoading(false)
@@ -204,24 +185,19 @@ export default function RegistroNews() {
                     </div>
                   </div>
 
-                  {providers.redsys && providers.stripe && (
+                  {elegir && (
                     <div>
                       <p style={{ fontSize: 13, fontWeight: 700, color: '#1a1a2e', marginBottom: 8 }}>Método de pago</p>
                       <div style={{ display: 'flex', gap: 8 }}>
-                        <button type="button" onClick={() => setPayProvider('redsys')}
-                          style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer',
-                            border: `2px solid ${payProvider === 'redsys' ? '#3d2b6f' : '#eef1f4'}`,
-                            background: payProvider === 'redsys' ? '#f3f0fa' : 'white',
-                            color: payProvider === 'redsys' ? '#3d2b6f' : '#8a8aa3' }}>
-                          Tarjeta (Redsys)
-                        </button>
-                        <button type="button" onClick={() => setPayProvider('stripe')}
-                          style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer',
-                            border: `2px solid ${payProvider === 'stripe' ? '#3d2b6f' : '#eef1f4'}`,
-                            background: payProvider === 'stripe' ? '#f3f0fa' : 'white',
-                            color: payProvider === 'stripe' ? '#3d2b6f' : '#8a8aa3' }}>
-                          Stripe
-                        </button>
+                        {disponibles.map(key => (
+                          <button key={key} type="button" onClick={() => setPayProvider(key)}
+                            style={{ flex: 1, padding: '10px', borderRadius: 10, fontSize: 13, fontWeight: 700, cursor: 'pointer',
+                              border: `2px solid ${payProvider === key ? '#3d2b6f' : '#eef1f4'}`,
+                              background: payProvider === key ? '#f3f0fa' : 'white',
+                              color: payProvider === key ? '#3d2b6f' : '#8a8aa3' }}>
+                            {ETIQUETA_METODO[key]}
+                          </button>
+                        ))}
                       </div>
                     </div>
                   )}

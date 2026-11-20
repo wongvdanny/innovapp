@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import Link from 'next/link'
 import Logo from '../components/Logo'
 import { track, trackSignUpOnce } from '../lib/track'
+import { ETIQUETA_METODO, irAlPago, useMetodosPago } from '../lib/metodosPago'
 
 interface PlanData {
   id: string
@@ -37,19 +38,7 @@ export default function Registro() {
   const [loading, setLoading] = useState(false)
   const [error, setError]   = useState('')
 
-  const [providers, setProviders] = useState<{ redsys: boolean; stripe: boolean }>({ redsys: true, stripe: false })
-  const [payProvider, setPayProvider] = useState<'redsys' | 'stripe' | ''>('')
-
-  useEffect(() => {
-    fetch('/api/payment-providers')
-      .then(r => r.json())
-      .then(d => {
-        setProviders(d)
-        if (d.redsys && !d.stripe) setPayProvider('redsys')
-        else if (d.stripe && !d.redsys) setPayProvider('stripe')
-      })
-      .catch(() => {})
-  }, [])
+  const { disponibles, metodo: payProvider, setMetodo: setPayProvider, elegir } = useMetodosPago()
 
   useEffect(() => {
     if (!router.isReady) return
@@ -110,7 +99,7 @@ export default function Registro() {
     if (!isFree) {
       const err = validateBilling()
       if (err) { setError(err); return }
-      if (providers.redsys && providers.stripe && !payProvider) { setError('Selecciona un método de pago'); return }
+      if (elegir && !payProvider) { setError('Selecciona un método de pago'); return }
     }
     setLoading(true); setError('')
     try {
@@ -135,18 +124,7 @@ export default function Registro() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Error')
 
-      if (data.provider === 'stripe') {
-        window.location.href = data.url
-        return
-      }
-
-      const frm = document.createElement('form')
-      frm.method = 'POST'; frm.action = data.url
-      Object.entries(data.body as Record<string,string>).forEach(([k,v]) => {
-        const inp = document.createElement('input')
-        inp.type='hidden'; inp.name=k; inp.value=v; frm.appendChild(inp)
-      })
-      document.body.appendChild(frm); frm.submit()
+      irAlPago(data)
     } catch (e: any) {
       setError(e.message); setLoading(false)
     }
@@ -320,11 +298,11 @@ export default function Registro() {
                 </div>
               </div>
 
-              {providers.redsys && providers.stripe && (
+              {elegir && (
                 <div style={{ marginBottom: 16 }}>
                   <div style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', marginBottom: 10 }}>Método de pago</div>
                   <div style={{ display: 'flex', gap: 10 }}>
-                    {[['redsys','💳 Tarjeta (Redsys)'],['stripe','💜 Tarjeta (Stripe)']].map(([key,label]) => (
+                    {disponibles.map(key => [key, ETIQUETA_METODO[key]]).map(([key,label]) => (
                       <button key={key} type="button" onClick={() => setPayProvider(key as any)} style={{
                         flex: 1, padding: '12px 14px', borderRadius: 12, cursor: 'pointer', fontSize: 13, fontWeight: 700,
                         border: `2px solid ${payProvider === key ? '#ee7528' : '#eef1f4'}`,
