@@ -5,6 +5,8 @@ import bcrypt from 'bcryptjs'
 import { createRedsysAPI, SANDBOX_URLS, PRODUCTION_URLS, randomTransactionId } from 'redsys-easy'
 import Stripe from 'stripe'
 import { validarNifEspanol } from '../../../lib/facturacion/validacion'
+import { datosTransferencia, referenciaTransferencia } from '../../../lib/transferencia'
+import { sendTransferenciaEmail } from '../../../lib/email'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
@@ -34,24 +36,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Determinar proveedor de pago activo
-    const [redsysConfig, stripeConfig] = await Promise.all([
+    const [redsysConfig, stripeConfig, transferencia] = await Promise.all([
       prisma.redsysConfig.findFirst(),
       prisma.stripeConfig.findFirst(),
+      datosTransferencia(),
     ])
-    const redsysEnabled = !!redsysConfig?.enabled
-    const stripeEnabled = !!(stripeConfig?.enabled && stripeConfig?.publishableKey && stripeConfig?.secretKey)
+    const activos: Record<string, boolean> = {
+      redsys: !!redsysConfig?.enabled,
+      stripe: !!(stripeConfig?.enabled && stripeConfig?.publishableKey && stripeConfig?.secretKey),
+      transferencia: !!transferencia,
+    }
+    const nombres: Record<string, string> = { redsys: 'Redsys', stripe: 'Stripe', transferencia: 'La transferencia bancaria' }
+    const disponibles = Object.keys(activos).filter(k => activos[k])
 
     let provider = requestedProvider as string | undefined
     if (!provider) {
-      if (redsysEnabled && !stripeEnabled) provider = 'redsys'
-      else if (stripeEnabled && !redsysEnabled) provider = 'stripe'
-      else if (redsysEnabled && stripeEnabled) return res.status(400).json({ error: 'Debes especificar el método de pago.' })
+      if (disponibles.length === 1) provider = disponibles[0]
+      else if (disponibles.length > 1) return res.status(400).json({ error: 'Debes especificar el método de pago.' })
       else return res.status(400).json({ error: 'No hay ningún método de pago activo. Contacta con soporte.' })
     }
-    if (provider === 'redsys' && !redsysEnabled) return res.status(400).json({ error: 'Redsys no está disponible actualmente.' })
-    if (provider === 'stripe' && !stripeEnabled) return res.status(400).json({ error: 'Stripe no está disponible actualmente.' })
-    // Pasarela en modo test: la suscripción y el cobro se marcan como prueba (fuera de KPIs y contabilidad)
-    const esPrueba = (provider === 'stripe' ? stripeConfig?.environment : redsysConfig?.environment) === 'test'
+    if (!(provider in activos)) return res.status(400).json({ error: 'Método de pago no válido.' })
+    if (!activos[provider]) return res.status(400).json({ error: `${nombres[provider]} no está disponible actualmente.` })
+    // Pasarela en modo test: la suscripción y el cobro se marcan como prueba (fuera de KPIs y contabilidad).
+    // La transferencia siempre es real.
+    const esPrueba = provider === 'transferencia' ? false
+      : (provider === 'stripe' ? stripeConfig?.environment : redsysConfig?.environment) === 'test'
 
     // Crear o recuperar usuario
     let user = await prisma.user.findUnique({ where: { email } })
@@ -105,6 +114,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const baseUrl = process.env.NEXTAUTH_URL || 'https://innovapp.es'
     const productSlug = product?.slug || 'servix'
     const productLabel = product?.name || 'Servix'
+
+    if (provider === 'transferencia') {
+      const referencia = referenciaTransferencia(sub.id)
+      await prisma.invoice.update({ where: { id: invoice.id }, data: { providerRef: referencia } })
+      try {
+        await sendTransferenciaEmail({
+          to: email, name, producto: `${productLabel} — ${plan.name}`, importe: plan.price,
+          referencia, datos: transferencia!, url: `${baseUrl}/transferencia?sub=${sub.id}`,
+        })
+      } catch (e: any) {
+        // El email no es imprescindible: la página /transferencia muestra los mismos datos
+        console.error('Email transferencia:', e.message)
+      }
+      return res.json({ provider: 'transferencia', url: `/transferencia?sub=${sub.id}` })
+    }
 
     if (provider === 'stripe') {
       const stripe = new Stripe(stripeConfig!.secretKey)

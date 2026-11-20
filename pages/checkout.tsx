@@ -7,6 +7,7 @@ import PasswordInput from '../components/PasswordInput'
 import LegalIdentity from '../components/LegalIdentity'
 import { validarNifEspanol } from '../lib/facturacion/validacion'
 import { track } from '../lib/track'
+import { ETIQUETA_METODO, irAlPago, useMetodosPago } from '../lib/metodosPago'
 
 // Por encima de este total no cabe factura simplificada: NIF y dirección obligatorios
 // (el servidor lo vuelve a comprobar con el límite de los ajustes de facturación).
@@ -63,19 +64,7 @@ export default function Checkout() {
 
   const labels = (product && LABELS_BY_PRODUCT[product.slug]) || DEFAULT_LABELS
 
-  const [providers, setProviders] = useState<{ redsys: boolean; stripe: boolean }>({ redsys: true, stripe: false })
-  const [payProvider, setPayProvider] = useState<'redsys' | 'stripe' | ''>('')
-
-  useEffect(() => {
-    fetch('/api/payment-providers')
-      .then(r => r.json())
-      .then(d => {
-        setProviders(d)
-        if (d.redsys && !d.stripe) setPayProvider('redsys')
-        else if (d.stripe && !d.redsys) setPayProvider('stripe')
-      })
-      .catch(() => {})
-  }, [])
+  const { disponibles, metodo: payProvider, setMetodo: setPayProvider, elegir } = useMetodosPago()
 
   const [step, setStep]       = useState(0)
   const [loading, setLoading] = useState(false)
@@ -120,7 +109,7 @@ export default function Checkout() {
   const validateStep2 = () => {
     if (!form.acceptPrivacy) return 'Debes aceptar la política de privacidad'
     if (!form.acceptTerms)   return 'Debes aceptar los términos de uso'
-    if (providers.redsys && providers.stripe && !payProvider) return 'Selecciona un método de pago'
+    if (elegir && !payProvider) return 'Selecciona un método de pago'
     return ''
   }
 
@@ -151,17 +140,7 @@ export default function Checkout() {
       const data = await res.json()
       if (!res.ok) throw new Error(data.error || 'Error al procesar')
 
-      if (data.provider === 'stripe') {
-        window.location.href = data.url
-        return
-      }
-
-      const frm = document.createElement('form')
-      frm.method = 'POST'; frm.action = data.url
-      Object.entries(data.body as Record<string,string>).forEach(([k,v]) => {
-        const i = document.createElement('input'); i.type='hidden'; i.name=k; i.value=v; frm.appendChild(i)
-      })
-      document.body.appendChild(frm); frm.submit()
+      irAlPago(data)
     } catch (e: any) { setError(e.message); setLoading(false) }
   }
 
@@ -315,11 +294,11 @@ export default function Checkout() {
                   ))}
                 </div>
 
-                {providers.redsys && providers.stripe && (
+                {elegir && (
                   <div style={{ marginBottom: 20 }}>
                     <div style={{ fontSize: 13, fontWeight: 600, color: '#1e1e1e', marginBottom: 10 }}>Método de pago</div>
                     <div style={{ display: 'flex', gap: 10 }}>
-                      {[['redsys','💳 Tarjeta (Redsys)'],['stripe','💜 Tarjeta (Stripe)']].map(([key,label]) => (
+                      {disponibles.map(key => [key, ETIQUETA_METODO[key]]).map(([key,label]) => (
                         <button key={key} type="button" onClick={() => setPayProvider(key as any)} style={{
                           flex: 1, padding: '12px 14px', borderRadius: 12, cursor: 'pointer', fontSize: 13, fontWeight: 700,
                           border: `2px solid ${payProvider === key ? '#ee7528' : '#eef1f4'}`,

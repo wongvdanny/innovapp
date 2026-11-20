@@ -20,6 +20,9 @@ export type ResultadoCobro =
   | { estado: 'existente'; facturaId: string }
   | { estado: 'omitida'; motivo: string }
 
+/** Método de pago de la factura según el proveedor del cobro (CHECK de fac_facturas.metodo_pago). */
+const metodoDe = (provider: string): 'stripe' | 'transferencia' | 'redsys' => (provider === 'stripe' || provider === 'transferencia' ? provider : 'redsys')
+
 const pagoRef = (i: { provider: string; providerRef: string | null; redsysOrderId: string | null; id: string }) =>
   `${i.provider}:${i.providerRef ?? i.redsysOrderId ?? i.id}`
 
@@ -99,6 +102,7 @@ async function asegurarCliente(db: any, cli: ReturnType<typeof datosCliente>) {
 
 /** ¿El cobro viene de una pasarela en modo pruebas? Esos pagos nunca se facturan. */
 async function esPagoDePruebas(provider: string) {
+  if (provider === 'transferencia') return false // ingreso real confirmado a mano en el admin
   const cfg = provider === 'stripe' ? await prisma.stripeConfig.findFirst() : await prisma.redsysConfig.findFirst()
   return cfg?.environment !== 'production'
 }
@@ -156,7 +160,7 @@ export async function facturarCobro(invoiceId: string, actor: Actor = WEBHOOK, o
         },
       })
       const f = await emitirEnTx(tx, b.id, actor, { ahora: opts.ahora })
-      await marcarPagadaEnTx(tx, f.id, { fecha: hoyMadrid(c.paidAt!), metodo: c.provider === 'stripe' ? 'stripe' : 'redsys' }, actor)
+      await marcarPagadaEnTx(tx, f.id, { fecha: hoyMadrid(c.paidAt!), metodo: metodoDe(c.provider) }, actor)
       return f
     }, { timeout: 20_000, maxWait: 10_000 })
   } catch (e: any) {
@@ -215,7 +219,7 @@ export async function conciliarCobro(facturaId: string, actor: Actor) {
   if (inv?.status !== 'paid' || !inv.paidAt) return null
   return prisma.$transaction(async tx => {
     await identificarActor(tx, actor)
-    return marcarPagadaEnTx(tx, facturaId, { fecha: hoyMadrid(inv.paidAt!), metodo: inv.provider === 'stripe' ? 'stripe' : 'redsys' }, actor)
+    return marcarPagadaEnTx(tx, facturaId, { fecha: hoyMadrid(inv.paidAt!), metodo: metodoDe(inv.provider) }, actor)
   })
 }
 

@@ -3,6 +3,9 @@ import { Badge, Button, Column, DataTable, EmptyState, Section, fecha, useFlash 
 import { ESTADOS_SUSCRIPCION, INTERVALO_TEXTO, ProductoMenu, presentacion } from '../../../lib/admin/productos'
 import { SuscripcionAdmin, productoDe, slugTenant, tieneTenant } from '../../../lib/admin/metricas'
 
+/** Concepto de la transferencia pendiente de confirmar, si la hay. */
+const transferenciaPendiente = (s: SuscripcionAdmin) => s.invoices?.[0] ? s.invoices[0].providerRef || 'Transferencia' : null
+
 const ESTADOS_FILTRO: [string, string][] = [['todas', 'Todas'], ['active', 'Activas'], ['pending', 'Pendientes'], ['bajas', 'Canceladas / expiradas']]
 
 /**
@@ -46,9 +49,13 @@ export default function Suscripciones({ inicial, productos, titulo = 'Suscripcio
   }
 
   const activar = async (s: SuscripcionAdmin) => {
-    if (!confirm(`¿Activar manualmente la suscripción de ${s.user.name}?`)) return
+    const ref = transferenciaPendiente(s)
+    const pregunta = ref
+      ? `¿Has recibido la transferencia de ${s.user.name} (concepto ${ref}, ${s.plan.price} €)? Se activará, se emitirá la factura y se enviará el email de bienvenida.`
+      : `¿Activar manualmente la suscripción de ${s.user.name}?`
+    if (!confirm(pregunta)) return
     const r = await llamar(s, '/api/admin/activate-subscription', 'POST')
-    if (r.ok) { actualizar(s.id, { status: 'active', servixSlug: r.data.slug ?? s.servixSlug }); show(true, 'Suscripción activada y tenant creado') }
+    if (r.ok) { actualizar(s.id, { status: 'active', servixSlug: r.data.slug ?? s.servixSlug, invoices: [] }); show(true, r.data.transferencia ? 'Transferencia confirmada: suscripción activada, facturada y email enviado' : 'Suscripción activada y tenant creado') }
     else show(false, r.data.error || 'Error al activar')
   }
 
@@ -78,7 +85,7 @@ export default function Suscripciones({ inicial, productos, titulo = 'Suscripcio
     return (
       <div className="adm-fila" style={{ gap: 6 }}>
         {s.status === 'pending' && <>
-          <Button small variant="exito" onClick={() => activar(s)}>Activar</Button>
+          <Button small variant="exito" onClick={() => activar(s)}>{transferenciaPendiente(s) ? 'Confirmar pago' : 'Activar'}</Button>
           <Button small variant="aviso" onClick={() => cancelar(s)}>Anular</Button>
         </>}
         {s.status === 'active' && <>
@@ -104,7 +111,7 @@ export default function Suscripciones({ inicial, productos, titulo = 'Suscripcio
     {
       key: 'estado', header: 'Estado', render: s => {
         const e = ESTADOS_SUSCRIPCION[s.status]
-        return <div className="adm-fila" style={{ gap: 4 }}><Badge tone={e?.tono ?? 'neutro'}>{e?.label ?? s.status}</Badge>{s.isTest && <Badge tone="info">Prueba</Badge>}</div>
+        return <div className="adm-fila" style={{ gap: 4 }}><Badge tone={e?.tono ?? 'neutro'}>{e?.label ?? s.status}</Badge>{s.isTest && <Badge tone="info">Prueba</Badge>}{s.status === 'pending' && transferenciaPendiente(s) && <Badge tone="warn">🏦 {transferenciaPendiente(s)}</Badge>}</div>
       },
     },
     { key: 'inicio', header: 'Inicio', render: s => <span className="adm-muted" suppressHydrationWarning>{fecha(s.startDate)}</span> },
