@@ -1,4 +1,6 @@
 import Seo from '../components/Seo'
+import { formatEUR, priceWithVat } from '../lib/pricing'
+import { ALTA_VOZ, MINUTO_VOZ_ADICIONAL, SUPLEMENTOS_VOZ, conIva, sinIva } from '../lib/pricing/agentes'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
 import ComoFunciona from '../components/ComoFunciona'
@@ -21,11 +23,8 @@ const COMO_FUNCIONA_STEPS = [
   { title: 'Te avisa', description: 'Tienes la transcripción y el resumen de la llamada en tu panel.' },
 ]
 
-const PLANES = [
-  { nombre: 'Voz Básico', precio: '+49 €', minutos: '120 min/mes' },
-  { nombre: 'Voz Plus', precio: '+79 €', minutos: '220 min/mes', destacado: true },
-  { nombre: 'Voz Pro', precio: '+119 €', minutos: '350 min/mes' },
-]
+// Precios oficiales de voz: lib/pricing/agentes.ts (bases sin IVA)
+const PLANES = SUPLEMENTOS_VOZ
 
 const botonPrincipal = { display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'var(--agentes-oro)', color: '#12141a', fontWeight: 700, fontSize: 15, textDecoration: 'none' }
 const botonSecundario = { display: 'inline-block', padding: '15px 32px', borderRadius: 12, background: 'rgba(255,255,255,.07)', border: '1.5px solid rgba(255,255,255,.15)', color: 'white', fontWeight: 600, fontSize: 15, textDecoration: 'none' }
@@ -35,7 +34,7 @@ export default function AgentesVozPage() {
     <>
       <Seo
         title="Agentes de voz con IA — Tu negocio atiende el teléfono | innovapp"
-        description={`Si no puedes coger una llamada, la atiende tu agente de IA con voz natural: informa, agenda citas, toma recados y te deja un resumen. Desde +49 €/mes. Llama y pruébalo: ${VOICE_DEMO_PHONE}.`}
+        description={`Si no puedes coger una llamada, la atiende tu agente de IA con voz natural: informa, agenda citas, toma recados y te deja un resumen. Desde +${sinIva(PLANES[0].mes, '/mes')}. Llama y pruébalo: ${VOICE_DEMO_PHONE}.`}
         canonical="/agentes-voz"
         jsonLd={{
           '@context': 'https://schema.org',
@@ -98,14 +97,15 @@ export default function AgentesVozPage() {
               >
                 <div style={{ fontSize: 16, fontWeight: 700, color: plan.destacado ? 'var(--agentes-oro)' : '#1a140d', marginBottom: 14 }}>{plan.nombre}</div>
                 <div style={{ fontSize: 40, fontWeight: 700, letterSpacing: -1, color: plan.destacado ? '#ece9e2' : '#1a140d' }}>
-                  {plan.precio}<span style={{ fontSize: 15, fontWeight: 500, color: plan.destacado ? '#97a0ac' : 'var(--agentes-texto-2)' }}> + IVA/mes</span>
+                  +{formatEUR(plan.mes, { compact: true })}<span style={{ fontSize: 15, fontWeight: 500, color: plan.destacado ? '#97a0ac' : 'var(--agentes-texto-2)' }}> + IVA/mes</span>
                 </div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: plan.destacado ? '#97a0ac' : 'var(--agentes-texto-2)', marginTop: 8 }}>{plan.minutos}</div>
+                <div style={{ fontSize: 13, fontWeight: 500, color: plan.destacado ? '#97a0ac' : 'var(--agentes-texto-2)', marginTop: 4 }}>{formatEUR(priceWithVat(plan.mes))} IVA incluido</div>
+                <div style={{ fontSize: 14, fontWeight: 600, color: plan.destacado ? '#97a0ac' : 'var(--agentes-texto-2)', marginTop: 8 }}>{plan.minutos} min/mes</div>
               </div>
             ))}
           </div>
           <p style={{ fontSize: 14, color: 'var(--agentes-texto-2)', textAlign: 'center', lineHeight: 1.8, margin: '28px auto 0', maxWidth: 640 }}>
-            Minuto adicional: 0,30 €. Alta: 119 €. Precios sin IVA, sin permanencia.
+            Minuto adicional: {conIva(MINUTO_VOZ_ADICIONAL)}. Alta: {conIva(ALTA_VOZ)}. Sin permanencia.
           </p>
         </div>
       </section>

@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { PLANES_ECOMMERCE, conIva, faqPreciosEcommerce, lineaVoz, ofertasEcommerce, sinIva } from '../lib/pricing/agentes'
 import PlanPrice from '../components/PlanPrice'
 import Seo from '../components/Seo'
 import Nav from '../components/Nav'
@@ -39,15 +40,12 @@ const FAQ: FaqItem[] = [
   {
     pregunta: "¿Cuánto cuesta?",
     respuesta:
-      "Hay dos planes: Starter, desde 109 € al mes con alta desde 339 € y hasta 500 conversaciones al mes (consultas de catálogo), y Growth, desde 149 € al mes con alta desde 499 € y hasta 800 conversaciones al mes (venta guiada hasta el pago y revisión mensual). Precios sin IVA y sin permanencia.",
+      faqPreciosEcommerce(),
   },
 ]
 
-// Precios oficiales e-commerce (sin IVA, sin permanencia). Mismos datos en content/verified-facts.md.
-const PLANES = [
-  { nombre: 'Starter', para: 'Consultas de catálogo', mes: 109, alta: 339, incluye: ['Hasta 500 conversaciones/mes', 'Consultas de catálogo: stock, precio y variantes'] },
-  { nombre: 'Growth', para: 'Venta guiada hasta el pago', mes: 149, alta: 499, destacado: true, incluye: ['Hasta 800 conversaciones/mes', 'Venta guiada hasta el pago: carrito y enlace de pago', 'Revisión mensual'] },
-]
+// Precios oficiales e-commerce: lib/pricing/agentes.ts (bases sin IVA)
+const PLANES = PLANES_ECOMMERCE
 
 const COMO_FUNCIONA_INTRO =
   'Conectado directamente a tu catálogo de PrestaShop, para que cada respuesta sea sobre stock y precios reales, no genéricos.'
@@ -116,7 +114,7 @@ export default function AgentesIaPrestashopPage() {
     <>
       <Seo
         title="IA para PrestaShop | Chatbot y agentes IA para tu tienda – Innovapp"
-        description="IA para PrestaShop: un agente que atiende el WhatsApp de tu tienda 24/7 con tu catálogo real, recomienda productos, informa del estado de los pedidos y envía el enlace de pago. Desde 109 €/mes."
+        description={`IA para PrestaShop: un agente que atiende el WhatsApp de tu tienda 24/7 con tu catálogo real, recomienda productos, informa del estado de los pedidos y envía el enlace de pago. Desde ${sinIva(PLANES[0].mes, '/mes')}.`}
         canonical="/agentes-ia-prestashop"
         jsonLd={[{
           '@context': 'https://schema.org',
@@ -130,20 +128,7 @@ export default function AgentesIaPrestashopPage() {
           provider: { '@type': 'Organization', name: 'innovapp', url: 'https://innovapp.es' },
           areaServed: 'ES',
           audience: { '@type': 'Audience', audienceType: 'Tiendas online con PrestaShop' },
-          offers: {
-            '@type': 'AggregateOffer',
-            priceCurrency: 'EUR',
-            lowPrice: 109,
-            highPrice: 149,
-            offerCount: PLANES.length,
-            offers: PLANES.map((p) => ({
-              '@type': 'Offer',
-              name: p.nombre,
-              priceCurrency: 'EUR',
-              priceSpecification: { '@type': 'UnitPriceSpecification', price: p.mes, priceCurrency: 'EUR', unitText: 'MONTH', valueAddedTaxIncluded: false },
-              description: `Desde ${p.mes} €/mes sin IVA, alta desde ${p.alta} €. ${p.incluye.join('. ')}.`,
-            })),
-          },
+          offers: ofertasEcommerce(),
         }, faqJsonLd(FAQ)]}
       />
 
@@ -296,9 +281,9 @@ export default function AgentesIaPrestashopPage() {
                 <div style={{ fontSize: 14, color: '#97a0ac', marginBottom: 14 }}>{p.para}</div>
                 <div style={{ fontSize: 14, color: '#97a0ac' }}>desde</div>
                 <PlanPrice base={p.mes} period="monthly" color="var(--agentes-oro)" muted="#97a0ac" style={{ letterSpacing: -1 }} />
-                <div style={{ fontSize: 14, color: '#ece9e2', margin: '6px 0 16px' }}>Alta desde {p.alta} € + IVA</div>
+                <div style={{ fontSize: 14, color: '#ece9e2', margin: '6px 0 16px' }}>Alta desde {conIva(p.alta)}</div>
                 <ul style={{ margin: 0, paddingLeft: 18, fontSize: 14, color: '#c9cdd4', lineHeight: 1.8 }}>
-                  {p.incluye.map((i) => <li key={i}>{i}</li>)}
+                  {[`Hasta ${p.conversaciones} conversaciones/mes`, ...p.incluye].map((i) => <li key={i}>{i}</li>)}
                 </ul>
               </div>
             ))}
@@ -308,7 +293,7 @@ export default function AgentesIaPrestashopPage() {
               Extra: <Link href="/agentes-voz" style={{ color: 'var(--agentes-oro)', textDecoration: 'underline' }}>agente de voz</Link> para las llamadas que no coges
             </h3>
             <p style={{ fontSize: 14, color: '#c9cdd4', lineHeight: 1.8, margin: 0 }}>
-              Básico 120 min +49 € + IVA/mes · Plus 220 min +79 € + IVA/mes · Pro 350 min +119 € + IVA/mes. Minuto adicional 0,30 €. Alta de voz +119 €.
+              {lineaVoz()}
             </p>
           </div>
           <p style={{ fontSize: 12, color: '#97a0ac', lineHeight: 1.7, margin: '20px 0 0', textAlign: 'center' }}>
