@@ -125,6 +125,17 @@ model StripeConfig {
   enabled        Boolean @default(false)
 }
 
+model TransferConfig {
+  id            String  @id @default(dbgenerated("(gen_random_uuid())::text"))
+  enabled       Boolean @default(false)
+  titular       String  @default("")
+  iban          String  @default("")
+  bic           String  @default("")
+  banco         String  @default("")
+  instrucciones String  @default("")
+  diasPlazo     Int     @default(5)
+}
+
 /// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
 model fac_ajustes {
   id                         Int      @id @default(1)
