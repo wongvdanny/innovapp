@@ -1,6 +1,6 @@
 #!/bin/bash
 # Backup de innovapp: volcado completo de innovapp_db, volcado solo de las tablas fac_*
-# y tar de storage/facturacion (PDFs de facturas y adjuntos de gastos).
+# y tar de storage/facturacion (PDFs de facturas y adjuntos de gastos) y de storage/newsletter (PDFs de campañas).
 # Destino: /var/backups/innovapp/{db,fac,storage}/ (root:innovapp-bk, 750/640) · rotación 30 días
 # Log: /var/log/innovapp-backup.log · última línea en stdout: BACKUP_TS=<marca>
 #
@@ -62,9 +62,17 @@ tar -tzf "$TAR.tmp" > /dev/null || fallo "el tar no es legible"
 mv "$TAR.tmp" "$TAR"
 log "Archivos: $(basename "$TAR") ($(du -h "$TAR" | cut -f1), $(tar -tzf "$TAR" | grep -vc '/$' || true) archivos)"
 
+# 2b. PDFs de las campañas de la newsletter (storage/newsletter)
+TARNL="$DEST/storage/storage_newsletter_${TS}.tar.gz"
+mkdir -p "$APP_DIR/storage/newsletter"
+tar -czf "$TARNL.tmp" -C "$APP_DIR/storage" newsletter
+tar -tzf "$TARNL.tmp" > /dev/null || fallo "el tar de la newsletter no es legible"
+mv "$TARNL.tmp" "$TARNL"
+log "Newsletter: $(basename "$TARNL") ($(du -h "$TARNL" | cut -f1), $(tar -tzf "$TARNL" | grep -vc '/$' || true) archivos)"
+
 # 3. Sumas de control
-( cd "$DEST" && sha256sum "db/$(basename "$DUMP")" "fac/$(basename "$FAC")" "storage/$(basename "$TAR")" >> "$DEST/SHA256SUMS" )
-chgrp "$GRUPO" "$DUMP" "$FAC" "$TAR" "$DEST/SHA256SUMS"; chmod 640 "$DUMP" "$FAC" "$TAR" "$DEST/SHA256SUMS"
+( cd "$DEST" && sha256sum "db/$(basename "$DUMP")" "fac/$(basename "$FAC")" "storage/$(basename "$TAR")" "storage/$(basename "$TARNL")" >> "$DEST/SHA256SUMS" )
+chgrp "$GRUPO" "$DUMP" "$FAC" "$TAR" "$TARNL" "$DEST/SHA256SUMS"; chmod 640 "$DUMP" "$FAC" "$TAR" "$TARNL" "$DEST/SHA256SUMS"
 
 # 4. Rotación
 BORRADOS=$(find "$DEST/db" "$DEST/fac" "$DEST/storage" -type f \( -name '*.dump' -o -name '*.tar.gz' \) -mtime +$RETENCION_DIAS -print -delete | wc -l)
