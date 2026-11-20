@@ -544,3 +544,24 @@ export async function sendPromoSuplente(e: PromoEmail, orden: number) {
   })
   if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
 }
+
+/** Contraseña nueva del panel de GymStack, restablecida por un administrador de innovapp. */
+export async function sendGymstackPasswordReset(to: string, name: string | null, gymName: string, password: string) {
+  const cfg = CONFIG_BY_PRODUCT.gymstack
+  const { error } = await resend.emails.send({
+    from: FROM, to,
+    replyTo: CONTACT_EMAIL,
+    subject: `Nueva contraseña de GymStack — ${gymName}`,
+    html: `<div style="font-family:sans-serif;max-width:560px;margin:0 auto;padding:32px;color:#1e1e1e">
+      <h2 style="margin:0 0 16px">Hola${name ? `, ${escapeHtml(name)}` : ''}:</h2>
+      <p>Hemos restablecido la contraseña de tu acceso al panel de <strong>${escapeHtml(gymName)}</strong> en GymStack. La anterior ya no sirve.</p>
+      <table style="margin:20px 0;border-collapse:collapse">
+        <tr><td style="padding:6px 16px 6px 0;color:#6e6862">Usuario</td><td style="font-family:monospace">${escapeHtml(to)}</td></tr>
+        <tr><td style="padding:6px 16px 6px 0;color:#6e6862">Contraseña</td><td style="font-family:monospace;font-weight:700">${escapeHtml(password)}</td></tr>
+      </table>
+      <a href="${cfg.loginUrl}" style="display:block;background:${cfg.accentGradient};color:white;text-align:center;padding:14px;border-radius:10px;text-decoration:none;font-weight:700">Entrar al panel →</a>
+      <p style="font-size:13px;color:#6e6862;margin-top:20px">Te recomendamos cambiarla en Configuración › Mi cuenta después de entrar. Si no has pedido este cambio, escríbenos a ${escapeHtml(CONTACT_EMAIL)}.</p>
+    </div>`,
+  })
+  if (error) throw new Error(`Resend: ${error.name} — ${error.message}`)
+}

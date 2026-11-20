@@ -1,5 +1,6 @@
 import { ConfigMetricas } from '../secciones/MetricasProducto'
 import { Badge, Section, euros, fecha } from '../ui'
+import GymUsuarios from './GymUsuarios'
 
 // Registro de paneles de métricas por slug de producto. Un producto sin entrada aquí usa el
 // panel genérico (suscripciones y planes de innovapp): añadir un producto a la tabla Product
@@ -51,6 +52,7 @@ export const METRICAS: Record<string, ConfigMetricas> = {
       { key: 'staff', header: 'Personal', num: true, render: r => r.staff },
       { key: 'res', header: 'Reservas', num: true, render: r => r.totalBookings },
       { key: 'cuotas', header: 'Cuotas cobradas', num: true, render: r => <span className="adm-fuerte" style={{ color: r.totalSales > 0 ? 'var(--adm-ok)' : 'var(--adm-muted)' }}>{euros(r.totalSales)}</span> },
+      { key: 'usuarios', header: '', render: r => <GymUsuarios gymId={r.id} gymName={r.name} /> },
     ],
   },
 

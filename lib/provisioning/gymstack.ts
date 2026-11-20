@@ -1,5 +1,6 @@
 import { Pool } from 'pg'
-import { randomUUID } from 'crypto'
+import { randomInt, randomUUID } from 'crypto'
+import bcrypt from 'bcryptjs'
 
 const pool = new Pool({ connectionString: process.env.GYMSTACK_DB_URL })
 
@@ -124,4 +125,109 @@ export async function deleteGymstackTenant(gymId: string): Promise<void> {
   } finally {
     client.release()
   }
+}
+
+// --- Administradores de un gimnasio (panel /admin → GymStack → «Usuarios») ----------------
+// Mismas reglas que Configuración > Usuarios del panel en GymStack: nunca se deja un gimnasio
+// sin ADMIN activo (con la fila del gimnasio bloqueada, para que dos cambios a la vez no lo
+// consigan). Requiere las columnas users.active y users.sessionVersion (migración
+// 20261120120000_user_active de GymStack).
+
+export interface GymstackAdmin {
+  id: string
+  name: string | null
+  email: string
+  active: boolean
+  /** Contraseña anulada por deactivateGymstackTenant (cancelación de la suscripción). */
+  suspended: boolean
+  createdAt: string
+}
+
+export class GymstackUserError extends Error {
+  constructor(message: string, public status = 400) { super(message) }
+}
+
+export async function listGymstackAdmins(gymId: string): Promise<GymstackAdmin[]> {
+  const { rows } = await pool.query(
+    `SELECT id, name, email, active, COALESCE(starts_with(password, 'SUSPENDED_'), false) AS suspended, "createdAt"
+       FROM users WHERE "gymId" = $1 AND role = 'ADMIN'
+      ORDER BY active DESC, "createdAt" ASC`,
+    [gymId]
+  )
+  return rows
+}
+
+// Sin caracteres que se confunden al copiarlos a mano (0/O, 1/l/I)
+const ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789'
+function generatePassword(length = 14) {
+  const chars = Array.from({ length: length - 1 }, () => ALPHABET[randomInt(ALPHABET.length)])
+  chars.splice(randomInt(chars.length + 1), 0, String(randomInt(2, 10)))
+  return chars.join('')
+}
+
+async function withGymLock<T>(gymId: string, fn: (client: import('pg').PoolClient) => Promise<T>): Promise<T> {
+  const client = await pool.connect()
+  try {
+    await client.query('BEGIN')
+    const gym = await client.query('SELECT id FROM gyms WHERE id = $1 FOR UPDATE', [gymId])
+    if (gym.rowCount === 0) throw new GymstackUserError('Gimnasio no encontrado', 404)
+    const result = await fn(client)
+    await client.query('COMMIT')
+    return result
+  } catch (e) {
+    await client.query('ROLLBACK')
+    throw e
+  } finally {
+    client.release()
+  }
+}
+
+async function findAdmin(client: import('pg').PoolClient, gymId: string, userId: string) {
+  const { rows } = await client.query(
+    `SELECT u.id, u.name, u.email, u.active, g.name AS "gymName"
+       FROM users u JOIN gyms g ON g.id = u."gymId"
+      WHERE u.id = $1 AND u."gymId" = $2 AND u.role = 'ADMIN'`,
+    [userId, gymId]
+  )
+  if (!rows[0]) throw new GymstackUserError('Administrador no encontrado', 404)
+  return rows[0] as { id: string; name: string | null; email: string; active: boolean; gymName: string }
+}
+
+/** Activa o desactiva el acceso de un ADMIN. No deja el gimnasio sin ningún ADMIN activo. */
+export async function setGymstackAdminActive(gymId: string, userId: string, active: boolean): Promise<void> {
+  await withGymLock(gymId, async (client) => {
+    const admin = await findAdmin(client, gymId, userId)
+    if (admin.active === active) return
+    if (!active) {
+      const { rows } = await client.query(
+        `SELECT COUNT(*)::int AS n FROM users WHERE "gymId" = $1 AND role = 'ADMIN' AND active AND id <> $2`,
+        [gymId, userId]
+      )
+      if (rows[0].n === 0) throw new GymstackUserError('Es el último administrador activo del gimnasio', 409)
+    }
+    // Al desactivar, sessionVersion + 1 expulsa sus sesiones abiertas en GymStack (< 60 s)
+    await client.query(
+      `UPDATE users SET active = $1, "sessionVersion" = "sessionVersion" + CASE WHEN $1 THEN 0 ELSE 1 END, "updatedAt" = now() WHERE id = $2`,
+      [active, userId]
+    )
+  })
+}
+
+/**
+ * Contraseña nueva aleatoria para un ADMIN activo. Devuelve la contraseña en claro (para
+ * enviarla por email) y los datos del destinatario.
+ */
+export async function resetGymstackAdminPassword(gymId: string, userId: string) {
+  const password = generatePassword()
+  const hash = await bcrypt.hash(password, 10)
+  return withGymLock(gymId, async (client) => {
+    const admin = await findAdmin(client, gymId, userId)
+    if (!admin.active) throw new GymstackUserError('Activa antes su acceso')
+    await client.query(
+      `UPDATE users SET password = $1, "passwordTokenHash" = NULL, "passwordTokenExpiresAt" = NULL,
+              "sessionVersion" = "sessionVersion" + 1, "updatedAt" = now() WHERE id = $2`,
+      [hash, userId]
+    )
+    return { password, email: admin.email, name: admin.name, gymName: admin.gymName }
+  })
 }
