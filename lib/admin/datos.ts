@@ -11,6 +11,8 @@ const SELECT_SUSCRIPCION = {
   user: { select: { name: true, email: true } },
   plan: { select: { id: true, name: true, price: true, interval: true, Product: { select: { slug: true, name: true } } } },
   provisioning: { select: { slug: true, externalId: true } },
+  // Transferencia pendiente de confirmar (concepto que debe traer el ingreso)
+  invoices: { where: { provider: 'transferencia', status: 'pending' }, select: { providerRef: true }, take: 1 },
 } satisfies Prisma.SubscriptionSelect
 
 /** Suscripciones no borradas (deletedAt). Las de prueba (isTest) se incluyen: los cálculos las excluyen. */

@@ -5,6 +5,7 @@ import { isAdmin } from '../../../lib/isAdmin'
 import { prisma } from '../../../lib/prisma'
 import { createServixTenant } from '../../../lib/provisioning/servix'
 import { createGymstackTenant } from '../../../lib/provisioning/gymstack'
+import { fulfillInvoice } from '../../../lib/fulfillment'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') return res.status(405).end()
@@ -18,6 +19,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     include: { user: true, plan: { include: { Product: true } as any }, provisioning: true },
   })
   if (!sub) return res.status(404).json({ error: 'No encontrada' })
+
+  // Pedido por transferencia: activar = confirmar el ingreso. Se cobra la factura pendiente con el
+  // mismo flujo que Stripe/Redsys (tenant, factura legal y email de bienvenida).
+  if (sub.status === 'pending') {
+    const transferencia = await prisma.invoice.findFirst({ where: { subscriptionId: sub.id, provider: 'transferencia', status: 'pending' }, orderBy: { createdAt: 'desc' } })
+    if (transferencia) {
+      const r = await fulfillInvoice(transferencia.id)
+      if (!r.ok) return res.status(500).json({ error: 'No se ha podido confirmar la transferencia' })
+      const s = await prisma.subscription.findUnique({ where: { id: sub.id }, include: { provisioning: true } })
+      return res.json({ ok: true, slug: s?.servixSlug ?? s?.provisioning?.slug ?? null, transferencia: true })
+    }
+  }
 
   // Sin producto no se sabe qué tenant crear: no se activa ni se aprovisiona nada.
   const product = (sub.plan as any).Product as { slug: string } | null

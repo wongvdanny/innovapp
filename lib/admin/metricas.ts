@@ -12,6 +12,7 @@ export interface SuscripcionAdmin {
   user: { name: string; email: string }
   plan: { id: string; name: string; price: number; interval: string; Product: { slug: string; name: string } | null }
   provisioning: { slug: string | null; externalId: string | null } | null
+  invoices?: { providerRef: string | null }[]
 }
 
 export const productoDe = (s: SuscripcionAdmin) => s.plan.Product?.slug ?? null
