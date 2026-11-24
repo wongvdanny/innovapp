@@ -8,12 +8,13 @@ import {
 import Seo from '../components/Seo'
 import Nav from '../components/Nav'
 import Footer from '../components/Footer'
-import Faq, { type FaqItem } from '../components/Faq'
+import Faq, { faqJsonLd, type FaqItem } from '../components/Faq'
 import Icono from '../components/Icono'
 import { COMMERCIAL_PHONE, telLink, waLink } from '../lib/constants'
 import { track } from '../lib/track'
 
 const RUTA = '/software-clinicas-dentales'
+const URL_PAGINA = `https://innovapp.es${RUTA}`
 // El mismo texto que usa la burbuja de WhatsApp en esta ruta (components/WhatsAppBubble.tsx)
 const MENSAJE_WHATSAPP_DENTAL = 'Hola, me interesa un software de gestión a medida para mi clínica dental'
 
@@ -166,10 +167,33 @@ function Pasos({ items }: { items: [string, string][] }) {
   )
 }
 
+const JSON_LD = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: 'Software de gestión a medida para clínicas dentales',
+    serviceType: 'Desarrollo de software de gestión para clínicas dentales',
+    description: DESCRIPCION,
+    url: URL_PAGINA,
+    provider: { '@id': 'https://innovapp.es/#organization' },
+    areaServed: { '@type': 'Country', name: 'España' },
+    audience: { '@type': 'BusinessAudience', name: 'Clínicas dentales' },
+  },
+  faqJsonLd(FAQ),
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: 'https://innovapp.es/' },
+      { '@type': 'ListItem', position: 2, name: 'Software para clínicas dentales', item: URL_PAGINA },
+    ],
+  },
+]
+
 export default function SoftwareClinicasDentales() {
   return (
     <>
-      <Seo title={TITULO} description={DESCRIPCION} canonical={RUTA} />
+      <Seo title={TITULO} description={DESCRIPCION} canonical={RUTA} jsonLd={JSON_LD} />
       <Nav />
 
       <main>
