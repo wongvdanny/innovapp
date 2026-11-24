@@ -49,6 +49,8 @@ export type Sector = {
   ejemplo?: { titulo: string; texto: string }
   pasos?: { intro: string; items: { title: string; description: string }[] }
   cierre?: { titulo: string; texto: string }
+  /** Enlace a una página hermana tras las funciones (clínicas → software de gestión a medida). */
+  relacionado?: { texto: string; enlace: { href: string; texto: string } }
 }
 
 const SIN_CAMBIAR_NUMERO: FaqItem = {
@@ -173,6 +175,10 @@ export const SECTORES: Record<Sector['slug'], Sector> = {
     imagenAlt: 'Dentista con bata blanca revisando una radiografía sentado a la mesa de su consulta',
     etiquetaNegocio: 'Clínica',
     servicio: 'el agente de WhatsApp para clínicas',
+    relacionado: {
+      texto: 'Este agente atiende el WhatsApp de tu clínica. Si lo que buscas es el programa de gestión (agenda, fichas, odontograma, presupuestos y facturación), en las clínicas dentales también lo desarrollamos a medida.',
+      enlace: { href: '/software-clinicas-dentales', texto: 'Software de gestión a medida para clínicas dentales' },
+    },
   },
 
   talleres: {

@@ -157,6 +157,12 @@ export default function SectorLanding({ slug }: { slug: Sector['slug'] }) {
                 </p>
               </div>
             )}
+            {s.relacionado && (
+              <p style={{ maxWidth: 820, margin: '24px auto 0', fontSize: 16, color: '#4a3f2e', lineHeight: 1.7, textAlign: 'center' }}>
+                {s.relacionado.texto}{' '}
+                <Link href={s.relacionado.enlace.href} style={{ color: 'var(--agentes-oro-texto)', fontWeight: 700, textDecoration: 'underline' }}>{s.relacionado.enlace.texto} →</Link>
+              </p>
+            )}
           </div>
         </section>
 
