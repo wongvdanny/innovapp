@@ -38,6 +38,7 @@ export const MENUS: MenuSeccion[] = [
     items: [
       { href: '/desarrollo/web', texto: 'Desarrollo web', descripcion: 'Webs corporativas, landing pages, tiendas online y aplicaciones a medida, con desarrollo acelerado con IA.' },
       { href: '/desarrollo-prestashop-woocommerce', texto: 'PrestaShop y WooCommerce', descripcion: 'Tiendas, módulos y plugins a medida, migraciones, actualización y mantenimiento.' },
+      { href: '/software-clinicas-dentales', texto: 'Software para clínicas dentales', descripcion: 'Programa de gestión propio para tu clínica: agenda, ficha y odontograma, presupuestos y migración de datos.' },
     ],
   },
 ]
