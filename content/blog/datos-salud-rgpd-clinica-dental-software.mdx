@@ -1,0 +1,153 @@
+---
+title: "Datos de salud y RGPD en la clínica dental: lo que debe cumplir tu software"
+slug: "datos-salud-rgpd-clinica-dental-software"
+date: "2026-11-24"
+description: "Qué exige el RGPD sobre datos de salud en tu clínica dental. Contrato con el proveedor, cifrado, accesos, brechas y consentimientos firmados."
+topic: "Datos de salud y RGPD en la clínica dental: qué exigir al software de gestión (encargado del tratamiento, seguridad, copias, accesos, ubicación de los datos)"
+---
+## El RGPD y los datos de salud: por qué es distinto
+
+Los datos de los pacientes no son cualquier información. Cuando un paciente se sienta en la silla de tu consulta y te cuenta que toma ciertos medicamentos, que tiene miedo al dolor o que se le ha inflamado una pieza, eso que apuntas en su ficha es un dato de salud.
+
+El Reglamento General de Protección de Datos (RGPD) los trata como una categoría especial. El artículo 9 del RGPD prohíbe procesar datos relativos a la salud, **salvo** en circunstancias concretas. Una de ellas es que el tratamiento lo realice un profesional de la salud sujeto a secreto profesional, como es tu caso como dentista o como clínica. Es decir: sí puedes tener y usar esos datos, pero bajo reglas muy claras.
+
+Es fácil pensar que tener un software de gestión "de confianza" resuelve el cumplimiento. No es así. El software ayuda, pero **la responsabilidad de cumplir el RGPD es tuya**, no de la herramienta. Este artículo te explica qué exigir a tu proveedor de software y qué controles tienes que implementar en tu clínica.
+
+## Qué dice el RGPD sobre tu clínica y tu software
+
+### La clínica es responsable, el software es encargado
+
+En términos legales, tu clínica es el "responsable del tratamiento": decides qué datos recoger, para qué y cómo guardarlos. Si tu proveedor de software aloja los datos o accede a ellos, es el "encargado del tratamiento": trata los datos solo siguiendo tus instrucciones, como si fuera tu mano técnica.
+
+Esta distinción importa. El artículo 28 del RGPD obliga a que entre la clínica y el proveedor de software exista **un contrato escrito** que especifique:
+
+- El objeto, la duración, la naturaleza y la finalidad del tratamiento de datos.
+- El tipo de datos personales (en este caso, datos de salud).
+- Las obligaciones y derechos del responsable (tú).
+- Las medidas de seguridad que el encargado debe aplicar.
+- Que el encargado solo trata los datos conforme a tus instrucciones documentadas.
+
+Si con tu software actual no firmaste un contrato así, o no puedes acceder a él, **es un problema de cumplimiento**: ese proveedor no debería tratar los datos de tu clínica sin él.
+
+### Medidas técnicas que el software debe garantizar
+
+El artículo 32 del RGPD obliga a la clínica y a su proveedor a aplicar medidas técnicas y organizativas apropiadas al riesgo. Con datos de salud, el riesgo es alto. En la práctica, esto se traduce en:
+
+#### Cifrado de los datos en reposo y en tránsito
+
+Los datos guardados en los servidores y los que viajan por internet deben estar cifrados para que, si alguien accede sin autorización, no pueda leerlos. No es un lujo: el propio artículo 32 cita el cifrado entre las medidas apropiadas.
+
+#### Copias de seguridad y capacidad de restauración rápida
+
+Si un servidor falla, un ataque borra información o hay un desastre, tu software debe permitir recuperar todos los datos. Las copias deben estar en una ubicación diferente a la principal y ser verificables regularmente. Esto protege tanto a los pacientes (sus datos se conservan) como a tu clínica (no pierdes el histórico de tratamientos ni los cobros).
+
+#### Control de accesos por rol y registro de auditoría
+
+No todos en tu clínica necesitan acceder a todo. La recepcionista ve citas y datos básicos; el dentista ve la historia clínica completa; el administrativo gestiona cobros. El software debe permitir definir permisos por rol.
+
+Además, **el sistema debe registrar quién accedió a qué y cuándo**. Ese registro no debería poder modificarse: si una recepcionista mira la ficha de un paciente por curiosidad, queda documentado. Es una medida de control interno y, si hay un incidente, crucial para la investigación.
+
+#### Ubicación de los servidores
+
+Pregunta dónde están los servidores. Si los datos salen del Espacio Económico Europeo, hay que cumplir las normas del RGPD sobre transferencias internacionales, con garantías adicionales. Tenerlos en servidores dentro de la Unión Europea evita esa complicación.
+
+## Notificación de brechas de seguridad
+
+Antes o después, puede ocurrir un incidente: alguien accede sin permiso, se pierden datos, se filtra información por error. El artículo 33 del RGPD es claro: **debes notificarlo a la autoridad de control (en España, la AEPD) sin dilación indebida y, si es posible, en un plazo de 72 horas** desde que lo conoces.
+
+Esto suena drástico, pero es el mecanismo de protección. Si tu software no ofrece:
+
+- Un proceso de detección de brechas (monitoreo de accesos anómalos, intentos fallidos, cambios no autorizados).
+- Un procedimiento documentado para que el proveedor te avise al instante.
+- Facilidades para que tú, como responsable, puedas comunicar a la AEPD.
+
+...te será mucho más difícil cumplir a tiempo. Exígelo a tu proveedor.
+
+## Consentimientos firmados e historia clínica
+
+### Consentimientos por escrito
+
+La Ley 41/2002 de autonomía del paciente dice que el consentimiento es verbal por regla general, pero **por escrito en intervenciones quirúrgicas y procedimientos diagnósticos y terapéuticos invasivos**. En una clínica dental, tratamientos como un implante o una extracción entran en ese supuesto, así que necesitas el consentimiento por escrito.
+
+Tu software debe permitirte:
+
+- Generar el consentimiento desde una plantilla.
+- Que el paciente lo firme (idealmente en una tablet en consulta o por firma digital).
+- Guardarlo en su ficha sin que pueda modificarse después, con la fecha y la hora de la firma.
+- Exportarlo como PDF si es necesario.
+
+### Conservación de la historia clínica
+
+El artículo 17 de la Ley 41/2002 obliga a conservar la historia clínica **como mínimo cinco años desde el alta de cada proceso asistencial**. Un paciente que terminó un tratamiento hace tres años: su historia debe estar accesible y completa.
+
+Tu software debe permitir que:
+
+- Los datos se conserven de forma íntegra en la ficha del paciente.
+- Estén en formato recuperable si el paciente lo solicita o si necesitas consultarlos.
+- Tengas acceso a toda la información histórica sin limitaciones durante el plazo legal de conservación.
+
+## Ejemplo práctico
+
+Marta dirige una clínica dental pequeña en Barcelona. Tiene un software de gestión en la nube "de confianza", pero nunca pidió ver el contrato con el proveedor. Un día, recibe un email de un paciente: "He visto que mi ficha aparece en un informe público." Marta investiga y descubre que se ha filtrado por un error de configuración en los servidores del proveedor.
+
+Ahora Marta está en apuros:
+
+1. **No tiene contrato escrito** con el proveedor que especifique responsabilidades, así que no puede exigirle que investigue rápidamente.
+2. **No sabe dónde están los servidores** (pueden estar fuera de la UE). No puede confirmar si se aplican protecciones adicionales.
+3. **No tiene registro de accesos**: no puede determinar cómo se produjo la fuga ni cuándo.
+4. **Debe avisar a la AEPD sin dilación indebida y, si es posible, en 72 horas**, pero no tiene datos claros para hacer un informe de incidente.
+
+Además, el paciente puede exigir una indemnización. Las multas por incumplimiento de RGPD pueden ser muy elevadas, pero lo que Marta no quiere es perder la confianza de los pacientes ni enfrentarse a sanciones.
+
+**¿Cómo evitar esto?** Cuando Marta evalúe un software (o cuando renegocie con su proveedor actual):
+
+- Pide un contrato de encargado del tratamiento (art. 28) por escrito.
+- Verifica que los servidores estén en la UE.
+- Comprueba que haya cifrado de datos, copias de seguridad en otra ubicación y registro de accesos.
+- Acuerda con el proveedor un procedimiento claro de comunicación en caso de incidentes de seguridad.
+- Verifica que el proveedor tenga capacidad para notificarte de brechas sin demoras.
+
+## Preguntas frecuentes
+
+### ¿Mi software "cumple el RGPD"?
+
+No existe un software que "cumpla el RGPD" por sí solo. El cumplimiento es **responsabilidad de tu clínica**. El software es una herramienta que te ayuda a implementar las medidas necesarias. Exige a tu proveedor que documente qué seguridad ofrece (cifrado, copias, accesos, servidores en la UE, contrato escrito), pero la decisión de usar ese software cumpliendo la ley es tuya.
+
+### ¿Debo designar un Delegado de Protección de Datos?
+
+El artículo 34.1.l de la LOPDGDD obliga a designarlo a los centros sanitarios que deben mantener historias clínicas, salvo a los profesionales sanitarios que ejercen su actividad a título individual. Si no tienes claro en qué caso está tu clínica, consúltalo. En cualquier caso, **es informativo; para tu situación concreta consulta con un asesor legal**.
+
+### ¿Cuánto tiempo debo guardar los datos?
+
+La Ley 41/2002 fija un mínimo de **cinco años desde el alta de cada proceso asistencial**, y la normativa de tu comunidad autónoma puede exigir un plazo mayor. Antes de destruir una historia clínica, confirma qué plazo te aplica. Tu software debe permitirte acceder a esa información durante todo el tiempo que sea necesario guardarla.
+
+### ¿Qué pasa si un paciente me pide acceso a su historia?
+
+Tiene derecho. Debes facilitarle copia de todos sus datos en un formato legible. Tu software debe permitirte exportar la ficha completa del paciente (incluyendo documentos, imágenes, consentimientos) en poco tiempo, sin complicaciones.
+
+### ¿Y si cambio de software?
+
+Revisa el contrato con tu proveedor actual: según el artículo 28 del RGPD, al terminar el servicio el encargado debe suprimir o devolverte los datos, a tu elección. Pide que te los devuelva completos y en un formato que otro programa pueda leer. Esto es fundamental para que tu migración sea limpia y no pierdas información de pacientes.
+
+## Resumen de las exigencias clave
+
+Antes de firmar o renovar tu contrato de software de gestión para tu clínica, verifica que incluya:
+
+1. **Contrato de encargado del tratamiento (art. 28)**: por escrito, con especificación de datos, duración y medidas de seguridad.
+2. **Cifrado**: datos en reposo en servidores y en tránsito (conexiones seguras).
+3. **Copias de seguridad**: en otra ubicación, verificables y recuperables.
+4. **Control de accesos**: roles y permisos, y registro de quién accede a qué.
+5. **Servidores en la UE**: para no depender de las reglas de transferencias internacionales.
+6. **Procedimiento de incidentes**: detección y comunicación clara ante brechas de seguridad, con notificación a la AEPD en el plazo legal.
+7. **Firma de consentimientos**: en tablet o digital, con fecha y hora guardadas en la ficha.
+8. **Acceso y recuperación de datos**: capacidad de acceder a toda la historia clínica del paciente en formato recuperable durante el plazo legal de conservación.
+
+Estas medidas no son un trámite administrativo: son el fundamento para que tu clínica funcione con confianza, que los pacientes sientan que sus datos están seguros y que tú evites sorpresas legales.
+
+Un [software de gestión a medida para clínicas dentales](/software-clinicas-dentales) se diseña desde el inicio con todas estas garantías integradas: contrato de encargado del tratamiento según el RGPD, cifrado, copias de seguridad en otra ubicación, control de accesos por rol, registro de accesos y servidores en la Unión Europea. También facilita la firma de consentimientos en tablet y la gestión de la historia clínica del paciente de forma íntegra.
+
+Este artículo es informativo y no constituye asesoramiento jurídico. Si tienes preguntas sobre tu obligación legal específica, consulta con un asesor de protección de datos o un abogado especializado.
+
+---
+
+¿Tienes dudas sobre cómo tu software actual cubre estas exigencias o qué mejoras necesitas? [Cuéntanos cómo trabaja tu clínica](/contacto) y valoremos juntos la mejor solución.
