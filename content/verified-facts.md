@@ -74,6 +74,76 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
   PrestaShop 1.7. Si una tienda va en una versión anterior, primero se
   actualiza.
 
+## Software de gestión a medida para clínicas dentales (/software-clinicas-dentales)
+- Innovapp desarrolla a medida el programa de gestión de una clínica dental:
+  un sistema propio de la clínica en lugar de un programa por suscripción.
+  Funciona en la nube, en servidores de la Unión Europea, y se usa desde el
+  navegador en ordenador y tablet.
+- Puede incluir, adaptado a cada clínica: agenda por profesional y gabinete
+  (huecos de 15 minutos, estados de cita, lista de espera, urgencias,
+  actualización al instante en todos los equipos); ficha del paciente con
+  historia médica, alertas, odontograma por pieza, evolución, documentos,
+  cobros y deuda; presupuestos con tarifa particular y por aseguradora que
+  pasan a plan de tratamiento; firma de consentimientos en tablet con QR y PDF
+  guardado en la ficha; facturación, recibos, cierre de caja, deudores y
+  tesorería; liquidación de profesionales por porcentaje; laboratorio y
+  registro de implantes (marca, lote, pieza); usuarios por rol, verificación
+  en dos pasos y registro de accesos; cita online para la web de la clínica
+  con huecos reales; exportación a Excel.
+- Ampliaciones con IA (opcionales, también a medida): asistente de WhatsApp
+  que da, cambia y cancela citas; recordatorios con confirmar o cancelar;
+  lista de espera automática; reactivación de pacientes; panel de métricas.
+- Datos: servidores en la UE, cifrado, copias diarias en otra ubicación,
+  contrato de encargado del tratamiento (art. 28 RGPD) y servidor y cuentas
+  a nombre de la clínica.
+- Migración desde el programa anterior: exportación de los datos, mapa de
+  campos, ensayo completo cuadrando pacientes, citas y deudas, y cambio
+  definitivo en fin de semana.
+- Forma de trabajo: análisis; desarrollo por fases con entregas que la clínica
+  valida; migración y formación online; acompañamiento. Pago por hitos
+  entregados. El código fuente es de la clínica.
+- NO dar precios, "desde", plazos ni garantías de este servicio. NO hay
+  clínicas clientes, testimonios ni casos publicados: NO inventarlos ni decir
+  que ya trabajamos con clínicas. NO afirmar certificaciones ni
+  homologaciones. NO mencionar Verifactu.
+
+## Datos de salud y RGPD (marco legal para clínicas)
+- RGPD = Reglamento (UE) 2016/679. LOPDGDD = Ley Orgánica 3/2018.
+- Art. 9 RGPD: los datos relativos a la salud son una categoría especial de
+  datos personales. Su tratamiento está prohibido salvo las excepciones del
+  art. 9.2; una de ellas (art. 9.2.h) es la asistencia sanitaria por
+  profesionales sujetos a secreto profesional.
+- Art. 28 RGPD: quien trata datos por cuenta de la clínica (encargado del
+  tratamiento, p. ej. el proveedor del software) debe ofrecer garantías
+  suficientes y estar vinculado por un contrato que fije el objeto, la
+  duración, la naturaleza y la finalidad del tratamiento, el tipo de datos y
+  las obligaciones; el encargado solo trata los datos siguiendo instrucciones
+  documentadas del responsable (la clínica).
+- Art. 28.3.g RGPD: al terminar el servicio, el encargado suprime o devuelve
+  los datos al responsable, a elección de este.
+- Transferencias internacionales: si los datos salen del Espacio Económico
+  Europeo, se aplican las reglas del RGPD sobre transferencias
+  internacionales (garantías adicionales). Tener los servidores en la UE no
+  es obligatorio, pero evita ese régimen.
+- Art. 32 RGPD: medidas técnicas y organizativas apropiadas al riesgo, como el
+  cifrado, la capacidad de restaurar la disponibilidad y el acceso a los
+  datos de forma rápida tras un incidente, y la verificación periódica de
+  esas medidas.
+- Art. 33 RGPD: una violación de la seguridad de los datos se notifica a la
+  autoridad de control (en España, la AEPD) sin dilación indebida y, si es
+  posible, en un plazo de 72 horas desde que se conoce.
+- Art. 34.1.l LOPDGDD: los centros sanitarios obligados a mantener historias
+  clínicas deben designar un delegado de protección de datos, salvo los
+  profesionales sanitarios que ejercen a título individual.
+- Ley 41/2002 de autonomía del paciente: el consentimiento es verbal por regla
+  general, pero por escrito en intervenciones quirúrgicas y procedimientos
+  diagnósticos y terapéuticos invasivos (art. 8.2); la historia clínica se
+  conserva como mínimo cinco años desde el alta de cada proceso asistencial
+  (art. 17.1). La normativa de cada comunidad autónoma puede fijar plazos de
+  conservación mayores.
+- NO dar cifras de sanciones ni casos concretos de multas. NO afirmar que un
+  software "cumple el RGPD" por sí solo: el cumplimiento es de la clínica.
+
 ## Qué puede hacer el agente para inmobiliarias (/agentes-ia-inmobiliarias)
 - Se conecta al WhatsApp Business de la inmobiliaria: puede seguir usando la
   app de WhatsApp Business y sus clientes escriben al número de siempre.
@@ -158,6 +228,8 @@ estéticas, gimnasios, talleres, veterinarias, inmobiliarias)
 - /agentes-ia#por-sector → tarjetas de todos los sectores
 - /desarrollo-prestashop-woocommerce → desarrollo, migración, actualización y
   mantenimiento de tiendas PrestaShop y WooCommerce
+- /software-clinicas-dentales → software de gestión a medida para clínicas
+  dentales (programa propio, migración de datos, RGPD)
 - /contacto → formulario de contacto (CTA final de cada post)
 
 ## Instagram, integraciones futuras, etc.
