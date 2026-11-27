@@ -4,7 +4,7 @@ import { authOptions } from '../../../lib/authOptions'
 import { isAdmin } from '../../../lib/isAdmin'
 import { prisma } from '../../../lib/prisma'
 import { deleteServixTenant } from '../../../lib/provisioning/servix'
-import { deleteGymstackTenant } from '../../../lib/provisioning/gymstack'
+import { deleteGymstackTenant, GymstackTenantHasInvoicesError } from '../../../lib/provisioning/gymstack'
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'DELETE') return res.status(405).end()
@@ -23,10 +23,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   const productSlug = product?.slug || (sub.servixRestaurantId ? 'servix' : (sub as any).provisioning ? 'gymstack' : 'unknown')
 
   if (productSlug === 'gymstack' && (sub as any).provisioning?.externalId) {
+    // Si el borrado en GymStack falla, la suscripción NO se desvincula: antes se desvinculaba
+    // igualmente y el gimnasio quedaba huérfano (y activo) en GymStack
     try {
       await deleteGymstackTenant((sub as any).provisioning.externalId)
     } catch (e: any) {
+      if (e instanceof GymstackTenantHasInvoicesError) return res.status(409).json({ error: e.message })
       console.error('Error borrando GymStack:', e.message)
+      return res.status(500).json({ error: 'No se pudo borrar el gimnasio en GymStack: ' + e.message })
     }
   } else if (sub.servixRestaurantId) {
     try {
