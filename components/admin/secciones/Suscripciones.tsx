@@ -64,7 +64,7 @@ export default function Suscripciones({ inicial, productos, titulo = 'Suscripcio
     if (!confirm(`¿Eliminar TODOS los datos del tenant de ${s.user.name}? Esta acción es irreversible.`)) return
     const r = await llamar(s, '/api/admin/delete-restaurant', 'DELETE')
     if (r.ok) { actualizar(s.id, { servixRestaurantId: null, servixSlug: null, provisioning: null }); show(true, 'Datos del tenant eliminados') }
-    else show(false, 'Error al eliminar los datos del tenant')
+    else show(false, r.data?.error || 'Error al eliminar los datos del tenant')
   }
 
   const borrarRegistro = async (s: SuscripcionAdmin) => {

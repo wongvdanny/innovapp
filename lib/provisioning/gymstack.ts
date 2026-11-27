@@ -93,15 +93,47 @@ export async function deactivateGymstackTenant(gymId: string): Promise<void> {
  * Borra en cascada todos los datos de un gimnasio en GymStack.
  * Orden calculado a partir de las FKs del schema (las que no tienen
  * onDelete: Cascade explícito hay que borrarlas a mano antes del padre).
+ *
+ * Facturas: la ley obliga a conservarlas (4 años, art. 66 LGT) y GymStack impide borrarlas
+ * con un trigger. Si el gimnasio tiene facturas se lanza GymstackTenantHasInvoicesError y no
+ * se borra nada; solo con { purgeInvoices: true } (pasado el plazo de conservación) se
+ * desactiva el trigger dentro de esta transacción (SET LOCAL gymstack.purge_invoices).
  */
-export async function deleteGymstackTenant(gymId: string): Promise<void> {
+export class GymstackTenantHasInvoicesError extends Error {
+  constructor(public count: number) {
+    super(`El gimnasio tiene ${count} factura(s) emitida(s): hay que conservarlas. Desactívalo en lugar de borrarlo.`)
+  }
+}
+
+export async function deleteGymstackTenant(gymId: string, opts: { purgeInvoices?: boolean } = {}): Promise<void> {
   const client = await pool.connect()
   try {
     await client.query('BEGIN')
+    // Bloquea el gimnasio: nadie emite una factura entre la comprobación y el borrado
+    await client.query('SELECT id FROM gyms WHERE id = $1 FOR UPDATE', [gymId])
+
+    // to_regclass: instalaciones de GymStack anteriores a la migración de facturación
+    const { rows: [inv] } = await client.query(`SELECT to_regclass('invoices') IS NOT NULL AS exists`)
+    if (inv.exists) {
+      const { rows: [{ n }] } = await client.query('SELECT COUNT(*)::int AS n FROM invoices WHERE "gymId" = $1', [gymId])
+      if (n > 0 && !opts.purgeInvoices) throw new GymstackTenantHasInvoicesError(n)
+      await client.query(`SET LOCAL gymstack.purge_invoices = 'on'`)
+      await client.query(`DELETE FROM invoice_records WHERE "gymId" = $1`, [gymId])
+      await client.query(`DELETE FROM invoice_lines WHERE "invoiceId" IN (SELECT id FROM invoices WHERE "gymId" = $1)`, [gymId])
+      await client.query(`DELETE FROM invoices WHERE "gymId" = $1`, [gymId])
+      await client.query(`DELETE FROM invoice_series WHERE "gymId" = $1`, [gymId])
+      await client.query(`DELETE FROM gym_invoicing_settings WHERE "gymId" = $1`, [gymId])
+    }
+
     await client.query(`DELETE FROM sale_items WHERE "saleId" IN (SELECT id FROM sales WHERE "gymId" = $1)`, [gymId])
     await client.query(`DELETE FROM bookings WHERE "gymId" = $1`, [gymId])
     await client.query(`DELETE FROM attendances WHERE "memberId" IN (SELECT id FROM members WHERE "gymId" = $1)`, [gymId])
     await client.query(`DELETE FROM access_logs WHERE "memberId" IN (SELECT id FROM members WHERE "gymId" = $1) OR "gymId" = $1`, [gymId])
+    // Bonos antes que los cobros (member_bonos.paymentId) y que los socios (titulares y usos)
+    await client.query(`DELETE FROM bono_usages WHERE "gymId" = $1`, [gymId])
+    await client.query(`DELETE FROM member_bono_holders WHERE "gymId" = $1`, [gymId])
+    await client.query(`DELETE FROM member_bonos WHERE "gymId" = $1`, [gymId])
+    await client.query(`DELETE FROM bono_types WHERE "gymId" = $1`, [gymId])
     await client.query(`DELETE FROM payments WHERE "memberId" IN (SELECT id FROM members WHERE "gymId" = $1) OR "gymId" = $1`, [gymId])
     await client.query(`DELETE FROM routine_exercises WHERE "routineId" IN (SELECT id FROM workout_routines WHERE "memberId" IN (SELECT id FROM members WHERE "gymId" = $1))`, [gymId])
     await client.query(`DELETE FROM workout_routines WHERE "memberId" IN (SELECT id FROM members WHERE "gymId" = $1)`, [gymId])
